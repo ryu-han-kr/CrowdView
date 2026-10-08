@@ -18,7 +18,7 @@ npm run dev   # http://localhost:3000
 | `src/lib/crowd/provider.ts` | 서울시 실시간 도시데이터 연동 (`SEOUL_OPENAPI_KEY`), 실패 시 모델값 |
 | `src/lib/crowd/service.ts` | 캐시: 15분 신선도, SWR 백그라운드 갱신, 장애 시 이전 데이터 유지 + "n분 전 데이터" |
 | `src/lib/cache.ts` | Upstash Redis(REST) 또는 인메모리 |
-| `/api/cron/refresh` | Vercel Cron 10분 주기 (`vercel.json`) |
+| `/api/cron/refresh` | Vercel Cron (`vercel.json`). Hobby 플랜은 하루 1회만 허용되어 임시로 `0 0 * * *`, Pro 전환 후 `*/10 * * * *`로 변경. Cron 없이도 요청 시 SWR로 갱신됨 |
 | `/api/crowd`, `/api/crowd/[id]` | JSON API |
 
 화면: 홈(트렌드 카드·한산한 곳·목록) / 지도(히트맵) / 이벤트(당일 인원 예측) / 마이(즐겨찾기·키워드 추천·요금제) / 장소 상세(시간대 그래프·AI 방문 추천)
