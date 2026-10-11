@@ -1,4 +1,4 @@
-import { HeatMap } from "@/components/HeatMap";
+import { CrowdMap } from "@/components/CrowdMap";
 import { LevelLegend } from "@/components/Level";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { PLACES } from "@/lib/places";
@@ -14,7 +14,7 @@ export default async function MapPage() {
         <p className="mt-1 text-sm text-gray-500">원이 크고 붉을수록 붐벼요. 핀을 눌러 자세히 보세요.</p>
       </div>
       <div className="mt-4">
-        <HeatMap places={PLACES} crowd={crowd} />
+        <CrowdMap places={PLACES} crowd={crowd} />
       </div>
       <div className="px-5 pt-4">
         <LevelLegend />

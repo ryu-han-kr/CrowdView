@@ -5,3 +5,7 @@ out/
 *.tsbuildinfo
 next-env.d.ts
 .idea/
+
+.vercel
+.env*
+!.env.example

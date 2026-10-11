@@ -123,23 +123,28 @@ export function HeatMap({ places, crowd }: { places: Place[]; crowd: Record<stri
         })}
       </svg>
 
-      {sel && (
-        <Link
-          href={`/place/${sel.id}`}
-          className="absolute inset-x-3 bottom-3 flex items-center justify-between rounded-2xl bg-white p-4 shadow-lg"
-        >
-          <div>
-            <p className="font-semibold">{sel.name}</p>
-            <p className="mt-0.5 text-xs text-gray-500">
-              {crowd[sel.id].open ? `약 ${crowd[sel.id].headcount.toLocaleString()}명` : sel.region}
-            </p>
-          </div>
-          <div className="flex flex-col items-end gap-1">
-            <LevelBadge score={crowd[sel.id].score} closed={!crowd[sel.id].open} />
-            {crowd[sel.id].open && <TrendArrow trend={crowd[sel.id].trend} />}
-          </div>
-        </Link>
-      )}
+      {sel && <MapPlaceCard place={sel} crowd={crowd[sel.id]} />}
     </div>
+  );
+}
+
+/** 지도에서 핀을 눌렀을 때 하단에 뜨는 장소 카드 */
+export function MapPlaceCard({ place, crowd }: { place: Place; crowd: CrowdResult }) {
+  return (
+    <Link
+      href={`/place/${place.id}`}
+      className="absolute inset-x-3 bottom-3 z-10 flex items-center justify-between rounded-2xl bg-white p-4 shadow-lg"
+    >
+      <div>
+        <p className="font-semibold">{place.name}</p>
+        <p className="mt-0.5 text-xs text-gray-500">
+          {crowd.open ? `약 ${crowd.headcount.toLocaleString()}명` : place.region}
+        </p>
+      </div>
+      <div className="flex flex-col items-end gap-1">
+        <LevelBadge score={crowd.score} closed={!crowd.open} />
+        {crowd.open && <TrendArrow trend={crowd.trend} />}
+      </div>
+    </Link>
   );
 }
