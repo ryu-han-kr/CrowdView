@@ -30,6 +30,8 @@ export interface UsageLine {
 
 export interface CostReport {
   generatedAt: string;
+  generatedAtKst: string; // YYYY-MM-DD HH:mm
+  periodEnd: string; // 집계 마지막 날 (어제, YYYY-MM-DD)
   month: string; // YYYY-MM
   latestDate: string | null; // NCP에 사용량이 집계된 가장 최근 날짜
   daysInMonth: number;
@@ -73,6 +75,8 @@ export async function buildCostReport(now = new Date()): Promise<CostReport> {
 
   return {
     generatedAt: now.toISOString(),
+    generatedAtKst: new Date(now.getTime() + 9 * 3_600_000).toISOString().slice(0, 16).replace("T", " "),
+    periodEnd: yesterday,
     month,
     latestDate,
     daysInMonth,
@@ -102,64 +106,26 @@ function summarize(rows: DailyUsage[], latestDate: string | null): UsageLine[] {
 }
 
 const won = (n: number) => `${Math.round(n).toLocaleString("ko-KR")}원`;
-const num = (n: number) => Math.round(n).toLocaleString("ko-KR");
+const WEEKDAY = "일월화수목금토";
+
+// 2026-10-11 (일) 09:00 KST
+export function reportStamp(r: CostReport): string {
+  const [date, time] = r.generatedAtKst.split(" ");
+  return `${date} (${WEEKDAY[new Date(`${date}T00:00:00Z`).getUTCDay()]}) ${time} KST`;
+}
+
+// 2026-10-01 ~ 2026-10-10 (10/31일)
+export function reportPeriod(r: CostReport): string {
+  return `${r.month}-01 ~ ${r.periodEnd} (${r.daysElapsed}/${r.daysInMonth}일)`;
+}
 
 export function reportTitle(r: CostReport): string {
-  return `[CrowdView] ${r.month} 비용 정산 · 누적 ${won(r.monthToDateKrw)} / 월말 예상 ${won(r.projectedKrw)}`;
+  return `[CrowdView] 비용 정산 리포트 ${reportStamp(r)}`;
 }
 
-// 디스코드용 마크다운 (2,000자 제한 안쪽)
-export function reportMarkdown(r: CostReport): string {
-  const lines = [
-    `## 💰 CrowdView 비용 정산 (${r.month}, ${r.daysElapsed}/${r.daysInMonth}일)`,
-    `**이번 달 누적:** ${won(r.monthToDateKrw)}  ·  **월말 예상:** ${won(r.projectedKrw)}`,
-    "",
-    "### 네이버 클라우드",
-  ];
-  if ("error" in r.naver) {
-    lines.push(`⚠️ 조회 실패: ${r.naver.error}`);
-  } else {
-    lines.push(`청구 금액(VAT 포함): **${won(r.naver.demandKrw)}**`);
-    for (const u of r.naver.usage) {
-      const free = u.free ? ` (무료 한도 ${((u.monthToDate / u.free) * 100).toFixed(2)}%)` : "";
-      lines.push(`- ${u.name}: ${r.latestDate ?? "-"} ${num(u.latestDay)}${u.unit} · 이번 달 ${num(u.monthToDate)}${u.unit}${free}`);
-    }
-  }
-  lines.push("", "### 기타 서비스");
-  for (const f of r.fixed) lines.push(`- ${f.name}: ${won(f.krw)}/월 · ${f.note}`);
-  return lines.join("\n");
-}
-
-const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
-
-export function reportHtml(r: CostReport): string {
-  const row = (cells: string[]) => `<tr>${cells.map((c) => `<td style="padding:6px 10px;border-bottom:1px solid #eee">${c}</td>`).join("")}</tr>`;
-  const naver =
-    "error" in r.naver
-      ? `<p style="color:#c00">조회 실패: ${esc(r.naver.error)}</p>`
-      : `<p>청구 금액(VAT 포함): <b>${won(r.naver.demandKrw)}</b></p>
-<table style="border-collapse:collapse;font-size:14px">
-${row(["<b>항목</b>", `<b>${r.latestDate ?? "-"}</b>`, "<b>이번 달</b>", "<b>무료 한도</b>"])}
-${r.naver.usage
-  .map((u) =>
-    row([
-      esc(u.name),
-      `${num(u.latestDay)}${esc(u.unit)}`,
-      `${num(u.monthToDate)}${esc(u.unit)}`,
-      u.free ? `${num(u.free)} (${((u.monthToDate / u.free) * 100).toFixed(2)}%)` : "-",
-    ]),
-  )
-  .join("\n")}
-</table>`;
-  return `<div style="font-family:sans-serif;max-width:560px">
-<h2>CrowdView 비용 정산 (${r.month}, ${r.daysElapsed}/${r.daysInMonth}일)</h2>
-<p style="font-size:16px">이번 달 누적 <b>${won(r.monthToDateKrw)}</b> · 월말 예상 <b>${won(r.projectedKrw)}</b></p>
-<h3>네이버 클라우드</h3>
-${naver}
-<h3>기타 서비스</h3>
-<table style="border-collapse:collapse;font-size:14px">
-${r.fixed.map((f) => row([esc(f.name), `${won(f.krw)}/월`, esc(f.note)])).join("\n")}
-</table>
-<p style="color:#888;font-size:12px">생성 시각 ${r.generatedAt} · 고정비는 일할 계산</p>
-</div>`;
+// 메시지 본문은 한 줄 요약만, 상세는 첨부 PDF
+export function reportSummary(r: CostReport): string {
+  const naver = "error" in r.naver ? " · ⚠️ 네이버 클라우드 조회 실패" : "";
+  return `📄 CrowdView 비용 정산 리포트 · ${reportStamp(r)}
+이번 달 누적 ${won(r.monthToDateKrw)} · 월말 예상 ${won(r.projectedKrw)}${naver}`;
 }
