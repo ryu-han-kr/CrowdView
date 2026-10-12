@@ -5,7 +5,8 @@ import { forecastForDate } from "@/lib/crowd/model";
 import { PLACES } from "@/lib/places";
 import { daysUntil, formatHour } from "@/lib/time";
 
-export const dynamic = "force-dynamic";
+// D-day만 바뀌므로 1시간 단위로 다시 렌더링해도 충분하다
+export const revalidate = 3600;
 
 export default function EventsPage() {
   const events = PLACES.filter((p) => p.eventDate)

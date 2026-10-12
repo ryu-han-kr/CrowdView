@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CrowdView 운영 설정 가이드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 인쇄(A4 PDF)용 문서. 장마다 새 페이지, 개념 설명 → 이번 작업 → 할 일 → SA 관점 → 용어집 순 */
+:root {
+  --ink: #18212b;
+  --muted: #5d6b78;
+  --line: #dfe5ea;
+  --soft: #f4f7f9;
+  --accent: #1f5fbf;
+  --accent-soft: #e8f0fc;
+  --warn: #a35a00;
+  --warn-soft: #fff4e2;
+  --good: #1d7a46;
+  --good-soft: #e6f5ec;
+  --font: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --mono: "JetBrains Mono", Consolas, monospace;
+}
+@page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; background: #fff; color: var(--ink); font-family: var(--font); font-size: 10.5pt; line-height: 1.72; word-break: keep-all; }
+main { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+h1, h2, h3 { line-height: 1.35; margin: 0; }
+h2 { font-size: 17pt; font-weight: 800; margin: 0 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--ink); }
+h2 .no { color: var(--accent); margin-right: 8px; }
+h3 { font-size: 12.5pt; font-weight: 700; margin: 22px 0 6px; }
+p { margin: 6px 0 10px; }
+section.chapter { break-before: page; }
+.cover { min-height: 245mm; display: flex; flex-direction: column; justify-content: space-between; padding-top: 40mm; }
+.cover .kicker { color: var(--accent); font-weight: 700; letter-spacing: .08em; font-size: 10pt; }
+.cover h1 { font-size: 30pt; font-weight: 800; margin-top: 10px; }
+.cover .sub { font-size: 13pt; color: var(--muted); margin-top: 10px; }
+.cover .meta { border-top: 1px solid var(--line); padding-top: 12px; color: var(--muted); font-size: 9.5pt; }
+.toc { margin-top: 28px; padding: 0; list-style: none; counter-reset: toc; }
+.toc li { padding: 6px 0; border-bottom: 1px dashed var(--line); font-size: 11pt; }
+.toc li b { color: var(--accent); display: inline-block; width: 28px; }
+table { width: 100%; border-collapse: collapse; margin: 10px 0 14px; font-size: 9.5pt; break-inside: avoid; }
+th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+th { background: var(--soft); font-weight: 700; color: var(--muted); font-size: 9pt; }
+code, .mono { font-family: var(--mono); font-size: 8.8pt; background: var(--soft); padding: 1px 5px; border-radius: 4px; }
+pre { font-family: var(--mono); font-size: 8.6pt; background: #10161d; color: #e4ecf3; padding: 12px 14px; border-radius: 8px; white-space: pre-wrap; line-height: 1.55; break-inside: avoid; }
+.box { border-radius: 10px; padding: 12px 16px; margin: 12px 0; break-inside: avoid; }
+.box > b:first-child { display: block; margin-bottom: 2px; }
+.tip { background: var(--accent-soft); }
+.warn { background: var(--warn-soft); }
+.warn > b:first-child { color: var(--warn); }
+.good { background: var(--good-soft); }
+.good > b:first-child { color: var(--good); }
+.analogy { border-left: 4px solid var(--accent); background: var(--soft); padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0; break-inside: avoid; }
+.analogy::before { content: "비유로 이해하기"; display: block; font-size: 8.5pt; font-weight: 700; color: var(--accent); margin-bottom: 2px; }
+.step { display: grid; grid-template-columns: 22px 1fr; gap: 10px; margin: 10px 0; break-inside: avoid; }
+.step .n { width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 9pt; font-weight: 700; display: grid; place-items: center; margin-top: 3px; }
+.who { display: inline-block; font-size: 8pt; font-weight: 700; padding: 0 7px; border-radius: 99px; margin-right: 6px; vertical-align: 1px; }
+.me { background: #ffe9d6; color: #94420b; }
+.cl { background: #e3ecff; color: #1d4aa8; }
+.done { background: var(--good-soft); color: var(--good); }
+.why { color: var(--muted); font-size: 9.5pt; margin: 2px 0 0; }
+.why::before { content: "왜? "; font-weight: 700; color: var(--accent); }
+figure { margin: 14px 0; break-inside: avoid; }
+figcaption { font-size: 9pt; color: var(--muted); text-align: center; margin-top: 4px; }
+svg text { font-family: var(--font); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.card { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; break-inside: avoid; }
+.card h4 { margin: 0 0 4px; font-size: 10.5pt; }
+.small { font-size: 9pt; color: var(--muted); }
+dl.gloss { display: grid; grid-template-columns: 150px 1fr; gap: 6px 14px; font-size: 9.8pt; }
+dl.gloss dt { font-weight: 700; }
+dl.gloss dd { margin: 0; color: #2c3946; }
+@media screen { body { background: #e9edf0; } main { background: #fff; padding: 32px 40px; margin: 24px auto; box-shadow: 0 2px 12px rgba(0,0,0,.08); } }
+@media screen and (max-width: 640px) { main { padding: 20px 16px; margin: 0; } .two { grid-template-columns: 1fr; } dl.gloss { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+
+<!-- 표지 -->
+<section class="cover">
+  <div>
+    <div class="kicker">CROWDVIEW · 운영 가이드</div>
+    <h1>운영 설정 가이드</h1>
+    <p class="sub">도메인, DNS, CDN 캐시, 요금 폭탄 대비까지<br>처음 하는 사람을 위한 "무엇을, 왜" 설명서</p>
+    <ol class="toc">
+      <li><b>1</b>이 문서를 읽는 법</li>
+      <li><b>2</b>큰 그림: 주소를 입력하면 무슨 일이 일어나나</li>
+      <li><b>3</b>꼭 알아야 할 기초 개념 9가지</li>
+      <li><b>4</b>이번에 적용한 CDN 캐시 설정</li>
+      <li><b>5</b>단계별 할 일과 그 이유</li>
+      <li><b>6</b>SA 관점: 나중에 직접 클라우드로 옮길 때</li>
+      <li><b>7</b>용어집</li>
+    </ol>
+  </div>
+  <div class="meta">작성 2026-10-12 · 대상 저장소 ryu-han-kr/crowdview · 운영 주소 crowdview-three.vercel.app<br>짧은 체크리스트 버전은 <span class="mono">docs/SETUP.md</span>에 있습니다.</div>
+</section>
+
+<!-- 1 -->
+<section class="chapter">
+  <h2><span class="no">1</span>이 문서를 읽는 법</h2>
+  <p>이 문서는 CrowdView를 실제 서비스로 운영하기 위해 <b>사람이 직접 해야 하는 설정</b>과, 그 설정이 <b>왜 필요한지</b>를 처음 접하는 사람의 눈높이로 설명합니다. 체크리스트만 필요하면 <span class="mono">docs/SETUP.md</span>를 보세요.</p>
+
+  <h3>운영 방침 한 줄 요약</h3>
+  <div class="box tip">
+    <b>지금은 Vercel로 빠르게 운영하고, 나중에 직접 클라우드(AWS·GCP·NCP)로 옮깁니다.</b>
+    <ul>
+      <li>Cloudflare는 <b>도메인 구입과 DNS 관리</b>만 맡깁니다.</li>
+      <li>호스팅, 캐시, 보안, 예약 작업(Cron), 지출 한도는 <b>전부 Vercel</b>이 맡습니다.</li>
+      <li>장기 목표는 솔루션 아키텍트(SA)이므로 Vercel이 대신 해주는 일을 하나씩 이해해 둡니다. 나중에 같은 구조를 직접 클라우드에 짓기 위해서입니다. 6장에서 대응표로 정리했습니다.</li>
+    </ul>
+  </div>
+
+  <h3>표기</h3>
+  <table>
+    <tr><th style="width:120px">표시</th><th>뜻</th></tr>
+    <tr><td><span class="who me">직접</span></td><td>사용자가 웹 콘솔에서 직접 해야 하는 일입니다. 결제, 계정 가입, 신청서 제출처럼 대신할 수 없는 일입니다.</td></tr>
+    <tr><td><span class="who cl">Claude</span></td><td>코드 수정, 환경변수 등록, 배포처럼 Claude가 처리할 수 있는 일입니다.</td></tr>
+    <tr><td><span class="who done">완료</span></td><td>이미 끝난 일입니다.</td></tr>
+  </table>
+
+  <h3>지금 상태 (2026-10-12)</h3>
+  <table>
+    <tr><th style="width:150px">항목</th><th>상태</th></tr>
+    <tr><td>운영 주소</td><td><span class="mono">https://crowdview-three.vercel.app</span> (Vercel Hobby, 무료)</td></tr>
+    <tr><td>지도</td><td>네이버 지도(NCP Maps). 운영 주소 등록을 마쳤고 정상 동작합니다.</td></tr>
+    <tr><td>혼잡도 데이터</td><td>서울시 실시간 도시데이터 키를 아직 받지 않아 <b>예측 모델 값</b>으로 표시 중입니다.</td></tr>
+    <tr><td>비용 리포트</td><td>매일 09:00(KST)에 PDF를 디스코드와 메일로 발송합니다.</td></tr>
+    <tr><td>CDN 캐시</td><td><b>이번에 적용했습니다</b> (4장).</td></tr>
+    <tr><td>도메인</td><td>아직 없습니다 (1·2단계).</td></tr>
+  </table>
+</section>
+
+<!-- 2 -->
+<section class="chapter">
+  <h2><span class="no">2</span>큰 그림: 주소를 입력하면 무슨 일이 일어나나</h2>
+  <p>설정 하나하나를 이해하려면 먼저 사용자의 요청이 지나가는 길을 알아야 합니다. 도메인을 산 뒤의 구조는 아래와 같습니다.</p>
+
+  <figure>
+    <svg viewBox="0 0 720 300" width="100%" role="img" aria-label="요청 흐름도">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5d6b78"/></marker>
+      </defs>
+      <!-- 사용자 -->
+      <rect x="10" y="110" width="110" height="70" rx="10" fill="#f4f7f9" stroke="#18212b"/>
+      <text x="65" y="140" text-anchor="middle" font-size="13" font-weight="700">사용자</text>
+      <text x="65" y="160" text-anchor="middle" font-size="10" fill="#5d6b78">휴대폰 브라우저</text>
+      <!-- DNS -->
+      <rect x="170" y="10" width="160" height="70" rx="10" fill="#fff4e2" stroke="#a35a00"/>
+      <text x="250" y="38" text-anchor="middle" font-size="13" font-weight="700">Cloudflare DNS</text>
+      <text x="250" y="58" text-anchor="middle" font-size="10" fill="#5d6b78">"이 도메인은 어디?" 응답만</text>
+      <!-- CDN -->
+      <rect x="170" y="110" width="160" height="70" rx="10" fill="#e8f0fc" stroke="#1f5fbf"/>
+      <text x="250" y="138" text-anchor="middle" font-size="13" font-weight="700">Vercel CDN (엣지)</text>
+      <text x="250" y="158" text-anchor="middle" font-size="10" fill="#5d6b78">HTTPS · 방화벽 · 캐시</text>
+      <!-- Function -->
+      <rect x="380" y="110" width="150" height="70" rx="10" fill="#e8f0fc" stroke="#1f5fbf"/>
+      <text x="455" y="138" text-anchor="middle" font-size="13" font-weight="700">Vercel 함수</text>
+      <text x="455" y="158" text-anchor="middle" font-size="10" fill="#5d6b78">Next.js 서버 코드</text>
+      <!-- 외부 -->
+      <rect x="580" y="40" width="130" height="50" rx="10" fill="#f4f7f9" stroke="#5d6b78"/>
+      <text x="645" y="70" text-anchor="middle" font-size="11" font-weight="700">서울시 API</text>
+      <rect x="580" y="120" width="130" height="50" rx="10" fill="#f4f7f9" stroke="#5d6b78"/>
+      <text x="645" y="150" text-anchor="middle" font-size="11" font-weight="700">Redis 캐시 (예정)</text>
+      <rect x="580" y="200" width="130" height="50" rx="10" fill="#f4f7f9" stroke="#5d6b78"/>
+      <text x="645" y="230" text-anchor="middle" font-size="11" font-weight="700">Supabase DB (예정)</text>
+      <!-- Cron -->
+      <rect x="380" y="225" width="150" height="55" rx="10" fill="#e6f5ec" stroke="#1d7a46"/>
+      <text x="455" y="250" text-anchor="middle" font-size="12" font-weight="700">Vercel Cron</text>
+      <text x="455" y="268" text-anchor="middle" font-size="10" fill="#5d6b78">매일 09:00 실행</text>
+      <!-- 화살표 -->
+      <path d="M120,125 C140,80 150,60 168,50" fill="none" stroke="#5d6b78" marker-end="url(#ar)"/>
+      <text x="112" y="80" font-size="10" fill="#a35a00">① 주소 조회</text>
+      <path d="M120,150 L168,150" stroke="#5d6b78" marker-end="url(#ar)"/>
+      <text x="124" y="198" font-size="10" fill="#1f5fbf">② 요청</text>
+      <path d="M330,145 L378,145" stroke="#5d6b78" marker-end="url(#ar)"/>
+      <text x="334" y="136" font-size="10" fill="#1f5fbf">③ 캐시 없을 때만</text>
+      <path d="M530,135 L578,70" stroke="#5d6b78" marker-end="url(#ar)"/>
+      <path d="M530,145 L578,145" stroke="#5d6b78" marker-end="url(#ar)"/>
+      <path d="M530,160 L578,220" stroke="#5d6b78" marker-end="url(#ar)"/>
+      <path d="M455,225 L455,182" stroke="#1d7a46" marker-end="url(#ar)"/>
+    </svg>
+    <figcaption>그림 1. 요청의 흐름. 주황색 DNS는 길 안내만 하고, 실제 데이터는 파란색 Vercel을 지나갑니다.</figcaption>
+  </figure>
+
+  <div class="step"><div class="n">1</div><div><b>주소 조회 (DNS)</b>: 브라우저는 <span class="mono">crowdview.com</span> 같은 이름을 바로 찾아가지 못합니다. 그래서 DNS에 "이 이름의 서버 IP가 뭐야?"라고 묻습니다. Cloudflare DNS가 "Vercel 서버의 IP야"라고 답합니다.</div></div>
+  <div class="step"><div class="n">2</div><div><b>요청 (CDN)</b>: 브라우저가 그 IP, 즉 사용자와 가장 가까운 Vercel 엣지 서버로 접속합니다. 여기서 HTTPS 암호화, 방화벽 검사, <b>캐시 확인</b>이 일어납니다.</div></div>
+  <div class="step"><div class="n">3</div><div><b>캐시가 있으면</b>: 엣지 서버가 저장해 둔 페이지를 곧바로 돌려줍니다. 서버 코드는 실행되지 않습니다. <b>빠르고, 거의 공짜입니다.</b></div></div>
+  <div class="step"><div class="n">4</div><div><b>캐시가 없거나 만료됐으면</b>: Vercel 함수(Next.js 서버 코드)가 실행되어 서울시 API나 Redis에서 데이터를 가져와 페이지를 만듭니다. 이 결과는 다시 캐시에 저장됩니다.</div></div>
+  <div class="step"><div class="n">5</div><div><b>예약 작업 (Cron)</b>: 사용자 요청과 별개로, 정해진 시각에 Vercel이 데이터 갱신과 비용 리포트 함수를 스스로 호출합니다.</div></div>
+
+  <div class="box good"><b>핵심</b>요금은 대부분 <b>④ 함수 실행</b>과 그 뒤의 외부 서비스 호출에서 나옵니다. 그래서 요금 폭탄을 막는 가장 강력한 방법은 <b>③에서 끝나는 요청의 비율을 높이는 것</b>, 즉 캐시입니다. 4장에서 다룹니다.</div>
+</section>
+
+<!-- 3 -->
+<section class="chapter">
+  <h2><span class="no">3</span>꼭 알아야 할 기초 개념 9가지</h2>
+
+  <h3>3-1. 도메인과 등록업체(Registrar)</h3>
+  <p><b>도메인</b>은 <span class="mono">crowdview.com</span> 같은 사람이 읽기 쉬운 인터넷 주소입니다. 도메인은 사는 것이 아니라 <b>1년 단위로 빌리는 것</b>이어서 매년 갱신해야 합니다. 갱신을 놓치면 남이 가져갈 수 있으니 자동 갱신을 켜 두세요.</p>
+  <p>도메인을 빌려주는 회사를 <b>등록업체(Registrar)</b>라고 합니다. 가비아, Cloudflare, AWS Route 53 등이 있습니다.</p>
+  <ul>
+    <li>Cloudflare는 도메인을 <b>원가에 팔고</b> 마진을 붙이지 않습니다. <span class="mono">.com</span> 기준 연 약 1.5만 원입니다.</li>
+    <li>WHOIS(도메인 주인 정보)도 무료로 비공개 처리해 줍니다.</li>
+  </ul>
+  <div class="box warn"><b>주의: .kr 도메인</b>Cloudflare는 <span class="mono">.kr</span>과 <span class="mono">.co.kr</span>을 팔지 않습니다. <span class="mono">.kr</span>을 원하면 가비아 같은 국내 업체에서 사고, "네임서버"만 Cloudflare로 바꾸면 됩니다. 결과적으로 DNS 관리는 똑같이 Cloudflare에서 하게 됩니다.</div>
+
+  <h3>3-2. DNS: 인터넷의 전화번호부</h3>
+  <div class="analogy">사람 이름(도메인)으로는 전화를 걸 수 없고 전화번호(IP 주소)가 필요합니다. DNS는 이름을 번호로 바꿔 주는 전화번호부입니다. 전화번호부의 한 줄 한 줄을 <b>DNS 레코드</b>라고 부릅니다.</div>
+  <table>
+    <tr><th style="width:70px">레코드</th><th>뜻</th><th style="width:240px">CrowdView에서 쓰는 곳</th></tr>
+    <tr><td><b>A</b></td><td>이름 → IPv4 주소</td><td><span class="mono">crowdview.com</span> → Vercel IP</td></tr>
+    <tr><td><b>CNAME</b></td><td>이름 → 다른 이름 (별명)</td><td><span class="mono">www</span> → Vercel 주소</td></tr>
+    <tr><td><b>TXT</b></td><td>아무 글자. 주로 "이 도메인 주인이 맞다"는 증명에 씁니다</td><td>Resend 메일 발송 인증 (SPF, DKIM)</td></tr>
+    <tr><td><b>MX</b></td><td>이 도메인의 메일을 받는 서버</td><td>Resend 반송 메일 처리</td></tr>
+    <tr><td><b>NS</b></td><td>이 도메인의 전화번호부를 관리하는 곳 (네임서버)</td><td>Cloudflare (도메인을 사면 자동 설정)</td></tr>
+  </table>
+  <p><b>TTL</b>은 "이 답을 몇 초 동안 기억해도 되는지"입니다. DNS를 바꿨는데 바로 반영되지 않는 이유가 여기에 있습니다. 전 세계 DNS 서버가 예전 답을 TTL 동안 기억하기 때문입니다. 보통 몇 분에서 몇 시간이 걸립니다.</p>
+
+  <h3>3-3. 프록시(주황 구름)와 DNS only(회색 구름): 왜 끄나</h3>
+  <p>Cloudflare에서 DNS 레코드를 추가하면 구름 아이콘이 있습니다.</p>
+  <div class="two">
+    <div class="card"><h4>🟠 Proxied (주황, 기본값)</h4><p class="small">사용자 요청이 <b>Cloudflare 서버를 먼저 거친 뒤</b> Vercel로 갑니다. Cloudflare의 캐시와 방화벽이 앞에 붙습니다.</p></div>
+    <div class="card"><h4>⚪ DNS only (회색)</h4><p class="small">Cloudflare는 <b>주소만 알려주고</b> 빠집니다. 사용자는 Vercel로 바로 접속합니다.</p></div>
+  </div>
+  <p>"보안은 Cloudflare, 호스팅은 Vercel" 조합이 흔해 보이지만, <b>Vercel은 공식 문서에서 Cloudflare 프록시를 앞에 두는 것을 권장하지 않습니다.</b> 이유는 다음과 같습니다.</p>
+  <ul>
+    <li><b>Vercel에 이미 CDN, 방화벽, DDoS 방어가 들어 있습니다.</b> 같은 일을 두 번 하게 되고, 한 번 더 거치는 만큼 느려집니다.</li>
+    <li><b>Vercel이 진짜 사용자를 못 봅니다.</b> 모든 요청이 Cloudflare IP에서 오는 것처럼 보여서 Vercel 방화벽, 봇 탐지, IP별 속도 제한이 제대로 동작하지 않습니다.</li>
+    <li><b>캐시가 두 겹이 됩니다.</b> 한쪽을 지워도 다른 쪽에 옛 페이지가 남아 "배포했는데 왜 안 바뀌지?" 같은 문제가 생깁니다.</li>
+    <li><b>HTTPS 인증서 충돌</b>로 526, 525 같은 오류가 날 수 있습니다.</li>
+    <li><b>Vercel 요금이 줄지 않습니다.</b> 4장의 캐시 설정을 하면 Vercel 안에서 같은 효과를 얻습니다.</li>
+  </ul>
+  <div class="box tip"><b>결론</b>Cloudflare = 도메인 + DNS(회색 구름). 나머지는 Vercel 한 곳에서 관리합니다. 문제가 생겼을 때 볼 곳이 한 군데라서 운영이 단순해집니다.</div>
+
+  <h3>3-4. HTTPS와 인증서</h3>
+  <p>주소창의 자물쇠는 사용자와 서버 사이의 통신이 <b>암호화</b>되어 있다는 뜻입니다. 암호화하려면 "이 서버가 진짜 crowdview.com이 맞다"는 <b>인증서</b>가 필요합니다.</p>
+  <ul>
+    <li>Vercel은 도메인을 연결하면 Let's Encrypt 인증서를 <b>자동으로 발급하고, 자동으로 갱신</b>합니다. 할 일이 없습니다.</li>
+    <li>프록시를 끄는 이유 중 하나도 이 자동 발급이 방해받지 않게 하려는 것입니다.</li>
+    <li>HTTPS가 아니면 브라우저가 위치 권한 같은 기능을 막습니다.</li>
+  </ul>
+
+  <h3>3-5. CDN과 캐시</h3>
+  <div class="analogy">본사 창고(서버) 하나에서 전국으로 배송하면 느리고 비쌉니다. 그래서 동네마다 편의점(엣지 서버)을 두고 잘 팔리는 물건(페이지)을 미리 진열해 둡니다. 손님 대부분은 편의점에서 바로 사 가고, 진열대가 비었을 때만 본사에 주문합니다. 이것이 <b>CDN(Content Delivery Network)</b>입니다.</div>
+  <p>어떤 응답을 얼마나 오래 진열할지는 서버가 <b>Cache-Control</b> 헤더로 알려줍니다. 웹 표준이라 Vercel, CloudFront, Cloudflare 어디서나 같은 뜻입니다.</p>
+  <table>
+    <tr><th style="width:190px">지시어</th><th>뜻</th></tr>
+    <tr><td><code>public</code></td><td>누구에게나 같은 응답이므로 공용 캐시(CDN)에 저장해도 됩니다.</td></tr>
+    <tr><td><code>max-age=0</code></td><td><b>브라우저</b>는 저장하지 말고 매번 물어보라는 뜻입니다. 대신 CDN이 가까이에서 빠르게 답합니다.</td></tr>
+    <tr><td><code>s-maxage=60</code></td><td><b>CDN</b>은 60초 동안 이 응답을 그대로 재사용합니다. (s = shared)</td></tr>
+    <tr><td><code>stale-while-revalidate=300</code></td><td>60초가 지난 뒤 5분 동안은 <b>일단 옛 응답을 즉시 주고, 뒤에서 새로 만듭니다.</b> 사용자는 기다리지 않습니다.</td></tr>
+    <tr><td><code>private, no-store</code></td><td>개인 정보가 담긴 응답이므로 절대 저장하지 않습니다. 로그인 후 내 정보 같은 응답에 씁니다.</td></tr>
+  </table>
+  <p><b>ISR(Incremental Static Regeneration)</b>은 Next.js가 페이지 HTML에 이 캐시 방식을 자동으로 적용해 주는 기능입니다. 코드에 <code>export const revalidate = 60</code> 한 줄만 쓰면 됩니다.</p>
+
+  <h3>3-6. 서버리스 함수와 리전</h3>
+  <p>예전에는 서버 컴퓨터를 24시간 켜 두고 월세를 냈습니다. <b>서버리스 함수</b>는 요청이 올 때만 코드가 실행되고, <b>실행된 만큼만</b> 돈을 냅니다.</p>
+  <ul>
+    <li>요청이 0이면 비용도 0이고, 요청이 몰리면 자동으로 여러 개가 동시에 실행됩니다.</li>
+    <li>반대로 요청이 폭증하면 <b>비용도 그대로 폭증</b>합니다. 이것이 3-9의 요금 폭탄입니다.</li>
+  </ul>
+  <p><b>리전(Region)</b>은 함수가 실행되는 데이터센터의 위치입니다.</p>
+  <ul>
+    <li>지금은 기본값인 <span class="mono">iad1</span>(미국 워싱턴)에서 돌고 있습니다. 한국 사용자 요청과 서울시 API 호출이 태평양을 왕복하는 셈입니다.</li>
+    <li><span class="mono">icn1</span>(서울)으로 바꾸면 응답이 빨라집니다. DB와 Redis도 서울 리전에 만들어 <b>함수와 같은 곳에 두는 것</b>이 원칙입니다.</li>
+  </ul>
+
+  <h3>3-7. Cron (예약 작업)</h3>
+  <p>"매일 09:00에 이 주소를 호출해"처럼 정해진 시각에 자동으로 실행되는 작업입니다. CrowdView는 두 가지를 씁니다.</p>
+  <ul>
+    <li><b>혼잡도 데이터 미리 갱신</b> (<span class="mono">/api/cron/refresh</span>)</li>
+    <li><b>비용 리포트 발송</b> (<span class="mono">/api/cron/cost-report</span>)</li>
+  </ul>
+  <p>무료(Hobby) 플랜은 하루 1회만 허용합니다. Pro로 바꾸면 데이터 갱신을 10분 주기로 돌릴 수 있습니다. 아무나 이 주소를 호출하지 못하도록 <span class="mono">CRON_SECRET</span>이라는 비밀번호를 헤더로 확인합니다.</p>
+
+  <h3>3-8. 환경변수와 비밀값</h3>
+  <p>API 키나 비밀번호를 코드에 직접 쓰면, 코드가 GitHub에 올라가는 순간 유출됩니다. 그래서 <b>환경변수</b>로 따로 보관하고 코드는 <span class="mono">process.env.이름</span>으로 읽기만 합니다.</p>
+  <table>
+    <tr><th style="width:170px">보관 장소</th><th>용도</th></tr>
+    <tr><td><span class="mono">.env.local</span></td><td>내 컴퓨터에서 개발할 때 씁니다. <span class="mono">.gitignore</span>에 들어 있어 GitHub에 올라가지 않습니다.</td></tr>
+    <tr><td>Vercel 환경변수 (Sensitive)</td><td>운영 서버에서 씁니다. 저장한 뒤에는 대시보드에서도 값을 다시 볼 수 없습니다.</td></tr>
+    <tr><td><span class="mono">.env.example</span></td><td>어떤 변수가 필요한지 <b>이름만</b> 적어 둔 견본입니다. 값은 넣지 않습니다.</td></tr>
+  </table>
+  <div class="box warn"><b>원칙</b>키는 채팅, 메신저, 스크린샷에 붙여 넣지 않습니다. 특히 NCP 계정 키는 모든 권한을 가진 마스터 키라서 유출되면 남이 내 카드로 서버를 마음대로 만들 수 있습니다.</div>
+
+  <h3>3-9. 사용량 과금과 "요금 폭탄"</h3>
+  <p>클라우드 요금은 대부분 <b>쓴 만큼</b> 나옵니다. 축제 기간에 방문자가 100배로 늘면 비용도 100배가 될 수 있습니다. 이를 막는 방법은 세 겹으로 생각합니다.</p>
+  <table>
+    <tr><th style="width:120px">겹</th><th>방법</th><th style="width:160px">CrowdView 적용</th></tr>
+    <tr><td><b>1. 줄이기</b></td><td>같은 일을 반복하지 않게 캐시합니다. 사용자가 늘어도 비용이 늘지 않는 구조를 만듭니다.</td><td>CDN 캐시 <span class="who done">완료</span></td></tr>
+    <tr><td><b>2. 막기</b></td><td>비정상 트래픽(봇, 공격)을 차단합니다.</td><td>Vercel 방화벽, 속도 제한</td></tr>
+    <tr><td><b>3. 알리고 멈추기</b></td><td>금액 기준으로 알림을 받고, 최악의 경우 자동으로 정지합니다.</td><td>Spend Management, 각 서비스의 예산 상한</td></tr>
+  </table>
+</section>
+
+<!-- 4 -->
+<section class="chapter">
+  <h2><span class="no">4</span>이번에 적용한 CDN 캐시 설정 <span class="who done" style="font-size:9pt">완료</span></h2>
+
+  <h3>무엇을 바꿨나</h3>
+  <table>
+    <tr><th style="width:190px">대상</th><th style="width:170px">이전</th><th>이후</th></tr>
+    <tr><td>홈, 지도, 내 정보, 장소 상세 페이지</td><td>요청마다 서버에서 새로 생성</td><td><b>ISR 60초</b>: CDN이 60초 동안 같은 HTML을 재사용하고, 그 뒤에는 백그라운드에서 다시 생성합니다.</td></tr>
+    <tr><td>이벤트 페이지</td><td>요청마다 생성</td><td><b>ISR 1시간</b>: D-day만 바뀌는 페이지라 이 정도로 충분합니다.</td></tr>
+    <tr><td><span class="mono">/api/crowd</span>, <span class="mono">/api/crowd/[id]</span></td><td>캐시 없음</td><td><code>public, max-age=0, s-maxage=60, stale-while-revalidate=300</code></td></tr>
+    <tr><td>장소 상세 11곳</td><td>요청 시 생성</td><td>배포할 때 미리 만들어 둡니다 (<span class="mono">generateStaticParams</span>).</td></tr>
+  </table>
+  <p>코드 위치는 <span class="mono">src/lib/cdn.ts</span>(API 헤더)와 각 <span class="mono">page.tsx</span>의 <span class="mono">revalidate</span> 값입니다.</p>
+
+  <h3>왜 했나: 숫자로 보기</h3>
+  <p>축제 기간 하루에 <b>5만 명이 각자 10페이지</b>를 본다고 가정합니다.</p>
+  <table>
+    <tr><th></th><th>캐시 없음 (이전)</th><th>CDN 캐시 (이후)</th></tr>
+    <tr><td>서버 함수 실행</td><td><b>50만 회</b></td><td>페이지당 1분에 최대 1회<br>→ 하루 최대 약 <b>1.9만 회</b> (13페이지 × 1,440분)</td></tr>
+    <tr><td>Redis 명령 (도입 후)</td><td>홈 1회당 장소 11곳 조회<br>→ <b>수백만 회</b>, 무료 한도(월 50만) 초과</td><td>함수가 실행될 때만 조회<br>→ 무료 한도 안</td></tr>
+    <tr><td>방문자가 10배로 늘면</td><td>비용도 10배</td><td><b>함수 실행 수는 거의 그대로</b></td></tr>
+    <tr><td>응답 속도</td><td>매번 서버 계산</td><td>가까운 엣지에서 즉시</td></tr>
+  </table>
+  <p class="small">※ Vercel CDN은 지역별로 캐시하므로 정확한 상한은 "지역 수 × 위 값"입니다. 한국 사용자는 대부분 서울 엣지 하나로 모입니다.</p>
+
+  <h3>대가 (트레이드오프)</h3>
+  <ul>
+    <li>화면의 혼잡도가 <b>최대 1분 정도 늦을 수 있습니다.</b> 원본인 서울시 데이터 자체가 5~15분 단위로 갱신되기 때문에 사용자가 느끼는 차이는 거의 없습니다.</li>
+    <li>"n분 전 갱신" 표시도 최대 1분 차이가 납니다.</li>
+    <li>나중에 로그인한 사용자별 화면(즐겨찾기 등)을 만들면 그 부분은 <code>private</code>로 따로 처리해야 합니다. 남의 정보가 캐시되면 안 되기 때문입니다.</li>
+  </ul>
+
+  <h3>잘 되는지 확인하는 법</h3>
+  <pre>curl -sI https://crowdview-three.vercel.app/api/crowd | findstr /i "cache"
+
+cache-control: public, max-age=0
+x-vercel-cache: MISS     ← 첫 요청: 함수가 실행됨
+(다시 실행하면)
+x-vercel-cache: HIT      ← CDN이 바로 응답, 함수 실행 없음
+x-vercel-cache: STALE    ← 만료된 응답을 주면서 뒤에서 갱신 중</pre>
+  <p class="small">Vercel은 <code>s-maxage</code>를 CDN에서만 쓰고 브라우저로 보내는 응답에서는 지웁니다. 그래서 위처럼 <code>max-age=0</code>만 보이는 것이 정상입니다.</p>
+</section>
+
+<!-- 5 -->
+<section class="chapter">
+  <h2><span class="no">5</span>단계별 할 일과 그 이유</h2>
+
+  <h3>0단계: 지금 바로 (무료)</h3>
+  <div class="step"><div class="n">1</div><div><span class="who me">직접</span><b>서울시 일반 인증키 발급</b>: data.seoul.go.kr → 인증키 신청 → 일반 인증키. 받은 키를 <span class="mono">.env.local</span>에 <span class="mono">SEOUL_OPENAPI_KEY=키값</span>으로 넣습니다.<p class="why">지금 화면의 혼잡도는 예측 모델 값입니다. 이 키가 있어야 서울시가 통신 데이터로 집계한 <b>실제 혼잡도</b>를 보여줄 수 있습니다. 공공데이터포털(data.go.kr) 키와는 다른 키입니다.</p></div></div>
+  <div class="step"><div class="n">2</div><div><span class="who me">직접</span><b>관광지 집중률 API 활용신청</b>: data.go.kr에서 "한국관광공사_관광지 집중률 방문자 추이 예측 정보"를 신청합니다.<p class="why">서울 밖 관광지(에버랜드 등)의 30일 혼잡 예측을 무료로 받을 수 있습니다. 이미 가진 data.go.kr 키로 쓸 수 있습니다.</p></div></div>
+  <div class="step"><div class="n">3</div><div><span class="who me">직접</span><b>비용 리포트 수신 확인</b>: 매일 09:00에 PDF가 왔는지 확인합니다.<p class="why">무료 플랜은 로그를 1시간만 보관해서 Claude가 나중에 성공 여부를 확인할 수 없습니다.</p></div></div>
+  <div class="step"><div class="n">4</div><div><span class="who me">직접</span><b>중복 프로젝트 <span class="mono">crowd-view</span> 정리 여부 결정</b><p class="why">같은 저장소에 연결된 Vercel 프로젝트가 두 개라서 커밋할 때마다 두 번 배포됩니다. 삭제는 되돌릴 수 없으니 직접 결정해 주세요.</p></div></div>
+  <div class="step"><div class="n">5</div><div><span class="who cl">Claude</span><b>서울시 키 등록·검증, 함수 리전을 서울(icn1)로 변경</b><p class="why">키는 운영 환경변수에 등록해야 운영 서버가 쓸 수 있고, 리전은 3-6에서 설명한 속도 문제 때문에 바꿉니다.</p></div></div>
+
+  <h3>1단계: 도메인 구입 (Cloudflare)</h3>
+  <div class="step"><div class="n">1</div><div><span class="who me">직접</span>dash.cloudflare.com에 가입하고, <b>Domain Registration → Register Domains</b>에서 이름을 검색해 결제합니다. 자동 갱신도 켭니다.<p class="why"><span class="mono">vercel.app</span> 주소는 신뢰도가 낮고 바꿀 수 없습니다. 내 도메인이 있어야 브랜드, 메일 발송, 나중의 클라우드 이전까지 주소를 유지할 수 있습니다. 도메인은 호스팅을 옮겨도 그대로 가져갑니다.</p></div></div>
+
+  <h3>2단계: 도메인을 Vercel에 연결</h3>
+  <div class="step"><div class="n">1</div><div><span class="who me">직접</span>Vercel → <span class="mono">crowdview</span> → <b>Settings → Domains → Add</b>에서 도메인과 <span class="mono">www</span>를 추가합니다.<p class="why">Vercel에 "이 도메인으로 오는 요청은 이 프로젝트로 보내라"고 알려주는 단계입니다.</p></div></div>
+  <div class="step"><div class="n">2</div><div><span class="who me">직접</span>Vercel이 보여주는 A/CNAME 값을 Cloudflare → <b>DNS → Records</b>에 입력하고, <b>Proxy status를 DNS only(회색)</b>로 바꿉니다.<p class="why">3-2의 전화번호부에 "이 이름 = Vercel"이라고 적는 단계입니다. 회색 구름인 이유는 3-3에서 설명했습니다.</p></div></div>
+  <div class="step"><div class="n">3</div><div><span class="who me">직접</span>Vercel 화면에 <b>Valid Configuration ✓</b>가 뜰 때까지 기다립니다.<p class="why">DNS 변경이 퍼지고(3-2의 TTL), Vercel이 HTTPS 인증서를 발급하는 시간(3-4)입니다.</p></div></div>
+
+  <h3>3단계: 도메인 연결 후</h3>
+  <div class="step"><div class="n">1</div><div><span class="who me">직접</span>NCP 콘솔 → Maps → Application → <b>Web 서비스 URL</b>에 새 도메인을 추가합니다.<p class="why">네이버 지도 키는 등록된 주소에서만 동작합니다. 남이 내 키를 훔쳐 써서 내 요금이 나가는 것을 막는 장치입니다.</p></div></div>
+  <div class="step"><div class="n">2</div><div><span class="who me">직접</span>Resend → <b>Domains → Add Domain</b>을 하고, 안내된 TXT/MX 레코드를 Cloudflare에 추가합니다.<p class="why">지금은 Resend 테스트 주소에서 발송하기 때문에 가입한 이메일로만 보낼 수 있습니다. 도메인을 인증하면 <span class="mono">report@내도메인</span>으로 누구에게나 보낼 수 있고, 스팸함에 빠질 확률도 줄어듭니다.</p></div></div>
+
+  <h3>4단계: 기능 개발 중 (필요할 때)</h3>
+  <div class="step"><div class="n">1</div><div><span class="who me">직접</span>Vercel → <b>Storage → Create Database</b>에서 <b>Supabase</b>와 <b>Upstash Redis</b>를 만듭니다. 둘 다 Free 플랜, Seoul 리전입니다.<p class="why">Supabase(DB)는 로그인과 즐겨찾기 저장에 씁니다. Redis는 여러 서버 함수가 함께 쓰는 공용 캐시입니다. 지금은 함수마다 따로 메모리에 캐시해서 서로 공유되지 않습니다. Vercel에서 만들면 접속 정보가 환경변수로 자동 입력됩니다.</p></div></div>
+
+  <h3>5단계: 출시 직전 (결제를 켜는 날)</h3>
+  <div class="step"><div class="n">1</div><div><span class="who me">직접</span><b>사업자등록과 통신판매업 신고</b><p class="why">토스페이먼츠 같은 결제대행사(PG)는 사업자 계약이 원칙이고, 온라인으로 유료 구독을 팔려면 통신판매업 신고가 필요합니다.</p></div></div>
+  <div class="step"><div class="n">2</div><div><span class="who me">직접</span><b>Vercel Pro 전환</b> ($20/월)<p class="why">Hobby는 <b>비상업용</b> 약관입니다. 결제를 받는 순간 Pro가 필요합니다. Pro는 10분 주기 Cron, 긴 로그 보관, 지출 한도 기능을 제공합니다.</p></div></div>
+  <div class="step"><div class="n">3</div><div><span class="who me">직접</span><b>Spend Management</b>: 한도 약 $100, 50/75/100% 알림. 자동 일시정지는 넉넉한 금액으로 설정합니다.<p class="why">3-9의 세 번째 겹입니다. 일시정지 금액을 너무 낮게 잡으면 축제 피크, 즉 사용자가 가장 많을 때 사이트가 꺼집니다. 캐시가 1차 방어선이므로 정지선은 진짜 사고에 대비한 최후 수단으로 둡니다.</p></div></div>
+  <div class="step"><div class="n">4</div><div><span class="who me">직접</span><b>외부 서비스 예산 상한</b>: Upstash, 네이버 클라우드 예산 알림, Claude API 지출 한도<p class="why">Vercel 한도는 Vercel 요금만 지켜줍니다. 각 서비스의 요금은 각자 설정해야 합니다.</p></div></div>
+  <div class="step"><div class="n">5</div><div><span class="who cl">Claude</span>방화벽 속도 제한(<span class="mono">/api/*</span>), 지출 알림을 디스코드로 연결, Cron 10분 주기, 결제 연동, 리포트에 Vercel 사용량 추가<p class="why">3-9의 두 번째 겹(막기)과, 매일 받는 리포트에서 비용을 한눈에 보기 위한 작업입니다.</p></div></div>
+</section>
+
+<!-- 6 -->
+<section class="chapter">
+  <h2><span class="no">6</span>SA 관점: 나중에 직접 클라우드로 옮길 때</h2>
+  <p>Vercel은 아래 표의 왼쪽 열을 <b>버튼 몇 번으로 대신 해주는</b> 서비스입니다. 직접 클라우드로 옮긴다는 것은 오른쪽 열을 하나씩 직접 설계하고 연결한다는 뜻입니다. 지금 Vercel에서 각 기능이 <b>무슨 문제를 푸는지</b> 이해해 두면, 나중에 같은 문제를 AWS나 GCP 부품으로 푸는 것이 SA의 일이 됩니다.</p>
+
+  <table>
+    <tr><th style="width:120px">역할</th><th style="width:120px">지금 (Vercel)</th><th>AWS</th><th>GCP</th><th style="width:110px">NCP</th></tr>
+    <tr><td>DNS</td><td>Cloudflare</td><td>Route 53 (Cloudflare 유지도 가능)</td><td>Cloud DNS</td><td>Global DNS</td></tr>
+    <tr><td>CDN + HTTPS</td><td>Edge Network</td><td>CloudFront + ACM 인증서</td><td>Cloud CDN + 관리형 인증서</td><td>Global Edge</td></tr>
+    <tr><td>서버 코드</td><td>Functions</td><td>Lambda (OpenNext/SST) 또는 ECS Fargate</td><td>Cloud Run</td><td>Server, Cloud Functions</td></tr>
+    <tr><td>예약 작업</td><td><span class="mono">vercel.json</span> crons</td><td>EventBridge Scheduler</td><td>Cloud Scheduler</td><td>Cloud Functions 트리거</td></tr>
+    <tr><td>비밀값</td><td>환경변수 (Sensitive)</td><td>Secrets Manager, SSM Parameter Store</td><td>Secret Manager</td><td>Secret Manager</td></tr>
+    <tr><td>방화벽, DDoS</td><td>Firewall</td><td>AWS WAF + Shield</td><td>Cloud Armor</td><td>보안 상품군</td></tr>
+    <tr><td>지출 한도</td><td>Spend Management</td><td>AWS Budgets + Budget Actions</td><td>Budgets + Pub/Sub</td><td>예산 관리</td></tr>
+    <tr><td>로그, 모니터링</td><td>Logs, Analytics</td><td>CloudWatch</td><td>Cloud Logging, Monitoring</td><td>Cloud Log Analytics</td></tr>
+    <tr><td>캐시 DB</td><td>Upstash Redis</td><td>ElastiCache</td><td>Memorystore</td><td>Cloud DB for Redis</td></tr>
+    <tr><td>DB, 로그인</td><td>Supabase</td><td>RDS/Aurora + Cognito</td><td>Cloud SQL + Identity Platform</td><td>Cloud DB for PostgreSQL</td></tr>
+    <tr><td>배포 파이프라인</td><td>Git push → 자동 배포</td><td>CodePipeline 또는 GitHub Actions</td><td>Cloud Build</td><td>SourcePipeline</td></tr>
+  </table>
+
+  <h3>지금부터 지키는 이식성 원칙</h3>
+  <ul>
+    <li><b>표준을 먼저 씁니다.</b> 이번 캐시 설정은 Vercel 전용 기능이 아니라 <b>HTTP 표준 Cache-Control 헤더</b>로 했습니다. CloudFront로 옮겨도 그대로 동작합니다.</li>
+    <li><b>설정은 환경변수로 둡니다.</b> 키나 주소를 코드에 박지 않았기 때문에, 옮길 때 Secrets Manager에 같은 이름으로 넣으면 됩니다.</li>
+    <li><b>도메인은 호스팅과 분리합니다.</b> 도메인을 Vercel이 아니라 Cloudflare에서 사는 이유가 이것입니다. 나중에 DNS 레코드 몇 줄만 바꾸면 이사가 끝납니다.</li>
+    <li><b>Vercel 전용 부분은 기록해 둡니다.</b> 이전할 때 손볼 곳은 아래와 같습니다.</li>
+  </ul>
+  <table>
+    <tr><th style="width:170px">Vercel 의존 지점</th><th>옮길 때 할 일</th></tr>
+    <tr><td><span class="mono">vercel.json</span>의 crons</td><td>EventBridge Scheduler가 같은 주소를 <span class="mono">Authorization: Bearer CRON_SECRET</span> 헤더와 함께 호출하도록 만듭니다.</td></tr>
+    <tr><td>ISR (<span class="mono">revalidate</span>)</td><td>자체 호스팅하면 Next.js 캐시 저장소를 S3나 Redis로 지정해야 합니다. OpenNext가 이 작업을 해 줍니다.</td></tr>
+    <tr><td><span class="mono">after()</span> 백그라운드 갱신</td><td>Lambda는 응답 후 실행이 보장되지 않습니다. OpenNext 설정을 확인하거나 큐(SQS)로 분리합니다.</td></tr>
+    <tr><td>Git 연동 자동 배포, 미리보기 URL</td><td>GitHub Actions와 IaC(Terraform 또는 CDK)로 직접 구성합니다. SA 포트폴리오로도 좋은 소재입니다.</td></tr>
+  </table>
+
+  <div class="box tip"><b>언제 옮기나 (판단 기준)</b>사용자 1,000명 규모까지는 Vercel의 월 $20이 직접 운영하는 시간보다 쌉니다. 다음 중 하나에 해당하면 이전을 검토합니다.
+    <ul>
+      <li>Vercel 청구액이 꾸준히 $100 이상 나올 때</li>
+      <li>Vercel이 제공하지 않는 기능(VPC 내부 DB, 장시간 작업 등)이 필요할 때</li>
+      <li>학습과 포트폴리오 목적으로 같은 구조를 AWS에 IaC로 재현해 보고 싶을 때. 이 경우 운영은 Vercel에 두고 스테이징을 AWS에 따로 만드는 방법도 있습니다.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="chapter">
+  <h2><span class="no">7</span>용어집</h2>
+  <dl class="gloss">
+    <dt>도메인</dt><dd>사람이 읽는 인터넷 주소입니다. 1년 단위로 빌립니다.</dd>
+    <dt>등록업체 (Registrar)</dt><dd>도메인을 빌려주는 회사입니다. Cloudflare, 가비아 등이 있습니다.</dd>
+    <dt>DNS</dt><dd>도메인을 IP 주소로 바꿔주는 인터넷 전화번호부입니다.</dd>
+    <dt>네임서버 (NS)</dt><dd>특정 도메인의 DNS 레코드를 관리하는 서버입니다.</dd>
+    <dt>A / CNAME 레코드</dt><dd>각각 이름 → IP, 이름 → 다른 이름을 뜻합니다.</dd>
+    <dt>TTL</dt><dd>DNS 답이나 캐시를 기억해도 되는 시간(초)입니다.</dd>
+    <dt>프록시</dt><dd>요청을 중간에서 받아 대신 전달하는 서버입니다. Cloudflare의 주황 구름이 프록시입니다.</dd>
+    <dt>HTTPS / TLS</dt><dd>암호화된 통신입니다. 인증서가 필요합니다.</dd>
+    <dt>CDN / 엣지</dt><dd>사용자 가까이에 둔 캐시 서버망입니다. 엣지는 그 개별 서버를 말합니다.</dd>
+    <dt>Cache-Control</dt><dd>응답을 어디에 얼마나 저장할지 알려주는 HTTP 헤더입니다.</dd>
+    <dt>s-maxage</dt><dd>CDN 같은 공용 캐시의 보관 시간입니다.</dd>
+    <dt>stale-while-revalidate</dt><dd>만료된 응답을 먼저 주고 뒤에서 갱신하는 방식입니다.</dd>
+    <dt>ISR</dt><dd>Next.js가 페이지를 정해진 주기마다 다시 만들어 CDN에 두는 방식입니다.</dd>
+    <dt>캐시 HIT / MISS / STALE</dt><dd>각각 캐시에서 응답, 캐시가 없어 서버 실행, 만료된 캐시로 응답하면서 갱신 중이라는 뜻입니다.</dd>
+    <dt>서버리스 함수</dt><dd>요청이 올 때만 실행되고 실행량만큼 과금되는 서버 코드입니다.</dd>
+    <dt>리전</dt><dd>코드나 데이터가 위치한 데이터센터의 지역입니다. 서울은 icn1(Vercel), ap-northeast-2(AWS)입니다.</dd>
+    <dt>Cron</dt><dd>정해진 시각에 자동으로 실행되는 예약 작업입니다.</dd>
+    <dt>환경변수</dt><dd>코드 밖에 보관하는 설정값과 비밀값입니다.</dd>
+    <dt>레이트리밋</dt><dd>같은 IP가 짧은 시간에 너무 많이 요청하면 막는 규칙입니다.</dd>
+    <dt>DDoS</dt><dd>대량의 요청으로 서비스를 마비시키는 공격입니다.</dd>
+    <dt>Spend Management</dt><dd>Vercel의 지출 한도 알림과 자동 정지 기능입니다.</dd>
+    <dt>IaC</dt><dd>Infrastructure as Code. 인프라를 코드(Terraform, CDK)로 정의하고 재현하는 방식입니다.</dd>
+    <dt>OpenNext</dt><dd>Next.js 앱을 Vercel이 아닌 AWS 등에 배포할 수 있게 해 주는 오픈소스입니다.</dd>
+    <dt>PG</dt><dd>결제대행사입니다. 토스페이먼츠 등이 있습니다.</dd>
+  </dl>
+</section>
+
+</main>
+</body>
+</html>

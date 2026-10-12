@@ -7,7 +7,8 @@ import { getAllCrowd } from "@/lib/crowd/service";
 import { PLACES } from "@/lib/places";
 import { formatAge } from "@/lib/time";
 
-export const dynamic = "force-dynamic";
+// ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
+export const revalidate = 60;
 
 export default async function HomePage() {
   const crowd = await getAllCrowd();
