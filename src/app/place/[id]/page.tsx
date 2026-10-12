@@ -5,12 +5,18 @@ import { PlaceHero } from "@/components/PlaceHero";
 import { forecastForDate } from "@/lib/crowd/model";
 import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
-import { getPlace } from "@/lib/places";
+import { PLACES, getPlace } from "@/lib/places";
 import { daysUntil, formatAge, formatHour, kst } from "@/lib/time";
 import type { HourPoint } from "@/lib/types";
 import { CATEGORY_LABEL } from "@/lib/types";
 
-export const dynamic = "force-dynamic";
+// ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
+export const revalidate = 60;
+
+// 빌드 때 장소별 페이지를 미리 만들어 두고, 이후엔 위 주기로 갱신한다
+export function generateStaticParams() {
+  return PLACES.map((p) => ({ id: p.id }));
+}
 
 /** 영업시간 내 앞으로 가장 한산한 시간 */
 function bestUpcoming(points: HourPoint[], open: number, close: number): HourPoint | undefined {
