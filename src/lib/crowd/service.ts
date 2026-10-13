@@ -1,5 +1,5 @@
 // 캐싱 전략
-// - Cron(10분)이 refreshAll() 로 미리 채워 둔다.
+// - 예약 호출(QStash 10분, Vercel Cron 하루 1번)이 refreshAll() 로 미리 채워 둔다.
 // - 15분(공항은 5분) 이내 데이터는 신선(fresh) → 그대로 반환.
 // - 15분 초과(stale) → 캐시를 즉시 반환하고 백그라운드에서 갱신 (SWR).
 // - 외부 API 장애 → 기존 데이터를 보존(보관 TTL 연장)하고 "n분 전 데이터"로 표시.
@@ -21,6 +21,16 @@ const cacheKey = (p: Place) => `crowd:${p.category}:${p.id}`;
 function toResult(s: CrowdSnapshot, p: Place): CrowdResult {
   const ageMinutes = Math.max(0, Math.floor((Date.now() - Date.parse(s.updatedAt)) / 60_000));
   return { ...s, ageMinutes, stale: ageMinutes * 60 > freshSeconds(p) };
+}
+
+// 장소 여러 곳을 Redis 명령 1번(MGET)으로 읽는다
+async function readCaches(places: Place[]): Promise<(CrowdSnapshot | null)[]> {
+  try {
+    const raws = await kv.mget(places.map(cacheKey));
+    return raws.map((raw) => (raw ? (JSON.parse(raw) as CrowdSnapshot) : null));
+  } catch {
+    return places.map(() => null);
+  }
 }
 
 async function readCache(p: Place): Promise<CrowdSnapshot | null> {
@@ -53,11 +63,10 @@ async function refresh(p: Place, previous: CrowdSnapshot | null): Promise<CrowdS
 export async function getCrowd(id: string): Promise<CrowdResult | null> {
   const place = getPlace(id);
   if (!place) return null;
-  return getCrowdFor(place);
+  return getCrowdFor(place, await readCache(place));
 }
 
-async function getCrowdFor(place: Place): Promise<CrowdResult> {
-  const cached = await readCache(place);
+async function getCrowdFor(place: Place, cached: CrowdSnapshot | null): Promise<CrowdResult> {
   if (!cached) return toResult(await refresh(place, null), place);
 
   const result = toResult(cached, place);
@@ -66,14 +75,16 @@ async function getCrowdFor(place: Place): Promise<CrowdResult> {
 }
 
 export async function getAllCrowd(): Promise<Record<string, CrowdResult>> {
-  const results = await Promise.all(PLACES.map(getCrowdFor));
+  const cached = await readCaches(PLACES);
+  const results = await Promise.all(PLACES.map((p, i) => getCrowdFor(p, cached[i])));
   return Object.fromEntries(results.map((r) => [r.placeId, r]));
 }
 
 export async function refreshAll(): Promise<{ id: string; source: string; updatedAt: string }[]> {
+  const cached = await readCaches(PLACES);
   return Promise.all(
-    PLACES.map(async (p) => {
-      const s = await refresh(p, await readCache(p));
+    PLACES.map(async (p, i) => {
+      const s = await refresh(p, cached[i]);
       return { id: p.id, source: s.source, updatedAt: s.updatedAt };
     }),
   );
