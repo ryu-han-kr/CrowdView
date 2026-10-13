@@ -12,7 +12,7 @@ const NAVER_FREE: Record<string, { free: number; unitPrice?: number }> = {
 const FIXED_MONTHLY: { name: string; note: string; krw: number }[] = [
   { name: "Vercel", note: "Hobby (Pro 전환 시 $20)", krw: 0 },
   { name: "Supabase", note: "미사용", krw: 0 },
-  { name: "Upstash Redis", note: "미사용 (인메모리 캐시)", krw: 0 },
+  { name: "Upstash Redis", note: "Free (월 50만 명령·256MB)", krw: 0 },
   { name: "Resend", note: "무료 (월 3,000통)", krw: 0 },
   { name: "Claude API", note: "미사용", krw: 0 },
   { name: "토스페이먼츠", note: "미연동", krw: 0 },
