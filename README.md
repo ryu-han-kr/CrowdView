@@ -14,7 +14,10 @@ npm run dev   # http://localhost:3000
 | 경로 | 내용 |
 | --- | --- |
 | `src/lib/levels.ts` | 혼잡도 5단계 (쾌적·원활·보통·혼잡·매우 혼잡), 내부 점수 0~100 |
-| `src/lib/crowd/model.ts` | 요일·시간대 기반 베이스라인 예측 모델 (학습 모델로 교체할 자리) |
+| `src/lib/crowd/model.ts` | 요일·시간대 베이스라인 + 공휴일·날씨·관광지 집중률·공항 승객 수 보정 예측 모델, 주간 예측 |
+| `src/lib/crowd/signals.ts` | 예측 신호 수집: 특일 정보, 기상청 단기예보, 관광공사 집중률, 공항 시간대별 승객 (`DATA_GO_KR_KEY`) |
+| `src/lib/crowd/history.ts` | 실측 스냅샷 기록 (하루 단위, 8일 보관). Redis 연결 시 인스턴스 간 공유 |
+| `src/lib/airport.ts` | 공항 탭: 날짜·출국장별 시간대 승객, 주차장 혼잡도 |
 | `src/lib/crowd/provider.ts` | 서울시 실시간 도시데이터 연동 (`SEOUL_OPENAPI_KEY`), 실패 시 모델값 |
 | `src/lib/crowd/airport.ts` | 공항 혼잡도: 인천공항 T1·T2 출국장, 한국공항공사 김포·제주·김해 (`DATA_GO_KR_KEY`) |
 | `src/lib/crowd/service.ts` | 캐시: 15분 신선도, SWR 백그라운드 갱신, 장애 시 이전 데이터 유지 + "n분 전 데이터" |

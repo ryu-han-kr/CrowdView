@@ -7,6 +7,7 @@ import { useState } from "react";
 import { LEVELS, levelOf } from "@/lib/levels";
 import type { CrowdResult, Place } from "@/lib/types";
 import { LevelBadge, TrendArrow } from "./Level";
+import { placeHref } from "@/lib/places";
 
 const W = 400;
 const H = 480;
@@ -132,7 +133,7 @@ export function HeatMap({ places, crowd }: { places: Place[]; crowd: Record<stri
 export function MapPlaceCard({ place, crowd }: { place: Place; crowd: CrowdResult }) {
   return (
     <Link
-      href={`/place/${place.id}`}
+      href={placeHref(place)}
       className="absolute inset-x-3 bottom-3 z-10 flex items-center justify-between rounded-2xl bg-white p-4 shadow-lg"
     >
       <div>

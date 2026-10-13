@@ -31,12 +31,28 @@ export interface Place {
   seoulArea?: string;
   /** 공항 IATA 코드 (있으면 공항 혼잡도 API 사용) */
   airport?: AirportCode;
+  /** 공항: 시간당 출발 승객 수가 이 값이면 '매우 혼잡'(90점) */
+  paxCapacity?: number;
+  /** 0(실내)~1(야외). 비·폭염 영향 계산용. 없으면 카테고리 기본값 */
+  outdoor?: number;
+  /** 한국관광공사 관광지 집중률 예측의 관광지 식별 정보 */
+  kto?: { areaCd: string; signguCd: string; name: string };
   /** 이벤트 개최일 YYYY-MM-DD (KST) */
   eventDate?: string;
 }
 
 // ICN1·ICN2: 인천공항 제1·2터미널(인천국제공항공사), 나머지: 한국공항공사 국내선
 export type AirportCode = "ICN1" | "ICN2" | "GMP" | "CJU" | "PUS" | "TAE" | "CJJ";
+
+/** 공항 출국장·보안검색 구간 등 장소 안의 세부 구역 */
+export interface Zone {
+  id: string;
+  label: string;
+  score: number;
+  waitMin?: number;
+  people?: number;
+  hours?: string;
+}
 
 export interface HourPoint {
   hour: number;
@@ -53,6 +69,7 @@ export interface CrowdSnapshot {
   trend: "up" | "down" | "flat";
   hourly: HourPoint[];
   source: "seoul-citydata" | "incheon-airport" | "kac-airport" | "model";
+  zones?: Zone[];
   updatedAt: string;
 }
 

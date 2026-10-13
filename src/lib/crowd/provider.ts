@@ -3,6 +3,7 @@
 import type { CrowdSnapshot, Place } from "../types";
 import { fetchAirport } from "./airport";
 import { modelSnapshot } from "./model";
+import { getSignals, type Signals } from "./signals";
 
 // 서울시 4단계 → 0~100 점수 (5단계 기준 각 구간의 중앙 부근)
 const SEOUL_LEVEL_SCORE: Record<string, number> = {
@@ -20,7 +21,7 @@ interface SeoulPpltn {
   FCST_PPLTN?: { FCST_TIME: string; FCST_CONGEST_LVL: string }[];
 }
 
-async function fetchSeoulCitydata(place: Place, key: string): Promise<CrowdSnapshot> {
+async function fetchSeoulCitydata(place: Place, key: string, s: Signals): Promise<CrowdSnapshot> {
   const url = `http://openapi.seoul.go.kr:8088/${key}/json/citydata_ppltn/1/5/${encodeURIComponent(place.seoulArea!)}`;
   const res = await fetch(url, { signal: AbortSignal.timeout(5000)});
   if (!res.ok) throw new Error(`seoul citydata ${res.status}`);
@@ -30,7 +31,7 @@ async function fetchSeoulCitydata(place: Place, key: string): Promise<CrowdSnaps
   if (!row || score === undefined) throw new Error("seoul citydata: unexpected payload");
 
   // 시간대 곡선은 모델 곡선을 쓰고, 서울시 예측값이 있으면 덮어쓴다
-  const base = modelSnapshot(place);
+  const base = modelSnapshot(place, new Date(), s);
   const hourly = base.hourly.map((p) => ({ ...p }));
   for (const f of row.FCST_PPLTN ?? []) {
     const h = Number(f.FCST_TIME.slice(11, 13));
@@ -47,8 +48,9 @@ async function fetchSeoulCitydata(place: Place, key: string): Promise<CrowdSnaps
 
 export async function fetchSnapshot(place: Place): Promise<CrowdSnapshot> {
   const key = process.env.SEOUL_OPENAPI_KEY;
-  if (key && place.seoulArea) return fetchSeoulCitydata(place, key);
-  const dataKey = process.env.DATA_GO_KR_KEY;
-  if (dataKey && place.airport) return fetchAirport(place, place.airport, dataKey);
-  return modelSnapshot(place);
+  // 날씨·공휴일·관광지 집중률·공항 승객 수로 예측 곡선을 보정한다
+  const s = await getSignals(place);
+  if (key && place.seoulArea) return fetchSeoulCitydata(place, key, s);
+  if (process.env.DATA_GO_KR_KEY && place.airport) return fetchAirport(place, place.airport, s);
+  return modelSnapshot(place, new Date(), s);
 }

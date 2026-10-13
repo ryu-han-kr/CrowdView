@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { CrowdResult, Place } from "@/lib/types";
 import { LevelBadge, LevelMeter, TrendArrow } from "./Level";
+import { placeHref } from "@/lib/places";
 
 export function PlaceThumb({ place, size = 48 }: { place: Place; size?: number }) {
   return (
@@ -20,7 +21,7 @@ export function PlaceThumb({ place, size = 48 }: { place: Place; size?: number }
 
 export function PlaceRow({ place, crowd }: { place: Place; crowd: CrowdResult }) {
   return (
-    <Link href={`/place/${place.id}`} className="flex items-center gap-3 py-3 active:opacity-70">
+    <Link href={placeHref(place)} className="flex items-center gap-3 py-3 active:opacity-70">
       <PlaceThumb place={place} />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">

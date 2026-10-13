@@ -3,6 +3,7 @@ import { levelOf } from "@/lib/levels";
 import { formatHour } from "@/lib/time";
 import type { CrowdResult, Place } from "@/lib/types";
 import { LevelMeter, TrendArrow } from "./Level";
+import { placeHref } from "@/lib/places";
 
 /** 스와이프 가능한 실시간 트렌드 카드 (CSS scroll-snap) */
 export function TrendCarousel({ items }: { items: { place: Place; crowd: CrowdResult }[] }) {
@@ -15,7 +16,7 @@ export function TrendCarousel({ items }: { items: { place: Place; crowd: CrowdRe
         return (
           <Link
             key={place.id}
-            href={`/place/${place.id}`}
+            href={placeHref(place)}
             className="relative w-[78%] shrink-0 snap-center overflow-hidden rounded-3xl p-5 text-white active:scale-[0.98] transition-transform"
             style={{
               background: `linear-gradient(140deg, hsl(${place.hue} 70% 45%), hsl(${place.hue + 50} 75% 35%))`,

@@ -4,7 +4,7 @@ import { LevelBadge, LevelLegend } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
 import { TrendCarousel } from "@/components/TrendCarousel";
 import { getAllCrowd } from "@/lib/crowd/service";
-import { PLACES } from "@/lib/places";
+import { PLACES, placeHref } from "@/lib/places";
 import { formatAge } from "@/lib/time";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
@@ -62,7 +62,7 @@ export default async function HomePage() {
           <ul className="mt-3 space-y-2">
             {calm.map((p) => (
               <li key={p.id}>
-                <Link href={`/place/${p.id}`} className="flex items-center gap-3 rounded-2xl bg-white p-2.5">
+                <Link href={placeHref(p)} className="flex items-center gap-3 rounded-2xl bg-white p-2.5">
                   <PlaceThumb place={p} size={40} />
                   <span className="flex-1 text-sm font-semibold">{p.name}</span>
                   <LevelBadge score={crowd[p.id].score} />
