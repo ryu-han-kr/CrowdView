@@ -19,6 +19,8 @@ export const PLACES: Place[] = [
     tags: ["실내", "어트랙션", "야간개장"],
     description: "실내·실외를 함께 즐길 수 있는 도심형 테마파크.",
     seoulArea: "잠실 관광특구",
+    outdoor: 0.3,
+    kto: { areaCd: "11", signguCd: "11710", name: "롯데월드 어드벤처" },
   },
   {
     id: "everland",
@@ -36,6 +38,8 @@ export const PLACES: Place[] = [
     hue: 150,
     tags: ["사파리", "롤러코스터", "계절축제"],
     description: "국내 최대 규모 테마파크. 사파리와 T익스프레스가 대표 명소.",
+    outdoor: 0.85,
+    kto: { areaCd: "41", signguCd: "41461", name: "에버랜드" },
   },
   {
     id: "seoulland",
@@ -53,6 +57,8 @@ export const PLACES: Place[] = [
     hue: 30,
     tags: ["가족", "야외", "대공원"],
     description: "서울대공원 옆 가족형 테마파크.",
+    outdoor: 0.9,
+    kto: { areaCd: "41", signguCd: "41290", name: "서울랜드" },
   },
   {
     id: "gyeongbokgung",
@@ -71,6 +77,8 @@ export const PLACES: Place[] = [
     tags: ["고궁", "한복", "역사"],
     description: "조선 왕조의 법궁. 한복 착용 시 무료 입장.",
     seoulArea: "경복궁",
+    outdoor: 0.8,
+    kto: { areaCd: "11", signguCd: "11110", name: "경복궁" },
   },
   {
     id: "namsan",
@@ -89,6 +97,8 @@ export const PLACES: Place[] = [
     tags: ["야경", "전망대", "케이블카"],
     description: "서울 도심을 한눈에 내려다보는 전망 명소.",
     seoulArea: "남산공원",
+    outdoor: 0.9,
+    kto: { areaCd: "11", signguCd: "11140", name: "남산공원(서울)" },
   },
   {
     id: "seongsu",
@@ -107,6 +117,8 @@ export const PLACES: Place[] = [
     tags: ["팝업스토어", "카페", "핫플"],
     description: "팝업스토어와 감성 카페가 모인 서울의 대표 핫플.",
     seoulArea: "성수카페거리",
+    outdoor: 0.4,
+    kto: { areaCd: "11", signguCd: "11200", name: "성수동 수제화거리" },
   },
   {
     id: "hongdae",
@@ -125,6 +137,8 @@ export const PLACES: Place[] = [
     tags: ["버스킹", "쇼핑", "나이트라이프"],
     description: "버스킹과 거리 공연이 끊이지 않는 젊음의 거리.",
     seoulArea: "홍대 관광특구",
+    outdoor: 0.5,
+    kto: { areaCd: "11", signguCd: "11440", name: "홍대" },
   },
   {
     id: "haeundae",
@@ -142,6 +156,8 @@ export const PLACES: Place[] = [
     hue: 195,
     tags: ["바다", "산책", "야경"],
     description: "부산을 대표하는 해변. 사계절 산책객이 많다.",
+    outdoor: 1,
+    kto: { areaCd: "26", signguCd: "26350", name: "해운대해수욕장" },
   },
   {
     id: "icn-t1",
@@ -160,6 +176,7 @@ export const PLACES: Place[] = [
     tags: ["출국장", "국제선", "아시아나·저비용항공"],
     description: "국내 최대 국제선 터미널. 운영 중인 출국장별 대기 시간과 인원을 1분 단위로 반영합니다.",
     airport: "ICN1",
+    paxCapacity: 5000,
   },
   {
     id: "icn-t2",
@@ -178,6 +195,7 @@ export const PLACES: Place[] = [
     tags: ["출국장", "국제선", "대한항공"],
     description: "대한항공·델타 등 스카이팀이 쓰는 터미널. 출국장별 대기 인원을 1분 단위로 반영합니다.",
     airport: "ICN2",
+    paxCapacity: 5000,
   },
   {
     id: "gimpo",
@@ -196,6 +214,7 @@ export const PLACES: Place[] = [
     tags: ["국내선", "제주행", "보안검색"],
     description: "제주·부산행 국내선의 중심. 체크인부터 탑승까지 구간별 혼잡도를 반영합니다.",
     airport: "GMP",
+    paxCapacity: 2600,
   },
   {
     id: "jeju-airport",
@@ -214,6 +233,7 @@ export const PLACES: Place[] = [
     tags: ["국내선", "여행", "보안검색"],
     description: "국내에서 가장 붐비는 국내선 공항. 오후 귀경 시간대 혼잡이 잦습니다.",
     airport: "CJU",
+    paxCapacity: 3600,
   },
   {
     id: "gimhae",
@@ -232,6 +252,7 @@ export const PLACES: Place[] = [
     tags: ["국내선", "부산", "보안검색"],
     description: "부산·경남권 국내선 공항. 이른 아침 김포·제주행 출발이 몰립니다.",
     airport: "PUS",
+    paxCapacity: 1600,
   },
   {
     id: "seoul-fireworks",
@@ -251,6 +272,7 @@ export const PLACES: Place[] = [
     description: "매년 가을 여의도 한강공원에서 열리는 대규모 불꽃 축제.",
     seoulArea: "여의도한강공원",
     eventDate: "2026-10-10",
+    kto: { areaCd: "11", signguCd: "11560", name: "여의도한강공원" },
   },
   {
     id: "busan-fireworks",
@@ -289,6 +311,11 @@ export const PLACES: Place[] = [
     eventDate: "2026-12-12",
   },
 ];
+
+/** 공항은 공항 탭 상세로, 나머지는 장소 상세로 */
+export function placeHref(p: Place): string {
+  return p.category === "airport" ? `/airport/${p.id}` : `/place/${p.id}`;
+}
 
 export function getPlace(id: string): Place | undefined {
   return PLACES.find((p) => p.id === id);

@@ -20,6 +20,10 @@ export function kstDateParts(date: string): KstParts {
   return { date, day: d.getUTCDay(), hour: 0 };
 }
 
+export function addDays(date: string, n: number): string {
+  return new Date(Date.parse(`${date}T00:00:00Z`) + n * 86_400_000).toISOString().slice(0, 10);
+}
+
 export function daysUntil(date: string, from: Date = new Date()): number {
   const today = Date.parse(`${kst(from).date}T00:00:00Z`);
   return Math.round((Date.parse(`${date}T00:00:00Z`) - today) / 86_400_000);

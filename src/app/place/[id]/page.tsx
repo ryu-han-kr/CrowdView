@@ -1,11 +1,12 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { HourlyChart } from "@/components/HourlyChart";
 import { LevelBadge, LevelMeter, TrendArrow } from "@/components/Level";
 import { PlaceHero } from "@/components/PlaceHero";
-import { forecastForDate } from "@/lib/crowd/model";
+import { forecastForDate, forecastReasons, weekForecast } from "@/lib/crowd/model";
+import { getSignals } from "@/lib/crowd/signals";
 import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
-import { PLACES, getPlace } from "@/lib/places";
+import { PLACES, getPlace, placeHref } from "@/lib/places";
 import { daysUntil, formatAge, formatHour, kst } from "@/lib/time";
 import type { CrowdResult, HourPoint } from "@/lib/types";
 import { CATEGORY_LABEL } from "@/lib/types";
@@ -25,6 +26,14 @@ export function generateStaticParams() {
   return PLACES.map((p) => ({ id: p.id }));
 }
 
+const WEEKDAYS = "일월화수목금토";
+function dayName(date: string): string {
+  const diff = daysUntil(date);
+  if (diff === 0) return "오늘";
+  if (diff === 1) return "내일";
+  return `${WEEKDAYS[new Date(`${date}T00:00:00Z`).getUTCDay()]}요일`;
+}
+
 /** 영업시간 내 앞으로 가장 한산한 시간 */
 function bestUpcoming(points: HourPoint[], open: number, close: number): HourPoint | undefined {
   return points
@@ -37,6 +46,12 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const place = getPlace(id);
   const crowd = await getCrowd(id);
   if (!place || !crowd) notFound();
+  if (place.category === "airport") redirect(placeHref(place));
+  const signals = await getSignals(place);
+  const week = weekForecast(place, signals);
+  const calmest = week.reduce((a, b) => (b.peakScore < a.peakScore ? b : a));
+  const todayPeak = week[0];
+  const todayReasons = forecastReasons(place, todayPeak.date, todayPeak.peakHour + 0.5, signals);
 
   const now = kst();
   const isOpen = crowd.open;
@@ -135,6 +150,44 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               {isOpen ? "오늘은 지금이 가장 한산한 편이에요." : "오늘 영업이 종료됐어요. 내일 오전 방문을 추천해요."}
             </p>
           )}
+          {todayReasons.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {todayReasons.map((r) => (
+                <span key={r} className="rounded-full bg-white px-2 py-0.5 text-[11px] text-gray-600">
+                  {r}
+                </span>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* 이번 주 예측 */}
+        <section className="mt-6">
+          <h2 className="text-lg font-bold">이번 주 예측</h2>
+          <p className="mt-0.5 text-xs text-gray-500">
+            공휴일·날씨·한국관광공사 방문 예측을 반영한 하루 최대 혼잡도
+            {calmest && (
+              <>
+                {" "}· 가장 한산한 날 <b className="text-emerald-600">{dayName(calmest.date)}</b>
+              </>
+            )}
+          </p>
+          <ul className="no-scrollbar mt-3 flex gap-2 overflow-x-auto pb-1">
+            {week.map((d) => {
+              const lv = levelOf(d.peakScore);
+              return (
+                <li key={d.date} className="w-[86px] shrink-0 rounded-2xl border border-gray-100 p-2.5 text-center">
+                  <p className="text-xs font-semibold">{dayName(d.date)}</p>
+                  <p className="text-[10px] text-gray-400">{d.date.slice(5).replace("-", "/")}</p>
+                  <p className="mt-1.5 text-sm font-bold" style={{ color: lv.color }}>
+                    {lv.label}
+                  </p>
+                  <p className="text-[10px] text-gray-500">피크 {formatHour(d.peakHour)}</p>
+                  {d.reasons[0] && <p className="mt-1 line-clamp-2 text-[10px] leading-tight text-gray-500">{d.reasons[0]}</p>}
+                </li>
+              );
+            })}
+          </ul>
         </section>
 
         {/* 정보 */}

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
 import { forecastForDate } from "@/lib/crowd/model";
-import { PLACES } from "@/lib/places";
+import { PLACES, placeHref } from "@/lib/places";
 import { daysUntil, formatHour } from "@/lib/time";
 
 // D-day만 바뀌므로 1시간 단위로 다시 렌더링해도 충분하다
@@ -26,7 +26,7 @@ export default function EventsPage() {
       <ul className="mt-5 space-y-3">
         {events.map(({ place, dday, peak, visitors }) => (
           <li key={place.id}>
-            <Link href={`/place/${place.id}`} className="block rounded-3xl border border-gray-100 p-4 active:bg-gray-50">
+            <Link href={placeHref(place)} className="block rounded-3xl border border-gray-100 p-4 active:bg-gray-50">
               <div className="flex items-center gap-3">
                 <PlaceThumb place={place} size={52} />
                 <div className="min-w-0 flex-1">
