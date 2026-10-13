@@ -1,8 +1,9 @@
-export type Category = "themepark" | "tourist" | "event";
+export type Category = "themepark" | "tourist" | "airport" | "event";
 
 export const CATEGORY_LABEL: Record<Category, string> = {
   themepark: "테마파크",
   tourist: "관광지",
+  airport: "공항",
   event: "이벤트",
 };
 
@@ -28,9 +29,14 @@ export interface Place {
   description: string;
   /** 서울시 실시간 도시데이터 장소명 (있으면 실데이터 사용) */
   seoulArea?: string;
+  /** 공항 IATA 코드 (있으면 공항 혼잡도 API 사용) */
+  airport?: AirportCode;
   /** 이벤트 개최일 YYYY-MM-DD (KST) */
   eventDate?: string;
 }
+
+// ICN: 인천공항공사(제2터미널), 나머지: 한국공항공사 국내선
+export type AirportCode = "ICN" | "GMP" | "CJU" | "PUS" | "TAE" | "CJJ";
 
 export interface HourPoint {
   hour: number;
@@ -46,7 +52,7 @@ export interface CrowdSnapshot {
   headcount: number;
   trend: "up" | "down" | "flat";
   hourly: HourPoint[];
-  source: "seoul-citydata" | "model";
+  source: "seoul-citydata" | "incheon-airport" | "kac-airport" | "model";
   updatedAt: string;
 }
 

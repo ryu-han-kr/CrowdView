@@ -19,7 +19,7 @@ export function HomeList({ places, crowd }: { places: Place[]; crowd: Record<str
         (sort === "calm" ? 1 : -1) * (crowd[a.id].score - crowd[b.id].score),
     );
 
-  const filters: Filter[] = ["all", "themepark", "tourist", "event"];
+  const filters: Filter[] = ["all", "themepark", "tourist", "airport", "event"];
 
   return (
     <section>

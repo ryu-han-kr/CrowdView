@@ -1,6 +1,7 @@
 // 외부 혼잡도 데이터 소스.
-// 서울시 실시간 도시데이터(citydata_ppltn)가 있는 장소는 실데이터, 나머지는 모델값.
+// 서울시 실시간 도시데이터(citydata_ppltn)·공항 혼잡도가 있는 장소는 실데이터, 나머지는 모델값.
 import type { CrowdSnapshot, Place } from "../types";
+import { fetchAirport } from "./airport";
 import { modelSnapshot } from "./model";
 
 // 서울시 4단계 → 0~100 점수 (5단계 기준 각 구간의 중앙 부근)
@@ -21,7 +22,7 @@ interface SeoulPpltn {
 
 async function fetchSeoulCitydata(place: Place, key: string): Promise<CrowdSnapshot> {
   const url = `http://openapi.seoul.go.kr:8088/${key}/json/citydata_ppltn/1/5/${encodeURIComponent(place.seoulArea!)}`;
-  const res = await fetch(url, { signal: AbortSignal.timeout(5000), cache: "no-store" });
+  const res = await fetch(url, { signal: AbortSignal.timeout(5000)});
   if (!res.ok) throw new Error(`seoul citydata ${res.status}`);
   const json = await res.json();
   const row: SeoulPpltn | undefined = json["SeoulRtd.citydata_ppltn"]?.[0];
@@ -47,5 +48,7 @@ async function fetchSeoulCitydata(place: Place, key: string): Promise<CrowdSnaps
 export async function fetchSnapshot(place: Place): Promise<CrowdSnapshot> {
   const key = process.env.SEOUL_OPENAPI_KEY;
   if (key && place.seoulArea) return fetchSeoulCitydata(place, key);
+  const dataKey = process.env.DATA_GO_KR_KEY;
+  if (dataKey && place.airport) return fetchAirport(place, place.airport, dataKey);
   return modelSnapshot(place);
 }

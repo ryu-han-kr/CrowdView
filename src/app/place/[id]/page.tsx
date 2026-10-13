@@ -7,11 +7,18 @@ import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
 import { PLACES, getPlace } from "@/lib/places";
 import { daysUntil, formatAge, formatHour, kst } from "@/lib/time";
-import type { HourPoint } from "@/lib/types";
+import type { CrowdResult, HourPoint } from "@/lib/types";
 import { CATEGORY_LABEL } from "@/lib/types";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 export const revalidate = 60;
+
+const SOURCE_LABEL: Record<CrowdResult["source"], string> = {
+  "seoul-citydata": "서울시 실시간 도시데이터",
+  "incheon-airport": "인천국제공항공사 출국장 혼잡도",
+  "kac-airport": "한국공항공사 공항 혼잡도",
+  model: "CrowdView 예측 모델 (샘플)",
+};
 
 // 빌드 때 장소별 페이지를 미리 만들어 두고, 이후엔 위 주기로 갱신한다
 export function generateStaticParams() {
@@ -78,7 +85,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             </span>
           </div>
           <p className="mt-2 text-[11px] text-gray-400">
-            출처: {crowd.source === "seoul-citydata" ? "서울시 실시간 도시데이터" : "CrowdView 예측 모델 (샘플)"}
+            출처: {SOURCE_LABEL[crowd.source]}
           </p>
         </section>
 

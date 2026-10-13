@@ -7,6 +7,7 @@ import { kst, kstDateParts, type KstParts } from "../time";
 const SPREAD: Record<Place["category"], number> = {
   themepark: 3.6,
   tourist: 3.2,
+  airport: 4.5,
   event: 2.2,
 };
 

@@ -25,8 +25,8 @@ function upstashKV(url: string, token: string): KV {
     const res = await fetch(url, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
+      // POST라 Data Cache에 저장되지 않는다. "no-store"를 주면 ISR 페이지가 동적 렌더링으로 바뀌어 에러가 난다
       body: JSON.stringify(command),
-      cache: "no-store",
     });
     if (!res.ok) throw new Error(`redis ${res.status}`);
     return (await res.json()).result;
