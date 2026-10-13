@@ -1,5 +1,6 @@
 // 공항 혼잡도 (공공데이터포털, DATA_GO_KR_KEY)
-// - 인천공항: 인천국제공항공사_출국장 혼잡도_제2여객터미널 (data.go.kr 15161098), 1분 주기
+// - 인천공항: 인천국제공항공사_출국장 혼잡도 조회 (T1, data.go.kr 15148225),
+//   출국장 혼잡도_제2여객터미널 조회 (T2, 15161098). 둘 다 1분 주기
 // - 김포·제주(v1), 김해·대구·청주(v2): 한국공항공사_공항 혼잡도 정보 (data.go.kr 15159598)
 import type { AirportCode, CrowdSnapshot, Place } from "../types";
 import { modelSnapshot } from "./model";
@@ -41,9 +42,15 @@ function withCurrent(place: Place, score: number, headcount: number, source: Cro
 }
 
 // 출국장별 대기시간(분)·대기인원. 운영 중인 출국장의 평균 대기시간으로 점수를 매긴다
-async function fetchIncheonT2(place: Place, key: string): Promise<CrowdSnapshot> {
-  const items = await getItems("/B551177/statusOfDepartureCongestionT2/getDepartureCongestionT2", key);
-  const gates = items.filter((i) => i.waitTime !== undefined || i.waitLength !== undefined);
+const INCHEON_PATH = {
+  ICN1: "/B551177/statusOfDepartureCongestion/getDepartureCongestion",
+  ICN2: "/B551177/statusOfDepartureCongestionT2/getDepartureCongestionT2",
+};
+
+async function fetchIncheon(place: Place, code: "ICN1" | "ICN2", key: string): Promise<CrowdSnapshot> {
+  const items = await getItems(INCHEON_PATH[code], key);
+  // 운영시간이 비어 있으면 닫힌 출국장
+  const gates = items.filter((i) => String(i.operatingTime ?? "").trim() !== "");
   if (gates.length === 0) return { ...modelSnapshot(place), open: false };
   const waitMin = gates.reduce((s, g) => s + Number(g.waitTime ?? 0), 0) / gates.length;
   const people = gates.reduce((s, g) => s + Number(g.waitLength ?? 0), 0);
@@ -63,5 +70,5 @@ async function fetchKac(place: Place, code: AirportCode, key: string): Promise<C
 }
 
 export function fetchAirport(place: Place, code: AirportCode, key: string): Promise<CrowdSnapshot> {
-  return code === "ICN" ? fetchIncheonT2(place, key) : fetchKac(place, code, key);
+  return code === "ICN1" || code === "ICN2" ? fetchIncheon(place, code, key) : fetchKac(place, code, key);
 }

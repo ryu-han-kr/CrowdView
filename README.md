@@ -16,7 +16,7 @@ npm run dev   # http://localhost:3000
 | `src/lib/levels.ts` | 혼잡도 5단계 (쾌적·원활·보통·혼잡·매우 혼잡), 내부 점수 0~100 |
 | `src/lib/crowd/model.ts` | 요일·시간대 기반 베이스라인 예측 모델 (학습 모델로 교체할 자리) |
 | `src/lib/crowd/provider.ts` | 서울시 실시간 도시데이터 연동 (`SEOUL_OPENAPI_KEY`), 실패 시 모델값 |
-| `src/lib/crowd/airport.ts` | 공항 혼잡도: 인천공항 T2 출국장, 한국공항공사 김포·제주·김해 (`DATA_GO_KR_KEY`) |
+| `src/lib/crowd/airport.ts` | 공항 혼잡도: 인천공항 T1·T2 출국장, 한국공항공사 김포·제주·김해 (`DATA_GO_KR_KEY`) |
 | `src/lib/crowd/service.ts` | 캐시: 15분 신선도, SWR 백그라운드 갱신, 장애 시 이전 데이터 유지 + "n분 전 데이터" |
 | `src/lib/cache.ts` | Upstash Redis(REST) 또는 인메모리 |
 | `/api/cron/refresh` | Vercel Cron (`vercel.json`). Hobby 플랜은 하루 1회만 허용되어 임시로 `0 0 * * *`, Pro 전환 후 `*/10 * * * *`로 변경. Cron 없이도 요청 시 SWR로 갱신됨 |
