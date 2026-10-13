@@ -35,8 +35,8 @@ export interface Place {
   eventDate?: string;
 }
 
-// ICN: 인천공항공사(제2터미널), 나머지: 한국공항공사 국내선
-export type AirportCode = "ICN" | "GMP" | "CJU" | "PUS" | "TAE" | "CJJ";
+// ICN1·ICN2: 인천공항 제1·2터미널(인천국제공항공사), 나머지: 한국공항공사 국내선
+export type AirportCode = "ICN1" | "ICN2" | "GMP" | "CJU" | "PUS" | "TAE" | "CJJ";
 
 export interface HourPoint {
   hour: number;
