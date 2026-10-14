@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LevelBadge, LevelLegend, LevelMeter } from "@/components/Level";
+import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
 import { getParking } from "@/lib/airport";
 import { getAllCrowd } from "@/lib/crowd/service";
@@ -18,9 +18,6 @@ export default async function AirportListPage() {
     <main className="px-5 pt-6">
       <h1 className="text-2xl font-bold">공항 혼잡도</h1>
       <p className="mt-1 text-sm text-gray-500">출국장 대기·보안검색 구간·주차장까지 한눈에</p>
-      <div className="mt-4">
-        <LevelLegend />
-      </div>
 
       <ul className="mt-5 space-y-3">
         {AIRPORTS.map((place, i) => {
@@ -40,10 +37,7 @@ export default async function AirportListPage() {
                       {c.source === "incheon-airport" && ` · 대기 ${c.headcount.toLocaleString()}명`}
                     </p>
                   </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <LevelBadge score={c.score} closed={!c.open} />
-                    <LevelMeter score={c.score} />
-                  </div>
+                  <LevelBadge score={c.score} closed={!c.open} />
                 </div>
                 {(busiestZone || lots.length > 0) && (
                   <div className="mt-3 space-y-1 rounded-2xl bg-gray-50 px-3 py-2.5 text-xs text-gray-600">

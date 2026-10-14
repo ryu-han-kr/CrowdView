@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AirportPaxChart } from "@/components/AirportPaxChart";
 import { HistoryChart } from "@/components/HistoryChart";
-import { LevelBadge, LevelMeter, TrendArrow } from "@/components/Level";
+import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
 import { getAirportPaxDays, getParking } from "@/lib/airport";
 import { getHistory } from "@/lib/crowd/history";
@@ -60,20 +60,21 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
 
       {/* 지금 */}
       <section className="mt-5 rounded-3xl p-5" style={{ background: `${level.color}14` }}>
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-xs font-medium text-gray-500">지금 출국 혼잡도</p>
-            <p className="mt-1 text-3xl font-extrabold" style={{ color: crowd.open ? level.color : "#6b7280" }}>
-              {crowd.open ? level.label : "운영 종료"}
-            </p>
-            <p className="mt-1 text-sm text-gray-600">
-              {avgWait !== null && <>평균 대기 <b>{avgWait}분</b> · </>}
-              {crowd.source === "incheon-airport" && <>대기 <b>{crowd.headcount.toLocaleString()}</b>명 · </>}
-              <TrendArrow trend={crowd.trend} />
-            </p>
-          </div>
-          {crowd.open && <LevelMeter score={crowd.score} className="origin-top-right scale-150" />}
-        </div>
+        <p className="text-xs font-medium text-gray-500">지금 출국 혼잡도</p>
+        <p className="mt-1 text-3xl font-extrabold" style={{ color: crowd.open ? level.color : "#6b7280" }}>
+          {crowd.open ? level.label : "운영 종료"}
+        </p>
+        <p className="mt-1 text-sm text-gray-600">
+          {avgWait !== null && <>평균 대기 <b>{avgWait}분</b> · </>}
+          {crowd.source === "incheon-airport" && <>대기 <b>{crowd.headcount.toLocaleString()}</b>명 · </>}
+          {crowd.trend === "up" ? (
+            <span className="text-red-500">늘어나는 중</span>
+          ) : crowd.trend === "down" ? (
+            <span className="text-emerald-600">줄어드는 중</span>
+          ) : (
+            "변화 없음"
+          )}
+        </p>
         <p className={`mt-3 text-[11px] ${crowd.stale ? "font-semibold text-amber-600" : "text-gray-400"}`}>
           {crowd.source === "model"
             ? "실시간 데이터를 받지 못해 예측값을 보여드려요"
@@ -116,7 +117,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
 
       {/* 실측 기록 */}
       <section className="mt-7">
-        <h2 className="text-lg font-bold">어제부터 지금까지 (실측 기록)</h2>
+        <h2 className="text-lg font-bold">최근 기록</h2>
         <div className="mt-6">
           <HistoryChart days={history} zoneLabels={zoneLabels} now={Date.now()} />
         </div>
