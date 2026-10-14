@@ -34,6 +34,12 @@ export default async function MePage() {
         </div>
         <p className="mt-3 text-[11px] opacity-70">결제 연동 준비 중</p>
       </section>
+
+      <p className="mb-6 text-center text-[11px] leading-relaxed text-gray-400">
+        혼잡도: 서울시, 인천국제공항공사, 한국공항공사, 한국관광공사, 기상청 (공공데이터포털)
+        <br />
+        장소 사진: 한국관광공사 (공공누리)
+      </p>
     </main>
   );
 }

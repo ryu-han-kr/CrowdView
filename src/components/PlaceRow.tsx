@@ -1,9 +1,19 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { CrowdResult, Place } from "@/lib/types";
 import { LevelBadge } from "./Level";
 import { placeHref } from "@/lib/places";
+import { headcountText } from "@/lib/format";
 
+/** 대표 사진이 있으면 사진, 없으면 색 배경 + 이모지 */
 export function PlaceThumb({ place, size = 48 }: { place: Place; size?: number }) {
+  if (place.image) {
+    return (
+      <div className="relative shrink-0 overflow-hidden rounded-2xl bg-gray-100" style={{ width: size, height: size }}>
+        <Image src={place.image} alt={place.name} fill sizes={`${size * 2}px`} className="object-cover" />
+      </div>
+    );
+  }
   return (
     <div
       className="flex shrink-0 items-center justify-center rounded-2xl"
@@ -29,7 +39,7 @@ export function PlaceRow({ place, crowd }: { place: Place; crowd: CrowdResult })
         </div>
         <p className="mt-0.5 truncate text-xs text-gray-500">
           {place.region}
-          {crowd.open && ` · 약 ${crowd.headcount.toLocaleString()}명`}
+          {headcountText(crowd) && ` · ${headcountText(crowd)}`}
           {crowd.open && crowd.trend === "up" && <span className="text-red-500"> · 늘어나는 중</span>}
           {crowd.open && crowd.trend === "down" && <span className="text-emerald-600"> · 줄어드는 중</span>}
         </p>

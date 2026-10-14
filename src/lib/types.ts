@@ -35,6 +35,8 @@ export interface Place {
   paxCapacity?: number;
   /** 0(실내)~1(야외). 비·폭염 영향 계산용. 없으면 카테고리 기본값 */
   outdoor?: number;
+  /** 대표 사진 (public/places, 한국관광공사 TourAPI 공공누리) */
+  image?: string;
   /** 한국관광공사 관광지 집중률 예측의 관광지 식별 정보 */
   kto?: { areaCd: string; signguCd: string; name: string };
   /** 이벤트 개최일 YYYY-MM-DD (KST) */
@@ -70,6 +72,8 @@ export interface CrowdSnapshot {
   hourly: HourPoint[];
   source: "seoul-citydata" | "incheon-airport" | "kac-airport" | "model";
   zones?: Zone[];
+  /** 서울시 실시간 인구처럼 범위로만 주는 인원 [최소, 최대] */
+  headcountRange?: [number, number];
   updatedAt: string;
 }
 

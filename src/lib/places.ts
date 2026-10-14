@@ -21,6 +21,7 @@ export const PLACES: Place[] = [
     seoulArea: "잠실 관광특구",
     outdoor: 0.3,
     kto: { areaCd: "11", signguCd: "11710", name: "롯데월드 어드벤처" },
+    image: "/places/lotteworld.jpg",
   },
   {
     id: "everland",
@@ -40,6 +41,7 @@ export const PLACES: Place[] = [
     description: "국내 최대 규모 테마파크. 사파리와 T익스프레스가 대표 명소.",
     outdoor: 0.85,
     kto: { areaCd: "41", signguCd: "41461", name: "에버랜드" },
+    image: "/places/everland.jpg",
   },
   {
     id: "seoulland",
@@ -59,6 +61,7 @@ export const PLACES: Place[] = [
     description: "서울대공원 옆 가족형 테마파크.",
     outdoor: 0.9,
     kto: { areaCd: "41", signguCd: "41290", name: "서울랜드" },
+    image: "/places/seoulland.jpg",
   },
   {
     id: "gyeongbokgung",
@@ -79,6 +82,7 @@ export const PLACES: Place[] = [
     seoulArea: "경복궁",
     outdoor: 0.8,
     kto: { areaCd: "11", signguCd: "11110", name: "경복궁" },
+    image: "/places/gyeongbokgung.jpg",
   },
   {
     id: "namsan",
@@ -99,6 +103,7 @@ export const PLACES: Place[] = [
     seoulArea: "남산공원",
     outdoor: 0.9,
     kto: { areaCd: "11", signguCd: "11140", name: "남산공원(서울)" },
+    image: "/places/namsan.jpg",
   },
   {
     id: "seongsu",
@@ -119,6 +124,7 @@ export const PLACES: Place[] = [
     seoulArea: "성수카페거리",
     outdoor: 0.4,
     kto: { areaCd: "11", signguCd: "11200", name: "성수동 수제화거리" },
+    image: "/places/seongsu.jpg",
   },
   {
     id: "hongdae",
@@ -158,6 +164,7 @@ export const PLACES: Place[] = [
     description: "부산을 대표하는 해변. 사계절 산책객이 많다.",
     outdoor: 1,
     kto: { areaCd: "26", signguCd: "26350", name: "해운대해수욕장" },
+    image: "/places/haeundae.jpg",
   },
   {
     id: "icn-t1",
@@ -177,6 +184,7 @@ export const PLACES: Place[] = [
     description: "국내 최대 국제선 터미널. 운영 중인 출국장별 대기 시간과 인원을 1분 단위로 반영합니다.",
     airport: "ICN1",
     paxCapacity: 5000,
+    image: "/places/icn-t1.jpg",
   },
   {
     id: "icn-t2",
@@ -196,6 +204,7 @@ export const PLACES: Place[] = [
     description: "대한항공·델타 등 스카이팀이 쓰는 터미널. 출국장별 대기 인원을 1분 단위로 반영합니다.",
     airport: "ICN2",
     paxCapacity: 5000,
+    image: "/places/icn-t2.jpg",
   },
   {
     id: "gimpo",
@@ -273,6 +282,7 @@ export const PLACES: Place[] = [
     seoulArea: "여의도한강공원",
     eventDate: "2026-10-10",
     kto: { areaCd: "11", signguCd: "11560", name: "여의도한강공원" },
+    image: "/places/seoul-fireworks.jpg",
   },
   {
     id: "busan-fireworks",
@@ -291,6 +301,7 @@ export const PLACES: Place[] = [
     tags: ["불꽃놀이", "광안대교", "연례행사"],
     description: "광안대교를 배경으로 펼쳐지는 국내 최대 규모 불꽃쇼.",
     eventDate: "2026-11-07",
+    image: "/places/busan-fireworks.jpg",
   },
   {
     id: "lantern-festival",
@@ -309,6 +320,7 @@ export const PLACES: Place[] = [
     tags: ["등불", "야간", "청계천"],
     description: "청계천을 따라 수놓는 대형 등불 전시 축제.",
     eventDate: "2026-12-12",
+    image: "/places/lantern-festival.jpg",
   },
 ];
 
