@@ -25,13 +25,16 @@ export function BottomNav() {
             <li key={t.href}>
               <Link
                 href={t.href}
-                className={`flex h-16 flex-col items-center justify-center gap-1 text-[11px] font-medium ${
-                  active ? "text-gray-900" : "text-gray-400"
+                aria-current={active ? "page" : undefined}
+                className={`flex h-16 flex-col items-center justify-center gap-0.5 text-[11px] font-medium ${
+                  active ? "text-indigo-600" : "text-gray-400"
                 }`}
               >
-                <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinejoin="round" strokeLinecap="round">
-                  <path d={t.icon} />
-                </svg>
+                <span className={`flex h-8 w-14 items-center justify-center rounded-full transition-colors ${active ? "bg-indigo-50" : ""}`}>
+                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinejoin="round" strokeLinecap="round">
+                    <path d={t.icon} />
+                  </svg>
+                </span>
                 {t.label}
               </Link>
             </li>

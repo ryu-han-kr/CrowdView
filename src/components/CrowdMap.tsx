@@ -18,10 +18,18 @@ const KEY_ID = process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID;
 const SCRIPT_ID = "naver-maps-sdk";
 
 const REGIONS = {
-  capital: { label: "수도권", lat: 37.47, lng: 127.03, zoom: 10 },
-  busan: { label: "부산", lat: 35.156, lng: 129.14, zoom: 13 },
+  all: { label: "전국", lat: 36.0, lng: 127.6, zoom: 7 },
+  capital: { label: "수도권", lat: 37.45, lng: 126.85, zoom: 9 },
+  busan: { label: "부산", lat: 35.16, lng: 129.04, zoom: 11 },
+  jeju: { label: "제주", lat: 33.42, lng: 126.55, zoom: 10 },
 } as const;
 type RegionKey = keyof typeof REGIONS;
+
+/** 혼잡도 원 반지름(m). 확대 단계와 상관없이 화면에서 12~36px로 보이게 맞춘다 */
+function circleRadius(score: number, zoom: number, lat: number): number {
+  const metersPerPx = (156543 * Math.cos((lat * Math.PI) / 180)) / 2 ** zoom;
+  return (12 + score * 0.24) * metersPerPx;
+}
 
 function loadSdk(keyId: string): Promise<void> {
   if (window.naver?.maps) return Promise.resolve();
@@ -72,6 +80,7 @@ function NaverCrowdMap({
         if (cancelled || !el.current) return;
         const { maps } = window.naver;
         const r = REGIONS.capital;
+        const circles: { circle: any; score: number; lat: number }[] = [];
         const map = new maps.Map(el.current, {
           center: new maps.LatLng(r.lat, r.lng),
           zoom: r.zoom,
@@ -86,29 +95,31 @@ function NaverCrowdMap({
           const position = new maps.LatLng(p.lat, p.lng);
           const color = c.open ? levelOf(c.score).color : "#94a3b8";
           if (c.open) {
-            // 부산은 확대 수준이 높아 반경을 줄인다
-            const scale = p.lat < 36 ? 6 : 25;
-            new maps.Circle({
+            const circle = new maps.Circle({
               map,
               center: position,
-              radius: (20 + c.score) * scale,
+              radius: circleRadius(c.score, r.zoom, p.lat),
               fillColor: color,
-              fillOpacity: 0.3,
+              fillOpacity: 0.28,
               strokeWeight: 0,
               clickable: false,
             });
+            circles.push({ circle, score: c.score, lat: p.lat });
           }
           const marker = new maps.Marker({
             map,
             position,
             title: p.name,
             icon: {
-              content: `<div style="width:32px;height:32px;border-radius:9999px;background:#fff;border:3px solid ${color};display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 1px 4px rgba(0,0,0,.2)">${p.emoji}</div>`,
-              anchor: new maps.Point(16, 16),
+              content: `<div style="width:34px;height:34px;border-radius:9999px;background:#fff;border:3px solid ${color};display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer">${p.emoji}</div>`,
+              anchor: new maps.Point(17, 17),
             },
           });
           maps.Event.addListener(marker, "click", () => setSelected(p.id));
         }
+        maps.Event.addListener(map, "zoom_changed", (zoom: number) => {
+          for (const c of circles) c.circle.setRadius(circleRadius(c.score, zoom, c.lat));
+        });
       })
       .catch((e) => {
         console.warn("[CrowdMap] 네이버 지도 초기화 실패, SVG 지도로 대체:", e);
@@ -142,18 +153,18 @@ function NaverCrowdMap({
 
   return (
     <div className="relative">
-      <div className="absolute top-3 left-3 z-10 flex gap-1 rounded-full bg-white/90 p-1 shadow-sm backdrop-blur">
+      <div className="absolute inset-x-3 top-3 z-10 flex gap-1 rounded-full bg-white/95 p-1 shadow-md backdrop-blur">
         {(Object.keys(REGIONS) as RegionKey[]).map((k) => (
           <button
             key={k}
             onClick={() => moveTo(k)}
-            className={`rounded-full px-3 py-1 text-sm font-medium ${region === k ? "bg-gray-900 text-white" : "text-gray-600"}`}
+            className={`flex-1 rounded-full py-1.5 text-sm font-medium ${region === k ? "bg-gray-900 text-white" : "text-gray-600"}`}
           >
             {REGIONS[k].label}
           </button>
         ))}
       </div>
-      <div ref={el} className="h-[480px] w-full bg-slate-100" />
+      <div ref={el} className="h-[calc(100dvh-13rem)] min-h-[420px] w-full bg-slate-100" />
       {sel && <MapPlaceCard place={sel} crowd={crowd[sel.id]} />}
     </div>
   );
