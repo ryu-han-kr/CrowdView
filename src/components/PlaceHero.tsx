@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { imageCreditText } from "@/lib/places";
 import { useFavorites } from "@/lib/prefs";
 import type { Place } from "@/lib/types";
 
@@ -73,7 +74,7 @@ export function PlaceHero({ place }: { place: Place }) {
             {/* 상단 버튼이 사진 위에서도 보이도록 */}
             <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/30 to-transparent" />
             <span className="absolute right-3 bottom-8 rounded bg-black/35 px-1.5 py-0.5 text-[10px] text-white/90">
-              사진 한국관광공사
+              {imageCreditText(place)}
             </span>
           </>
         ) : (

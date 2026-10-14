@@ -3,7 +3,8 @@ import Link from "next/link";
 import type { CrowdResult, Place } from "@/lib/types";
 import { LevelBadge } from "./Level";
 import { placeHref } from "@/lib/places";
-import { headcountText } from "@/lib/format";
+import { headcountInfo, isEstimated } from "@/lib/format";
+import { DataTag } from "./DataTag";
 
 /** 대표 사진이 있으면 사진, 없으면 색 배경 + 이모지 */
 export function PlaceThumb({ place, size = 48 }: { place: Place; size?: number }) {
@@ -39,12 +40,21 @@ export function PlaceRow({ place, crowd }: { place: Place; crowd: CrowdResult })
         </div>
         <p className="mt-0.5 truncate text-xs text-gray-500">
           {place.region}
-          {headcountText(crowd) && ` · ${headcountText(crowd)}`}
+          {headcountInfo(crowd) && (
+            <>
+              {" · "}
+              {headcountInfo(crowd)!.text}
+              {headcountInfo(crowd)!.kind && <DataTag kind={headcountInfo(crowd)!.kind} />}
+            </>
+          )}
           {crowd.open && crowd.trend === "up" && <span className="text-red-500"> · 늘어나는 중</span>}
           {crowd.open && crowd.trend === "down" && <span className="text-emerald-600"> · 줄어드는 중</span>}
         </p>
       </div>
-      <LevelBadge score={crowd.score} closed={!crowd.open} />
+      <span className="flex shrink-0 flex-col items-end">
+        <LevelBadge score={crowd.score} closed={!crowd.open} />
+        {crowd.open && isEstimated(crowd) && <DataTag className="mt-0.5" />}
+      </span>
     </Link>
   );
 }

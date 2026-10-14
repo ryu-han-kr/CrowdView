@@ -35,8 +35,10 @@ export interface Place {
   paxCapacity?: number;
   /** 0(실내)~1(야외). 비·폭염 영향 계산용. 없으면 카테고리 기본값 */
   outdoor?: number;
-  /** 대표 사진 (public/places, 한국관광공사 TourAPI 공공누리) */
+  /** 대표 사진 (public/places). 기본 출처는 한국관광공사 TourAPI(공공누리) */
   image?: string;
+  /** 한국관광공사가 아닌 사진의 출처 (위키미디어 공용 등, CC 라이선스는 작성자·라이선스 표기 필수) */
+  imageCredit?: { author: string; license: string; url: string };
   /** 한국관광공사 관광지 집중률 예측의 관광지 식별 정보 */
   kto?: { areaCd: string; signguCd: string; name: string };
   /** 이벤트 개최일 YYYY-MM-DD (KST) */

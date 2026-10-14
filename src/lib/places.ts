@@ -145,6 +145,8 @@ export const PLACES: Place[] = [
     seoulArea: "홍대 관광특구",
     outdoor: 0.5,
     kto: { areaCd: "11", signguCd: "11440", name: "홍대" },
+    image: "/places/hongdae.jpg",
+    imageCredit: { author: "lumoplank", license: "CC0", url: "https://commons.wikimedia.org/wiki/File:Hongdae,_Seoul-_Part_II_-_Hongdae2237.jpg" },
   },
   {
     id: "haeundae",
@@ -224,6 +226,8 @@ export const PLACES: Place[] = [
     description: "제주·부산행 국내선의 중심. 체크인부터 탑승까지 구간별 혼잡도를 반영합니다.",
     airport: "GMP",
     paxCapacity: 2600,
+    image: "/places/gimpo.jpg",
+    imageCredit: { author: "Hajoon0102", license: "CC BY-SA 4.0", url: "https://commons.wikimedia.org/wiki/File:GMP_domestic.jpg" },
   },
   {
     id: "jeju-airport",
@@ -243,6 +247,8 @@ export const PLACES: Place[] = [
     description: "국내에서 가장 붐비는 국내선 공항. 오후 귀경 시간대 혼잡이 잦습니다.",
     airport: "CJU",
     paxCapacity: 3600,
+    image: "/places/jeju-airport.jpg",
+    imageCredit: { author: "Kimhs5400", license: "CC BY 4.0", url: "https://commons.wikimedia.org/wiki/File:Jejuairport2024.jpg" },
   },
   {
     id: "gimhae",
@@ -262,6 +268,8 @@ export const PLACES: Place[] = [
     description: "부산·경남권 국내선 공항. 이른 아침 김포·제주행 출발이 몰립니다.",
     airport: "PUS",
     paxCapacity: 1600,
+    image: "/places/gimhae.jpg",
+    imageCredit: { author: "Minseong Kim", license: "CC BY-SA 4.0", url: "https://commons.wikimedia.org/wiki/File:Gimhae_International_Airport_Departure_Hall.jpg" },
   },
   {
     id: "seoul-fireworks",
@@ -323,6 +331,11 @@ export const PLACES: Place[] = [
     image: "/places/lantern-festival.jpg",
   },
 ];
+
+/** 사진 출처 한 줄 (예: 사진 한국관광공사, 사진 Kimhs5400 · CC BY 4.0) */
+export function imageCreditText(p: Place): string {
+  return p.imageCredit ? `사진 ${p.imageCredit.author} · ${p.imageCredit.license}` : "사진 한국관광공사";
+}
 
 /** 공항은 공항 탭 상세로, 나머지는 장소 상세로 */
 export function placeHref(p: Place): string {
