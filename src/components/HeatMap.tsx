@@ -9,7 +9,8 @@ import type { CrowdResult, Place } from "@/lib/types";
 import { LevelBadge } from "./Level";
 import { PlaceThumb } from "./PlaceRow";
 import { placeHref } from "@/lib/places";
-import { headcountText } from "@/lib/format";
+import { headcountInfo, isEstimated } from "@/lib/format";
+import { DataTag } from "./DataTag";
 
 const W = 400;
 const H = 480;
@@ -143,10 +144,17 @@ export function MapPlaceCard({ place, crowd }: { place: Place; crowd: CrowdResul
         <p className="truncate font-semibold">{place.name}</p>
         <p className="mt-0.5 truncate text-xs text-gray-500">
           {place.region}
-          {headcountText(crowd) && ` · ${headcountText(crowd)}`}
+          {headcountInfo(crowd) && (
+            <>
+              {" · "}
+              {headcountInfo(crowd)!.text}
+              {headcountInfo(crowd)!.kind && <DataTag kind={headcountInfo(crowd)!.kind} />}
+            </>
+          )}
         </p>
         <div className="mt-1.5">
           <LevelBadge score={crowd.score} closed={!crowd.open} />
+          {crowd.open && isEstimated(crowd) && <DataTag />}
         </div>
       </div>
       <span className="shrink-0 rounded-full bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white">자세히</span>

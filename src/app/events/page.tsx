@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { DataTag } from "@/components/DataTag";
 import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
 import { forecastForDate } from "@/lib/crowd/model";
@@ -32,7 +33,8 @@ export default function EventsPage() {
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-semibold">{place.name}</p>
                   <p className="mt-0.5 text-xs text-gray-500">
-                    {place.eventDate} · {place.region}
+                    {place.eventDate}
+                    <DataTag kind="임의" /> · {place.region}
                   </p>
                 </div>
                 <span className="rounded-full bg-gray-900 px-2.5 py-1 text-xs font-bold text-white">
@@ -42,6 +44,7 @@ export default function EventsPage() {
               <div className="mt-3 flex items-center justify-between rounded-2xl bg-gray-50 px-3 py-2.5 text-sm">
                 <span>
                   피크 <b>{formatHour(peak.hour)}</b> · 약 <b>{visitors.toLocaleString()}명</b>
+                  <DataTag />
                 </span>
                 <LevelBadge score={peak.score} />
               </div>

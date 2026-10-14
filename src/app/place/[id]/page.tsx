@@ -10,7 +10,8 @@ import { PLACES, getPlace, placeHref } from "@/lib/places";
 import { daysUntil, formatAge, formatHour, kst } from "@/lib/time";
 import type { CrowdResult, HourPoint } from "@/lib/types";
 import { CATEGORY_LABEL } from "@/lib/types";
-import { headcountText } from "@/lib/format";
+import { DataTag } from "@/components/DataTag";
+import { headcountInfo, isEstimated } from "@/lib/format";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 export const revalidate = 60;
@@ -88,11 +89,13 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           <p className="text-xs font-medium text-gray-500">지금 혼잡도</p>
           <p className="mt-1 text-3xl font-extrabold" style={{ color: level.color }}>
             {level.label}
+            {isOpen && isEstimated(crowd) && <DataTag className="text-xs" />}
           </p>
           <p className="mt-1 text-sm text-gray-600">
             {isOpen ? (
               <>
-                {headcountText(crowd) ?? level.desc}
+                {headcountInfo(crowd)?.text ?? level.desc}
+                {headcountInfo(crowd)?.kind && <DataTag kind={headcountInfo(crowd)!.kind} />}
                 {crowd.trend === "up" && <span className="text-red-500"> · 늘어나는 중</span>}
                 {crowd.trend === "down" && <span className="text-emerald-600"> · 줄어드는 중</span>}
               </>
@@ -145,12 +148,16 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 {dday > 0 ? `D-${dday}` : dday === 0 ? "D-DAY" : "종료"}
               </span>
             </div>
-            <p className="mt-1 text-xs text-white/60">{place.eventDate} 개최 (샘플 일정)</p>
+            <p className="mt-1 text-xs text-white/60">
+              {place.eventDate} 개최
+              <DataTag kind="임의" className="text-violet-300!" />
+            </p>
             {eventForecast && eventPeak && (
               <>
                 <p className="mt-4 text-sm">
                   최대 <b>{formatHour(eventPeak.hour)}</b> 전후{" "}
-                  <b>{Math.round((place.capacity * eventPeak.score) / 100).toLocaleString()}명</b> 예상 ·{" "}
+                  <b>{Math.round((place.capacity * eventPeak.score) / 100).toLocaleString()}명</b>
+                  <DataTag className="text-amber-300!" /> 예상 ·{" "}
                   <span style={{ color: levelOf(eventPeak.score).color }}>{levelOf(eventPeak.score).label}</span>
                 </p>
                 <div className="mt-4 rounded-2xl bg-white p-3 text-gray-900">
@@ -163,15 +170,21 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
 
         {/* 오늘 시간대별 */}
         <section className="mt-8">
-          <h2 className="text-lg font-bold">오늘 시간대별</h2>
+          <h2 className="text-lg font-bold">
+            오늘 시간대별
+            {isEstimated(crowd) && <DataTag />}
+          </h2>
           <div className="mt-6">
-            <HourlyChart points={crowd.hourly} highlightHour={Math.floor(now.hour)} />
+            <HourlyChart points={crowd.hourly} highlightHour={Math.floor(now.hour)} estimated={isEstimated(crowd)} />
           </div>
         </section>
 
         {/* 이번 주 */}
         <section className="mt-8">
-          <h2 className="text-lg font-bold">이번 주</h2>
+          <h2 className="text-lg font-bold">
+            이번 주
+            <DataTag />
+          </h2>
           <p className="mt-0.5 text-xs text-gray-500">하루 중 가장 붐빌 때 기준 · 공휴일·날씨·관광공사 예측 반영</p>
           <ul className="mt-4 grid grid-cols-7 gap-1.5">
             {week.map((d) => {
@@ -218,6 +231,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             <span>
               {formatHour(place.hours[0])} ~ {formatHour(place.hours[1])}{" "}
               <span className={isOpen ? "text-emerald-600" : "text-gray-400"}>{isOpen ? "· 운영 중" : "· 운영 종료"}</span>
+              <DataTag kind="임의" />
             </span>
           </div>
           <div className="flex gap-3">

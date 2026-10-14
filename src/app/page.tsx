@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { DataTag } from "@/components/DataTag";
 import { HomeList } from "@/components/HomeList";
 import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { PLACES, placeHref } from "@/lib/places";
+import { isEstimated } from "@/lib/format";
 import { daysUntil, formatAge } from "@/lib/time";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
@@ -53,7 +55,10 @@ export default async function HomePage() {
                       <span className="block truncate text-sm font-semibold">{p.name}</span>
                       <span className="block text-xs text-gray-500">{p.region}</span>
                     </span>
-                    <LevelBadge score={crowd[p.id].score} />
+                    <span className="flex flex-col items-end">
+                      <LevelBadge score={crowd[p.id].score} />
+                      {isEstimated(crowd[p.id]) && <DataTag className="mt-0.5" />}
+                    </span>
                   </Link>
                 </li>
               ))}
@@ -80,7 +85,10 @@ export default async function HomePage() {
                       </span>
                     </div>
                     <p className="mt-2 truncate text-sm font-semibold">{p.name}</p>
-                    <p className="text-xs text-gray-500">{p.eventDate!.slice(5).replace("-", "/")} · {p.region}</p>
+                    <p className="text-xs text-gray-500">
+                      {p.eventDate!.slice(5).replace("-", "/")}
+                      <DataTag kind="임의" /> · {p.region}
+                    </p>
                   </Link>
                 </li>
               ))}

@@ -9,7 +9,7 @@ import { getAirportPaxDays, getParking } from "@/lib/airport";
 import { getHistory } from "@/lib/crowd/history";
 import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
-import { PLACES, getPlace } from "@/lib/places";
+import { PLACES, getPlace, imageCreditText } from "@/lib/places";
 import { formatAge, kst } from "@/lib/time";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
@@ -54,7 +54,9 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
       {place.image && (
         <div className="relative mt-3 h-40 overflow-hidden rounded-3xl bg-gray-100">
           <Image src={place.image} alt={place.name} fill priority sizes="(max-width: 448px) 100vw, 448px" className="object-cover" />
-          <span className="absolute right-2 bottom-2 rounded bg-black/35 px-1.5 py-0.5 text-[10px] text-white/90">사진 한국관광공사</span>
+          <span className="absolute right-2 bottom-2 rounded bg-black/35 px-1.5 py-0.5 text-[10px] text-white/90">
+            {imageCreditText(place)}
+          </span>
         </div>
       )}
 

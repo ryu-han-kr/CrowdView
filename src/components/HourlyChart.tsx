@@ -2,7 +2,16 @@ import { levelOf } from "@/lib/levels";
 import type { HourPoint } from "@/lib/types";
 
 /** 시간대별 혼잡도 막대 그래프. 예측 구간은 빗금으로 구분 */
-export function HourlyChart({ points, highlightHour }: { points: HourPoint[]; highlightHour?: number }) {
+/** estimated: 지난 시간 막대도 실측이 아니라 예측 모델 값일 때 */
+export function HourlyChart({
+  points,
+  highlightHour,
+  estimated = false,
+}: {
+  points: HourPoint[];
+  highlightHour?: number;
+  estimated?: boolean;
+}) {
   return (
     <div>
       <div className="flex h-36 items-end gap-[3px]">
@@ -34,7 +43,7 @@ export function HourlyChart({ points, highlightHour }: { points: HourPoint[]; hi
       </div>
       <div className="mt-2 flex gap-3 text-[11px] text-gray-500">
         <span className="flex items-center gap-1">
-          <span className="h-2.5 w-2.5 rounded-sm bg-gray-400" /> 실측
+          <span className="h-2.5 w-2.5 rounded-sm bg-gray-400" /> {estimated ? "지난 시간 (추정)" : "실측"}
         </span>
         <span className="flex items-center gap-1">
           <span className="forecast-bar h-2.5 w-2.5 rounded-sm bg-gray-400 opacity-60" /> AI 예측

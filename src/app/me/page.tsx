@@ -39,6 +39,16 @@ export default async function MePage() {
         혼잡도: 서울시, 인천국제공항공사, 한국공항공사, 한국관광공사, 기상청 (공공데이터포털)
         <br />
         장소 사진: 한국관광공사 (공공누리)
+        {PLACES.filter((p) => p.imageCredit).map((p) => (
+          <span key={p.id}>
+            <br />
+            {p.name}:{" "}
+            <a href={p.imageCredit!.url} target="_blank" rel="noreferrer" className="underline">
+              {p.imageCredit!.author}, {p.imageCredit!.license}
+            </a>{" "}
+            (Wikimedia Commons)
+          </span>
+        ))}
       </p>
     </main>
   );
