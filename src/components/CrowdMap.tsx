@@ -110,11 +110,19 @@ function NaverCrowdMap({
           maps.Event.addListener(marker, "click", () => setSelected(p.id));
         }
       })
-      .catch(onFail);
+      .catch((e) => {
+        console.warn("[CrowdMap] 네이버 지도 초기화 실패, SVG 지도로 대체:", e);
+        onFail();
+      });
 
     return () => {
       cancelled = true;
-      mapRef.current?.destroy?.();
+      window.navermap_authFailure = undefined;
+      // React가 지도 DOM을 먼저 떼어낸 뒤라 네이버 destroy()가 null 요소에서 예외를 던진다.
+      // 정리 단계의 예외는 페이지 전체를 죽이므로 삼킨다
+      try {
+        mapRef.current?.destroy?.();
+      } catch {}
       mapRef.current = null;
     };
     // 지도는 최초 1회만 생성
