@@ -120,7 +120,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               )}
             </li>
             <li>
-              이번 주는 <b>{dayName(calmest.date)}</b>이 가장 한산해요 <LevelBadge score={calmest.peakScore} />
+              이번 주는 <b>{dayName(calmest.date)}</b>이 {calmest.peakScore >= 60 ? "그나마 덜 붐벼요" : "가장 한산해요"}{" "}
+              <LevelBadge score={calmest.peakScore} />
             </li>
           </ul>
           {todayReasons.length > 0 && (
