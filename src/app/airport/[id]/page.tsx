@@ -11,6 +11,7 @@ import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
 import { PLACES, getPlace, imageCreditText } from "@/lib/places";
 import { formatAge, kst } from "@/lib/time";
+import { headcountInfo } from "@/lib/format";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 export const revalidate = 60;
@@ -76,7 +77,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
         </p>
         <p className="mt-1 text-sm text-gray-600">
           {avgWait !== null && <>평균 대기 <b>{avgWait}분</b> · </>}
-          {crowd.source === "incheon-airport" && <>대기 <b>{crowd.headcount.toLocaleString()}</b>명 · </>}
+          {headcountInfo(crowd) && !headcountInfo(crowd)!.kind && <>{headcountInfo(crowd)!.text} · </>}
           {crowd.trend === "up" ? (
             <span className="text-red-500">늘어나는 중</span>
           ) : crowd.trend === "down" ? (

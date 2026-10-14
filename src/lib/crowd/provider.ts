@@ -3,6 +3,7 @@
 import type { CrowdSnapshot, Place } from "../types";
 import { fetchAirport } from "./airport";
 import { modelSnapshot } from "./model";
+import { fetchThemePark } from "./themeparks";
 import { getSignals, type Signals } from "./signals";
 
 // 서울시 4단계 → 0~100 점수 (5단계 기준 각 구간의 중앙 부근)
@@ -44,7 +45,8 @@ async function fetchSeoulCitydata(place: Place, key: string, s: Signals): Promis
 
   const headcount = Math.round((Number(row.AREA_PPLTN_MIN) + Number(row.AREA_PPLTN_MAX)) / 2);
   const headcountRange: [number, number] = [Number(row.AREA_PPLTN_MIN), Number(row.AREA_PPLTN_MAX)];
-  return { ...base, score, open: true, headcount, headcountRange, hourly, source: "seoul-citydata", updatedAt: new Date().toISOString() };
+  // 영업시간·휴무일은 장소 기준 (서울시 인구는 주변 지역 단위라 문을 닫아도 값이 나온다)
+  return { ...base, score, open: base.open, headcount, headcountRange, hourly, source: "seoul-citydata", updatedAt: new Date().toISOString() };
 }
 
 export async function fetchSnapshot(place: Place): Promise<CrowdSnapshot> {
@@ -52,6 +54,7 @@ export async function fetchSnapshot(place: Place): Promise<CrowdSnapshot> {
   // 날씨·공휴일·관광지 집중률·공항 승객 수로 예측 곡선을 보정한다
   const s = await getSignals(place);
   if (key && place.seoulArea) return fetchSeoulCitydata(place, key, s);
+  if (place.themeparksId) return fetchThemePark(place, s);
   if (process.env.DATA_GO_KR_KEY && place.airport) return fetchAirport(place, place.airport, s);
   return modelSnapshot(place, new Date(), s);
 }

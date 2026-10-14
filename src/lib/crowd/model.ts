@@ -43,7 +43,7 @@ const pad2 = (n: number) => String(Math.floor(n)).padStart(2, "0");
 function dayFactor(place: Place, t: KstParts, s?: Signals): number {
   if (place.eventDate) {
     // 이벤트 당일엔 폭증, 그 외엔 평소 공원 수준
-    return t.date === place.eventDate ? 1.15 : 0.3;
+    return t.date >= place.eventDate && t.date <= (place.eventEndDate ?? place.eventDate) ? 1.15 : 0.3;
   }
   if (s?.holidays?.has(t.date)) return 1.25;
   if (t.day === 0 || t.day === 6) return 1.2;
@@ -86,6 +86,7 @@ function concentrationFactor(s: Signals | undefined, date: string): number {
 export function expectedScore(place: Place, t: KstParts, s?: Signals): number {
   const [open, close] = place.hours;
   if (t.hour < open || t.hour >= close) return 3;
+  if (place.info?.closedToday && t.date === kst().date) return 3;
   const pax = s?.pax?.get(t.date)?.[Math.floor(t.hour)];
   if (pax !== undefined && place.paxCapacity) return clamp((90 * pax) / place.paxCapacity);
   const d = t.hour - place.peakHour;
@@ -163,7 +164,7 @@ export function modelSnapshot(place: Place, at: Date = new Date(), s?: Signals):
   return {
     placeId: place.id,
     score,
-    open: now.hour >= place.hours[0] && now.hour < place.hours[1],
+    open: now.hour >= place.hours[0] && now.hour < place.hours[1] && !place.info?.closedToday,
     headcount: Math.round((place.capacity * score) / 100),
     trend: delta > 4 ? "up" : delta < -4 ? "down" : "flat",
     hourly: hourlyCurve(place, now, now.hour, s),

@@ -5,7 +5,7 @@
 // - 외부 API 장애 → 기존 데이터를 보존(보관 TTL 연장)하고 "n분 전 데이터"로 표시.
 import { after } from "next/server";
 import { kv } from "../cache";
-import { PLACES, getPlace } from "../places";
+import { getLivePlace, getLivePlaces } from "../place-info";
 import type { CrowdResult, CrowdSnapshot, Place } from "../types";
 import { recordHistory } from "./history";
 import { fetchSnapshot } from "./provider";
@@ -61,7 +61,7 @@ async function refresh(p: Place, previous: CrowdSnapshot | null): Promise<CrowdS
 }
 
 export async function getCrowd(id: string): Promise<CrowdResult | null> {
-  const place = getPlace(id);
+  const place = await getLivePlace(id);
   if (!place) return null;
   return getCrowdFor(place, await readCache(place));
 }
@@ -75,15 +75,17 @@ async function getCrowdFor(place: Place, cached: CrowdSnapshot | null): Promise<
 }
 
 export async function getAllCrowd(): Promise<Record<string, CrowdResult>> {
-  const cached = await readCaches(PLACES);
-  const results = await Promise.all(PLACES.map((p, i) => getCrowdFor(p, cached[i])));
+  const places = await getLivePlaces();
+  const cached = await readCaches(places);
+  const results = await Promise.all(places.map((p, i) => getCrowdFor(p, cached[i])));
   return Object.fromEntries(results.map((r) => [r.placeId, r]));
 }
 
 export async function refreshAll(): Promise<{ id: string; source: string; updatedAt: string }[]> {
-  const cached = await readCaches(PLACES);
+  const places = await getLivePlaces();
+  const cached = await readCaches(places);
   return Promise.all(
-    PLACES.map(async (p, i) => {
+    places.map(async (p, i) => {
       const s = await refresh(p, cached[i]);
       return { id: p.id, source: s.source, updatedAt: s.updatedAt };
     }),

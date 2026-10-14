@@ -5,6 +5,7 @@
 import { dataGoKr } from "../datagokr";
 import type { AirportCode, CrowdSnapshot, Place, Zone } from "../types";
 import { modelSnapshot } from "./model";
+import { kst } from "../time";
 import type { Signals } from "./signals";
 
 // 한국공항공사 4단계 (1 원활 ~ 4 매우혼잡) → 0~100 점수
@@ -80,7 +81,11 @@ async function fetchKac(place: Place, code: AirportCode, s?: Signals): Promise<C
     const z = KAC_LEVEL_SCORE[String(Number(latest[seg.field]))];
     return z === undefined ? [] : [{ id: seg.id, label: seg.label, score: z }];
   });
-  return withCurrent(place, score, Math.round((place.capacity * score) / 100), "kac-airport", s, zones);
+  // 인원은 혼잡도 API에 없어서, 시간대별 탑승객 수 API의 이번 시간 출발 승객 수를 쓴다
+  const now = kst();
+  const pax = s?.pax?.get(now.date)?.[Math.floor(now.hour)];
+  const snap = withCurrent(place, score, pax ?? Math.round((place.capacity * score) / 100), "kac-airport", s, zones);
+  return pax !== undefined ? { ...snap, paxHour: true } : snap;
 }
 
 export function fetchAirport(place: Place, code: AirportCode, s?: Signals): Promise<CrowdSnapshot> {

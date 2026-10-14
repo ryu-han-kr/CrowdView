@@ -5,6 +5,7 @@ import { getParking } from "@/lib/airport";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { PLACES } from "@/lib/places";
 import { formatAge } from "@/lib/time";
+import { headcountInfo } from "@/lib/format";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 export const revalidate = 60;
@@ -34,7 +35,7 @@ export default async function AirportListPage() {
                     <p className="truncate font-semibold">{place.name}</p>
                     <p className="mt-0.5 text-xs text-gray-500">
                       {c.source === "model" ? "예측값" : `${formatAge(c.ageMinutes)} 실측`}
-                      {c.source === "incheon-airport" && ` · 대기 ${c.headcount.toLocaleString()}명`}
+                      {headcountInfo(c) && !headcountInfo(c)!.kind && ` · ${headcountInfo(c)!.text}`}
                     </p>
                   </div>
                   <LevelBadge score={c.score} closed={!c.open} />

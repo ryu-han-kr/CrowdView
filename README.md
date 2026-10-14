@@ -18,6 +18,8 @@ npm run dev   # http://localhost:3000
 | `src/lib/crowd/signals.ts` | 예측 신호 수집: 특일 정보, 기상청 단기예보, 관광공사 집중률, 공항 시간대별 승객 (`DATA_GO_KR_KEY`) |
 | `src/lib/crowd/history.ts` | 실측 스냅샷 기록 (하루 단위, 8일 보관). Redis 연결 시 인스턴스 간 공유 |
 | `public/places/` | 장소 대표 사진. 한국관광공사 TourAPI 이미지(공공누리 1·3유형, 출처 표시 필수, 3유형은 변경 금지)를 원본 그대로 보관 |
+| `src/lib/place-info.ts` | 한국관광공사 TourAPI 소개 정보로 오늘 운영 시간·휴무일·행사 일정 반영 (하루 1번 호출) |
+| `src/lib/crowd/themeparks.ts` | 에버랜드 놀이기구 대기시간 (ThemeParks.wiki, 'Powered by ThemeParks.wiki' 표기 필수) |
 | `src/lib/airport.ts` | 공항 탭: 날짜·출국장별 시간대 승객, 주차장 혼잡도 |
 | `src/lib/crowd/provider.ts` | 서울시 실시간 도시데이터 연동 (`SEOUL_OPENAPI_KEY`), 실패 시 모델값 |
 | `src/lib/crowd/airport.ts` | 공항 혼잡도: 인천공항 T1·T2 출국장, 한국공항공사 김포·제주·김해 (`DATA_GO_KR_KEY`) |

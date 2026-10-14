@@ -35,6 +35,12 @@ export function formatAge(minutes: number): string {
   return `${Math.floor(minutes / 60)}시간 전`;
 }
 
+/** 22.5 → 22:30 */
+export function formatClock(h: number): string {
+  const hh = Math.floor(h);
+  return `${String(hh).padStart(2, "0")}:${String(Math.round((h - hh) * 60)).padStart(2, "0")}`;
+}
+
 export function formatHour(h: number): string {
   return `${String(h === 24 ? 24 : Math.floor(h) % 24).padStart(2, "0")}시`;
 }
