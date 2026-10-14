@@ -10,6 +10,7 @@ import { PLACES, getPlace, placeHref } from "@/lib/places";
 import { daysUntil, formatAge, formatHour, kst } from "@/lib/time";
 import type { CrowdResult, HourPoint } from "@/lib/types";
 import { CATEGORY_LABEL } from "@/lib/types";
+import { headcountText } from "@/lib/format";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 export const revalidate = 60;
@@ -91,7 +92,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           <p className="mt-1 text-sm text-gray-600">
             {isOpen ? (
               <>
-                약 <b>{crowd.headcount.toLocaleString()}</b>명
+                {headcountText(crowd) ?? level.desc}
                 {crowd.trend === "up" && <span className="text-red-500"> · 늘어나는 중</span>}
                 {crowd.trend === "down" && <span className="text-emerald-600"> · 줄어드는 중</span>}
               </>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFavorites } from "@/lib/prefs";
@@ -58,15 +59,34 @@ export function PlaceHero({ place }: { place: Place }) {
           background: `linear-gradient(160deg, hsl(${place.hue} 75% 70%), hsl(${place.hue + 50} 70% 45%))`,
         }}
       >
-        <span
-          className="text-[120px] drop-shadow-xl will-change-transform"
-          style={{
-            transform: `translateY(${y * 0.4}px) scale(${1 - progress * 0.25})`,
-            opacity: 1 - progress * 0.8,
-          }}
-        >
-          {place.emoji}
-        </span>
+        {place.image ? (
+          <>
+            <Image
+              src={place.image}
+              alt={place.name}
+              fill
+              priority
+              sizes="(max-width: 448px) 100vw, 448px"
+              className="object-cover will-change-transform"
+              style={{ transform: `translateY(${y * 0.3}px) scale(${1 + progress * 0.08})` }}
+            />
+            {/* 상단 버튼이 사진 위에서도 보이도록 */}
+            <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/30 to-transparent" />
+            <span className="absolute right-3 bottom-8 rounded bg-black/35 px-1.5 py-0.5 text-[10px] text-white/90">
+              사진 한국관광공사
+            </span>
+          </>
+        ) : (
+          <span
+            className="text-[120px] drop-shadow-xl will-change-transform"
+            style={{
+              transform: `translateY(${y * 0.4}px) scale(${1 - progress * 0.25})`,
+              opacity: 1 - progress * 0.8,
+            }}
+          >
+            {place.emoji}
+          </span>
+        )}
         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
       </div>
     </>

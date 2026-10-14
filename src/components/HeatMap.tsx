@@ -9,6 +9,7 @@ import type { CrowdResult, Place } from "@/lib/types";
 import { LevelBadge } from "./Level";
 import { PlaceThumb } from "./PlaceRow";
 import { placeHref } from "@/lib/places";
+import { headcountText } from "@/lib/format";
 
 const W = 400;
 const H = 480;
@@ -142,7 +143,7 @@ export function MapPlaceCard({ place, crowd }: { place: Place; crowd: CrowdResul
         <p className="truncate font-semibold">{place.name}</p>
         <p className="mt-0.5 truncate text-xs text-gray-500">
           {place.region}
-          {crowd.open && ` · 약 ${crowd.headcount.toLocaleString()}명`}
+          {headcountText(crowd) && ` · ${headcountText(crowd)}`}
         </p>
         <div className="mt-1.5">
           <LevelBadge score={crowd.score} closed={!crowd.open} />

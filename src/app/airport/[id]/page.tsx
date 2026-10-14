@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AirportPaxChart } from "@/components/AirportPaxChart";
@@ -49,6 +50,13 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
       <Link href="/airport" className="text-sm text-gray-500">
         ← 공항 목록
       </Link>
+
+      {place.image && (
+        <div className="relative mt-3 h-40 overflow-hidden rounded-3xl bg-gray-100">
+          <Image src={place.image} alt={place.name} fill priority sizes="(max-width: 448px) 100vw, 448px" className="object-cover" />
+          <span className="absolute right-2 bottom-2 rounded bg-black/35 px-1.5 py-0.5 text-[10px] text-white/90">사진 한국관광공사</span>
+        </div>
+      )}
 
       <header className="mt-3 flex items-center gap-3">
         <PlaceThumb place={place} size={52} />

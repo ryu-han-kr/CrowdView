@@ -43,7 +43,8 @@ async function fetchSeoulCitydata(place: Place, key: string, s: Signals): Promis
   if (current) current.score = score;
 
   const headcount = Math.round((Number(row.AREA_PPLTN_MIN) + Number(row.AREA_PPLTN_MAX)) / 2);
-  return { ...base, score, open: true, headcount, hourly, source: "seoul-citydata", updatedAt: new Date().toISOString() };
+  const headcountRange: [number, number] = [Number(row.AREA_PPLTN_MIN), Number(row.AREA_PPLTN_MAX)];
+  return { ...base, score, open: true, headcount, headcountRange, hourly, source: "seoul-citydata", updatedAt: new Date().toISOString() };
 }
 
 export async function fetchSnapshot(place: Place): Promise<CrowdSnapshot> {
