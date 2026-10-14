@@ -6,7 +6,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { LEVELS, levelOf } from "@/lib/levels";
 import type { CrowdResult, Place } from "@/lib/types";
-import { LevelBadge, TrendArrow } from "./Level";
+import { LevelBadge } from "./Level";
+import { PlaceThumb } from "./PlaceRow";
 import { placeHref } from "@/lib/places";
 
 const W = 400;
@@ -134,18 +135,20 @@ export function MapPlaceCard({ place, crowd }: { place: Place; crowd: CrowdResul
   return (
     <Link
       href={placeHref(place)}
-      className="absolute inset-x-3 bottom-3 z-10 flex items-center justify-between rounded-2xl bg-white p-4 shadow-lg"
+      className="absolute inset-x-3 bottom-3 z-10 flex items-center gap-3 rounded-3xl bg-white p-3.5 shadow-xl active:scale-[0.99]"
     >
-      <div>
-        <p className="font-semibold">{place.name}</p>
-        <p className="mt-0.5 text-xs text-gray-500">
-          {crowd.open ? `약 ${crowd.headcount.toLocaleString()}명` : place.region}
+      <PlaceThumb place={place} size={48} />
+      <div className="min-w-0 flex-1">
+        <p className="truncate font-semibold">{place.name}</p>
+        <p className="mt-0.5 truncate text-xs text-gray-500">
+          {place.region}
+          {crowd.open && ` · 약 ${crowd.headcount.toLocaleString()}명`}
         </p>
+        <div className="mt-1.5">
+          <LevelBadge score={crowd.score} closed={!crowd.open} />
+        </div>
       </div>
-      <div className="flex flex-col items-end gap-1">
-        <LevelBadge score={crowd.score} closed={!crowd.open} />
-        {crowd.open && <TrendArrow trend={crowd.trend} />}
-      </div>
+      <span className="shrink-0 rounded-full bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white">자세히</span>
     </Link>
   );
 }
