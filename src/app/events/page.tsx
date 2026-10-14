@@ -1,22 +1,25 @@
 import Link from "next/link";
 import { DataTag } from "@/components/DataTag";
+import { EventDateTag } from "@/components/EventDateTag";
 import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
 import { forecastForDate } from "@/lib/crowd/model";
-import { PLACES, placeHref } from "@/lib/places";
+import { getLivePlaces, isOngoingEvent, isUpcomingEvent } from "@/lib/place-info";
+import { placeHref } from "@/lib/places";
 import { daysUntil, formatHour } from "@/lib/time";
 
 // D-day만 바뀌므로 1시간 단위로 다시 렌더링해도 충분하다
 export const revalidate = 3600;
 
-export default function EventsPage() {
-  const events = PLACES.filter((p) => p.eventDate)
+export default async function EventsPage() {
+  // 행사 일정은 한국관광공사 TourAPI 값 (없으면 places.ts의 임의 값)
+  const events = (await getLivePlaces())
+    .filter((p) => isUpcomingEvent(p))
     .map((place) => {
       const dday = daysUntil(place.eventDate!);
       const peak = [...forecastForDate(place, place.eventDate!)].sort((a, b) => b.score - a.score)[0];
       return { place, dday, peak, visitors: Math.round((place.capacity * peak.score) / 100) };
     })
-    .filter((e) => e.dday >= 0)
     .sort((a, b) => a.dday - b.dday);
 
   return (
@@ -34,11 +37,12 @@ export default function EventsPage() {
                   <p className="truncate font-semibold">{place.name}</p>
                   <p className="mt-0.5 text-xs text-gray-500">
                     {place.eventDate}
-                    <DataTag kind="임의" /> · {place.region}
+                    {place.eventEndDate && place.eventEndDate !== place.eventDate && ` ~ ${place.eventEndDate.slice(5)}`}
+                    <EventDateTag place={place} /> · {place.region}
                   </p>
                 </div>
                 <span className="rounded-full bg-gray-900 px-2.5 py-1 text-xs font-bold text-white">
-                  {dday === 0 ? "D-DAY" : `D-${dday}`}
+                  {isOngoingEvent(place) ? "진행 중" : dday === 0 ? "D-DAY" : `D-${dday}`}
                 </span>
               </div>
               <div className="mt-3 flex items-center justify-between rounded-2xl bg-gray-50 px-3 py-2.5 text-sm">
@@ -52,7 +56,7 @@ export default function EventsPage() {
           </li>
         ))}
       </ul>
-      <p className="mt-4 text-center text-[11px] text-gray-400">일정은 샘플 데이터이며 실제와 다를 수 있어요.</p>
+      <p className="mt-4 text-center text-[11px] text-gray-400">일정 출처: 한국관광공사. (임의) 표시는 아직 공식 일정이 없는 행사예요.</p>
     </main>
   );
 }

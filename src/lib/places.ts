@@ -22,6 +22,7 @@ export const PLACES: Place[] = [
     outdoor: 0.3,
     kto: { areaCd: "11", signguCd: "11710", name: "롯데월드 어드벤처" },
     image: "/places/lotteworld.jpg",
+    ktoContent: { id: 126498, type: 12 },
   },
   {
     id: "everland",
@@ -42,6 +43,8 @@ export const PLACES: Place[] = [
     outdoor: 0.85,
     kto: { areaCd: "41", signguCd: "41461", name: "에버랜드" },
     image: "/places/everland.jpg",
+    ktoContent: { id: 127797, type: 12 },
+    themeparksId: "d5487510-2e13-4eb5-9fab-9a9c11cec738",
   },
   {
     id: "seoulland",
@@ -62,6 +65,7 @@ export const PLACES: Place[] = [
     outdoor: 0.9,
     kto: { areaCd: "41", signguCd: "41290", name: "서울랜드" },
     image: "/places/seoulland.jpg",
+    ktoContent: { id: 126719, type: 12 },
   },
   {
     id: "gyeongbokgung",
@@ -83,6 +87,7 @@ export const PLACES: Place[] = [
     outdoor: 0.8,
     kto: { areaCd: "11", signguCd: "11110", name: "경복궁" },
     image: "/places/gyeongbokgung.jpg",
+    ktoContent: { id: 126508, type: 12 },
   },
   {
     id: "namsan",
@@ -104,6 +109,7 @@ export const PLACES: Place[] = [
     outdoor: 0.9,
     kto: { areaCd: "11", signguCd: "11140", name: "남산공원(서울)" },
     image: "/places/namsan.jpg",
+    ktoContent: { id: 126535, type: 12 },
   },
   {
     id: "seongsu",
@@ -125,6 +131,7 @@ export const PLACES: Place[] = [
     outdoor: 0.4,
     kto: { areaCd: "11", signguCd: "11200", name: "성수동 수제화거리" },
     image: "/places/seongsu.jpg",
+    ktoContent: { id: 2930901, type: 12 },
   },
   {
     id: "hongdae",
@@ -167,6 +174,7 @@ export const PLACES: Place[] = [
     outdoor: 1,
     kto: { areaCd: "26", signguCd: "26350", name: "해운대해수욕장" },
     image: "/places/haeundae.jpg",
+    ktoContent: { id: 126081, type: 12 },
   },
   {
     id: "icn-t1",
@@ -310,6 +318,7 @@ export const PLACES: Place[] = [
     description: "광안대교를 배경으로 펼쳐지는 국내 최대 규모 불꽃쇼.",
     eventDate: "2026-11-07",
     image: "/places/busan-fireworks.jpg",
+    ktoContent: { id: 235076, type: 15 },
   },
   {
     id: "lantern-festival",
@@ -329,6 +338,7 @@ export const PLACES: Place[] = [
     description: "청계천을 따라 수놓는 대형 등불 전시 축제.",
     eventDate: "2026-12-12",
     image: "/places/lantern-festival.jpg",
+    ktoContent: { id: 1095732, type: 15 },
   },
 ];
 

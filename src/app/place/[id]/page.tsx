@@ -6,8 +6,9 @@ import { forecastForDate, forecastReasons, weekForecast } from "@/lib/crowd/mode
 import { getSignals } from "@/lib/crowd/signals";
 import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
-import { PLACES, getPlace, placeHref } from "@/lib/places";
-import { daysUntil, formatAge, formatHour, kst } from "@/lib/time";
+import { getLivePlace, isOngoingEvent } from "@/lib/place-info";
+import { PLACES, placeHref } from "@/lib/places";
+import { daysUntil, formatAge, formatClock, formatHour, kst } from "@/lib/time";
 import type { CrowdResult, HourPoint } from "@/lib/types";
 import { CATEGORY_LABEL } from "@/lib/types";
 import { DataTag } from "@/components/DataTag";
@@ -20,6 +21,7 @@ const SOURCE_LABEL: Record<CrowdResult["source"], string> = {
   "seoul-citydata": "서울시 실시간 도시데이터",
   "incheon-airport": "인천국제공항공사 출국장 혼잡도",
   "kac-airport": "한국공항공사 공항 혼잡도",
+  "themeparks-wiki": "놀이기구 대기시간 · Powered by ThemeParks.wiki",
   model: "CrowdView 예측 모델 (샘플)",
 };
 
@@ -53,8 +55,8 @@ function bestUpcoming(points: HourPoint[], open: number, close: number): HourPoi
 
 export default async function PlacePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const place = getPlace(id);
-  const crowd = await getCrowd(id);
+  // 운영 시간·행사 일정은 한국관광공사 TourAPI 값 (없으면 places.ts의 임의 값)
+  const [place, crowd] = await Promise.all([getLivePlace(id), getCrowd(id)]);
   if (!place || !crowd) notFound();
   if (place.category === "airport") redirect(placeHref(place));
   const signals = await getSignals(place);
@@ -94,8 +96,14 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           <p className="mt-1 text-sm text-gray-600">
             {isOpen ? (
               <>
-                {headcountInfo(crowd)?.text ?? level.desc}
-                {headcountInfo(crowd)?.kind && <DataTag kind={headcountInfo(crowd)!.kind} />}
+                {crowd.avgWaitMin !== undefined ? (
+                  <>
+                    놀이기구 평균 대기 <b>{crowd.avgWaitMin}분</b>
+                  </>
+                ) : (
+                  (headcountInfo(crowd)?.text ?? level.desc)
+                )}
+                {crowd.avgWaitMin === undefined && headcountInfo(crowd)?.kind && <DataTag kind={headcountInfo(crowd)!.kind} />}
                 {crowd.trend === "up" && <span className="text-red-500"> · 늘어나는 중</span>}
                 {crowd.trend === "down" && <span className="text-emerald-600"> · 줄어드는 중</span>}
               </>
@@ -139,18 +147,45 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           )}
         </section>
 
+        {/* 놀이기구 대기 */}
+        {crowd.zones && crowd.zones.length > 0 && (
+          <section className="mt-8">
+            <h2 className="text-lg font-bold">지금 대기가 긴 놀이기구</h2>
+            <ul className="mt-3 divide-y divide-gray-100 rounded-2xl border border-gray-100">
+              {crowd.zones.map((z) => (
+                <li key={z.id} className="flex items-center gap-3 px-4 py-3">
+                  <span className="min-w-0 flex-1 truncate text-sm font-semibold">{z.label}</span>
+                  <b className="text-sm">{z.waitMin}분</b>
+                  <LevelBadge score={z.score} />
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-[11px] text-gray-400">Powered by ThemeParks.wiki · 5분 단위 갱신</p>
+          </section>
+        )}
+
         {/* 이벤트 인원 예측 */}
         {dday !== null && (
           <section className="mt-6 rounded-3xl bg-gray-900 p-5 text-white">
             <div className="flex items-center justify-between">
               <h2 className="font-bold">🎯 이벤트 당일 예측</h2>
               <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-sm font-bold">
-                {dday > 0 ? `D-${dday}` : dday === 0 ? "D-DAY" : "종료"}
+                {isOngoingEvent(place) ? "진행 중" : dday > 0 ? `D-${dday}` : dday === 0 ? "D-DAY" : "종료"}
               </span>
             </div>
             <p className="mt-1 text-xs text-white/60">
-              {place.eventDate} 개최
-              <DataTag kind="임의" className="text-violet-300!" />
+              {place.eventDate}
+              {place.eventEndDate && place.eventEndDate !== place.eventDate && ` ~ ${place.eventEndDate}`}
+              {place.info?.eventPlayTime && ` · ${place.info.eventPlayTime}`}
+              {!place.ktoContent ? (
+                <DataTag kind="임의" className="text-violet-300!" />
+              ) : (
+                place.info?.eventVerified === false && (
+                  <>
+                    <DataTag className="text-amber-300!" /> 작년 일정 기준
+                  </>
+                )
+              )}
             </p>
             {eventForecast && eventPeak && (
               <>
@@ -228,12 +263,29 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           <h2 className="text-lg font-bold">정보</h2>
           <div className="flex gap-3">
             <span className="w-14 shrink-0 text-gray-400">운영</span>
-            <span>
-              {formatHour(place.hours[0])} ~ {formatHour(place.hours[1])}{" "}
-              <span className={isOpen ? "text-emerald-600" : "text-gray-400"}>{isOpen ? "· 운영 중" : "· 운영 종료"}</span>
-              <DataTag kind="임의" />
-            </span>
+            <div className="min-w-0">
+              <p>
+                {place.info?.closedToday ? "오늘 휴무" : `오늘 ${formatClock(place.hours[0])} ~ ${formatClock(place.hours[1])}`}{" "}
+                <span className={isOpen ? "text-emerald-600" : "text-gray-400"}>{isOpen ? "· 운영 중" : "· 운영 종료"}</span>
+                {!place.info?.hoursVerified && <DataTag kind="임의" />}
+              </p>
+              {place.info?.hoursText && (
+                <p className="mt-1 text-xs leading-relaxed whitespace-pre-line text-gray-500">{place.info.hoursText}</p>
+              )}
+            </div>
           </div>
+          {place.info?.restText && (
+            <div className="flex gap-3">
+              <span className="w-14 shrink-0 text-gray-400">휴무</span>
+              <span className="text-xs leading-relaxed text-gray-600">{place.info.restText}</span>
+            </div>
+          )}
+          {place.info?.infocenter && (
+            <div className="flex gap-3">
+              <span className="w-14 shrink-0 text-gray-400">문의</span>
+              <span>{place.info.infocenter}</span>
+            </div>
+          )}
           <div className="flex gap-3">
             <span className="w-14 shrink-0 text-gray-400">주소</span>
             <span>{place.address}</span>

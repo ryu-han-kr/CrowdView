@@ -34,5 +34,6 @@ export function headcountInfo(c: CrowdResult): { text: string; kind?: DataKind }
     };
   }
   if (c.source === "incheon-airport") return { text: `출국 대기 ${c.headcount.toLocaleString()}명` };
+  if (c.source === "kac-airport" && c.paxHour) return { text: `이번 시간 출발 ${c.headcount.toLocaleString()}명` };
   return SHOW_DATA_LABELS ? { text: `약 ${compact(c.headcount)}명`, kind: "추정" } : null;
 }

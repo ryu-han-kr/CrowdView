@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { DataTag } from "@/components/DataTag";
+import { EventDateTag } from "@/components/EventDateTag";
 import { HomeList } from "@/components/HomeList";
 import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
 import { getAllCrowd } from "@/lib/crowd/service";
-import { PLACES, placeHref } from "@/lib/places";
+import { getLivePlaces, isOngoingEvent, isUpcomingEvent } from "@/lib/place-info";
+import { placeHref } from "@/lib/places";
 import { isEstimated } from "@/lib/format";
 import { daysUntil, formatAge } from "@/lib/time";
 
@@ -12,15 +14,15 @@ import { daysUntil, formatAge } from "@/lib/time";
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const crowd = await getAllCrowd();
+  const [crowd, places] = await Promise.all([getAllCrowd(), getLivePlaces()]);
   const live = Object.values(crowd).filter((c) => c.source !== "model");
   const newest = live.length ? Math.min(...live.map((c) => c.ageMinutes)) : null;
 
-  const calm = PLACES.filter((p) => crowd[p.id].open && p.category !== "event" && crowd[p.id].score < 40)
+  const calm = places.filter((p) => crowd[p.id].open && p.category !== "event" && crowd[p.id].score < 40)
     .sort((a, b) => crowd[a.id].score - crowd[b.id].score)
     .slice(0, 3);
 
-  const events = PLACES.filter((p) => p.eventDate && daysUntil(p.eventDate) >= 0)
+  const events = places.filter((p) => isUpcomingEvent(p))
     .sort((a, b) => a.eventDate!.localeCompare(b.eventDate!))
     .slice(0, 2);
 
@@ -42,7 +44,7 @@ export default async function HomePage() {
         )}
       </header>
 
-      <HomeList places={PLACES} crowd={crowd}>
+      <HomeList places={places} crowd={crowd}>
         {calm.length > 0 && (
           <section className="mt-4 rounded-3xl bg-emerald-50 p-4">
             <h2 className="font-bold text-emerald-900">🌿 지금 가면 쾌적해요</h2>
@@ -81,13 +83,13 @@ export default async function HomePage() {
                     <div className="flex items-center justify-between">
                       <PlaceThumb place={p} size={36} />
                       <span className="rounded-full bg-gray-900 px-2 py-0.5 text-[11px] font-bold text-white">
-                        {daysUntil(p.eventDate!) === 0 ? "D-DAY" : `D-${daysUntil(p.eventDate!)}`}
+                        {isOngoingEvent(p) ? "진행 중" : daysUntil(p.eventDate!) === 0 ? "D-DAY" : `D-${daysUntil(p.eventDate!)}`}
                       </span>
                     </div>
                     <p className="mt-2 truncate text-sm font-semibold">{p.name}</p>
                     <p className="text-xs text-gray-500">
                       {p.eventDate!.slice(5).replace("-", "/")}
-                      <DataTag kind="임의" /> · {p.region}
+                      <EventDateTag place={p} /> · {p.region}
                     </p>
                   </Link>
                 </li>

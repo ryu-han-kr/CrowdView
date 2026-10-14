@@ -7,6 +7,19 @@ export const CATEGORY_LABEL: Record<Category, string> = {
   event: "이벤트",
 };
 
+export interface PlaceInfo {
+  /** TourAPI 이용 시간 원문 (줄바꿈 정리) */
+  hoursText?: string;
+  restText?: string;
+  infocenter?: string;
+  /** 오늘 적용되는 운영 시간을 원문에서 찾았는지 */
+  hoursVerified: boolean;
+  closedToday?: boolean;
+  /** 행사 일정이 TourAPI 올해 값인지. false면 작년 일정에서 1년 뒤로 추정 */
+  eventVerified?: boolean;
+  eventPlayTime?: string;
+}
+
 export interface Place {
   id: string;
   name: string;
@@ -43,6 +56,14 @@ export interface Place {
   kto?: { areaCd: string; signguCd: string; name: string };
   /** 이벤트 개최일 YYYY-MM-DD (KST) */
   eventDate?: string;
+  /** 이벤트 종료일 (여러 날 행사) */
+  eventEndDate?: string;
+  /** 한국관광공사 TourAPI 콘텐츠 (운영 시간·행사 일정 원천). type 12 관광지, 15 행사 */
+  ktoContent?: { id: number; type: number };
+  /** ThemeParks.wiki 엔티티 (놀이기구 대기시간) */
+  themeparksId?: string;
+  /** TourAPI에서 받아 붙인 정보 (getLivePlaces) */
+  info?: PlaceInfo;
 }
 
 // ICN1·ICN2: 인천공항 제1·2터미널(인천국제공항공사), 나머지: 한국공항공사 국내선
@@ -72,8 +93,12 @@ export interface CrowdSnapshot {
   headcount: number;
   trend: "up" | "down" | "flat";
   hourly: HourPoint[];
-  source: "seoul-citydata" | "incheon-airport" | "kac-airport" | "model";
+  source: "seoul-citydata" | "incheon-airport" | "kac-airport" | "themeparks-wiki" | "model";
   zones?: Zone[];
+  /** 테마파크: 운영 중 놀이기구 평균 대기(분) */
+  avgWaitMin?: number;
+  /** headcount가 한국공항공사 시간대별 탑승객 수(이번 시간 출발 승객)인지 */
+  paxHour?: boolean;
   /** 서울시 실시간 인구처럼 범위로만 주는 인원 [최소, 최대] */
   headcountRange?: [number, number];
   updatedAt: string;
