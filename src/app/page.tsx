@@ -1,82 +1,93 @@
 import Link from "next/link";
 import { HomeList } from "@/components/HomeList";
-import { LevelBadge, LevelLegend } from "@/components/Level";
+import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
-import { TrendCarousel } from "@/components/TrendCarousel";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { PLACES, placeHref } from "@/lib/places";
-import { formatAge } from "@/lib/time";
+import { daysUntil, formatAge } from "@/lib/time";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 export const revalidate = 60;
 
 export default async function HomePage() {
   const crowd = await getAllCrowd();
-  const ages = Object.values(crowd).map((c) => c.ageMinutes);
-  const anyStale = Object.values(crowd).some((c) => c.stale);
-
-  const trendRank = { up: 0, flat: 1, down: 2 } as const;
-  const trending = PLACES.filter((p) => !p.eventDate || crowd[p.id].score >= 40)
-    .map((place) => ({ place, crowd: crowd[place.id] }))
-    .sort(
-      (a, b) =>
-        Number(b.crowd.open) - Number(a.crowd.open) ||
-        trendRank[a.crowd.trend] - trendRank[b.crowd.trend] ||
-        b.crowd.score - a.crowd.score,
-    )
-    .slice(0, 5);
+  const live = Object.values(crowd).filter((c) => c.source !== "model");
+  const newest = live.length ? Math.min(...live.map((c) => c.ageMinutes)) : null;
 
   const calm = PLACES.filter((p) => crowd[p.id].open && p.category !== "event" && crowd[p.id].score < 40)
     .sort((a, b) => crowd[a.id].score - crowd[b.id].score)
     .slice(0, 3);
 
+  const events = PLACES.filter((p) => p.eventDate && daysUntil(p.eventDate) >= 0)
+    .sort((a, b) => a.eventDate!.localeCompare(b.eventDate!))
+    .slice(0, 2);
+
   return (
-    <main className="px-5 pt-6">
+    <main className="px-5 pt-6 pb-4">
       <header className="flex items-end justify-between">
         <div>
-          <p className="text-xs font-semibold tracking-wide text-indigo-500">CrowdView Pulse</p>
+          <p className="text-xs font-semibold tracking-wide text-indigo-500">CrowdView</p>
           <h1 className="mt-1 text-2xl font-bold">지금 어디가 한산할까?</h1>
         </div>
-        <span className={`flex items-center gap-1.5 text-xs ${anyStale ? "text-amber-600" : "text-gray-500"}`}>
-          <span className="relative flex h-2 w-2">
-            <span className={`pulse-ring absolute inline-flex h-full w-full rounded-full ${anyStale ? "bg-amber-400" : "bg-emerald-400"}`} />
-            <span className={`relative inline-flex h-2 w-2 rounded-full ${anyStale ? "bg-amber-500" : "bg-emerald-500"}`} />
+        {newest !== null && (
+          <span className="flex items-center gap-1.5 text-xs text-gray-500">
+            <span className="relative flex h-2 w-2">
+              <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-emerald-400" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+            </span>
+            {formatAge(newest)} 갱신
           </span>
-          {formatAge(Math.max(...ages))} 갱신
-        </span>
+        )}
       </header>
 
-      <div className="mt-4">
-        <LevelLegend />
-      </div>
+      <HomeList places={PLACES} crowd={crowd}>
+        {calm.length > 0 && (
+          <section className="mt-4 rounded-3xl bg-emerald-50 p-4">
+            <h2 className="font-bold text-emerald-900">🌿 지금 가면 쾌적해요</h2>
+            <ul className="mt-3 space-y-2">
+              {calm.map((p) => (
+                <li key={p.id}>
+                  <Link href={placeHref(p)} className="flex items-center gap-3 rounded-2xl bg-white p-2.5 active:opacity-70">
+                    <PlaceThumb place={p} size={40} />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-semibold">{p.name}</span>
+                      <span className="block text-xs text-gray-500">{p.region}</span>
+                    </span>
+                    <LevelBadge score={crowd[p.id].score} />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
-      <section className="mt-7">
-        <h2 className="mb-3 text-lg font-bold">🔥 실시간 트렌드</h2>
-        <TrendCarousel items={trending} />
-      </section>
-
-      {calm.length > 0 && (
-        <section className="mt-7 rounded-3xl bg-emerald-50 p-4">
-          <h2 className="font-bold text-emerald-900">🌿 지금 가면 쾌적해요</h2>
-          <p className="mt-0.5 text-xs text-emerald-700">영업 중이면서 혼잡도가 낮은 곳</p>
-          <ul className="mt-3 space-y-2">
-            {calm.map((p) => (
-              <li key={p.id}>
-                <Link href={placeHref(p)} className="flex items-center gap-3 rounded-2xl bg-white p-2.5">
-                  <PlaceThumb place={p} size={40} />
-                  <span className="flex-1 text-sm font-semibold">{p.name}</span>
-                  <LevelBadge score={crowd[p.id].score} />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      <section className="mt-7">
-        <h2 className="mb-3 text-lg font-bold">전체 장소</h2>
-        <HomeList places={PLACES} crowd={crowd} />
-      </section>
+        {events.length > 0 && (
+          <section className="mt-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold">🎆 다가오는 이벤트</h2>
+              <Link href="/events" className="text-sm text-gray-500">
+                전체 보기 ›
+              </Link>
+            </div>
+            <ul className="mt-3 grid grid-cols-2 gap-2">
+              {events.map((p) => (
+                <li key={p.id}>
+                  <Link href={placeHref(p)} className="block rounded-2xl border border-gray-100 p-3 active:bg-gray-50">
+                    <div className="flex items-center justify-between">
+                      <PlaceThumb place={p} size={36} />
+                      <span className="rounded-full bg-gray-900 px-2 py-0.5 text-[11px] font-bold text-white">
+                        {daysUntil(p.eventDate!) === 0 ? "D-DAY" : `D-${daysUntil(p.eventDate!)}`}
+                      </span>
+                    </div>
+                    <p className="mt-2 truncate text-sm font-semibold">{p.name}</p>
+                    <p className="text-xs text-gray-500">{p.eventDate!.slice(5).replace("-", "/")} · {p.region}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </HomeList>
     </main>
   );
 }

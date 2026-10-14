@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useFavorites, usePreferredTags } from "@/lib/prefs";
 import type { CrowdResult, Place } from "@/lib/types";
 import { PlaceRow } from "./PlaceRow";
@@ -7,8 +8,13 @@ import { PlaceRow } from "./PlaceRow";
 export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<string, CrowdResult> }) {
   const { favorites } = useFavorites();
   const { tags, toggle } = usePreferredTags();
+  const [showAllTags, setShowAllTags] = useState(false);
 
-  const allTags = [...new Set(places.flatMap((p) => p.tags))];
+  // 많이 쓰인 키워드부터, 고른 키워드는 항상 보이게
+  const counts = new Map<string, number>();
+  for (const t of places.flatMap((p) => p.tags)) counts.set(t, (counts.get(t) ?? 0) + 1);
+  const allTags = [...counts.keys()].sort((a, b) => Number(tags.includes(b)) - Number(tags.includes(a)) || counts.get(b)! - counts.get(a)!);
+  const shownTags = showAllTags ? allTags : allTags.slice(0, Math.max(12, tags.length));
   const favPlaces = places.filter((p) => favorites.includes(p.id));
 
   // 개인화 추천: 선호 태그 일치도 ↑, 현재 혼잡도 ↓
@@ -35,16 +41,16 @@ export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<stri
           </ul>
         ) : (
           <p className="mt-2 rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">
-            상세 페이지에서 🤍 를 눌러 자주 가는 곳을 추가하세요.
+            장소 상세 화면 오른쪽 위 🤍 를 누르면 여기에 모여요.
           </p>
         )}
       </section>
 
       <section>
         <h2 className="text-lg font-bold">관심 키워드</h2>
-        <p className="mt-0.5 text-xs text-gray-500">선택한 키워드로 지금 한산한 곳을 추천해 드려요.</p>
+        <p className="mt-0.5 text-xs text-gray-500">고른 키워드로 지금 한산한 곳을 추천해 드려요.</p>
         <div className="mt-3 flex flex-wrap gap-2">
-          {allTags.map((t) => (
+          {shownTags.map((t) => (
             <button
               key={t}
               onClick={() => toggle(t)}
@@ -55,6 +61,11 @@ export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<stri
               #{t}
             </button>
           ))}
+          {allTags.length > shownTags.length && (
+            <button onClick={() => setShowAllTags(true)} className="rounded-full px-3 py-1.5 text-sm text-gray-500 underline">
+              더보기 +{allTags.length - shownTags.length}
+            </button>
+          )}
         </div>
         {recommended.length > 0 && (
           <div className="mt-4 rounded-3xl bg-indigo-50/60 p-3">

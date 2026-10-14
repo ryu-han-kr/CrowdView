@@ -16,7 +16,11 @@ export default async function MePage() {
     <main className="px-5 pt-6">
       <h1 className="text-2xl font-bold">마이페이지</h1>
 
-      <section className="mt-5 rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-600 p-5 text-white">
+      <div className="mt-6">
+        <MePanel places={PLACES} crowd={crowd} />
+      </div>
+
+      <section className="mt-10 mb-6 rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-600 p-5 text-white">
         <p className="text-xs font-semibold opacity-80">CrowdView Pulse+</p>
         <p className="mt-1 text-lg font-bold">AI 예측 · 혼잡 알림 · 광고 제거</p>
         <div className="mt-4 grid grid-cols-2 gap-2">
@@ -30,10 +34,6 @@ export default async function MePage() {
         </div>
         <p className="mt-3 text-[11px] opacity-70">결제 연동 준비 중</p>
       </section>
-
-      <div className="mt-8">
-        <MePanel places={PLACES} crowd={crowd} />
-      </div>
     </main>
   );
 }

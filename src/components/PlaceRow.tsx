@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { CrowdResult, Place } from "@/lib/types";
-import { LevelBadge, LevelMeter, TrendArrow } from "./Level";
+import { LevelBadge } from "./Level";
 import { placeHref } from "@/lib/places";
 
 export function PlaceThumb({ place, size = 48 }: { place: Place; size?: number }) {
@@ -27,22 +27,14 @@ export function PlaceRow({ place, crowd }: { place: Place; crowd: CrowdResult })
         <div className="flex items-center gap-2">
           <p className="truncate font-semibold">{place.name}</p>
         </div>
-        <p className="mt-0.5 text-xs text-gray-500">
+        <p className="mt-0.5 truncate text-xs text-gray-500">
           {place.region}
           {crowd.open && ` · 약 ${crowd.headcount.toLocaleString()}명`}
+          {crowd.open && crowd.trend === "up" && <span className="text-red-500"> · 늘어나는 중</span>}
+          {crowd.open && crowd.trend === "down" && <span className="text-emerald-600"> · 줄어드는 중</span>}
         </p>
       </div>
-      {crowd.open ? (
-        <div className="flex flex-col items-end gap-1">
-          <div className="flex items-center gap-2">
-            <LevelBadge score={crowd.score} />
-            <LevelMeter score={crowd.score} />
-          </div>
-          <TrendArrow trend={crowd.trend} />
-        </div>
-      ) : (
-        <LevelBadge score={crowd.score} closed />
-      )}
+      <LevelBadge score={crowd.score} closed={!crowd.open} />
     </Link>
   );
 }
