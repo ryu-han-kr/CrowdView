@@ -1,5 +1,6 @@
 import { FestivalList } from "@/components/FestivalList";
-import { festivalHref, getFestivalCrowd, getFestivals, isLongRunning, type FestivalCrowd } from "@/lib/festivals";
+import { festivalHref, getFestivalCrowd, getFestivalLive, getFestivals, isLongRunning, seoulAreaOf, type FestivalCrowd } from "@/lib/festivals";
+import type { SeoulLive } from "@/lib/seoul-live";
 import { addDays, kst } from "@/lib/time";
 
 // 축제 일정은 6시간마다 바뀌어 1시간 단위로 다시 렌더링해도 충분하다
@@ -13,16 +14,22 @@ export default async function EventsPage() {
   const crowds: Record<string, FestivalCrowd | null> = {};
   await Promise.all(soon.map(async (f) => (crowds[f.id] = (await getFestivalCrowd(f)) ?? null)));
   const hrefs = Object.fromEntries(festivals.map((f) => [f.id, festivalHref(f)]));
+  // 진행 중인 서울 축제는 서울시 실시간 인구로 (장소 800m 안의 실시간 지역)
+  const lives: Record<string, SeoulLive | null> = {};
+  await Promise.all(
+    festivals.filter((f) => f.start <= today && seoulAreaOf(f)).map(async (f) => (lives[f.id] = (await getFestivalLive(f)) ?? null)),
+  );
+  const liveAreas = Object.fromEntries(festivals.flatMap((f) => (seoulAreaOf(f) ? [[f.id, seoulAreaOf(f)!.name]] : [])));
 
   return (
     <main className="px-5 pt-6 pb-8 md:px-0 md:pt-10">
       <h1 className="text-2xl font-bold md:text-3xl">전국 축제</h1>
       <p className="mt-1 text-sm text-gray-500">
-        한국관광공사·서울시 축제 일정 {festivals.length}개 · 혼잡은 작년 같은 기간 방문객으로 예측해요
+        한국관광공사·서울시 축제 일정 {festivals.length}개 · 서울 축제는 실시간, 그 외는 작년 같은 기간 방문객으로 예측해요
       </p>
-      <FestivalList festivals={festivals} crowds={crowds} hrefs={hrefs} today={today} />
+      <FestivalList festivals={festivals} crowds={crowds} lives={lives} liveAreas={liveAreas} hrefs={hrefs} today={today} />
       <p className="mt-6 text-center text-[11px] text-gray-400">
-        일정: 한국관광공사 TourAPI, 서울시 문화행사 정보 · 혼잡 예측: 한국관광공사 데이터랩(이동통신 방문자)
+        일정: 한국관광공사 TourAPI, 서울시 문화행사 정보 · 실시간: 서울시 실시간 도시데이터 · 혼잡 예측: 한국관광공사 데이터랩(이동통신 방문자)
       </p>
     </main>
   );

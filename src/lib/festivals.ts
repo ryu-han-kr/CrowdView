@@ -5,6 +5,7 @@
 import { dataGoKr } from "./datagokr";
 import { scoreFromValue, type LevelSteps } from "./levels";
 import { PLACES, placeHref } from "./places";
+import { getSeoulLive, nearestSeoulArea, type SeoulLive } from "./seoul-live";
 import { addDays, kst } from "./time";
 
 export interface Festival {
@@ -228,4 +229,16 @@ export function festivalHref(f: Festival): string {
   const id = f.id.startsWith("kto-") ? Number(f.id.slice(4)) : undefined;
   const place = id ? PLACES.find((p) => p.ktoContent?.id === id) : undefined;
   return place ? placeHref(place) : `/festival/${f.id}`;
+}
+
+/** 서울 축제이고 장소가 서울시 실시간 지역(800m 안)에 들어가는지 */
+export function seoulAreaOf(f: Festival) {
+  return f.region.startsWith("서울") && f.lat && f.lng ? nearestSeoulArea(f.lat, f.lng) : undefined;
+}
+
+/** 진행 중인 서울 축제의 실시간 인구 (서울시 실시간 도시데이터) */
+export async function getFestivalLive(f: Festival): Promise<SeoulLive | undefined> {
+  const today = kst().date;
+  if (f.start > today || f.end < today || !seoulAreaOf(f)) return undefined;
+  return getSeoulLive(f.lat!, f.lng!);
 }

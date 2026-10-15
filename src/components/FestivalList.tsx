@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { isLongRunning, type Festival, type FestivalCrowd } from "@/lib/festivals";
+import { compactNumber } from "@/lib/format";
+import type { SeoulLive } from "@/lib/seoul-live";
 import { DataTag } from "./DataTag";
 import { LevelBadge } from "./Level";
 
@@ -12,11 +14,17 @@ const fmt = (d: string) => d.slice(5).replace("-", "/");
 export function FestivalList({
   festivals,
   crowds,
+  lives,
+  liveAreas,
   hrefs,
   today,
 }: {
   festivals: Festival[];
   crowds: Record<string, FestivalCrowd | null>;
+  /** 진행 중인 서울 축제의 실시간 인구 */
+  lives: Record<string, SeoulLive | null>;
+  /** 서울시 실시간 지역에 연결된 축제 → 지역명 */
+  liveAreas: Record<string, string>;
   hrefs: Record<string, string>;
   today: string;
 }) {
@@ -58,6 +66,7 @@ export function FestivalList({
               <ul className="mt-3 grid gap-3 md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))]">
                 {sec.items.map((f) => {
                   const c = crowds[f.id];
+                  const live = lives[f.id];
                   const dday = Math.round((Date.parse(f.start) - Date.parse(today)) / 86_400_000);
                   return (
                     <li key={f.id}>
@@ -85,7 +94,15 @@ export function FestivalList({
                             {f.end !== f.start && ` ~ ${fmt(f.end)}`} · {f.region}
                           </p>
                           <div className="mt-1.5 flex items-center gap-1.5 text-[11px] text-gray-500">
-                            {c ? (
+                            {live ? (
+                              <>
+                                <LevelBadge score={live.score} />
+                                <span className="rounded bg-emerald-600 px-1 py-px text-[10px] font-bold text-white">실시간</span>
+                                <span>
+                                  {compactNumber(live.min)}~{compactNumber(live.max)}명
+                                </span>
+                              </>
+                            ) : c ? (
                               <>
                                 <LevelBadge score={c.score} />
                                 <DataTag />
@@ -95,7 +112,9 @@ export function FestivalList({
                                 </span>
                               </>
                             ) : (
-                              <span className="text-gray-400">혼잡 예측 준비 중</span>
+                              <span className="text-gray-400">
+                                {liveAreas[f.id] ? `시작하면 실시간 (${liveAreas[f.id]})` : "혼잡 예측 준비 중"}
+                              </span>
                             )}
                           </div>
                         </div>
