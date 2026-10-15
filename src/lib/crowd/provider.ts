@@ -3,17 +3,12 @@
 import type { CrowdSnapshot, Place } from "../types";
 import { fetchAirport } from "./airport";
 import { scoreFromValue } from "../levels";
+import { SEOUL_LEVEL_SCORE } from "../seoul-live";
 import { modelSnapshot } from "./model";
 import { fetchThemePark } from "./themeparks";
 import { getSignals, type Signals } from "./signals";
 
-// 서울시 4단계 → 0~100 점수 (5단계 기준 각 구간의 중앙 부근)
-const SEOUL_LEVEL_SCORE: Record<string, number> = {
-  여유: 25,
-  보통: 48,
-  "약간 붐빔": 68,
-  붐빔: 88,
-};
+
 
 interface SeoulPpltn {
   AREA_CONGEST_LVL: string;

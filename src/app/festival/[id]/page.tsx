@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DataTag } from "@/components/DataTag";
 import { LevelBadge } from "@/components/Level";
-import { FESTIVAL_STEPS, getFestival, getFestivalCrowd, isLongRunning } from "@/lib/festivals";
+import { FESTIVAL_STEPS, getFestival, getFestivalCrowd, getFestivalLive, isLongRunning, seoulAreaOf } from "@/lib/festivals";
+import { compactNumber } from "@/lib/format";
 import { LEVELS, levelOf } from "@/lib/levels";
 import { daysUntil, kst } from "@/lib/time";
 
@@ -14,7 +15,8 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
   const { id } = await params;
   const f = await getFestival(id);
   if (!f) notFound();
-  const crowd = await getFestivalCrowd(f);
+  const [crowd, live] = await Promise.all([getFestivalCrowd(f), getFestivalLive(f)]);
+  const area = seoulAreaOf(f);
   const today = kst().date;
   const dday = daysUntil(f.start);
   const ongoing = f.start <= today && f.end >= today;
@@ -70,6 +72,42 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
         </div>
 
         <div className="mt-6 lg:mt-0">
+          {live && (
+            <section className="mb-4 rounded-3xl p-5" style={{ background: `${levelOf(live.score).color}14` }}>
+              <p className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
+                <span className="rounded bg-emerald-600 px-1.5 py-px text-[10px] font-bold text-white">실시간</span>
+                지금 {live.area} 일대
+              </p>
+              <p className="mt-1 text-2xl font-extrabold" style={{ color: levelOf(live.score).color }}>
+                {levelOf(live.score).label}
+                <span className="ml-2 text-base font-semibold text-gray-900">
+                  {compactNumber(live.min)}~{compactNumber(live.max)}명
+                </span>
+              </p>
+              {live.forecast.length > 0 && (
+                <ul className="no-scrollbar mt-3 flex gap-1.5 overflow-x-auto">
+                  {live.forecast.slice(0, 8).map((p) => (
+                    <li key={p.time} className="w-16 shrink-0 rounded-xl bg-white/80 py-1.5 text-center">
+                      <p className="text-[10px] text-gray-500">{p.time.slice(11, 13)}시</p>
+                      <p className="text-xs font-bold" style={{ color: levelOf(p.score).color }}>
+                        {levelOf(p.score).label.replace("매우 ", "매우")}
+                      </p>
+                      <p className="text-[10px] text-gray-500">{compactNumber(Math.round((p.min + p.max) / 2))}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <p className="mt-2 text-[11px] text-gray-400">
+                서울시 실시간 도시데이터 · 서울시 단계 &lsquo;{live.level}&rsquo; · {live.time} 기준 · 축제 장소에서 {live.distance}m
+                떨어진 실시간 지역
+              </p>
+            </section>
+          )}
+          {!live && area && (
+            <p className="mb-4 rounded-2xl bg-emerald-50 px-4 py-3 text-xs text-emerald-800">
+              이 축제는 서울시 실시간 지역 &lsquo;{area.name}&rsquo; 안에서 열려요. 축제가 시작되면 실시간 인구를 보여드려요.
+            </p>
+          )}
           <section className="rounded-3xl p-5" style={{ background: level ? `${level.color}14` : "#f9fafb" }}>
             <p className="text-xs font-medium text-gray-500">
               예상 혼잡도
