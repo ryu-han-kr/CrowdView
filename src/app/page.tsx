@@ -27,11 +27,12 @@ export default async function HomePage() {
     .slice(0, 2);
 
   return (
-    <main className="px-5 pt-6 pb-4">
+    <main className="px-5 pt-6 pb-4 md:px-0 md:pt-10">
       <header className="flex items-end justify-between">
         <div>
           <p className="text-xs font-semibold tracking-wide text-indigo-500">CrowdView</p>
-          <h1 className="mt-1 text-2xl font-bold">지금 어디가 한산할까?</h1>
+          <h1 className="mt-1 text-2xl font-bold md:text-4xl">지금 어디가 한산할까?</h1>
+          <p className="mt-2 hidden text-gray-500 md:block">공항·놀이공원·명소·축제의 실시간 혼잡도와 AI 예측을 한눈에</p>
         </div>
         {newest !== null && (
           <span className="flex items-center gap-1.5 text-xs text-gray-500">
@@ -45,6 +46,7 @@ export default async function HomePage() {
       </header>
 
       <HomeList places={places} crowd={crowd}>
+        <div className="md:mt-6 md:grid md:grid-cols-2 md:items-start md:gap-6">
         {calm.length > 0 && (
           <section className="mt-4 rounded-3xl bg-emerald-50 p-4">
             <h2 className="font-bold text-emerald-900">🌿 지금 가면 쾌적해요</h2>
@@ -69,7 +71,7 @@ export default async function HomePage() {
         )}
 
         {events.length > 0 && (
-          <section className="mt-6">
+          <section className="mt-6 md:mt-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold">🎆 다가오는 이벤트</h2>
               <Link href="/events" className="text-sm text-gray-500">
@@ -97,6 +99,7 @@ export default async function HomePage() {
             </ul>
           </section>
         )}
+        </div>
       </HomeList>
     </main>
   );

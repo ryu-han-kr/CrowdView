@@ -54,11 +54,14 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
   const zoneLabels = Object.fromEntries(zones.map((z) => [z.id, z.label]));
 
   return (
-    <main className="px-5 pt-4 pb-8">
+    <main className="px-5 pt-4 pb-8 md:px-0 md:pt-8">
       <Link href="/airport" className="text-sm text-gray-500">
         ← 공항 목록
       </Link>
 
+      {/* PC: 왼쪽(사진·지금·날씨) 고정 + 오른쪽(파트 탭) */}
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-10">
+      <div className="lg:sticky lg:top-24 lg:self-start">
       {place.image && (
         <div className="relative mt-3 h-40 overflow-hidden rounded-3xl bg-gray-100">
           <Image src={place.image} alt={place.name} fill priority sizes="(max-width: 448px) 100vw, 448px" className="object-cover" />
@@ -101,9 +104,12 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
       </section>
 
       <WeatherCard signals={signals} />
+      </div>
+
+      <div>
 
       {/* 파트별 탭: 출국장(구간) · 시간대 · 기록 · 주차 */}
-      <div className="mt-6">
+      <div className="mt-6 lg:mt-0">
         <IconTabPanels
           tabs={[
             {
@@ -218,6 +224,8 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
       </div>
 
       <JudgementCard place={place} crowd={crowd} signals={signals} />
+      </div>
+      </div>
     </main>
   );
 }

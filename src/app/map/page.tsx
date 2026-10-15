@@ -9,15 +9,15 @@ export const revalidate = 60;
 export default async function MapPage() {
   const crowd = await getAllCrowd();
   return (
-    <main className="pt-5">
-      <div className="px-5">
-        <h1 className="text-2xl font-bold">혼잡도 지도</h1>
+    <main className="pt-5 md:pt-8">
+      <div className="px-5 md:px-0">
+        <h1 className="text-2xl font-bold md:text-3xl">혼잡도 지도</h1>
         <p className="mt-0.5 text-sm text-gray-500">원이 크고 붉을수록 붐벼요. 핀을 누르면 자세히 볼 수 있어요.</p>
       </div>
-      <div className="mt-3">
+      <div className="mt-3 md:mt-5 md:overflow-hidden md:rounded-3xl">
         <CrowdMap places={PLACES} crowd={crowd} />
       </div>
-      <div className="px-5 pt-3 pb-2">
+      <div className="px-5 pt-3 pb-2 md:px-0">
         <LevelLegend />
       </div>
     </main>

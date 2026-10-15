@@ -58,3 +58,50 @@ export function PlaceRow({ place, crowd }: { place: Place; crowd: CrowdResult })
     </Link>
   );
 }
+
+/** 태블릿·PC 그리드용 사진 카드 */
+export function PlaceCard({ place, crowd }: { place: Place; crowd: CrowdResult }) {
+  const info = headcountInfo(crowd);
+  return (
+    <Link
+      href={placeHref(place)}
+      className="group block overflow-hidden rounded-3xl border border-gray-100 bg-white transition-shadow hover:shadow-lg"
+    >
+      <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
+        {place.image ? (
+          <Image
+            src={place.image}
+            alt={place.name}
+            fill
+            sizes="(min-width: 1024px) 360px, 50vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div
+            className="flex h-full items-center justify-center text-6xl"
+            style={{ background: `linear-gradient(135deg, hsl(${place.hue} 80% 88%), hsl(${place.hue + 40} 80% 78%))` }}
+          >
+            {place.emoji}
+          </div>
+        )}
+        <span className="absolute top-3 left-3 rounded-full bg-white/95 shadow-sm">
+          <LevelBadge score={crowd.score} closed={!crowd.open} />
+        </span>
+      </div>
+      <div className="p-4">
+        <p className="truncate font-semibold">{place.name}</p>
+        <p className="mt-0.5 truncate text-xs text-gray-500">
+          {place.region}
+          {info && ` · ${info.text}`}
+          {info?.kind && <DataTag kind={info.kind} />}
+          {crowd.open && isEstimated(crowd) && !info?.kind && <DataTag />}
+        </p>
+        {crowd.open && crowd.trend !== "flat" && (
+          <p className={`mt-1 text-xs ${crowd.trend === "up" ? "text-red-500" : "text-emerald-600"}`}>
+            {crowd.trend === "up" ? "↑ 늘어나는 중" : "↓ 줄어드는 중"}
+          </p>
+        )}
+      </div>
+    </Link>
+  );
+}

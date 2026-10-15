@@ -23,11 +23,11 @@ export default async function EventsPage() {
     .sort((a, b) => a.dday - b.dday);
 
   return (
-    <main className="px-5 pt-6">
-      <h1 className="text-2xl font-bold">다가오는 이벤트</h1>
+    <main className="px-5 pt-6 md:px-0 md:pt-10">
+      <h1 className="text-2xl font-bold md:text-3xl">다가오는 이벤트</h1>
       <p className="mt-1 text-sm text-gray-500">AI가 예측한 당일 최대 인원과 피크 시간대</p>
 
-      <ul className="mt-5 space-y-3">
+      <ul className="mt-5 space-y-3 md:grid md:grid-cols-2 md:gap-4 md:space-y-0">
         {events.map(({ place, dday, peak, visitors }) => (
           <li key={place.id}>
             <Link href={placeHref(place)} className="block rounded-3xl border border-gray-100 p-4 active:bg-gray-50">
