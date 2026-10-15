@@ -389,6 +389,7 @@ export default {
   "혼잡 예측 준비 중": ["Forecast coming soon", "混雑予測準備中", "拥挤预测准备中", "擁擠預測準備中"],
   "작년 {pct}%": ["Last yr {pct}%", "昨年 {pct}%", "去年 {pct}%", "去年 {pct}%"],
   "이 지역에는 예정된 축제가 없어요.": ["No upcoming festivals in this area.", "この地域に予定されている祭りはありません。", "该地区暂无即将举行的节庆。", "該地區暫無即將舉行的節慶。"],
+  "이름·장소는 Papago 자동 번역이에요. 요금은 한국어 원문이에요.": ["Name and venue are machine-translated by Papago. Fees are in the original Korean.", "名前・場所はPapagoによる自動翻訳です。料金は韓国語の原文です。", "名称和地点由Papago自动翻译，费用为韩语原文。", "名稱與地點由Papago自動翻譯，費用為韓語原文。"],
   "축제 목록": ["Festivals", "祭り一覧", "节庆列表", "節慶列表"],
   "축제 이름·장소·요금은 주최 측 원문(한국어)이에요.": ["Festival names, venues and fees are the organizer's original Korean text.", "祭りの名前・場所・料金は主催者の原文 (韓国語) です。", "节庆名称、地点和费用为主办方原文 (韩语)。", "節慶名稱、地點與費用為主辦方原文 (韓語)。"],
   기간: ["Dates", "期間", "日期", "日期"],

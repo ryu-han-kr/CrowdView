@@ -5,6 +5,7 @@ import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { festivalHref, getFestivals, isLongRunning } from "@/lib/festivals";
+import { translateNames } from "@/lib/name-translate";
 import { getLivePlaces } from "@/lib/place-info";
 import { placeHref } from "@/lib/places";
 import { isEstimated } from "@/lib/format";
@@ -30,6 +31,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   // 다가오는 축제: 한국관광공사·서울시 실제 일정 (진행 중 먼저)
   const festivals = (await getFestivals(30)).filter((f) => !isLongRunning(f)).slice(0, 4);
+  const names = await translateNames(festivals.flatMap((f) => [f.title, f.region]), lang);
   const today = kst().date;
 
   return (
@@ -105,9 +107,9 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
                       </span>
                     </div>
                     <div className="p-2.5">
-                      <p className="truncate text-sm font-semibold">{f.title}</p>
+                      <p className="truncate text-sm font-semibold">{names.get(f.title) ?? f.title}</p>
                       <p className="truncate text-xs text-gray-500">
-                        {f.start.slice(5).replace("-", "/")} · {trRegion(f.region, t)}
+                        {f.start.slice(5).replace("-", "/")} · {names.get(f.region) ?? trRegion(f.region, t)}
                       </p>
                     </div>
                   </Link>

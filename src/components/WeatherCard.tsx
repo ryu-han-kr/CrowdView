@@ -1,5 +1,6 @@
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
+import { translateNames } from "@/lib/name-translate";
 import type { Signals } from "@/lib/crowd/signals";
 import { AIR_GRADE } from "@/lib/crowd/weather-air";
 import { kst } from "@/lib/time";
@@ -11,8 +12,9 @@ const ICON = (sky?: number, pty?: number) =>
 const AIR_COLOR = ["", "#10b981", "#84cc16", "#f97316", "#ef4444"];
 
 /** 지금 날씨(기상청 단기예보)와 미세먼지(에어코리아 실시간) */
-export function WeatherCard({ signals, lang }: { signals: Signals; lang: Lang }) {
+export async function WeatherCard({ signals, lang }: { signals: Signals; lang: Lang }) {
   const t = getT(lang);
+  const stations = await translateNames([signals.air?.station], lang);
   const now = kst();
   const hh = Math.floor(now.hour);
   // 이번 시간 예보가 없으면 가장 가까운 다음 시간
@@ -44,7 +46,7 @@ export function WeatherCard({ signals, lang }: { signals: Signals; lang: Lang })
             {t(AIR_GRADE[air.pm25Grade])}
             {air.pm25 !== undefined && <span className="ml-1 text-xs font-semibold text-gray-700">{air.pm25}㎍</span>}
           </p>
-          <p className="text-[11px] text-gray-500">{t("{name} 측정소", { name: air.station })}</p>
+          <p className="text-[11px] text-gray-500">{t("{name} 측정소", { name: stations.get(air.station) ?? air.station })}</p>
         </div>
       )}
     </section>
