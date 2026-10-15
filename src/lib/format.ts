@@ -14,7 +14,7 @@ export type DataKind = "추정" | "임의";
 export const isEstimated = (c: CrowdResult) => c.source === "model";
 
 /** 12,000 → 1.2만, 9,500 → 9,500 */
-function compact(n: number): string {
+export function compactNumber(n: number): string {
   if (n < 10_000) return n.toLocaleString();
   const man = n / 10_000;
   return `${Number.isInteger(man) ? man : man.toFixed(1)}만`;
@@ -30,10 +30,10 @@ export function headcountInfo(c: CrowdResult): { text: string; kind?: DataKind }
   if (!c.open) return null;
   if (c.source === "seoul-citydata") {
     return {
-      text: c.headcountRange ? `${compact(c.headcountRange[0])}~${compact(c.headcountRange[1])}명` : `약 ${compact(c.headcount)}명`,
+      text: c.headcountRange ? `${compactNumber(c.headcountRange[0])}~${compactNumber(c.headcountRange[1])}명` : `약 ${compactNumber(c.headcount)}명`,
     };
   }
   if (c.source === "incheon-airport") return { text: `출국 대기 ${c.headcount.toLocaleString()}명` };
   if (c.source === "kac-airport" && c.paxHour) return { text: `이번 시간 출발 ${c.headcount.toLocaleString()}명` };
-  return SHOW_DATA_LABELS ? { text: `약 ${compact(c.headcount)}명`, kind: "추정" } : null;
+  return SHOW_DATA_LABELS ? { text: `약 ${compactNumber(c.headcount)}명`, kind: "추정" } : null;
 }

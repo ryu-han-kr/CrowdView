@@ -1,5 +1,6 @@
 // 테마파크 놀이기구 대기시간 (ThemeParks.wiki, 무료·상업 이용 가능, "Powered by ThemeParks.wiki" 표기 필수)
 // 운영 중인 놀이기구의 평균 대기시간으로 혼잡도를 매기고, 대기가 긴 놀이기구를 구역(zones)으로 보여준다.
+import { scoreFromValue } from "../levels";
 import type { CrowdSnapshot, Place, Zone } from "../types";
 import { modelSnapshot } from "./model";
 import type { Signals } from "./signals";
@@ -35,8 +36,9 @@ interface LiveItem {
   queue?: { STANDBY?: { waitTime?: number | null } };
 }
 
-/** 평균 대기 0분 ≈ 10점, 30분 ≈ 46점(보통), 60분 ≈ 82점(매우 혼잡) */
-const waitScore = (min: number) => Math.round(Math.min(95, 10 + min * 1.2));
+/** 대기시간(분)을 장소 기준(예: 10·20·35·50분)으로 점수화 */
+const waitScore = (min: number, place: Place) =>
+  place.criteria?.unit === "분" ? scoreFromValue(min, place.criteria.steps) : Math.round(Math.min(95, 10 + min * 1.2));
 
 export async function fetchThemePark(place: Place, s?: Signals): Promise<CrowdSnapshot> {
   // 대기시간은 5분 단위로 바뀌어 2분만 캐시한다
@@ -54,11 +56,11 @@ export async function fetchThemePark(place: Place, s?: Signals): Promise<CrowdSn
   if (rides.length === 0) return { ...base, open: false };
 
   const avg = rides.reduce((sum, r) => sum + r.wait, 0) / rides.length;
-  const score = waitScore(avg);
+  const score = waitScore(avg, place);
   const zones: Zone[] = rides
     .sort((a, b) => b.wait - a.wait)
     .slice(0, 8)
-    .map((r) => ({ id: r.name, label: KO[r.name] ?? r.name, score: waitScore(r.wait), waitMin: r.wait }));
+    .map((r) => ({ id: r.name, label: KO[r.name] ?? r.name, score: waitScore(r.wait, place), waitMin: r.wait }));
 
   const hourly = base.hourly.map((p) => ({ ...p }));
   const current = hourly.filter((p) => !p.forecast).at(-1);

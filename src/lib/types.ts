@@ -1,3 +1,5 @@
+import type { LevelSteps } from "./levels";
+
 // 홈 상단 파트 탭 순서와 같다
 export type Category = "landmark" | "street" | "themepark" | "beach" | "airport" | "event";
 
@@ -21,6 +23,16 @@ export interface PlaceInfo {
   /** 행사 일정이 TourAPI 올해 값인지. false면 작년 일정에서 1년 뒤로 추정 */
   eventVerified?: boolean;
   eventPlayTime?: string;
+}
+
+/** 장소별 혼잡 기준. 예: 홍대 인구 5만 미만 쾌적 … 14만 이상 매우 혼잡 */
+export interface LevelCriteria {
+  unit: "명" | "분";
+  steps: LevelSteps;
+  /** 어떤 수치에 대한 기준인지 (예: 서울시 실시간 인구, 놀이기구 평균 대기) */
+  basis: string;
+  /** 데이터가 쌓이기 전 임시로 정한 값인지 */
+  provisional?: boolean;
 }
 
 export interface Place {
@@ -47,8 +59,10 @@ export interface Place {
   seoulArea?: string;
   /** 공항 IATA 코드 (있으면 공항 혼잡도 API 사용) */
   airport?: AirportCode;
-  /** 공항: 시간당 출발 승객 수가 이 값이면 '매우 혼잡'(90점) */
-  paxCapacity?: number;
+  /** 지금 혼잡도 기준 (실제 단위). 단계 상한값: 쾌적·원활·보통·혼잡, 그 이상은 매우 혼잡 */
+  criteria?: LevelCriteria;
+  /** 공항: 시간당 출발 승객 수 기준 (시간대 그래프) */
+  paxSteps?: LevelSteps;
   /** 0(실내)~1(야외). 비·폭염 영향 계산용. 없으면 카테고리 기본값 */
   outdoor?: number;
   /** 대표 사진 (public/places). 기본 출처는 한국관광공사 TourAPI(공공누리) */
@@ -92,6 +106,9 @@ export interface HourPoint {
   hour: number;
   score: number;
   forecast: boolean;
+  /** 그 시간의 인원(또는 시간당 승객). kind: real 실측·공식 예보, pattern 월평균 패턴 기반, est 점수로 환산한 추정 */
+  people?: number;
+  peopleKind?: "real" | "pattern" | "est";
 }
 
 export interface CrowdSnapshot {
@@ -104,6 +121,8 @@ export interface CrowdSnapshot {
   hourly: HourPoint[];
   source: "seoul-citydata" | "incheon-airport" | "kac-airport" | "themeparks-wiki" | "model";
   zones?: Zone[];
+  /** 원천이 주는 공식 단계 (예: 서울시 '보통'). 장소 기준과 다를 수 있어 참고로 보여준다 */
+  officialLevel?: string;
   /** 테마파크: 운영 중 놀이기구 평균 대기(분) */
   avgWaitMin?: number;
   /** headcount가 한국공항공사 시간대별 탑승객 수(이번 시간 출발 승객)인지 */

@@ -65,7 +65,7 @@ export function PlaceCard({ place, crowd }: { place: Place; crowd: CrowdResult }
   return (
     <Link
       href={placeHref(place)}
-      className="group block overflow-hidden rounded-3xl border border-gray-100 bg-white transition-shadow hover:shadow-lg"
+      className="group flex h-full flex-col overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-md shadow-gray-200/70 ring-1 ring-transparent transition duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-indigo-200/60 hover:ring-indigo-300"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
         {place.image ? (
@@ -74,7 +74,7 @@ export function PlaceCard({ place, crowd }: { place: Place; crowd: CrowdResult }
             alt={place.name}
             fill
             sizes="(min-width: 1024px) 360px, 50vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="scale-[1.03] object-cover transition-transform duration-300 group-hover:scale-[1.08]"
           />
         ) : (
           <div
@@ -84,11 +84,12 @@ export function PlaceCard({ place, crowd }: { place: Place; crowd: CrowdResult }
             {place.emoji}
           </div>
         )}
-        <span className="absolute top-3 left-3 rounded-full bg-white/95 shadow-sm">
+        <span className="absolute top-3 left-3 flex rounded-full bg-white/95 shadow-sm">
           <LevelBadge score={crowd.score} closed={!crowd.open} />
         </span>
       </div>
-      <div className="p-4">
+      {/* 카드 높이를 맞추려고 글 영역 높이를 고정 (추세 줄이 없어도 같은 높이) */}
+      <div className="h-[92px] p-4">
         <p className="truncate font-semibold">{place.name}</p>
         <p className="mt-0.5 truncate text-xs text-gray-500">
           {place.region}

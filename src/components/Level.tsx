@@ -23,8 +23,8 @@ export function LevelBadge({ score, large = false, closed = false }: { score: nu
   const level = closed ? { label: "운영 종료", color: "#9ca3af" } : levelOf(score);
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full font-semibold ${
-        large ? "px-3 py-1 text-sm" : "px-2 py-0.5 text-xs"
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full align-middle leading-none font-semibold whitespace-nowrap ${
+        large ? "h-8 px-3 text-sm" : "h-6 px-2.5 text-xs"
       }`}
       style={{ color: level.color, background: `${level.color}1a` }}
     >
@@ -38,7 +38,7 @@ export function LevelLegend() {
   return (
     <div className="flex overflow-hidden rounded-xl text-center text-[11px] font-medium">
       {LEVELS.map((l) => (
-        <div key={l.key} className="flex-1 py-1.5" style={{ background: `${l.color}1f`, color: l.color }}>
+        <div key={l.key} className="flex h-7 flex-1 items-center justify-center leading-none" style={{ background: `${l.color}1f`, color: l.color }}>
           {l.label}
         </div>
       ))}

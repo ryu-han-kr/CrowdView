@@ -45,3 +45,30 @@ export function WeatherCard({ signals }: { signals: Signals }) {
     </section>
   );
 }
+
+/** 지금 혼잡도 카드 안에 넣는 작은 날씨·미세먼지 (오른쪽 정렬) */
+export function WeatherInline({ signals }: { signals: Signals }) {
+  const now = kst();
+  const hh = Math.floor(now.hour);
+  let w;
+  for (let h = hh; h < hh + 3 && !w; h++) w = signals.weather?.get(`${now.date} ${String(h % 24).padStart(2, "0")}`);
+  const air = signals.air;
+  if (!w && !air?.pm25Grade) return null;
+  return (
+    <div className="shrink-0 text-right">
+      {w && (
+        <p className="flex items-center justify-end gap-1 text-sm font-semibold">
+          <span className="text-xl leading-none">{ICON(w.sky, w.pty)}</span>
+          {w.tmp !== undefined && `${w.tmp}°`}
+          <span className="text-xs font-medium text-gray-500">{w.pty ? PTY[w.pty] : (SKY[w.sky ?? 0] ?? "")}</span>
+        </p>
+      )}
+      {w && <p className="text-[11px] text-gray-500">강수 {w.pop ?? 0}%</p>}
+      {air?.pm25Grade && (
+        <p className="text-[11px] text-gray-500">
+          초미세 <b style={{ color: AIR_COLOR[air.pm25Grade] }}>{AIR_GRADE[air.pm25Grade]}</b>
+        </p>
+      )}
+    </div>
+  );
+}

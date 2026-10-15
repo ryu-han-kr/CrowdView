@@ -5,6 +5,7 @@
 // - 관광지 집중률 30일 예측의 평소 대비 비율 (한국관광공사)
 // - 공항은 시간대별 출발 승객 수가 있으면 그것으로 곡선을 대체 (공항공사)
 // 실데이터가 쌓이면 과거 데이터를 학습한 모델로 교체할 자리.
+import { scoreFromValue, valueFromScore } from "../levels";
 import type { CrowdSnapshot, HourPoint, Place } from "../types";
 import { addDays, kst, kstDateParts, type KstParts } from "../time";
 import type { Signals, Weather } from "./signals";
@@ -113,43 +114,59 @@ function concentrationFactor(s: Signals | undefined, date: string): number {
   return ratio === undefined ? 1 : Math.max(0.7, Math.min(1.4, 0.5 + 0.5 * ratio));
 }
 
-/** 특정 시각의 기대 혼잡도 (노이즈 없음) */
-export function expectedScore(place: Place, t: KstParts, s?: Signals): number {
+interface Expected {
+  score: number;
+  people?: number;
+  peopleKind?: HourPoint["peopleKind"];
+}
+
+/** 특정 시각의 기대 혼잡도와 인원 (노이즈 없음) */
+function expected(place: Place, t: KstParts, s?: Signals): Expected {
   const [open, close] = place.hours;
-  if (t.hour < open || t.hour >= close) return 3;
-  if (place.info?.closedToday && t.date === kst().date) return 3;
-  const pax = s?.pax?.get(t.date)?.[Math.floor(t.hour)];
-  if (pax !== undefined && place.paxCapacity) return clamp((90 * pax) / place.paxCapacity);
-  // 부산시 생활인구가 있으면 실제 시간대 방문 패턴, 없으면 피크 시각 중심의 기본 곡선
+  if (t.hour < open || t.hour >= close) return { score: 3 };
+  if (place.info?.closedToday && t.date === kst().date) return { score: 3 };
+  const h = Math.floor(t.hour);
+
+  // 공항: 공항공사가 예고한 시간대별 출발 승객 수를 장소별 기준으로 점수화
+  const pax = s?.pax?.get(t.date)?.[h];
+  if (pax !== undefined && place.paxSteps) return { score: scoreFromValue(pax, place.paxSteps), people: pax, peopleKind: "real" };
+
+  const factors =
+    dayFactor(place, t, s) * weatherFactor(place, t, s) * airFactor(place, t.date, s) * concentrationFactor(s, t.date);
   const pop = s?.localPop?.hourly;
-  let curve: number;
-  if (pop?.some((v) => v > 0)) {
-    const [min, max] = [Math.min(...pop), Math.max(...pop)];
-    curve = 0.25 + (0.75 * (pop[Math.floor(t.hour)] - min)) / (max - min || 1);
-  } else {
-    const d = t.hour - place.peakHour;
-    curve = 0.25 + 0.75 * Math.exp(-(d * d) / (2 * SPREAD[place.category] ** 2));
+  const eventDay = !!place.eventDate && t.date >= place.eventDate && t.date <= (place.eventEndDate ?? place.eventDate);
+
+  // 부산시 생활인구: 같은 달 평균 방문인구 × 요일·날씨 보정 = 그 시간 예상 인원 → 장소 기준으로 단계
+  if (pop?.[h] && place.criteria?.unit === "명" && !eventDay) {
+    // 요일 보정 평균(약 0.9)을 1로 맞춘다
+    const people = Math.round((pop[h] * factors) / 0.9);
+    return { score: scoreFromValue(people, place.criteria.steps), people, peopleKind: "pattern" };
   }
-  return clamp(
-    100 *
-      place.popularity *
-      curve *
-      dayFactor(place, t, s) *
-      weatherFactor(place, t, s) *
-      airFactor(place, t.date, s) *
-      concentrationFactor(s, t.date),
-  );
+
+  const d = t.hour - place.peakHour;
+  const curve = 0.25 + 0.75 * Math.exp(-(d * d) / (2 * SPREAD[place.category] ** 2));
+  const score = clamp(100 * place.popularity * curve * factors);
+  return place.criteria?.unit === "명"
+    ? { score, people: valueFromScore(score, place.criteria.steps), peopleKind: "est" }
+    : { score };
+}
+
+export function expectedScore(place: Place, t: KstParts, s?: Signals): number {
+  return expected(place, t, s).score;
 }
 
 /** 하루 시간대별 곡선. nowHour 이전은 관측값(노이즈 포함), 이후는 예측값 */
 export function hourlyCurve(place: Place, date: KstParts, nowHour: number | null, s?: Signals): HourPoint[] {
   const points: HourPoint[] = [];
   for (let h = 6; h <= 23; h++) {
-    const t = { ...date, hour: h + 0.5 };
-    const base = expectedScore(place, t, s);
+    const e = expected(place, { ...date, hour: h + 0.5 }, s);
     const forecast = nowHour === null || h > Math.floor(nowHour);
-    const jitter = forecast ? 0 : noise(`${place.id}:${date.date}:${h}`) * 7;
-    points.push({ hour: h, score: Math.round(clamp(base + jitter)), forecast });
+    // 추정 곡선의 지난 시간만 약간 흔들어 실측처럼 보이게 하던 노이즈 (실제 수치가 있으면 쓰지 않음)
+    const jitter = forecast || e.peopleKind !== "est" ? 0 : noise(`${place.id}:${date.date}:${h}`) * 7;
+    const score = Math.round(clamp(e.score + jitter));
+    const people =
+      e.peopleKind === "est" && place.criteria ? valueFromScore(score, place.criteria.steps) : e.people;
+    points.push({ hour: h, score, forecast, ...(people !== undefined ? { people, peopleKind: e.peopleKind } : {}) });
   }
   return points;
 }
@@ -181,7 +198,7 @@ export function forecastReasons(place: Place, date: string, peakHour: number, s?
   const ratio = concentrationRatio(s, date);
   if (ratio !== undefined && ratio >= 1.2) reasons.push("📈 관광공사 예측: 평소보다 붐빔");
   if (ratio !== undefined && ratio <= 0.8) reasons.push("📉 관광공사 예측: 평소보다 한산");
-  if (s?.pax?.has(date) && place.paxCapacity) reasons.push("✈️ 공항공사 시간대별 승객 수 반영");
+  if (s?.pax?.has(date) && place.paxSteps) reasons.push("✈️ 공항공사 시간대별 승객 수 반영");
   return reasons;
 }
 
@@ -216,7 +233,9 @@ export function modelSnapshot(place: Place, at: Date = new Date(), s?: Signals):
     placeId: place.id,
     score,
     open: now.hour >= place.hours[0] && now.hour < place.hours[1] && !place.info?.closedToday,
-    headcount: Math.round((place.capacity * score) / 100),
+    // 인원 기준이 있으면 같은 기준으로 환산 (그래프·카드 숫자가 서로 맞도록)
+    headcount:
+      place.criteria?.unit === "명" ? valueFromScore(score, place.criteria.steps) : Math.round((place.capacity * score) / 100),
     trend: delta > 4 ? "up" : delta < -4 ? "down" : "flat",
     hourly: hourlyCurve(place, now, now.hour, s),
     source: "model",
