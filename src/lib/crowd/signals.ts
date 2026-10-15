@@ -6,6 +6,7 @@
 import { dataGoKr, ymd } from "../datagokr";
 import { addDays, kst } from "../time";
 import type { Place } from "../types";
+import { getLocalPop, type LocalPop } from "./busan-pop";
 
 export interface Weather {
   tmp?: number; // 기온 °C
@@ -22,6 +23,8 @@ export interface Signals {
   concentration?: Map<string, number>;
   /** YYYY-MM-DD → 시간대별(0~23) 출발 승객 수 */
   pax?: Map<string, number[]>;
+  /** 부산시 생활인구 (시간대·성별·연령, 월평균) */
+  localPop?: LocalPop;
 }
 
 const HOUR = 3600;
@@ -66,9 +69,9 @@ export function toKmaGrid(lat: number, lng: number): { nx: number; ny: number } 
   return { nx: Math.floor(ra * Math.sin(theta) + 43 + 0.5), ny: Math.floor(ro - ra * Math.cos(theta) + 136 + 0.5) };
 }
 
-// 단기예보 발표 시각(02·05·…·23시, 10분 뒤부터 조회 가능) 중 가장 최근
-function kmaBase(now = new Date()): { base_date: string; base_time: string } {
-  const t = new Date(now.getTime() + 9 * HOUR * 1000 - 15 * 60_000);
+// 단기예보 발표 시각(02·05·…·23시) 중 가장 최근. back=1이면 그 직전 발표
+function kmaBase(back = 0, now = new Date()): { base_date: string; base_time: string } {
+  const t = new Date(now.getTime() + 9 * HOUR * 1000 - 15 * 60_000 - back * 3 * HOUR * 1000);
   const h = t.getUTCHours();
   const base = [23, 20, 17, 14, 11, 8, 5, 2].find((b) => b <= h);
   const day = base === undefined ? new Date(t.getTime() - 86_400_000) : t;
@@ -77,11 +80,17 @@ function kmaBase(now = new Date()): { base_date: string; base_time: string } {
 
 async function getWeather(place: Place): Promise<Map<string, Weather>> {
   const { nx, ny } = toKmaGrid(place.lat, place.lng);
-  const items = await dataGoKr(
-    "/1360000/VilageFcstInfoService_2.0/getVilageFcst",
-    { ...kmaBase(), nx: String(nx), ny: String(ny), numOfRows: "1000", dataType: "JSON" },
-    HOUR,
-  );
+  // 기상청 발표가 늦으면 최신 회차가 NO_DATA로 온다 → 최대 3회차(9시간) 전 발표까지 거슬러 올라간다
+  let items: Awaited<ReturnType<typeof dataGoKr>> = [];
+  for (const back of [0, 1, 2, 3]) {
+    items = await dataGoKr(
+      "/1360000/VilageFcstInfoService_2.0/getVilageFcst",
+      { ...kmaBase(back), nx: String(nx), ny: String(ny), numOfRows: "1000", dataType: "JSON" },
+      HOUR,
+    ).catch(() => []);
+    if (items.length) break;
+  }
+  if (!items.length) throw new Error(`no forecast for grid ${nx},${ny}`);
   const map = new Map<string, Weather>();
   for (const i of items) {
     const field = ({ TMP: "tmp", POP: "pop", PTY: "pty" } as const)[String(i.category) as "TMP" | "POP" | "PTY"];
@@ -144,11 +153,12 @@ export async function getAirportPax(place: Place): Promise<Map<string, number[]>
 
 export async function getSignals(place: Place): Promise<Signals> {
   if (!process.env.DATA_GO_KR_KEY) return {};
-  const [holidays, weather, concentration, pax] = await Promise.allSettled([
+  const [holidays, weather, concentration, pax, localPop] = await Promise.allSettled([
     getHolidays(),
     place.category === "airport" ? Promise.resolve(undefined) : getWeather(place),
     place.kto ? getConcentration(place.kto) : Promise.resolve(undefined),
     place.airport ? getAirportPax(place) : Promise.resolve(undefined),
+    getLocalPop(place),
   ]);
   const ok = <T>(r: PromiseSettledResult<T>, name: string): T | undefined => {
     if (r.status === "fulfilled") return r.value;
@@ -160,5 +170,6 @@ export async function getSignals(place: Place): Promise<Signals> {
     weather: ok(weather, "weather"),
     concentration: ok(concentration, "concentration"),
     pax: ok(pax, "pax"),
+    localPop: ok(localPop, "localPop"),
   };
 }

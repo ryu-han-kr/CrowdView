@@ -175,6 +175,7 @@ export const PLACES: Place[] = [
     kto: { areaCd: "26", signguCd: "26350", name: "해운대해수욕장" },
     image: "/places/haeundae.jpg",
     ktoContent: { id: 126081, type: 12 },
+    busanDongs: ["해운대구 우1동", "해운대구 중1동"],
   },
   {
     id: "icn-t1",
@@ -319,6 +320,7 @@ export const PLACES: Place[] = [
     eventDate: "2026-11-07",
     image: "/places/busan-fireworks.jpg",
     ktoContent: { id: 235076, type: 15 },
+    busanDongs: ["수영구 광안2동", "수영구 민락동"],
   },
   {
     id: "lantern-festival",
