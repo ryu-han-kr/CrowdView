@@ -20,7 +20,7 @@ export default async function AirportListPage() {
       <h1 className="text-2xl font-bold md:text-3xl">공항 혼잡도</h1>
       <p className="mt-1 text-sm text-gray-500">출국장 대기·보안검색 구간·주차장까지 한눈에</p>
 
-      <ul className="mt-5 space-y-3 md:grid md:grid-cols-2 md:gap-4 md:space-y-0 lg:grid-cols-3">
+      <ul className="mt-5 space-y-3 md:grid md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] md:gap-4 md:space-y-0">
         {AIRPORTS.map((place, i) => {
           const c = crowd[place.id];
           const busiestZone = c.zones?.reduce((a, b) => (b.score > a.score ? b : a));

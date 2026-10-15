@@ -27,7 +27,8 @@ export function TopNav() {
           <span className="text-indigo-600">Crowd</span>View
         </Link>
         <nav className="flex gap-1">
-          {TABS.map((t) => {
+          {/* 공항은 홈의 파트 탭으로 들어간다 (상단 메뉴에서는 뺌) */}
+          {TABS.filter((t) => t.href !== "/airport").map((t) => {
             const active = isTabActive(t.href, pathname);
             return (
               <Link

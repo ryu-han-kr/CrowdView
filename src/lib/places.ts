@@ -25,6 +25,7 @@ export const PLACES: Place[] = [
     ktoContent: { id: 126498, type: 12 },
     midRegion: { land: "11B00000", temp: "11B10101" },
     airStation: { sido: "서울", name: "송파구" },
+    criteria: { unit: "명", steps: [40000, 55000, 75000, 95000], basis: "잠실 관광특구 실시간 인구 (서울시)", provisional: true },
   },
   {
     id: "everland",
@@ -49,6 +50,7 @@ export const PLACES: Place[] = [
     themeparksId: "d5487510-2e13-4eb5-9fab-9a9c11cec738",
     midRegion: { land: "11B00000", temp: "11B20601" },
     airStation: { sido: "경기", name: "김량장동" },
+    criteria: { unit: "분", steps: [10, 20, 35, 50], basis: "운영 중 놀이기구 평균 대기시간", provisional: true },
   },
   {
     id: "seoulland",
@@ -72,6 +74,7 @@ export const PLACES: Place[] = [
     ktoContent: { id: 126719, type: 12 },
     midRegion: { land: "11B00000", temp: "11B10101" },
     airStation: { sido: "경기", name: "과천동" },
+    criteria: { unit: "명", steps: [5000, 10000, 16000, 22000], basis: "입장객 수 (추정)", provisional: true },
   },
   {
     id: "gyeongbokgung",
@@ -96,6 +99,7 @@ export const PLACES: Place[] = [
     ktoContent: { id: 126508, type: 12 },
     midRegion: { land: "11B00000", temp: "11B10101" },
     airStation: { sido: "서울", name: "종로구" },
+    criteria: { unit: "명", steps: [12000, 20000, 35000, 50000], basis: "경복궁 일대 실시간 인구 (서울시)", provisional: true },
   },
   {
     id: "namsan",
@@ -120,6 +124,7 @@ export const PLACES: Place[] = [
     ktoContent: { id: 126535, type: 12 },
     midRegion: { land: "11B00000", temp: "11B10101" },
     airStation: { sido: "서울", name: "중구" },
+    criteria: { unit: "명", steps: [8000, 13000, 22000, 32000], basis: "남산공원 일대 실시간 인구 (서울시)", provisional: true },
   },
   {
     id: "seongsu",
@@ -144,6 +149,7 @@ export const PLACES: Place[] = [
     ktoContent: { id: 2930901, type: 12 },
     midRegion: { land: "11B00000", temp: "11B10101" },
     airStation: { sido: "서울", name: "성동구" },
+    criteria: { unit: "명", steps: [18000, 28000, 42000, 55000], basis: "성수카페거리 일대 실시간 인구 (서울시)", provisional: true },
   },
   {
     id: "hongdae",
@@ -168,6 +174,7 @@ export const PLACES: Place[] = [
     imageCredit: { author: "lumoplank", license: "CC0", url: "https://commons.wikimedia.org/wiki/File:Hongdae,_Seoul-_Part_II_-_Hongdae2237.jpg" },
     midRegion: { land: "11B00000", temp: "11B10101" },
     airStation: { sido: "서울", name: "마포구" },
+    criteria: { unit: "명", steps: [50000, 65000, 76000, 90000], basis: "홍대 관광특구 실시간 인구 (서울시)", provisional: true },
   },
   {
     id: "haeundae",
@@ -192,6 +199,7 @@ export const PLACES: Place[] = [
     busanDongs: ["해운대구 우1동", "해운대구 중1동"],
     midRegion: { land: "11H20000", temp: "11H20201" },
     airStation: { sido: "부산", name: "우동" },
+    criteria: { unit: "명", steps: [25000, 32000, 40000, 50000], basis: "우1동·중1동 방문인구 (부산시 생활인구 기반)", provisional: true },
   },
   {
     id: "icn-t1",
@@ -210,10 +218,11 @@ export const PLACES: Place[] = [
     tags: ["출국장", "국제선", "아시아나·저비용항공"],
     description: "국내 최대 국제선 터미널. 운영 중인 출국장별 대기 시간과 인원을 1분 단위로 반영합니다.",
     airport: "ICN1",
-    paxCapacity: 5000,
+    paxSteps: [1500, 2500, 3500, 4500],
     image: "/places/icn-t1.jpg",
     midRegion: { land: "11B00000", temp: "11B20201" },
     airStation: { sido: "인천", name: "운서" },
+    criteria: { unit: "분", steps: [10, 20, 30, 45], basis: "운영 중 출국장 평균 대기시간", provisional: true },
   },
   {
     id: "icn-t2",
@@ -232,10 +241,11 @@ export const PLACES: Place[] = [
     tags: ["출국장", "국제선", "대한항공"],
     description: "대한항공·델타 등 스카이팀이 쓰는 터미널. 출국장별 대기 인원을 1분 단위로 반영합니다.",
     airport: "ICN2",
-    paxCapacity: 5000,
+    paxSteps: [1500, 2500, 3500, 4500],
     image: "/places/icn-t2.jpg",
     midRegion: { land: "11B00000", temp: "11B20201" },
     airStation: { sido: "인천", name: "운서" },
+    criteria: { unit: "분", steps: [10, 20, 30, 45], basis: "운영 중 출국장 평균 대기시간", provisional: true },
   },
   {
     id: "gimpo",
@@ -254,11 +264,12 @@ export const PLACES: Place[] = [
     tags: ["국내선", "제주행", "보안검색"],
     description: "제주·부산행 국내선의 중심. 체크인부터 탑승까지 구간별 혼잡도를 반영합니다.",
     airport: "GMP",
-    paxCapacity: 2600,
+    paxSteps: [800, 1400, 2000, 2600],
     image: "/places/gimpo.jpg",
     imageCredit: { author: "Hajoon0102", license: "CC BY-SA 4.0", url: "https://commons.wikimedia.org/wiki/File:GMP_domestic.jpg" },
     midRegion: { land: "11B00000", temp: "11B10101" },
     airStation: { sido: "서울", name: "강서구" },
+    criteria: { unit: "명", steps: [800, 1400, 2000, 2600], basis: "이번 시간 출발 승객 수", provisional: true },
   },
   {
     id: "jeju-airport",
@@ -277,11 +288,12 @@ export const PLACES: Place[] = [
     tags: ["국내선", "여행", "보안검색"],
     description: "국내에서 가장 붐비는 국내선 공항. 오후 귀경 시간대 혼잡이 잦습니다.",
     airport: "CJU",
-    paxCapacity: 3600,
+    paxSteps: [1000, 1800, 2600, 3400],
     image: "/places/jeju-airport.jpg",
     imageCredit: { author: "Kimhs5400", license: "CC BY 4.0", url: "https://commons.wikimedia.org/wiki/File:Jejuairport2024.jpg" },
     midRegion: { land: "11G00000", temp: "11G00201" },
     airStation: { sido: "제주", name: "연동" },
+    criteria: { unit: "명", steps: [1000, 1800, 2600, 3400], basis: "이번 시간 출발 승객 수", provisional: true },
   },
   {
     id: "gimhae",
@@ -300,11 +312,12 @@ export const PLACES: Place[] = [
     tags: ["국내선", "부산", "보안검색"],
     description: "부산·경남권 국내선 공항. 이른 아침 김포·제주행 출발이 몰립니다.",
     airport: "PUS",
-    paxCapacity: 1600,
+    paxSteps: [500, 900, 1300, 1700],
     image: "/places/gimhae.jpg",
     imageCredit: { author: "Minseong Kim", license: "CC BY-SA 4.0", url: "https://commons.wikimedia.org/wiki/File:Gimhae_International_Airport_Departure_Hall.jpg" },
     midRegion: { land: "11H20000", temp: "11H20201" },
     airStation: { sido: "부산", name: "대저동" },
+    criteria: { unit: "명", steps: [500, 900, 1300, 1700], basis: "이번 시간 출발 승객 수", provisional: true },
   },
   {
     id: "seoul-fireworks",
@@ -328,6 +341,7 @@ export const PLACES: Place[] = [
     image: "/places/seoul-fireworks.jpg",
     midRegion: { land: "11B00000", temp: "11B10101" },
     airStation: { sido: "서울", name: "영등포구" },
+    criteria: { unit: "명", steps: [8000, 15000, 30000, 50000], basis: "여의도한강공원 일대 실시간 인구 (서울시)", provisional: true },
   },
   {
     id: "busan-fireworks",
@@ -351,6 +365,7 @@ export const PLACES: Place[] = [
     busanDongs: ["수영구 광안2동", "수영구 민락동"],
     midRegion: { land: "11H20000", temp: "11H20201" },
     airStation: { sido: "부산", name: "광안동" },
+    criteria: { unit: "명", steps: [15000, 22000, 35000, 60000], basis: "광안2동·민락동 방문인구 (부산시 생활인구 기반)", provisional: true },
   },
   {
     id: "lantern-festival",
@@ -373,6 +388,7 @@ export const PLACES: Place[] = [
     ktoContent: { id: 1095732, type: 15 },
     midRegion: { land: "11B00000", temp: "11B10101" },
     airStation: { sido: "서울", name: "중구" },
+    criteria: { unit: "명", steps: [10000, 20000, 35000, 50000], basis: "청계천 일대 인원 (추정)", provisional: true },
   },
 ];
 

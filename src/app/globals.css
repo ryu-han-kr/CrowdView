@@ -10,6 +10,13 @@ html {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* 태블릿·PC는 바깥과 가운데 배경을 같게 (모바일은 가운데 앱 화면이 떠 보이도록 회색 유지) */
+@media (min-width: 768px) {
+  html {
+    background: #fff;
+  }
+}
+
 body {
   color: #111827;
 }

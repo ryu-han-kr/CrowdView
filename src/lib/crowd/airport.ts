@@ -3,6 +3,7 @@
 //   출국장 혼잡도_제2여객터미널 조회 (T2, 15161098). 둘 다 1분 주기
 // - 김포·제주(v1), 김해·대구·청주(v2): 한국공항공사_공항 혼잡도 정보 (data.go.kr 15159598)
 import { dataGoKr } from "../datagokr";
+import { scoreFromValue } from "../levels";
 import type { AirportCode, CrowdSnapshot, Place, Zone } from "../types";
 import { modelSnapshot } from "./model";
 import { kst } from "../time";
@@ -22,8 +23,9 @@ const INCHEON_PATH = {
   ICN2: "/B551177/statusOfDepartureCongestionT2/getDepartureCongestionT2",
 };
 
-/** 대기 0분 ≈ 10점, 20분 ≈ 50점(보통), 40분 이상 ≈ 90점(매우 혼잡) */
-const waitScore = (min: number) => Math.round(Math.min(95, 10 + min * 2));
+/** 대기시간(분)을 장소 기준(예: 10·20·30·45분)으로 점수화. 기준이 없으면 20분=보통 근사 */
+const waitScore = (min: number, place: Place) =>
+  place.criteria?.unit === "분" ? scoreFromValue(min, place.criteria.steps) : Math.round(Math.min(95, 10 + min * 2));
 
 /** DG3_E → 출국장 3 동편, DG1_A → 출국장 1 A */
 function gateLabel(gateId: string): string {
@@ -59,7 +61,7 @@ async function fetchIncheon(place: Place, code: "ICN1" | "ICN2", s?: Signals): P
     return {
       id: String(g.gateId),
       label: gateLabel(String(g.gateId)),
-      score: waitScore(waitMin),
+      score: waitScore(waitMin, place),
       waitMin,
       people: Number(g.waitLength ?? 0),
       hours: String(g.operatingTime),
@@ -67,7 +69,7 @@ async function fetchIncheon(place: Place, code: "ICN1" | "ICN2", s?: Signals): P
   });
   const waitMin = zones.reduce((sum, z) => sum + (z.waitMin ?? 0), 0) / zones.length;
   const people = zones.reduce((sum, z) => sum + (z.people ?? 0), 0);
-  return withCurrent(place, waitScore(waitMin), people, "incheon-airport", s, zones);
+  return withCurrent(place, waitScore(waitMin, place), people, "incheon-airport", s, zones);
 }
 
 async function fetchKac(place: Place, code: AirportCode, s?: Signals): Promise<CrowdSnapshot> {

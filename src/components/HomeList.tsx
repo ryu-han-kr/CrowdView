@@ -104,7 +104,7 @@ export function HomeList({
                 </li>
               ))}
             </ul>
-            <ul className="mt-4 hidden gap-5 md:grid md:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-4 hidden gap-5 md:grid md:grid-cols-[repeat(auto-fill,minmax(250px,1fr))]">
               {list.map((p) => (
                 <li key={p.id}>
                   <PlaceCard place={p} crowd={crowd[p.id]} />

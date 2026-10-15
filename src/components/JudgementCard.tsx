@@ -1,6 +1,8 @@
 import { OUTDOOR } from "@/lib/crowd/model";
 import type { Signals } from "@/lib/crowd/signals";
 import { LEVELS } from "@/lib/levels";
+import { compactNumber } from "@/lib/format";
+import { DataTag } from "./DataTag";
 import { formatClock } from "@/lib/time";
 import type { CrowdResult, Place } from "@/lib/types";
 
@@ -74,17 +76,36 @@ export function JudgementCard({ place, crowd, signals }: { place: Place; crowd: 
           </li>
         ))}
       </ul>
-      <div className="mt-4 flex overflow-hidden rounded-lg text-center text-[10px]">
-        {LEVELS.map((l, i) => (
-          <div key={l.key} className="flex-1 py-1" style={{ background: `${l.color}1f`, color: l.color }}>
-            <b>{l.label}</b>
-            <br />
-            {l.min}~{LEVELS[i + 1]?.min ?? 100}점
+      {place.criteria && (
+        <div className="mt-4">
+          <p className="text-xs font-bold text-gray-800">
+            이 장소의 단계 기준 · {place.criteria.basis}
+            {place.criteria.provisional && <DataTag kind="임의" />}
+          </p>
+          <div className="mt-2 flex overflow-hidden rounded-lg text-center text-[10px] leading-tight">
+            {LEVELS.map((l, i) => {
+              const steps = place.criteria!.steps;
+              const unit = place.criteria!.unit;
+              const fmt = (v: number) => (unit === "명" ? compactNumber(v) : `${v}`);
+              const range = i === 0 ? `~${fmt(steps[0])}` : i === 4 ? `${fmt(steps[3])}+` : `${fmt(steps[i - 1])}~${fmt(steps[i])}`;
+              return (
+                <div key={l.key} className="flex-1 py-1.5" style={{ background: `${l.color}1f`, color: l.color }}>
+                  <b>{l.label}</b>
+                  <br />
+                  {range}
+                  {unit}
+                </div>
+              );
+            })}
           </div>
-        ))}
-      </div>
+          {crowd.officialLevel && (
+            <p className="mt-1.5 text-[11px] text-gray-500">참고: 서울시 공식 단계는 지금 &lsquo;{crowd.officialLevel}&rsquo;이에요.</p>
+          )}
+        </div>
+      )}
       <p className="mt-2 text-[11px] text-gray-400">
-        모든 데이터를 0~100점으로 맞춘 뒤 5단계로 나눠요. ● 실제 데이터로 반영 중 · ○ 데이터 없음
+        실제 수치를 이 기준에 대어 단계를 정해요. ● 실제 데이터로 반영 중 · ○ 데이터 없음
+        {place.criteria?.provisional && " · 기준은 데이터가 쌓이면 조정해요"}
       </p>
     </details>
   );

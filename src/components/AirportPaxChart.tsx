@@ -2,22 +2,22 @@
 
 import { useState } from "react";
 import type { PaxDay } from "@/lib/airport";
-import { levelOf } from "@/lib/levels";
+import { levelOf, scoreFromValue, type LevelSteps } from "@/lib/levels";
 
 const dayLabel = (date: string, today: string) => {
   const diff = Math.round((Date.parse(date) - Date.parse(today)) / 86_400_000);
   return diff === -1 ? "어제" : diff === 0 ? "오늘" : diff === 1 ? "내일" : date.slice(5);
 };
 
-/** 날짜·출국장별 시간대 출발 승객 수. capacity(시간당 인원)를 넘을수록 붉게 */
+/** 날짜·출국장별 시간대 출발 승객 수. 공항별 시간당 승객 기준(steps)으로 색을 매긴다 */
 export function AirportPaxChart({
   days,
-  capacity,
+  steps,
   today,
   nowHour,
 }: {
   days: PaxDay[];
-  capacity: number;
+  steps: LevelSteps;
   today: string;
   nowHour: number;
 }) {
@@ -28,8 +28,9 @@ export function AirportPaxChart({
 
   const gateNames = Object.keys(day.hours[0]?.gates ?? {});
   const value = (h: PaxDay["hours"][number]) => (gate === "전체" ? h.total : (h.gates?.[gate] ?? 0));
-  // 출국장 하나를 볼 때는 전체 수용량을 출국장 수로 나눠 색을 매긴다
-  const cap = gate === "전체" ? capacity : capacity / Math.max(1, gateNames.length);
+  // 출국장 하나를 볼 때는 공항 기준을 출국장 수로 나눠 색을 매긴다
+  const div = gate === "전체" ? 1 : Math.max(1, gateNames.length);
+  const gateSteps = steps.map((v) => v / div) as LevelSteps;
   const hours = day.hours.filter((h) => h.hour >= 5);
   const max = Math.max(1, ...hours.map(value));
   const busy = hours.reduce((a, b) => (value(b) > value(a) ? b : a), hours[0]);
@@ -84,7 +85,7 @@ export function AirportPaxChart({
       <div className="mt-4 flex h-36 items-end gap-[3px]">
         {hours.map((h) => {
           const v = value(h);
-          const level = levelOf((90 * v) / cap);
+          const level = levelOf(scoreFromValue(v, gateSteps));
           const now = isToday && h.hour === Math.floor(nowHour);
           return (
             <div key={h.hour} className="relative flex h-full flex-1 flex-col justify-end">
