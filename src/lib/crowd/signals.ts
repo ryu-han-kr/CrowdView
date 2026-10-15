@@ -7,11 +7,13 @@ import { dataGoKr, ymd } from "../datagokr";
 import { addDays, kst } from "../time";
 import type { Place } from "../types";
 import { getLocalPop, type LocalPop } from "./busan-pop";
+import { getAirForecast, getAirNow, getMidWeather, type AirNow, type MidDay } from "./weather-air";
 
 export interface Weather {
   tmp?: number; // 기온 °C
   pop?: number; // 강수확률 %
   pty?: number; // 강수형태 0 없음, 1 비, 2 비/눈, 3 눈, 4 소나기
+  sky?: number; // 하늘상태 1 맑음, 3 구름많음, 4 흐림
 }
 
 export interface Signals {
@@ -25,6 +27,12 @@ export interface Signals {
   pax?: Map<string, number[]>;
   /** 부산시 생활인구 (시간대·성별·연령, 월평균) */
   localPop?: LocalPop;
+  /** 4~10일 뒤 날씨 (기상청 중기예보) */
+  midWeather?: Map<string, MidDay>;
+  /** 지금 미세먼지 (에어코리아 실시간) */
+  air?: AirNow;
+  /** YYYY-MM-DD → 초미세먼지 예보 등급 1~4 */
+  airForecast?: Map<string, number>;
 }
 
 const HOUR = 3600;
@@ -93,7 +101,7 @@ async function getWeather(place: Place): Promise<Map<string, Weather>> {
   if (!items.length) throw new Error(`no forecast for grid ${nx},${ny}`);
   const map = new Map<string, Weather>();
   for (const i of items) {
-    const field = ({ TMP: "tmp", POP: "pop", PTY: "pty" } as const)[String(i.category) as "TMP" | "POP" | "PTY"];
+    const field = ({ TMP: "tmp", POP: "pop", PTY: "pty", SKY: "sky" } as const)[String(i.category) as "TMP" | "POP" | "PTY" | "SKY"];
     if (!field) continue;
     const d = String(i.fcstDate);
     const key = `${d.slice(0, 4)}-${d.slice(4, 6)}-${d.slice(6, 8)} ${String(i.fcstTime).slice(0, 2)}`;
@@ -153,12 +161,15 @@ export async function getAirportPax(place: Place): Promise<Map<string, number[]>
 
 export async function getSignals(place: Place): Promise<Signals> {
   if (!process.env.DATA_GO_KR_KEY) return {};
-  const [holidays, weather, concentration, pax, localPop] = await Promise.allSettled([
+  const [holidays, weather, concentration, pax, localPop, midWeather, air, airForecast] = await Promise.allSettled([
     getHolidays(),
-    place.category === "airport" ? Promise.resolve(undefined) : getWeather(place),
+    getWeather(place),
     place.kto ? getConcentration(place.kto) : Promise.resolve(undefined),
     place.airport ? getAirportPax(place) : Promise.resolve(undefined),
     getLocalPop(place),
+    getMidWeather(place),
+    getAirNow(place),
+    getAirForecast(place),
   ]);
   const ok = <T>(r: PromiseSettledResult<T>, name: string): T | undefined => {
     if (r.status === "fulfilled") return r.value;
@@ -171,5 +182,8 @@ export async function getSignals(place: Place): Promise<Signals> {
     concentration: ok(concentration, "concentration"),
     pax: ok(pax, "pax"),
     localPop: ok(localPop, "localPop"),
+    midWeather: ok(midWeather, "midWeather"),
+    air: ok(air, "air"),
+    airForecast: ok(airForecast, "airForecast"),
   };
 }

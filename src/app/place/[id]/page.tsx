@@ -12,7 +12,9 @@ import { daysUntil, formatAge, formatClock, formatHour, kst } from "@/lib/time";
 import type { CrowdResult, HourPoint } from "@/lib/types";
 import { CATEGORY_LABEL } from "@/lib/types";
 import { DataTag } from "@/components/DataTag";
+import { JudgementCard } from "@/components/JudgementCard";
 import { VisitorProfile } from "@/components/VisitorProfile";
+import { WeatherCard } from "@/components/WeatherCard";
 import { headcountInfo, isEstimated } from "@/lib/format";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
@@ -116,6 +118,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             {formatAge(crowd.ageMinutes)} 갱신 · {SOURCE_LABEL[crowd.source]}
           </p>
         </section>
+
+        <WeatherCard signals={signals} />
 
         {/* 언제 가면 좋을까 */}
         <section className="mt-4 rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">
@@ -260,6 +264,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
         </section>
 
         {signals.localPop && <VisitorProfile pop={signals.localPop} />}
+
+        <JudgementCard place={place} crowd={crowd} signals={signals} />
 
         {/* 정보 */}
         <section className="mt-8 mb-8 space-y-3 text-sm">

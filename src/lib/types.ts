@@ -1,10 +1,13 @@
-export type Category = "themepark" | "tourist" | "airport" | "event";
+// 홈 상단 파트 탭 순서와 같다
+export type Category = "landmark" | "street" | "themepark" | "beach" | "airport" | "event";
 
 export const CATEGORY_LABEL: Record<Category, string> = {
-  themepark: "테마파크",
-  tourist: "관광지",
+  landmark: "명소",
+  street: "핫플",
+  themepark: "놀이공원",
+  beach: "해변",
   airport: "공항",
-  event: "이벤트",
+  event: "축제",
 };
 
 export interface PlaceInfo {
@@ -60,6 +63,10 @@ export interface Place {
   eventEndDate?: string;
   /** 한국관광공사 TourAPI 콘텐츠 (운영 시간·행사 일정 원천). type 12 관광지, 15 행사 */
   ktoContent?: { id: number; type: number };
+  /** 기상청 중기예보 구역 (land: 육상예보 광역, temp: 기온 도시) */
+  midRegion?: { land: string; temp: string };
+  /** 에어코리아 대기질 측정소 */
+  airStation?: { sido: string; name: string };
   /** 부산시 생활인구 행정동 (예: "해운대구 우1동"). 시간대·성별·연령 패턴 */
   busanDongs?: string[];
   /** ThemeParks.wiki 엔티티 (놀이기구 대기시간) */

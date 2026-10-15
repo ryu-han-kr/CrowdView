@@ -12,6 +12,18 @@ export type Item = Record<string, string | number | undefined>;
  * cache: "no-store"는 쓰지 않는다 (ISR 페이지에서 정적 렌더링이 깨진다).
  */
 export async function dataGoKr(path: string, params: Record<string, string>, revalidate?: number): Promise<Item[]> {
+  // 같은 요청이 동시에 여러 번 나가지 않게 진행 중인 호출을 공유한다 (예: 시도별 미세먼지를 장소 8곳이 동시에 요청)
+  const key = `${path}?${JSON.stringify(params)}:${revalidate ?? 0}`;
+  const pending = inflight.get(key);
+  if (pending) return pending;
+  const p = load(path, params, revalidate).finally(() => inflight.delete(key));
+  inflight.set(key, p);
+  return p;
+}
+
+const inflight = new Map<string, Promise<Item[]>>();
+
+async function load(path: string, params: Record<string, string>, revalidate?: number): Promise<Item[]> {
   if (!revalidate) return fetchItems(path, params);
   try {
     return await cachedNonEmpty(path, JSON.stringify(params), revalidate);
@@ -35,7 +47,28 @@ const cachedNonEmpty = (path: string, paramsJson: string, revalidate: number) =>
     { revalidate },
   )();
 
-async function fetchItems(path: string, params: Record<string, string>): Promise<Item[]> {
+// 공공데이터포털 게이트웨이는 한 키로 동시에 많이 부르면 응답을 늦춘다 (타임아웃).
+// 수집기가 16곳을 한꺼번에 갱신해도 동시에 나가는 호출은 MAX_CONCURRENT개로 제한한다
+const MAX_CONCURRENT = 6;
+let running = 0;
+const waiting: (() => void)[] = [];
+
+async function withSlot<T>(fn: () => Promise<T>): Promise<T> {
+  if (running >= MAX_CONCURRENT) await new Promise<void>((r) => waiting.push(r));
+  running++;
+  try {
+    return await fn();
+  } finally {
+    running--;
+    waiting.shift()?.();
+  }
+}
+
+function fetchItems(path: string, params: Record<string, string>): Promise<Item[]> {
+  return withSlot(() => fetchItemsNow(path, params));
+}
+
+async function fetchItemsNow(path: string, params: Record<string, string>): Promise<Item[]> {
   const key = process.env.DATA_GO_KR_KEY;
   if (!key) throw new Error("DATA_GO_KR_KEY 미설정");
   const qs = new URLSearchParams({ serviceKey: key, pageNo: "1", numOfRows: "100", ...params });

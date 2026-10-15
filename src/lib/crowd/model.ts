@@ -10,15 +10,20 @@ import { addDays, kst, kstDateParts, type KstParts } from "../time";
 import type { Signals, Weather } from "./signals";
 
 const SPREAD: Record<Place["category"], number> = {
+  landmark: 3.2,
+  street: 3.6,
   themepark: 3.6,
-  tourist: 3.2,
+  beach: 3.4,
   airport: 4.5,
   event: 2.2,
 };
 
-const OUTDOOR: Record<Place["category"], number> = {
+/** 카테고리별 기본 야외 비율 (장소에 outdoor가 없을 때) */
+export const OUTDOOR: Record<Place["category"], number> = {
+  landmark: 0.8,
+  street: 0.5,
   themepark: 0.7,
-  tourist: 0.8,
+  beach: 1,
   airport: 0,
   event: 1,
 };
@@ -56,10 +61,24 @@ function weatherAt(s: Signals | undefined, t: KstParts): Weather | undefined {
   return s?.weather?.get(`${t.date} ${pad2(t.hour)}`);
 }
 
+/** 단기예보가 없는 4~10일 뒤는 중기예보(오전·오후 강수확률, 날씨)로 대신한다 */
+function midAt(s: Signals | undefined, t: KstParts): { pop: number; rainy: boolean; wf: string } | undefined {
+  const m = s?.midWeather?.get(t.date);
+  if (!m) return undefined;
+  const am = t.hour < 12;
+  const wf = am ? m.wfAm : m.wfPm;
+  return { pop: am ? m.popAm : m.popPm, rainy: /비|눈|소나기/.test(wf), wf };
+}
+
 function weatherFactor(place: Place, t: KstParts, s?: Signals): number {
-  const w = weatherAt(s, t);
-  if (!w) return 1;
   const outdoor = place.outdoor ?? OUTDOOR[place.category];
+  const w = weatherAt(s, t);
+  if (!w) {
+    const m = midAt(s, t);
+    if (!m) return 1;
+    if (m.rainy && m.pop >= 60) return 1 - 0.4 * outdoor + 0.15 * (1 - outdoor);
+    return m.pop >= 60 ? 1 - 0.2 * outdoor : 1;
+  }
   let f = 1;
   // 비가 오면 야외는 한산해지고, 실내 위주 장소는 사람이 몰린다
   if ((w.pty ?? 0) > 0) f *= 1 - 0.5 * outdoor + 0.2 * (1 - outdoor);
@@ -75,6 +94,18 @@ function concentrationRatio(s: Signals | undefined, date: string): number | unde
   if (!rates || rate === undefined || rates.size === 0) return undefined;
   const mean = [...rates.values()].reduce((a, b) => a + b, 0) / rates.size;
   return mean > 0 ? rate / mean : undefined;
+}
+
+/** 초미세먼지 등급(1 좋음 ~ 4 매우나쁨). 오늘은 실시간 측정, 이후는 예보 */
+function airGrade(s: Signals | undefined, date: string): number | undefined {
+  if (date === kst().date && s?.air?.pm25Grade) return s.air.pm25Grade;
+  return s?.airForecast?.get(date);
+}
+
+function airFactor(place: Place, date: string, s?: Signals): number {
+  const outdoor = place.outdoor ?? OUTDOOR[place.category];
+  const g = airGrade(s, date);
+  return g === 4 ? 1 - 0.25 * outdoor : g === 3 ? 1 - 0.12 * outdoor : 1;
 }
 
 function concentrationFactor(s: Signals | undefined, date: string): number {
@@ -100,7 +131,13 @@ export function expectedScore(place: Place, t: KstParts, s?: Signals): number {
     curve = 0.25 + 0.75 * Math.exp(-(d * d) / (2 * SPREAD[place.category] ** 2));
   }
   return clamp(
-    100 * place.popularity * curve * dayFactor(place, t, s) * weatherFactor(place, t, s) * concentrationFactor(s, t.date),
+    100 *
+      place.popularity *
+      curve *
+      dayFactor(place, t, s) *
+      weatherFactor(place, t, s) *
+      airFactor(place, t.date, s) *
+      concentrationFactor(s, t.date),
   );
 }
 
@@ -134,7 +171,13 @@ export function forecastReasons(place: Place, date: string, peakHour: number, s?
     else if ((w.pop ?? 0) >= 60) reasons.push(`☔ 강수확률 ${w.pop}%`);
     if (w.tmp !== undefined && w.tmp >= 33) reasons.push(`🥵 ${w.tmp}°C 폭염`);
     if (w.tmp !== undefined && w.tmp <= -8) reasons.push(`🥶 ${w.tmp}°C 한파`);
+  } else if (outdoor > 0) {
+    const m = midAt(s, { ...kstDateParts(date), hour: peakHour });
+    if (m?.rainy && m.pop >= 60) reasons.push(outdoor >= 0.5 ? `🌧 ${m.wf} 예보 → 한산` : `🌧 ${m.wf} 예보 → 실내로 몰림`);
+    else if (m && m.pop >= 60) reasons.push(`☔ 강수확률 ${m.pop}%`);
   }
+  const ag = airGrade(s, date);
+  if (outdoor > 0 && ag && ag >= 3) reasons.push(ag === 4 ? "😷 초미세먼지 매우나쁨 → 야외 한산" : "😷 초미세먼지 나쁨");
   const ratio = concentrationRatio(s, date);
   if (ratio !== undefined && ratio >= 1.2) reasons.push("📈 관광공사 예측: 평소보다 붐빔");
   if (ratio !== undefined && ratio <= 0.8) reasons.push("📉 관광공사 예측: 평소보다 한산");

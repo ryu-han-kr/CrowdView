@@ -3,12 +3,22 @@
 import { useState } from "react";
 import { useFavorites } from "@/lib/prefs";
 import { CATEGORY_LABEL, type Category, type CrowdResult, type Place } from "@/lib/types";
+import { ICONS, IconTabBar, type IconTab } from "./IconTabs";
 import { PlaceRow } from "./PlaceRow";
 
 type Filter = "all" | "fav" | Category;
 type Sort = "calm" | "busy";
 
-const CATEGORIES: Category[] = ["themepark", "tourist", "airport", "event"];
+const CATEGORY_ICON: Record<Category, string> = {
+  landmark: ICONS.landmark,
+  street: ICONS.street,
+  themepark: ICONS.themepark,
+  beach: ICONS.beach,
+  airport: ICONS.airport,
+  event: ICONS.festival,
+};
+const CATEGORIES = Object.keys(CATEGORY_ICON) as Category[];
+const HEART = "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z";
 
 /** 검색 → 카테고리 → 목록. 검색 중이거나 카테고리를 고르면 추천 섹션(children)은 숨긴다 */
 export function HomeList({
@@ -35,7 +45,12 @@ export function HomeList({
         (sort === "calm" ? 1 : -1) * (crowd[a.id].score - crowd[b.id].score),
     );
 
-  const filters: Filter[] = ["all", ...(favorites.length ? (["fav"] as const) : []), ...CATEGORIES];
+  const tabs: IconTab[] = [
+    { id: "all", label: "전체", icon: ICONS.all },
+    ...(favorites.length ? [{ id: "fav", label: "찜", icon: HEART }] : []),
+    // 장소가 있는 파트만
+    ...CATEGORIES.filter((c) => places.some((p) => p.category === c)).map((c) => ({ id: c, label: CATEGORY_LABEL[c], icon: CATEGORY_ICON[c] })),
+  ];
   const browsing = !q && filter === "all";
 
   return (
@@ -59,26 +74,14 @@ export function HomeList({
             </button>
           )}
         </label>
-        <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
-          {filters.map((f) => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors ${
-                filter === f ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              {f === "all" ? "전체" : f === "fav" ? "❤️ 즐겨찾기" : CATEGORY_LABEL[f]}
-            </button>
-          ))}
-        </div>
+        <IconTabBar tabs={tabs} active={filter} onChange={(id) => setFilter(id as Filter)} className="-mx-2 mt-2" />
       </div>
 
       {browsing && children}
 
       <section className="mt-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold">{q ? `검색 결과 ${list.length}곳` : "전체 장소"}</h2>
+          <h2 className="text-lg font-bold">{q ? `검색 결과 ${list.length}곳` : filter === "all" ? "전체 장소" : filter === "fav" ? "찜한 곳" : CATEGORY_LABEL[filter]}</h2>
           <div className="flex rounded-full bg-gray-100 p-0.5 text-xs font-medium">
             {(["calm", "busy"] as const).map((s) => (
               <button
