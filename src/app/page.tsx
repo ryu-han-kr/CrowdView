@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { DataTag } from "@/components/DataTag";
-import { EventDateTag } from "@/components/EventDateTag";
 import { HomeList } from "@/components/HomeList";
 import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
 import { getAllCrowd } from "@/lib/crowd/service";
-import { getLivePlaces, isOngoingEvent, isUpcomingEvent } from "@/lib/place-info";
+import { festivalHref, getFestivals, isLongRunning } from "@/lib/festivals";
+import { getLivePlaces } from "@/lib/place-info";
 import { placeHref } from "@/lib/places";
 import { isEstimated } from "@/lib/format";
-import { daysUntil, formatAge } from "@/lib/time";
+import { daysUntil, formatAge, kst } from "@/lib/time";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 export const revalidate = 60;
@@ -22,9 +22,9 @@ export default async function HomePage() {
     .sort((a, b) => crowd[a.id].score - crowd[b.id].score)
     .slice(0, 3);
 
-  const events = places.filter((p) => isUpcomingEvent(p))
-    .sort((a, b) => a.eventDate!.localeCompare(b.eventDate!))
-    .slice(0, 2);
+  // 다가오는 축제: 한국관광공사·서울시 실제 일정 (진행 중 먼저)
+  const festivals = (await getFestivals(30)).filter((f) => !isLongRunning(f)).slice(0, 4);
+  const today = kst().date;
 
   return (
     <main className="px-5 pt-6 pb-4 md:px-0 md:pt-10">
@@ -70,29 +70,35 @@ export default async function HomePage() {
           </section>
         )}
 
-        {events.length > 0 && (
+        {festivals.length > 0 && (
           <section className="mt-6 md:mt-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold">🎆 다가오는 이벤트</h2>
+              <h2 className="text-lg font-bold">🎆 다가오는 축제</h2>
               <Link href="/events" className="text-sm text-gray-500">
                 전체 보기 ›
               </Link>
             </div>
             <ul className="mt-3 grid grid-cols-2 gap-2">
-              {events.map((p) => (
-                <li key={p.id}>
-                  <Link href={placeHref(p)} className="block rounded-2xl border border-gray-100 p-3 active:bg-gray-50">
-                    <div className="flex items-center justify-between">
-                      <PlaceThumb place={p} size={36} />
-                      <span className="rounded-full bg-gray-900 px-2 py-0.5 text-[11px] font-bold text-white">
-                        {isOngoingEvent(p) ? "진행 중" : daysUntil(p.eventDate!) === 0 ? "D-DAY" : `D-${daysUntil(p.eventDate!)}`}
+              {festivals.map((f) => (
+                <li key={f.id}>
+                  <Link href={festivalHref(f)} className="block overflow-hidden rounded-2xl border border-gray-100 active:bg-gray-50">
+                    <div className="relative h-20 bg-gray-100">
+                      {f.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={f.image} alt="" loading="lazy" className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex h-full items-center justify-center text-3xl">🎪</div>
+                      )}
+                      <span className="absolute top-1.5 right-1.5 rounded-full bg-gray-900/85 px-2 py-0.5 text-[11px] font-bold text-white">
+                        {f.start <= today ? "진행 중" : `D-${daysUntil(f.start)}`}
                       </span>
                     </div>
-                    <p className="mt-2 truncate text-sm font-semibold">{p.name}</p>
-                    <p className="text-xs text-gray-500">
-                      {p.eventDate!.slice(5).replace("-", "/")}
-                      <EventDateTag place={p} /> · {p.region}
-                    </p>
+                    <div className="p-2.5">
+                      <p className="truncate text-sm font-semibold">{f.title}</p>
+                      <p className="truncate text-xs text-gray-500">
+                        {f.start.slice(5).replace("-", "/")} · {f.region}
+                      </p>
+                    </div>
                   </Link>
                 </li>
               ))}

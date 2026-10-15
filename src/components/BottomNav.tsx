@@ -13,7 +13,7 @@ export const TABS = [
 /** 이벤트·장소 상세는 홈에서 들어가므로 홈 탭을 켠다 */
 export function isTabActive(href: string, pathname: string): boolean {
   return href === "/"
-    ? pathname === "/" || pathname.startsWith("/events") || pathname.startsWith("/place")
+    ? pathname === "/" || pathname.startsWith("/events") || pathname.startsWith("/festival") || pathname.startsWith("/place")
     : pathname.startsWith(href);
 }
 
