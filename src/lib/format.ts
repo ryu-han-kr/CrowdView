@@ -1,3 +1,5 @@
+import { DEFAULT_LANG, type Lang } from "../i18n/config";
+import { compactNumber as compactI18n, makeT, type T } from "../i18n/translate";
 import type { CrowdResult } from "./types";
 
 /**
@@ -13,11 +15,9 @@ export type DataKind = "추정" | "임의";
 /** 혼잡도 자체가 예측 모델 값인지 */
 export const isEstimated = (c: CrowdResult) => c.source === "model";
 
-/** 12,000 → 1.2만, 9,500 → 9,500 */
-export function compactNumber(n: number): string {
-  if (n < 10_000) return n.toLocaleString();
-  const man = n / 10_000;
-  return `${Number.isInteger(man) ? man : man.toFixed(1)}만`;
+/** 12,000 → 1.2만 (언어별: 1.2万 · 1.2萬 · 12K) */
+export function compactNumber(n: number, lang: Lang = DEFAULT_LANG): string {
+  return compactI18n(n, lang);
 }
 
 /**
@@ -26,14 +26,21 @@ export function compactNumber(n: number): string {
  * - 인천공항: 출국장 대기 인원 실측
  * - 그 외(예측 모델, 한국공항공사 단계값): 수용 인원 × 혼잡도로 계산한 추정치. 라벨이 꺼져 있으면 숨긴다
  */
-export function headcountInfo(c: CrowdResult): { text: string; kind?: DataKind } | null {
+export function headcountInfo(
+  c: CrowdResult,
+  i18n: { t: T; lang: Lang } = { t: makeT(undefined), lang: DEFAULT_LANG },
+): { text: string; kind?: DataKind } | null {
+  const { t, lang } = i18n;
+  const n = (v: number) => compactNumber(v, lang);
   if (!c.open) return null;
   if (c.source === "seoul-citydata") {
     return {
-      text: c.headcountRange ? `${compactNumber(c.headcountRange[0])}~${compactNumber(c.headcountRange[1])}명` : `약 ${compactNumber(c.headcount)}명`,
+      text: c.headcountRange
+        ? t("{min}~{max}명", { min: n(c.headcountRange[0]), max: n(c.headcountRange[1]) })
+        : t("약 {n}명", { n: n(c.headcount) }),
     };
   }
-  if (c.source === "incheon-airport") return { text: `출국 대기 ${c.headcount.toLocaleString()}명` };
-  if (c.source === "kac-airport" && c.paxHour) return { text: `이번 시간 출발 ${c.headcount.toLocaleString()}명` };
-  return SHOW_DATA_LABELS ? { text: `약 ${compactNumber(c.headcount)}명`, kind: "추정" } : null;
+  if (c.source === "incheon-airport") return { text: t("출국 대기 {n}명", { n: c.headcount.toLocaleString() }) };
+  if (c.source === "kac-airport" && c.paxHour) return { text: t("이번 시간 출발 {n}명", { n: c.headcount.toLocaleString() }) };
+  return SHOW_DATA_LABELS ? { text: t("약 {n}명", { n: n(c.headcount) }), kind: "추정" } : null;
 }

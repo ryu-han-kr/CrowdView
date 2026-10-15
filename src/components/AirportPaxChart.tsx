@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import type { PaxDay } from "@/lib/airport";
+import { useI18n } from "@/i18n/client";
+import { fmtPeople, trZone } from "@/i18n/patterns";
+import { formatHour, type T } from "@/i18n/translate";
 import { levelOf, scoreFromValue, type LevelSteps } from "@/lib/levels";
 
-const dayLabel = (date: string, today: string) => {
+const dayLabel = (date: string, today: string, t: T) => {
   const diff = Math.round((Date.parse(date) - Date.parse(today)) / 86_400_000);
-  return diff === -1 ? "어제" : diff === 0 ? "오늘" : diff === 1 ? "내일" : date.slice(5);
+  return diff === -1 ? t("어제") : diff === 0 ? t("오늘") : diff === 1 ? t("내일") : date.slice(5);
 };
 
 /** 날짜·출국장별 시간대 출발 승객 수. 공항별 시간당 승객 기준(steps)으로 색을 매긴다 */
@@ -22,9 +25,10 @@ export function AirportPaxChart({
   nowHour: number;
 }) {
   const [date, setDate] = useState(days.find((d) => d.date === today)?.date ?? days[0]?.date);
+  const { t, lang } = useI18n();
   const [gate, setGate] = useState<string>("전체");
   const day = days.find((d) => d.date === date);
-  if (!day) return <p className="text-sm text-gray-400">시간대별 승객 정보를 불러오지 못했어요.</p>;
+  if (!day) return <p className="text-sm text-gray-400">{t("시간대별 승객 정보를 불러오지 못했어요.")}</p>;
 
   const gateNames = Object.keys(day.hours[0]?.gates ?? {});
   const value = (h: PaxDay["hours"][number]) => (gate === "전체" ? h.total : (h.gates?.[gate] ?? 0));
@@ -49,7 +53,7 @@ export function AirportPaxChart({
               d.date === date ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"
             }`}
           >
-            {dayLabel(d.date, today)}
+            {dayLabel(d.date, today, t)}
             <span className="ml-1 text-[11px] opacity-60">{d.date.slice(5).replace("-", "/")}</span>
           </button>
         ))}
@@ -65,7 +69,7 @@ export function AirportPaxChart({
                 g === gate ? "border-gray-900 font-semibold text-gray-900" : "border-gray-200 text-gray-500"
               }`}
             >
-              {g}
+              {g === "전체" ? t("전체") : trZone(g, t)}
             </button>
           ))}
         </div>
@@ -73,10 +77,10 @@ export function AirportPaxChart({
 
       {busy && (
         <p className="mt-3 text-sm">
-          가장 붐빔 <b>{busy.hour}시</b> ({value(busy).toLocaleString()}명)
+          {t("가장 붐빔")} <b>{formatHour(busy.hour, lang)}</b> ({fmtPeople(value(busy), t, lang)})
           {calm && (
             <>
-              {" "}· 가장 한산 <b>{calm.hour}시</b> ({value(calm).toLocaleString()}명)
+              {" "}· {t("가장 한산")} <b>{formatHour(calm.hour, lang)}</b> ({fmtPeople(value(calm), t, lang)})
             </>
           )}
         </p>
@@ -91,11 +95,11 @@ export function AirportPaxChart({
             <div key={h.hour} className="relative flex h-full flex-1 flex-col justify-end">
               {now && (
                 <span className="absolute -top-1 left-1/2 -translate-x-1/2 rounded bg-gray-900 px-1 text-[9px] font-bold whitespace-nowrap text-white">
-                  지금
+                  {t("지금")}
                 </span>
               )}
               <div
-                title={`${h.hour}시 · ${v.toLocaleString()}명 · ${level.label}`}
+                title={`${formatHour(h.hour, lang)} · ${fmtPeople(v, t, lang)} · ${t(level.label)}`}
                 className={`rounded-t-[4px] ${now ? "ring-2 ring-gray-900 ring-offset-1" : ""}`}
                 style={{ height: `${Math.max(3, (v / max) * 100)}%`, background: level.color }}
               />
@@ -111,8 +115,8 @@ export function AirportPaxChart({
         ))}
       </div>
       <p className="mt-2 text-[11px] text-gray-400">
-        {day.kind === "recorded" ? "그날 받아 둔 공항공사 예고치" : "공항공사 시간대별 출발 승객 예고·예상치"} · 막대 색은
-        시간당 승객 수 기준 혼잡도
+        {day.kind === "recorded" ? t("그날 받아 둔 공항공사 예고치") : t("공항공사 시간대별 출발 승객 예고·예상치")} ·{" "}
+        {t("막대 색은 시간당 승객 수 기준 혼잡도")}
       </p>
     </div>
   );

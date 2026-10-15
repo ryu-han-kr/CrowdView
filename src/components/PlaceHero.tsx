@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useI18n } from "@/i18n/client";
 import { imageCreditText } from "@/lib/places";
 import { useFavorites } from "@/lib/prefs";
 import type { Place } from "@/lib/types";
@@ -13,6 +14,7 @@ const HERO_HEIGHT = 280;
 export function PlaceHero({ place }: { place: Place }) {
   const router = useRouter();
   const { isFavorite, toggle } = useFavorites();
+  const { t, lp } = useI18n();
   const [y, setY] = useState(0);
 
   useEffect(() => {
@@ -35,19 +37,19 @@ export function PlaceHero({ place }: { place: Place }) {
         }}
       >
         <button
-          onClick={() => (history.length > 1 ? router.back() : router.push("/"))}
+          onClick={() => (history.length > 1 ? router.back() : router.push(lp("/")))}
           className="flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-lg backdrop-blur"
-          aria-label="뒤로"
+          aria-label={t("뒤로")}
         >
           ←
         </button>
         <span className="font-semibold" style={{ opacity: progress >= 1 ? 1 : 0, transition: "opacity .2s" }}>
-          {place.name}
+          {t(place.name)}
         </span>
         <button
           onClick={() => toggle(place.id)}
           className="flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-lg backdrop-blur"
-          aria-label={fav ? "즐겨찾기 해제" : "즐겨찾기"}
+          aria-label={fav ? t("즐겨찾기 해제") : t("즐겨찾기")}
         >
           {fav ? "❤️" : "🤍"}
         </button>
@@ -64,7 +66,7 @@ export function PlaceHero({ place }: { place: Place }) {
           <>
             <Image
               src={place.image}
-              alt={place.name}
+              alt={t(place.name)}
               fill
               priority
               sizes="(max-width: 448px) 100vw, 448px"
@@ -74,7 +76,7 @@ export function PlaceHero({ place }: { place: Place }) {
             {/* 상단 버튼이 사진 위에서도 보이도록 */}
             <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/30 to-transparent" />
             <span className="absolute right-3 bottom-8 rounded bg-black/35 px-1.5 py-0.5 text-[10px] text-white/90">
-              {imageCreditText(place)}
+              {imageCreditText(place, t)}
             </span>
           </>
         ) : (

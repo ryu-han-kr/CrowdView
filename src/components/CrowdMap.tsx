@@ -3,6 +3,7 @@
 // 네이버 지도 위에 혼잡도 원과 장소 핀을 그린다.
 // 키가 없거나 인증·로딩에 실패하면 자체 SVG 히트맵으로 대체.
 import { useEffect, useRef, useState } from "react";
+import { useI18n } from "@/i18n/client";
 import { LEVELS, levelOf } from "@/lib/levels";
 import type { CrowdResult, Place } from "@/lib/types";
 import { HeatMap, MapPlaceCard } from "./HeatMap";
@@ -59,6 +60,7 @@ export function CrowdMap({ places, crowd }: { places: Place[]; crowd: Record<str
 
 /** 지도 위 색깔 기준표: 색이 어느 정도 혼잡인지와 단계별 장소 수 */
 function MapScale({ places, crowd }: { places: Place[]; crowd: Record<string, CrowdResult> }) {
+  const { t } = useI18n();
   const open = places.filter((p) => crowd[p.id]?.open);
   const count = (key: number) => open.filter((p) => levelOf(crowd[p.id].score).key === key).length;
   return (
@@ -71,8 +73,8 @@ function MapScale({ places, crowd }: { places: Place[]; crowd: Record<string, Cr
       <div className="mt-1.5 flex text-center text-[10px] leading-tight">
         {LEVELS.map((l) => (
           <div key={l.key} className="flex-1">
-            <b style={{ color: l.color }}>{l.label}</b>
-            <span className="block text-gray-500">{count(l.key)}곳</span>
+            <b style={{ color: l.color }}>{t(l.label)}</b>
+            <span className="block text-gray-500">{t("{n}곳", { n: count(l.key) })}</span>
           </div>
         ))}
       </div>
@@ -93,6 +95,7 @@ function NaverCrowdMap({
   const mapRef = useRef<any>(null);
   const [region, setRegion] = useState<RegionKey>("capital");
   const [selected, setSelected] = useState<string | null>(null);
+  const { t } = useI18n();
 
   useEffect(() => {
     let cancelled = false;
@@ -136,7 +139,7 @@ function NaverCrowdMap({
           const marker = new maps.Marker({
             map,
             position,
-            title: p.name,
+            title: t(p.name),
             icon: {
               content: `<div style="width:34px;height:34px;border-radius:9999px;background:#fff;border:3px solid ${color};display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer">${p.emoji}</div>`,
               anchor: new maps.Point(17, 17),
@@ -187,7 +190,7 @@ function NaverCrowdMap({
             onClick={() => moveTo(k)}
             className={`flex-1 rounded-full py-1.5 text-sm font-medium ${region === k ? "bg-gray-900 text-white" : "text-gray-600"}`}
           >
-            {REGIONS[k].label}
+            {t(REGIONS[k].label)}
           </button>
         ))}
       </div>

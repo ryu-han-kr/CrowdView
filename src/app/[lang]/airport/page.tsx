@@ -1,24 +1,28 @@
-import Link from "next/link";
+import Link from "@/i18n/link";
 import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
 import { getParking } from "@/lib/airport";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { PLACES } from "@/lib/places";
-import { formatAge } from "@/lib/time";
 import { headcountInfo } from "@/lib/format";
+import type { Lang } from "@/i18n/config";
+import { getT } from "@/i18n/server";
+import { fmtAge, fmtMinutes, trZone } from "@/i18n/patterns";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 export const revalidate = 60;
 
 const AIRPORTS = PLACES.filter((p) => p.category === "airport");
 
-export default async function AirportListPage() {
+export default async function AirportListPage({ params }: { params: Promise<{ lang: string }> }) {
+  const lang = (await params).lang as Lang;
+  const t = getT(lang);
   const [crowd, parking] = await Promise.all([getAllCrowd(), Promise.all(AIRPORTS.map(getParking))]);
 
   return (
     <main className="px-5 pt-6 md:px-0 md:pt-10">
-      <h1 className="text-2xl font-bold md:text-3xl">공항 혼잡도</h1>
-      <p className="mt-1 text-sm text-gray-500">출국장 대기·보안검색 구간·주차장까지 한눈에</p>
+      <h1 className="text-2xl font-bold md:text-3xl">{t("공항 혼잡도")}</h1>
+      <p className="mt-1 text-sm text-gray-500">{t("출국장 대기·보안검색 구간·주차장까지 한눈에")}</p>
 
       <ul className="mt-5 space-y-3 md:grid md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] md:gap-4 md:space-y-0">
         {AIRPORTS.map((place, i) => {
@@ -33,18 +37,18 @@ export default async function AirportListPage() {
                 <div className="flex items-center gap-3">
                   <PlaceThumb place={place} size={48} />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate font-semibold">{place.name}</p>
+                    <p className="truncate font-semibold">{t(place.name)}</p>
                     <p className="mt-0.5 text-xs text-gray-500">
-                      {c.source === "model" ? "예측값" : `${formatAge(c.ageMinutes)} 실측`}
-                      {headcountInfo(c) && !headcountInfo(c)!.kind && ` · ${headcountInfo(c)!.text}`}
+                      {c.source === "model" ? t("예측값") : t("{age} 실측", { age: fmtAge(c.ageMinutes, t) })}
+                      {headcountInfo(c, { t, lang }) && !headcountInfo(c, { t, lang })!.kind && ` · ${headcountInfo(c, { t, lang })!.text}`}
                     </p>
                   </div>
                   <LevelBadge score={c.score} closed={!c.open} />
                 </div>
                 {busiestZone && (
                   <p className="mt-3 rounded-2xl bg-gray-50 px-3 py-2.5 text-xs text-gray-600">
-                    가장 붐비는 곳 <b>{busiestZone.label}</b>
-                    {busiestZone.waitMin !== undefined && ` · 대기 ${busiestZone.waitMin}분`}
+                    {t("가장 붐비는 곳")} <b>{trZone(busiestZone.label, t)}</b>
+                    {busiestZone.waitMin !== undefined && ` · ${t("대기")} ${fmtMinutes(busiestZone.waitMin, t)}`}
                   </p>
                 )}
               </Link>
@@ -56,8 +60,8 @@ export default async function AirportListPage() {
                 >
                   <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-600 text-xs font-extrabold text-white">P</span>
                   <span className="flex-1">
-                    <b>주차장</b> 빈자리 <b className="text-sky-700">{freeSpaces.toLocaleString()}면</b>
-                    {fullLots > 0 && <span className="text-red-500"> · {fullLots}곳 만차 임박</span>}
+                    <b>{t("주차장")}</b> {t("빈자리")} <b className="text-sky-700">{t("{n}면", { n: freeSpaces.toLocaleString() })}</b>
+                    {fullLots > 0 && <span className="text-red-500"> · {t("{n}곳 만차 임박", { n: fullLots })}</span>}
                   </span>
                   <span className="text-gray-400">›</span>
                 </Link>
@@ -67,7 +71,7 @@ export default async function AirportListPage() {
         })}
       </ul>
       <p className="mt-4 mb-6 text-center text-[11px] text-gray-400">
-        출처: 인천국제공항공사, 한국공항공사 (공공데이터포털)
+        {t("출처: 인천국제공항공사, 한국공항공사 (공공데이터포털)")}
       </p>
     </main>
   );

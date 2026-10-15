@@ -176,29 +176,36 @@ export function forecastForDate(place: Place, date: string, s?: Signals): HourPo
 }
 
 /** 그날 예측이 평소와 다른 이유 (화면 표시용) */
-export function forecastReasons(place: Place, date: string, peakHour: number, s?: Signals): string[] {
-  const reasons: string[] = [];
+/** 예측 이유: 번역 키(한국어 템플릿)와 값. 화면에서 t(k, p)로 보여준다 */
+export interface Reason {
+  k: string;
+  p?: Record<string, string | number>;
+}
+
+export function forecastReasons(place: Place, date: string, peakHour: number, s?: Signals): Reason[] {
+  const reasons: Reason[] = [];
   const holiday = s?.holidays?.get(date);
-  if (holiday) reasons.push(`🎌 ${holiday}`);
-  else if (s?.holidays?.has(addDays(date, 1))) reasons.push("🧳 연휴 전날");
+  if (holiday) reasons.push({ k: "🎌 {name}", p: { name: holiday } });
+  else if (s?.holidays?.has(addDays(date, 1))) reasons.push({ k: "🧳 연휴 전날" });
   const w = weatherAt(s, { ...kstDateParts(date), hour: peakHour });
   const outdoor = place.outdoor ?? OUTDOOR[place.category];
   if (w && outdoor > 0) {
-    if ((w.pty ?? 0) > 0) reasons.push(outdoor >= 0.5 ? "🌧 비 예보 → 한산" : "🌧 비 예보 → 실내로 몰림");
-    else if ((w.pop ?? 0) >= 60) reasons.push(`☔ 강수확률 ${w.pop}%`);
-    if (w.tmp !== undefined && w.tmp >= 33) reasons.push(`🥵 ${w.tmp}°C 폭염`);
-    if (w.tmp !== undefined && w.tmp <= -8) reasons.push(`🥶 ${w.tmp}°C 한파`);
+    if ((w.pty ?? 0) > 0) reasons.push({ k: outdoor >= 0.5 ? "🌧 비 예보 → 한산" : "🌧 비 예보 → 실내로 몰림" });
+    else if ((w.pop ?? 0) >= 60) reasons.push({ k: "☔ 강수확률 {pop}%", p: { pop: w.pop! } });
+    if (w.tmp !== undefined && w.tmp >= 33) reasons.push({ k: "🥵 {tmp}°C 폭염", p: { tmp: w.tmp } });
+    if (w.tmp !== undefined && w.tmp <= -8) reasons.push({ k: "🥶 {tmp}°C 한파", p: { tmp: w.tmp } });
   } else if (outdoor > 0) {
     const m = midAt(s, { ...kstDateParts(date), hour: peakHour });
-    if (m?.rainy && m.pop >= 60) reasons.push(outdoor >= 0.5 ? `🌧 ${m.wf} 예보 → 한산` : `🌧 ${m.wf} 예보 → 실내로 몰림`);
-    else if (m && m.pop >= 60) reasons.push(`☔ 강수확률 ${m.pop}%`);
+    if (m?.rainy && m.pop >= 60)
+      reasons.push({ k: outdoor >= 0.5 ? "🌧 {wf} 예보 → 한산" : "🌧 {wf} 예보 → 실내로 몰림", p: { wf: m.wf } });
+    else if (m && m.pop >= 60) reasons.push({ k: "☔ 강수확률 {pop}%", p: { pop: m.pop } });
   }
   const ag = airGrade(s, date);
-  if (outdoor > 0 && ag && ag >= 3) reasons.push(ag === 4 ? "😷 초미세먼지 매우나쁨 → 야외 한산" : "😷 초미세먼지 나쁨");
+  if (outdoor > 0 && ag && ag >= 3) reasons.push({ k: ag === 4 ? "😷 초미세먼지 매우나쁨 → 야외 한산" : "😷 초미세먼지 나쁨" });
   const ratio = concentrationRatio(s, date);
-  if (ratio !== undefined && ratio >= 1.2) reasons.push("📈 관광공사 예측: 평소보다 붐빔");
-  if (ratio !== undefined && ratio <= 0.8) reasons.push("📉 관광공사 예측: 평소보다 한산");
-  if (s?.pax?.has(date) && place.paxSteps) reasons.push("✈️ 공항공사 시간대별 승객 수 반영");
+  if (ratio !== undefined && ratio >= 1.2) reasons.push({ k: "📈 관광공사 예측: 평소보다 붐빔" });
+  if (ratio !== undefined && ratio <= 0.8) reasons.push({ k: "📉 관광공사 예측: 평소보다 한산" });
+  if (s?.pax?.has(date) && place.paxSteps) reasons.push({ k: "✈️ 공항공사 시간대별 승객 수 반영" });
   return reasons;
 }
 
@@ -206,7 +213,7 @@ export interface DayForecast {
   date: string;
   peakScore: number;
   peakHour: number;
-  reasons: string[];
+  reasons: Reason[];
 }
 
 /** 오늘부터 n일간 하루 최대 혼잡도 */

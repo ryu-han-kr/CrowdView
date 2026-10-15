@@ -9,7 +9,12 @@ import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
 import { getLivePlace, isOngoingEvent } from "@/lib/place-info";
 import { PLACES, placeHref } from "@/lib/places";
-import { daysUntil, formatAge, formatClock, formatHour, kst } from "@/lib/time";
+import { daysUntil, formatClock, kst } from "@/lib/time";
+import type { Lang } from "@/i18n/config";
+import { localePath } from "@/i18n/config";
+import { fmtAge, fmtMinutes, fmtPeople, trReason } from "@/i18n/patterns";
+import { getT } from "@/i18n/server";
+import { formatHour, type T } from "@/i18n/translate";
 import type { CrowdResult, HourPoint } from "@/lib/types";
 import { CATEGORY_LABEL } from "@/lib/types";
 import { DataTag } from "@/components/DataTag";
@@ -35,12 +40,13 @@ export function generateStaticParams() {
   return PLACES.map((p) => ({ id: p.id }));
 }
 
-const WEEKDAYS = "일월화수목금토";
-function dayName(date: string): string {
+const weekday = (date: string, lang: Lang, style: "long" | "short") =>
+  new Intl.DateTimeFormat(lang, { weekday: style, timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
+function dayName(date: string, t: T, lang: Lang): string {
   const diff = daysUntil(date);
-  if (diff === 0) return "오늘";
-  if (diff === 1) return "내일";
-  return `${WEEKDAYS[new Date(`${date}T00:00:00Z`).getUTCDay()]}요일`;
+  if (diff === 0) return t("오늘");
+  if (diff === 1) return t("내일");
+  return weekday(date, lang, "long");
 }
 
 /** 예측 곡선의 지난 시간을 실측 기록으로 바꾼다. withPeople: 기록의 인원이 실제 인원일 때 */
@@ -55,11 +61,11 @@ function withRecordedHours(points: HourPoint[], records: HistoryPoint[], withPeo
 }
 
 /** 오늘·내일·수 */
-function shortDay(date: string): string {
+function shortDay(date: string, t: T, lang: Lang): string {
   const diff = daysUntil(date);
-  if (diff === 0) return "오늘";
-  if (diff === 1) return "내일";
-  return WEEKDAYS[new Date(`${date}T00:00:00Z`).getUTCDay()];
+  if (diff === 0) return t("오늘");
+  if (diff === 1) return t("내일");
+  return weekday(date, lang, "short");
 }
 
 /** 영업시간 내 앞으로 가장 한산한 시간 */
@@ -67,12 +73,14 @@ function bestUpcoming(points: HourPoint[], open: number, close: number): HourPoi
   return points.filter((p) => p.forecast && p.hour >= open && p.hour < close).sort((a, b) => a.score - b.score)[0];
 }
 
-export default async function PlacePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function PlacePage({ params }: { params: Promise<{ id: string; lang: string }> }) {
   const { id } = await params;
+  const lang = (await params).lang as Lang;
+  const t = getT(lang);
   // 운영 시간·행사 일정은 한국관광공사 TourAPI 값 (없으면 places.ts의 임의 값)
   const [place, crowd] = await Promise.all([getLivePlace(id), getCrowd(id)]);
   if (!place || !crowd) notFound();
-  if (place.category === "airport") redirect(placeHref(place));
+  if (place.category === "airport") redirect(localePath(lang, placeHref(place)));
   const [signals, [today]] = await Promise.all([getSignals(place), getHistory(id, 1)]);
   // 오늘 지난 시간은 10분마다 쌓은 실측 기록으로 채운다 (시간마다 마지막 기록)
   const hourly = withRecordedHours(crowd.hourly, today.points, crowd.source !== "model" && place.criteria?.unit === "명");
@@ -87,7 +95,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     ? levelOf(crowd.score)
     : {
         label: "운영 종료",
-        desc: `운영 시간 ${formatHour(place.hours[0])} ~ ${formatHour(place.hours[1])}`,
+        desc: t("운영 시간 {from} ~ {to}", { from: formatHour(place.hours[0], lang), to: formatHour(place.hours[1], lang) }),
         color: "#6b7280",
       };
   const best = bestUpcoming(crowd.hourly, ...place.hours);
@@ -103,22 +111,22 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
       <div className="relative -mt-6 px-5 md:mt-8 md:px-0 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-10">
         <div className="lg:sticky lg:top-24 lg:self-start">
           <p className="text-xs font-medium text-gray-500">
-            {CATEGORY_LABEL[place.category]} · {place.region}
+            {t(CATEGORY_LABEL[place.category])} · {t(place.region)}
           </p>
           <div className="flex items-center justify-between gap-3">
-            <h1 className="mt-1 text-2xl font-bold md:text-3xl">{place.name}</h1>
+            <h1 className="mt-1 text-2xl font-bold md:text-3xl">{t(place.name)}</h1>
             <FavoriteButton placeId={place.id} className="hidden shrink-0 md:inline-flex" />
           </div>
-          <p className="mt-2 text-sm leading-relaxed text-gray-600">{place.description}</p>
+          <p className="mt-2 text-sm leading-relaxed text-gray-600">{t(place.description)}</p>
 
           {/* 현재 혼잡도 */}
           {/* 지금 혼잡도 */}
           <section className="mt-4 rounded-3xl px-4 py-3.5" style={{ background: `${level.color}14` }}>
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs font-medium text-gray-500">지금 혼잡도</p>
+                <p className="text-xs font-medium text-gray-500">{t("지금 혼잡도")}</p>
                 <p className="text-2xl font-extrabold" style={{ color: level.color }}>
-                  {level.label}
+                  {t(level.label)}
                   {isOpen && isEstimated(crowd) && <DataTag className="text-xs" />}
                 </p>
                 <p className="text-sm text-gray-600">
@@ -126,56 +134,57 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                     <>
                       {crowd.avgWaitMin !== undefined ? (
                         <>
-                          놀이기구 평균 대기 <b>{crowd.avgWaitMin}분</b>
+                          {t("놀이기구 평균 대기")} <b>{fmtMinutes(crowd.avgWaitMin, t)}</b>
                         </>
                       ) : (
-                        (headcountInfo(crowd)?.text ?? level.desc)
+                        (headcountInfo(crowd, { t, lang })?.text ?? t(level.desc))
                       )}
                       {crowd.avgWaitMin === undefined && headcountInfo(crowd)?.kind && (
                         <DataTag kind={headcountInfo(crowd)!.kind} />
                       )}
-                      {crowd.trend === "up" && <span className="text-red-500"> · 늘어나는 중</span>}
-                      {crowd.trend === "down" && <span className="text-emerald-600"> · 줄어드는 중</span>}
+                      {crowd.trend === "up" && <span className="text-red-500"> · {t("늘어나는 중")}</span>}
+                      {crowd.trend === "down" && <span className="text-emerald-600"> · {t("줄어드는 중")}</span>}
                     </>
                   ) : (
-                    level.desc
+                    t(level.desc)
                   )}
                 </p>
               </div>
             </div>
             <p className={`mt-2 text-[11px] ${crowd.stale ? "font-semibold text-amber-600" : "text-gray-400"}`}>
-              {formatAge(crowd.ageMinutes)} 갱신 · {SOURCE_LABEL[crowd.source]}
+              {t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })} · {t(SOURCE_LABEL[crowd.source])}
             </p>
           </section>
 
-          <WeatherCard signals={signals} />
+          <WeatherCard signals={signals} lang={lang} />
 
         {/* 언제 가면 좋을까 */}
           <section className="mt-4 rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">
-            <p className="text-xs font-semibold text-indigo-500">✨ 언제 가면 좋을까요?</p>
+            <p className="text-xs font-semibold text-indigo-500">✨ {t("언제 가면 좋을까요?")}</p>
             <ul className="mt-2 space-y-1.5 text-sm">
               <li>
                 {best ? (
                   <>
-                    오늘은 <b>{formatHour(best.hour)}</b>가 가장 한산해요 <LevelBadge score={best.score} />
+                    {t("오늘은 {hour}가 가장 한산해요", { hour: formatHour(best.hour, lang) })} <LevelBadge score={best.score} />
                   </>
                 ) : isOpen ? (
-                  "오늘은 지금이 가장 한산한 편이에요."
+                  t("오늘은 지금이 가장 한산한 편이에요.")
                 ) : (
-                  "오늘 운영이 끝났어요."
+                  t("오늘 운영이 끝났어요.")
                 )}
               </li>
               <li>
-                이번 주는 <b>{dayName(calmest.date)}</b>이{" "}
-                {calmest.peakScore >= 60 ? "그나마 덜 붐벼요" : "가장 한산해요"}{" "}
+                {calmest.peakScore >= 60
+                  ? t("이번 주는 {day}이 그나마 덜 붐벼요", { day: dayName(calmest.date, t, lang) })
+                  : t("이번 주는 {day}이 가장 한산해요", { day: dayName(calmest.date, t, lang) })}{" "}
                 <LevelBadge score={calmest.peakScore} />
               </li>
             </ul>
             {todayReasons.length > 0 && (
               <div className="mt-2.5 flex flex-wrap gap-1.5">
                 {todayReasons.map((r) => (
-                  <span key={r} className="rounded-full bg-white px-2 py-0.5 text-[11px] text-gray-600">
-                    {r}
+                  <span key={r.k} className="rounded-full bg-white px-2 py-0.5 text-[11px] text-gray-600">
+                    {trReason(r, t)}
                   </span>
                 ))}
               </div>
@@ -187,17 +196,17 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           {/* 놀이기구 대기 */}
           {crowd.zones && crowd.zones.length > 0 && (
             <section className="mt-8">
-              <h2 className="text-lg font-bold">지금 대기가 긴 놀이기구</h2>
+              <h2 className="text-lg font-bold">{t("지금 대기가 긴 놀이기구")}</h2>
               <ul className="mt-3 divide-y divide-gray-100 rounded-2xl border border-gray-100">
                 {crowd.zones.map((z) => (
                   <li key={z.id} className="flex items-center gap-3 px-4 py-3">
-                    <span className="min-w-0 flex-1 truncate text-sm font-semibold">{z.label}</span>
-                    <b className="text-sm">{z.waitMin}분</b>
+                    <span className="min-w-0 flex-1 truncate text-sm font-semibold">{t(z.label)}</span>
+                    <b className="text-sm">{fmtMinutes(z.waitMin ?? 0, t)}</b>
                     <LevelBadge score={z.score} />
                   </li>
                 ))}
               </ul>
-              <p className="mt-2 text-[11px] text-gray-400">Powered by ThemeParks.wiki · 5분 단위 갱신</p>
+              <p className="mt-2 text-[11px] text-gray-400">Powered by ThemeParks.wiki · {t("5분 단위 갱신")}</p>
             </section>
           )}
 
@@ -205,9 +214,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           {dday !== null && (
             <section className="mt-6 rounded-3xl bg-gray-900 p-5 text-white">
               <div className="flex items-center justify-between">
-                <h2 className="font-bold">🎯 이벤트 당일 예측</h2>
+                <h2 className="font-bold">🎯 {t("이벤트 당일 예측")}</h2>
                 <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-sm font-bold">
-                  {isOngoingEvent(place) ? "진행 중" : dday > 0 ? `D-${dday}` : dday === 0 ? "D-DAY" : "종료"}
+                  {isOngoingEvent(place) ? t("진행 중") : dday > 0 ? `D-${dday}` : dday === 0 ? "D-DAY" : t("종료")}
                 </span>
               </div>
               <p className="mt-1 text-xs text-white/60">
@@ -219,7 +228,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 ) : (
                   place.info?.eventVerified === false && (
                     <>
-                      <DataTag className="text-amber-300!" /> 작년 일정 기준
+                      <DataTag className="text-amber-300!" /> {t("작년 일정 기준")}
                     </>
                   )
                 )}
@@ -227,9 +236,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               {eventForecast && eventPeak && (
                 <>
                   <p className="mt-4 text-sm">
-                    최대 <b>{formatHour(eventPeak.hour)}</b> 전후{" "}
-                    <b>{Math.round((place.capacity * eventPeak.score) / 100).toLocaleString()}명</b>
-                    <DataTag className="text-amber-300!" /> 예상 ·{" "}
+                    {t("최대 {hour} 전후", { hour: formatHour(eventPeak.hour, lang) })}{" "}
+                    <b>{fmtPeople(Math.round((place.capacity * eventPeak.score) / 100), t, lang)}</b>
+                    <DataTag className="text-amber-300!" /> {t("예상")} ·{" "}
                     <span style={{ color: levelOf(eventPeak.score).color }}>{levelOf(eventPeak.score).label}</span>
                   </p>
                   <div className="mt-4 rounded-2xl bg-white p-3 text-gray-900">
@@ -243,7 +252,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           {/* 오늘 시간대별 */}
           <section className="mt-8">
             <h2 className="text-lg font-bold">
-              오늘 시간대별
+              {t("오늘 시간대별")}
               {isEstimated(crowd) && <DataTag />}
             </h2>
             <div className="mt-6">
@@ -259,10 +268,10 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           {/* 이번 주 */}
           <section className="mt-8">
             <h2 className="text-lg font-bold">
-              이번 주
+              {t("이번 주")}
               <DataTag />
             </h2>
-            <p className="mt-0.5 text-xs text-gray-500">하루 중 가장 붐빌 때 기준 · 공휴일·날씨·관광공사 예측 반영</p>
+            <p className="mt-0.5 text-xs text-gray-500">{t("하루 중 가장 붐빌 때 기준 · 공휴일·날씨·관광공사 예측 반영")}</p>
             <ul className="mt-4 grid grid-cols-7 gap-1.5">
               {week.map((d) => {
                 const lv = levelOf(d.peakScore);
@@ -276,14 +285,14 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                           height: `${Math.max(8, d.peakScore)}%`,
                           background: lv.color,
                         }}
-                        title={`${d.date} · ${lv.label} · 피크 ${formatHour(d.peakHour)}`}
+                        title={`${d.date} · ${t(lv.label)} · ${t("피크")} ${formatHour(d.peakHour, lang)}`}
                       />
                     </div>
                     <span className={`mt-1.5 text-xs ${isCalmest ? "font-bold text-emerald-600" : "font-medium"}`}>
-                      {shortDay(d.date)}
+                      {shortDay(d.date, t, lang)}
                     </span>
                     <span className="text-[10px] leading-tight" style={{ color: lv.color }}>
-                      {lv.label.replace("매우 ", "매우")}
+                      {t(lv.label)}
                     </span>
                   </li>
                 );
@@ -295,30 +304,30 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   .filter((d) => d.reasons.length > 0)
                   .map((d) => (
                     <li key={d.date}>
-                      <b className="mr-1.5 text-gray-900">{dayName(d.date)}</b>
-                      {d.reasons.join(" · ")}
+                      <b className="mr-1.5 text-gray-900">{dayName(d.date, t, lang)}</b>
+                      {d.reasons.map((r) => trReason(r, t)).join(" · ")}
                     </li>
                   ))}
               </ul>
             )}
           </section>
 
-          {signals.localPop && <VisitorProfile pop={signals.localPop} />}
+          {signals.localPop && <VisitorProfile pop={signals.localPop} lang={lang} />}
 
-          <JudgementCard place={place} crowd={crowd} signals={signals} />
+          <JudgementCard place={place} crowd={crowd} signals={signals} lang={lang} />
 
           {/* 정보 */}
           <section className="mt-8 mb-8 space-y-3 text-sm">
-            <h2 className="text-lg font-bold">정보</h2>
+            <h2 className="text-lg font-bold">{t("정보")}</h2>
             <div className="flex gap-3">
-              <span className="w-14 shrink-0 text-gray-400">운영</span>
+              <span className="w-14 shrink-0 text-gray-400">{t("운영")}</span>
               <div className="min-w-0">
                 <p>
                   {place.info?.closedToday
-                    ? "오늘 휴무"
-                    : `오늘 ${formatClock(place.hours[0])} ~ ${formatClock(place.hours[1])}`}{" "}
+                    ? t("오늘 휴무")
+                    : t("오늘 {from} ~ {to}", { from: formatClock(place.hours[0]), to: formatClock(place.hours[1]) })}{" "}
                   <span className={isOpen ? "text-emerald-600" : "text-gray-400"}>
-                    {isOpen ? "· 운영 중" : "· 운영 종료"}
+                    {isOpen ? `· ${t("운영 중")}` : `· ${t("운영 종료")}`}
                   </span>
                   {!place.info?.hoursVerified && <DataTag kind="임의" />}
                 </p>
@@ -331,27 +340,28 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             </div>
             {place.info?.restText && (
               <div className="flex gap-3">
-                <span className="w-14 shrink-0 text-gray-400">휴무</span>
+                <span className="w-14 shrink-0 text-gray-400">{t("휴무")}</span>
                 <span className="text-xs leading-relaxed text-gray-600">{place.info.restText}</span>
               </div>
             )}
             {place.info?.infocenter && (
               <div className="flex gap-3">
-                <span className="w-14 shrink-0 text-gray-400">문의</span>
+                <span className="w-14 shrink-0 text-gray-400">{t("문의")}</span>
                 <span>{place.info.infocenter}</span>
               </div>
             )}
             <div className="flex gap-3">
-              <span className="w-14 shrink-0 text-gray-400">주소</span>
+              <span className="w-14 shrink-0 text-gray-400">{t("주소")}</span>
               <span>{place.address}</span>
             </div>
             <div className="flex flex-wrap gap-1.5 pt-1">
-              {place.tags.map((t) => (
-                <span key={t} className="rounded-full bg-gray-100 px-2.5 py-1 text-xs text-gray-600">
-                  #{t}
+              {place.tags.map((tag) => (
+                <span key={tag} className="rounded-full bg-gray-100 px-2.5 py-1 text-xs text-gray-600">
+                  #{t(tag)}
                 </span>
               ))}
             </div>
+            {lang !== "ko" && <p className="pt-1 text-[11px] text-gray-400">{t("운영 시간·휴무·문의·주소는 한국어 원문이에요.")}</p>}
           </section>
         </div>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/i18n/client";
 import { useFavorites } from "@/lib/prefs";
 import { CATEGORY_LABEL, type Category, type CrowdResult, type Place } from "@/lib/types";
 import { ICONS, IconTabBar, type IconTab } from "./IconTabs";
@@ -34,11 +35,18 @@ export function HomeList({
   const [filter, setFilter] = useState<Filter>("all");
   const [sort, setSort] = useState<Sort>("calm");
   const { favorites } = useFavorites();
+  const { t } = useI18n();
 
   const q = query.trim().toLowerCase();
   const list = places
     .filter((p) => (filter === "all" ? true : filter === "fav" ? favorites.includes(p.id) : p.category === filter))
-    .filter((p) => !q || [p.name, p.region, ...p.tags, CATEGORY_LABEL[p.category]].some((s) => s.toLowerCase().includes(q)))
+    .filter(
+      (p) =>
+        !q ||
+        [p.name, p.region, ...p.tags, CATEGORY_LABEL[p.category]]
+          .flatMap((s) => [s, t(s)])
+          .some((s) => s.toLowerCase().includes(q)),
+    )
     .sort(
       (a, b) =>
         Number(crowd[b.id].open) - Number(crowd[a.id].open) ||
@@ -46,10 +54,10 @@ export function HomeList({
     );
 
   const tabs: IconTab[] = [
-    { id: "all", label: "전체", icon: ICONS.all },
-    ...(favorites.length ? [{ id: "fav", label: "찜", icon: HEART }] : []),
+    { id: "all", label: t("전체"), icon: ICONS.all },
+    ...(favorites.length ? [{ id: "fav", label: t("찜"), icon: HEART }] : []),
     // 장소가 있는 파트만
-    ...CATEGORIES.filter((c) => places.some((p) => p.category === c)).map((c) => ({ id: c, label: CATEGORY_LABEL[c], icon: CATEGORY_ICON[c] })),
+    ...CATEGORIES.filter((c) => places.some((p) => p.category === c)).map((c) => ({ id: c, label: t(CATEGORY_LABEL[c]), icon: CATEGORY_ICON[c] })),
   ];
   const browsing = !q && filter === "all";
 
@@ -64,12 +72,12 @@ export function HomeList({
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="장소·지역 검색 (예: 홍대, 공항)"
+            placeholder={t("장소·지역 검색 (예: 홍대, 공항)")}
             className="min-w-0 flex-1 bg-transparent text-[15px] outline-none placeholder:text-gray-400"
             enterKeyHint="search"
           />
           {query && (
-            <button onClick={() => setQuery("")} aria-label="검색어 지우기" className="text-gray-400">
+            <button onClick={() => setQuery("")} aria-label={t("검색어 지우기")} className="text-gray-400">
               ✕
             </button>
           )}
@@ -81,7 +89,13 @@ export function HomeList({
 
       <section className="mt-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold">{q ? `검색 결과 ${list.length}곳` : filter === "all" ? "전체 장소" : filter === "fav" ? "찜한 곳" : CATEGORY_LABEL[filter]}</h2>
+          <h2 className="text-lg font-bold">{q
+              ? t("검색 결과 {n}곳", { n: list.length })
+              : filter === "all"
+                ? t("전체 장소")
+                : filter === "fav"
+                  ? t("찜한 곳")
+                  : t(CATEGORY_LABEL[filter])}</h2>
           <div className="flex rounded-full bg-gray-100 p-0.5 text-xs font-medium">
             {(["calm", "busy"] as const).map((s) => (
               <button
@@ -89,7 +103,7 @@ export function HomeList({
                 onClick={() => setSort(s)}
                 className={`rounded-full px-3 py-1 ${sort === s ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
               >
-                {s === "calm" ? "한산한 순" : "붐비는 순"}
+                {s === "calm" ? t("한산한 순") : t("붐비는 순")}
               </button>
             ))}
           </div>
@@ -114,7 +128,7 @@ export function HomeList({
           </>
         ) : (
           <p className="mt-4 rounded-2xl bg-gray-50 p-6 text-center text-sm text-gray-500">
-            &lsquo;{query}&rsquo;에 맞는 장소가 없어요.
+            {t("‘{q}’에 맞는 장소가 없어요.", { q: query })}
           </p>
         )}
       </section>

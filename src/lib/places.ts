@@ -1,3 +1,4 @@
+import { makeT, type T } from "../i18n/translate";
 import type { Place } from "./types";
 
 // 샘플 장소 데이터. 이벤트 일정은 예시이며 실제 일정과 다를 수 있음.
@@ -393,8 +394,10 @@ export const PLACES: Place[] = [
 ];
 
 /** 사진 출처 한 줄 (예: 사진 한국관광공사, 사진 Kimhs5400 · CC BY 4.0) */
-export function imageCreditText(p: Place): string {
-  return p.imageCredit ? `사진 ${p.imageCredit.author} · ${p.imageCredit.license}` : "사진 한국관광공사";
+export function imageCreditText(p: Place, t: T = makeT(undefined)): string {
+  return p.imageCredit
+    ? t("사진 {author} · {license}", { author: p.imageCredit.author, license: p.imageCredit.license })
+    : t("사진 한국관광공사");
 }
 
 /** 공항은 공항 탭 상세로, 나머지는 장소 상세로 */
