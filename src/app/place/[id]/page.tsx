@@ -3,6 +3,7 @@ import { HourlyChart } from "@/components/HourlyChart";
 import { LevelBadge } from "@/components/Level";
 import { PlaceHero } from "@/components/PlaceHero";
 import { forecastForDate, forecastReasons, weekForecast } from "@/lib/crowd/model";
+import { getHistory, type HistoryPoint } from "@/lib/crowd/history";
 import { getSignals } from "@/lib/crowd/signals";
 import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
@@ -15,7 +16,7 @@ import { DataTag } from "@/components/DataTag";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { JudgementCard } from "@/components/JudgementCard";
 import { VisitorProfile } from "@/components/VisitorProfile";
-import { WeatherInline } from "@/components/WeatherCard";
+import { WeatherCard } from "@/components/WeatherCard";
 import { headcountInfo, isEstimated } from "@/lib/format";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
@@ -42,6 +43,17 @@ function dayName(date: string): string {
   return `${WEEKDAYS[new Date(`${date}T00:00:00Z`).getUTCDay()]}요일`;
 }
 
+/** 예측 곡선의 지난 시간을 실측 기록으로 바꾼다. withPeople: 기록의 인원이 실제 인원일 때 */
+function withRecordedHours(points: HourPoint[], records: HistoryPoint[], withPeople: boolean): HourPoint[] {
+  const byHour = new Map<number, HistoryPoint>();
+  for (const r of records) byHour.set(Math.floor(kst(new Date(r.t)).hour), r);
+  return points.map((p) => {
+    const r = !p.forecast ? byHour.get(p.hour) : undefined;
+    if (!r) return p;
+    return withPeople ? { ...p, score: r.score, people: r.headcount, peopleKind: "real" } : { ...p, score: r.score };
+  });
+}
+
 /** 오늘·내일·수 */
 function shortDay(date: string): string {
   const diff = daysUntil(date);
@@ -61,7 +73,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const [place, crowd] = await Promise.all([getLivePlace(id), getCrowd(id)]);
   if (!place || !crowd) notFound();
   if (place.category === "airport") redirect(placeHref(place));
-  const signals = await getSignals(place);
+  const [signals, [today]] = await Promise.all([getSignals(place), getHistory(id, 1)]);
+  // 오늘 지난 시간은 10분마다 쌓은 실측 기록으로 채운다 (시간마다 마지막 기록)
+  const hourly = withRecordedHours(crowd.hourly, today.points, crowd.source !== "model" && place.criteria?.unit === "명");
   const week = weekForecast(place, signals);
   const calmest = week.reduce((a, b) => (b.peakScore < a.peakScore ? b : a));
   const todayPeak = week[0];
@@ -98,7 +112,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           <p className="mt-2 text-sm leading-relaxed text-gray-600">{place.description}</p>
 
           {/* 현재 혼잡도 */}
-          {/* 지금 혼잡도 + 날씨를 한 카드에 */}
+          {/* 지금 혼잡도 */}
           <section className="mt-4 rounded-3xl px-4 py-3.5" style={{ background: `${level.color}14` }}>
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
@@ -128,21 +142,22 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   )}
                 </p>
               </div>
-              <WeatherInline signals={signals} />
             </div>
             <p className={`mt-2 text-[11px] ${crowd.stale ? "font-semibold text-amber-600" : "text-gray-400"}`}>
               {formatAge(crowd.ageMinutes)} 갱신 · {SOURCE_LABEL[crowd.source]}
             </p>
           </section>
 
-          {/* 언제 가면 좋을까 */}
+          <WeatherCard signals={signals} />
+
+        {/* 언제 가면 좋을까 */}
           <section className="mt-4 rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">
             <p className="text-xs font-semibold text-indigo-500">✨ 언제 가면 좋을까요?</p>
             <ul className="mt-2 space-y-1.5 text-sm">
               <li>
                 {best ? (
                   <>
-                    오늘은 <b>{formatHour(best.hour)}</b>이 가장 한산해요 <LevelBadge score={best.score} />
+                    오늘은 <b>{formatHour(best.hour)}</b>가 가장 한산해요 <LevelBadge score={best.score} />
                   </>
                 ) : isOpen ? (
                   "오늘은 지금이 가장 한산한 편이에요."
@@ -233,7 +248,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             </h2>
             <div className="mt-6">
               <HourlyChart
-                points={crowd.hourly}
+                points={hourly}
                 highlightHour={Math.floor(now.hour)}
                 estimated={isEstimated(crowd)}
                 unit={place.criteria?.unit === "분" ? "분" : "명"}

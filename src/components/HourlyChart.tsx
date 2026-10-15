@@ -56,7 +56,8 @@ export function HourlyChart({
   const level = levelOf(p.score);
   const isMeasured = !p.forecast && !estimated;
   const delta =
-    prev && p.people !== undefined && prev.people !== undefined
+    // 인원 증감은 같은 종류의 수치끼리만 (실측과 추정을 섞으면 엉뚱한 차이가 난다)
+    prev && p.people !== undefined && prev.people !== undefined && (p.peopleKind === "est") === (prev.peopleKind === "est")
       ? { text: `${p.people >= prev.people ? "+" : "−"}${compactNumber(Math.abs(p.people - prev.people))}${unit}`, up: p.people > prev.people }
       : prev
         ? { text: `${p.score >= prev.score ? "+" : "−"}${Math.abs(p.score - prev.score)}점`, up: p.score > prev.score }

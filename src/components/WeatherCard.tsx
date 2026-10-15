@@ -19,56 +19,30 @@ export function WeatherCard({ signals }: { signals: Signals }) {
   if (!w && !air) return null;
 
   return (
-    <section className="mt-4 flex items-center gap-3 rounded-3xl bg-sky-50 p-4">
+    <section className="mt-3 flex items-center gap-3 rounded-3xl border border-sky-100 bg-sky-50 px-4 py-3.5">
       {w && (
         <>
-          <span className="text-3xl">{ICON(w.sky, w.pty)}</span>
+          <span className="text-4xl leading-none">{ICON(w.sky, w.pty)}</span>
           <div className="min-w-0 flex-1">
-            <p className="text-lg font-bold">
+            <p className="text-2xl font-bold text-gray-900">
               {w.tmp !== undefined && `${w.tmp}°`}{" "}
-              <span className="text-sm font-medium text-gray-600">{w.pty ? PTY[w.pty] : SKY[w.sky ?? 0] ?? ""}</span>
+              <span className="text-base font-semibold text-gray-800">{w.pty ? PTY[w.pty] : (SKY[w.sky ?? 0] ?? "")}</span>
             </p>
-            <p className="text-xs text-gray-500">강수확률 {w.pop ?? 0}% · 기상청 단기예보</p>
+            <p className="text-xs font-medium text-gray-600">강수확률 {w.pop ?? 0}% · 기상청 단기예보</p>
           </div>
         </>
       )}
       {air?.pm25Grade && (
         <div className="shrink-0 text-right">
-          <p className="text-[11px] text-gray-500">초미세먼지</p>
-          <p className="text-sm font-bold" style={{ color: AIR_COLOR[air.pm25Grade] }}>
+          <p className="text-xs font-medium text-gray-600">초미세먼지</p>
+          <p className="text-lg font-bold" style={{ color: AIR_COLOR[air.pm25Grade] }}>
             {AIR_GRADE[air.pm25Grade]}
-            {air.pm25 !== undefined && <span className="ml-1 text-[11px] font-medium text-gray-500">{air.pm25}㎍</span>}
+            {air.pm25 !== undefined && <span className="ml-1 text-xs font-semibold text-gray-700">{air.pm25}㎍</span>}
           </p>
-          <p className="text-[10px] text-gray-400">{air.station} 측정소</p>
+          <p className="text-[11px] text-gray-500">{air.station} 측정소</p>
         </div>
       )}
     </section>
   );
 }
 
-/** 지금 혼잡도 카드 안에 넣는 작은 날씨·미세먼지 (오른쪽 정렬) */
-export function WeatherInline({ signals }: { signals: Signals }) {
-  const now = kst();
-  const hh = Math.floor(now.hour);
-  let w;
-  for (let h = hh; h < hh + 3 && !w; h++) w = signals.weather?.get(`${now.date} ${String(h % 24).padStart(2, "0")}`);
-  const air = signals.air;
-  if (!w && !air?.pm25Grade) return null;
-  return (
-    <div className="shrink-0 text-right">
-      {w && (
-        <p className="flex items-center justify-end gap-1 text-sm font-semibold">
-          <span className="text-xl leading-none">{ICON(w.sky, w.pty)}</span>
-          {w.tmp !== undefined && `${w.tmp}°`}
-          <span className="text-xs font-medium text-gray-500">{w.pty ? PTY[w.pty] : (SKY[w.sky ?? 0] ?? "")}</span>
-        </p>
-      )}
-      {w && <p className="text-[11px] text-gray-500">강수 {w.pop ?? 0}%</p>}
-      {air?.pm25Grade && (
-        <p className="text-[11px] text-gray-500">
-          초미세 <b style={{ color: AIR_COLOR[air.pm25Grade] }}>{AIR_GRADE[air.pm25Grade]}</b>
-        </p>
-      )}
-    </div>
-  );
-}

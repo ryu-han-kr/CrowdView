@@ -13,7 +13,7 @@ const PLANS = [
 export default async function MePage() {
   const crowd = await getAllCrowd();
   return (
-    <main className="px-5 pt-6 md:mx-auto md:max-w-3xl md:px-0 md:pt-10">
+    <main className="px-5 pt-6 md:px-0 md:pt-10">
       <h1 className="text-2xl font-bold md:text-3xl">마이페이지</h1>
 
       <div className="mt-6">

@@ -26,9 +26,10 @@ export default async function AirportListPage() {
           const busiestZone = c.zones?.reduce((a, b) => (b.score > a.score ? b : a));
           const lots = parking[i];
           const fullLots = lots.filter((l) => l.rate >= 90).length;
+          const freeSpaces = lots.reduce((sum, l) => sum + Math.max(0, l.total - l.occupied), 0);
           return (
-            <li key={place.id}>
-              <Link href={`/airport/${place.id}`} className="block rounded-3xl border border-gray-100 p-4 active:bg-gray-50">
+            <li key={place.id} className="flex flex-col overflow-hidden rounded-3xl border border-gray-100">
+              <Link href={`/airport/${place.id}`} className="block flex-1 p-4 active:bg-gray-50">
                 <div className="flex items-center gap-3">
                   <PlaceThumb place={place} size={48} />
                   <div className="min-w-0 flex-1">
@@ -40,22 +41,27 @@ export default async function AirportListPage() {
                   </div>
                   <LevelBadge score={c.score} closed={!c.open} />
                 </div>
-                {(busiestZone || lots.length > 0) && (
-                  <div className="mt-3 space-y-1 rounded-2xl bg-gray-50 px-3 py-2.5 text-xs text-gray-600">
-                    {busiestZone && (
-                      <p>
-                        가장 붐비는 곳 <b>{busiestZone.label}</b>
-                        {busiestZone.waitMin !== undefined && ` · 대기 ${busiestZone.waitMin}분`}
-                      </p>
-                    )}
-                    {lots.length > 0 && (
-                      <p>
-                        주차장 {lots.length}곳 중 <b className={fullLots ? "text-red-500" : ""}>{fullLots}곳 만차 임박</b>
-                      </p>
-                    )}
-                  </div>
+                {busiestZone && (
+                  <p className="mt-3 rounded-2xl bg-gray-50 px-3 py-2.5 text-xs text-gray-600">
+                    가장 붐비는 곳 <b>{busiestZone.label}</b>
+                    {busiestZone.waitMin !== undefined && ` · 대기 ${busiestZone.waitMin}분`}
+                  </p>
                 )}
               </Link>
+              {/* 주차장 바로가기: 공항 상세의 주차 탭으로 */}
+              {lots.length > 0 && (
+                <Link
+                  href={`/airport/${place.id}?tab=parking`}
+                  className="flex items-center gap-2 border-t border-gray-100 bg-sky-50/60 px-4 py-3 text-sm hover:bg-sky-50 active:bg-sky-100"
+                >
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-600 text-xs font-extrabold text-white">P</span>
+                  <span className="flex-1">
+                    <b>주차장</b> 빈자리 <b className="text-sky-700">{freeSpaces.toLocaleString()}면</b>
+                    {fullLots > 0 && <span className="text-red-500"> · {fullLots}곳 만차 임박</span>}
+                  </span>
+                  <span className="text-gray-400">›</span>
+                </Link>
+              )}
             </li>
           );
         })}

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { AdRail } from "@/components/AdRail";
 import { BottomNav, TopNav } from "@/components/BottomNav";
 import "./globals.css";
 
@@ -31,6 +32,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="mx-auto min-h-dvh max-w-md bg-white pb-[calc(4.5rem+env(safe-area-inset-bottom))] shadow-sm md:max-w-6xl md:px-6 md:pb-16 md:shadow-none">
           {children}
         </div>
+        <AdRail side="left" />
+        <AdRail side="right" />
         <BottomNav />
       </body>
     </html>

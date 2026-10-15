@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // 아이콘 + 글자 + 밑줄 탭. 홈의 카테고리, 공항 상세의 파트 선택에 함께 쓴다
 export interface IconTab {
@@ -49,10 +49,23 @@ export function IconTabBar({
 /** 탭 + 내용. 내용은 서버에서 그린 것을 그대로 받아 고른 탭만 보여준다 */
 export function IconTabPanels({ tabs }: { tabs: (IconTab & { content: React.ReactNode })[] }) {
   const [active, setActive] = useState(tabs[0]?.id);
+  // 주소의 ?tab= 으로 바로 그 탭을 연다 (예: 공항 목록의 '주차장' 버튼 → ?tab=parking)
+  useEffect(() => {
+    const t = new URLSearchParams(window.location.search).get("tab");
+    if (t && tabs.some((x) => x.id === t)) setActive(t);
+    // 처음 한 번만
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const choose = (id: string) => {
+    setActive(id);
+    const url = new URL(window.location.href);
+    url.searchParams.set("tab", id);
+    window.history.replaceState(null, "", url);
+  };
   return (
     <div>
       <div className="sticky top-0 z-20 -mx-5 bg-white/95 px-3 pt-2 backdrop-blur md:top-16 md:mx-0 md:bg-white md:px-0">
-        <IconTabBar tabs={tabs} active={active} onChange={setActive} />
+        <IconTabBar tabs={tabs} active={active} onChange={choose} />
       </div>
       {tabs.map((t) => (
         <div key={t.id} role="tabpanel" hidden={t.id !== active} className="pt-5">
