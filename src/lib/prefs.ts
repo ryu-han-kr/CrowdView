@@ -41,5 +41,5 @@ export function useFavorites() {
 export function usePreferredTags() {
   const [list, set] = useStoredList("cv:tags");
   const toggle = (tag: string) => set(list.includes(tag) ? list.filter((x) => x !== tag) : [...list, tag]);
-  return { tags: list, toggle };
+  return { tags: list, toggle, setTags: set };
 }

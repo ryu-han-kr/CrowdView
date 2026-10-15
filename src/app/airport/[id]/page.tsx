@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { AirportPaxChart } from "@/components/AirportPaxChart";
 import { DataTag } from "@/components/DataTag";
 import { JudgementCard } from "@/components/JudgementCard";
-import { WeatherInline } from "@/components/WeatherCard";
+import { WeatherCard } from "@/components/WeatherCard";
 import { getSignals } from "@/lib/crowd/signals";
 import { HistoryChart } from "@/components/HistoryChart";
 import { ICONS, IconTabPanels } from "@/components/IconTabs";
@@ -90,7 +90,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
           </header>
 
           {/* 지금 */}
-          {/* 지금 혼잡도 + 날씨를 한 카드에 */}
+          {/* 지금 혼잡도 */}
           <section className="mt-4 rounded-3xl px-4 py-3.5" style={{ background: `${level.color}14` }}>
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
@@ -114,7 +114,6 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                   )}
                 </p>
               </div>
-              <WeatherInline signals={signals} />
             </div>
             <p className={`mt-2 text-[11px] ${crowd.stale ? "font-semibold text-amber-600" : "text-gray-400"}`}>
               {crowd.source === "model"
@@ -122,6 +121,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                 : `${SOURCE_LABEL[crowd.source]} · ${formatAge(crowd.ageMinutes)} 갱신`}
             </p>
           </section>
+          <WeatherCard signals={signals} />
         </div>
 
         <div>

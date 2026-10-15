@@ -3,7 +3,7 @@
 // 네이버 지도 위에 혼잡도 원과 장소 핀을 그린다.
 // 키가 없거나 인증·로딩에 실패하면 자체 SVG 히트맵으로 대체.
 import { useEffect, useRef, useState } from "react";
-import { levelOf } from "@/lib/levels";
+import { LEVELS, levelOf } from "@/lib/levels";
 import type { CrowdResult, Place } from "@/lib/types";
 import { HeatMap, MapPlaceCard } from "./HeatMap";
 
@@ -49,8 +49,35 @@ function loadSdk(keyId: string): Promise<void> {
 
 export function CrowdMap({ places, crowd }: { places: Place[]; crowd: Record<string, CrowdResult> }) {
   const [failed, setFailed] = useState(!KEY_ID);
-  if (failed) return <HeatMap places={places} crowd={crowd} />;
-  return <NaverCrowdMap places={places} crowd={crowd} onFail={() => setFailed(true)} />;
+  return (
+    <div className="relative">
+      {failed ? <HeatMap places={places} crowd={crowd} /> : <NaverCrowdMap places={places} crowd={crowd} onFail={() => setFailed(true)} />}
+      <MapScale places={places} crowd={crowd} />
+    </div>
+  );
+}
+
+/** 지도 위 색깔 기준표: 색이 어느 정도 혼잡인지와 단계별 장소 수 */
+function MapScale({ places, crowd }: { places: Place[]; crowd: Record<string, CrowdResult> }) {
+  const open = places.filter((p) => crowd[p.id]?.open);
+  const count = (key: number) => open.filter((p) => levelOf(crowd[p.id].score).key === key).length;
+  return (
+    <div className="pointer-events-none absolute inset-x-3 top-[3.6rem] z-10 rounded-2xl bg-white/95 px-3 py-2 shadow-md backdrop-blur">
+      <div className="flex h-2 overflow-hidden rounded-full">
+        {LEVELS.map((l) => (
+          <div key={l.key} className="flex-1" style={{ background: l.color }} />
+        ))}
+      </div>
+      <div className="mt-1.5 flex text-center text-[10px] leading-tight">
+        {LEVELS.map((l) => (
+          <div key={l.key} className="flex-1">
+            <b style={{ color: l.color }}>{l.label}</b>
+            <span className="block text-gray-500">{count(l.key)}곳</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function NaverCrowdMap({
