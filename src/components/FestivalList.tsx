@@ -18,6 +18,7 @@ export function FestivalList({
   crowds,
   lives,
   liveAreas,
+  names = {},
   hrefs,
   today,
 }: {
@@ -27,10 +28,14 @@ export function FestivalList({
   lives: Record<string, SeoulLive | null>;
   /** 서울시 실시간 지역에 연결된 축제 → 지역명 */
   liveAreas: Record<string, string>;
+  /** 번역된 축제 이름·지역명 (한국어 원문 → 번역) */
+  names?: Record<string, string>;
   hrefs: Record<string, string>;
   today: string;
 }) {
   const { t, lang } = useI18n();
+  const tr = (ko: string) => names[ko] ?? ko;
+  const reg = (ko: string) => names[ko] ?? trRegion(ko, t);
   const [region, setRegion] = useState("전체");
   const sidos = ["전체", ...new Set(festivals.map((f) => f.region.split(" ")[0]))];
   const list = festivals.filter((f) => region === "전체" || f.region.startsWith(region));
@@ -87,14 +92,14 @@ export function FestivalList({
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-start justify-between gap-2">
-                            <p className="line-clamp-2 text-sm font-semibold">{f.title}</p>
+                            <p className="line-clamp-2 text-sm font-semibold">{tr(f.title)}</p>
                             <span className="shrink-0 rounded-full bg-gray-900 px-2 py-0.5 text-[11px] font-bold text-white">
                               {dday <= 0 ? t("진행 중") : `D-${dday}`}
                             </span>
                           </div>
                           <p className="mt-0.5 truncate text-xs text-gray-500">
                             {fmt(f.start)}
-                            {f.end !== f.start && ` ~ ${fmt(f.end)}`} · {trRegion(f.region, t)}
+                            {f.end !== f.start && ` ~ ${fmt(f.end)}`} · {reg(f.region)}
                           </p>
                           <div className="mt-1.5 flex items-center gap-1.5 text-[11px] text-gray-500">
                             {live ? (
@@ -115,7 +120,7 @@ export function FestivalList({
                               </>
                             ) : (
                               <span className="text-gray-400">
-                                {liveAreas[f.id] ? t("시작하면 실시간 ({area})", { area: liveAreas[f.id] }) : t("혼잡 예측 준비 중")}
+                                {liveAreas[f.id] ? t("시작하면 실시간 ({area})", { area: tr(liveAreas[f.id]) }) : t("혼잡 예측 준비 중")}
                               </span>
                             )}
                           </div>
@@ -138,9 +143,9 @@ export function FestivalList({
             {longRunning.map((f) => (
               <li key={f.id}>
                 <Link href={hrefs[f.id]} className="flex items-center justify-between gap-3 py-2.5 text-sm">
-                  <span className="min-w-0 truncate">{f.title}</span>
+                  <span className="min-w-0 truncate">{tr(f.title)}</span>
                   <span className="shrink-0 text-xs text-gray-500">
-                    ~{fmt(f.end)} · {trRegion(f.region, t)}
+                    ~{fmt(f.end)} · {reg(f.region)}
                   </span>
                 </Link>
               </li>

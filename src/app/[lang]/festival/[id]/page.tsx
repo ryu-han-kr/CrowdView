@@ -9,6 +9,7 @@ import { daysUntil, kst } from "@/lib/time";
 import type { Lang } from "@/i18n/config";
 import { fmtPeople, trRegion } from "@/i18n/patterns";
 import { getT } from "@/i18n/server";
+import { translateNames } from "@/lib/name-translate";
 import { formatHour } from "@/i18n/translate";
 
 export const revalidate = 3600;
@@ -25,6 +26,10 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
   if (!f) notFound();
   const [crowd, live] = await Promise.all([getFestivalCrowd(f), getFestivalLive(f)]);
   const area = seoulAreaOf(f);
+  // 축제 이름·장소·지역명 번역 (Papago, Redis 캐시). 못 하면 원문
+  const names = await translateNames([f.title, f.place, f.region, crowd?.signguName, live?.area, area?.name], lang);
+  const tr = (ko: string) => names.get(ko) ?? ko;
+  const translated = names.has(f.title);
   const today = kst().date;
   const dday = daysUntil(f.start);
   const ongoing = f.start <= today && f.end >= today;
@@ -42,7 +47,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
           <div className="relative h-56 overflow-hidden rounded-3xl bg-gray-100 md:h-80">
             {f.image ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={f.image} alt={f.title} className="h-full w-full object-cover" />
+              <img src={f.image} alt={tr(f.title)} className="h-full w-full object-cover" />
             ) : (
               <div className="flex h-full items-center justify-center text-7xl">🎪</div>
             )}
@@ -52,8 +57,12 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
           </div>
           <div className="mt-4 flex items-start justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-bold md:text-3xl">{f.title}</h1>
-              {lang !== "ko" && <p className="mt-1 text-xs text-gray-400">{t("축제 이름·장소·요금은 주최 측 원문(한국어)이에요.")}</p>}
+              <h1 className="text-2xl font-bold md:text-3xl">{tr(f.title)}</h1>
+              {lang !== "ko" && (
+                <p className="mt-1 text-xs text-gray-400">
+                  {translated ? `${f.title} · ${t("이름·장소는 Papago 자동 번역이에요. 요금은 한국어 원문이에요.")}` : t("축제 이름·장소·요금은 주최 측 원문(한국어)이에요.")}
+                </p>
+              )}
             </div>
             <span className="mt-1 shrink-0 rounded-full bg-gray-900 px-2.5 py-1 text-xs font-bold text-white">
               {ongoing ? t("진행 중") : dday > 0 ? `D-${dday}` : t("종료")}
@@ -65,7 +74,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
               {f.end !== f.start && ` ~ ${f.end}`}
             </Row>
             <Row label={t("장소")}>
-              {f.place || trRegion(f.region, t)}
+              {f.place ? tr(f.place) : (names.get(f.region) ?? trRegion(f.region, t))}
               <a href={mapUrl} target="_blank" rel="noreferrer" className="ml-2 text-xs font-semibold text-indigo-600">
                 {t("지도 보기")} ›
               </a>
@@ -87,7 +96,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
             <section className="mb-4 rounded-3xl p-5" style={{ background: `${levelOf(live.score).color}14` }}>
               <p className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
                 <span className="rounded bg-emerald-600 px-1.5 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
-                {t("지금 {area} 일대", { area: live.area })}
+                {t("지금 {area} 일대", { area: tr(live.area) })}
               </p>
               <p className="mt-1 text-2xl font-extrabold" style={{ color: levelOf(live.score).color }}>
                 {t(levelOf(live.score).label)}
@@ -116,7 +125,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
           )}
           {!live && area && (
             <p className="mb-4 rounded-2xl bg-emerald-50 px-4 py-3 text-xs text-emerald-800">
-              {t("이 축제는 서울시 실시간 지역 ‘{area}’ 안에서 열려요. 축제가 시작되면 실시간 인구를 보여드려요.", { area: area.name })}
+              {t("이 축제는 서울시 실시간 지역 ‘{area}’ 안에서 열려요. 축제가 시작되면 실시간 인구를 보여드려요.", { area: tr(area.name) })}
             </p>
           )}
           <section className="rounded-3xl p-5" style={{ background: level ? `${level.color}14` : "#f9fafb" }}>
@@ -131,7 +140,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
                 </p>
                 <p className="mt-1 text-sm text-gray-700">
                   {t(crowd.ratio >= 1 ? "작년 이 기간 {area} 방문객이 평소보다 {pct} 많았어요" : "작년 이 기간 {area} 방문객이 평소보다 {pct} 적었어요", {
-                    area: crowd.signguName,
+                    area: tr(crowd.signguName),
                     pct: pctAbs(crowd.ratio),
                   })}
                 </p>
@@ -153,7 +162,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
                   ·{" "}
                   {t("작년 같은 요일 기간 ({range}) {area} 외지인·외국인 방문객 하루 평균", {
                     range: `${crowd.days[0].slice(5)}${crowd.days.length > 1 ? ` ~ ${crowd.days.at(-1)!.slice(5)}` : ""}`,
-                    area: crowd.signguName,
+                    area: tr(crowd.signguName),
                   })}{" "}
                   <b>{fmtPeople(crowd.festivalAvg, t, lang)}</b>
                 </li>

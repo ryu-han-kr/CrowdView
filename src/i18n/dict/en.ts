@@ -361,6 +361,7 @@ const dict: Dict = {
   "혼잡 예측 준비 중": "Forecast coming soon",
   "작년 {pct}%": "Last yr {pct}%",
   "이 지역에는 예정된 축제가 없어요.": "No upcoming festivals in this area.",
+  "이름·장소는 Papago 자동 번역이에요. 요금은 한국어 원문이에요.": "Name and venue are machine-translated by Papago. Fees are in the original Korean.",
   "축제 목록": "Festivals",
   "축제 이름·장소·요금은 주최 측 원문(한국어)이에요.": "Festival names, venues and fees are the organizer's original Korean text.",
   "기간": "Dates",
