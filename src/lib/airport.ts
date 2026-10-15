@@ -82,9 +82,61 @@ export async function getAirportPaxDays(place: Place): Promise<PaxDay[]> {
   }
 }
 
-// 한국공항공사 전국공항 주차장 혼잡도 (김포·제주·김해 등). 인천공항 주차는 별도 API(15095047) 활용신청 필요
+// 인천공항 주차 정보 (data.go.kr 15095047): 터미널별 주차장·층의 주차 대수와 전체 면수
+async function incheonParking(place: Place): Promise<ParkingLot[]> {
+  const terminal = place.airport === "ICN1" ? "T1" : "T2";
+  const rows = await dataGoKr("/B551177/StatusOfParking/getTrackingParking", { type: "json" }, 5 * 60);
+  return rows
+    .filter((r) => String(r.floor).startsWith(terminal))
+    .map((r) => {
+      const occupied = Number(r.parking ?? 0);
+      const total = Number(r.parkingarea ?? 0);
+      const t = String(r.datetm ?? "");
+      return {
+        name: String(r.floor).replace(`${terminal} `, "").replace(/(지하|지상)/, " $1"),
+        status: "",
+        rate: total > 0 ? Math.min(100, Math.round((occupied / total) * 100)) : 0,
+        occupied: Math.min(occupied, total),
+        total,
+        updatedAt: t.length >= 12 ? `${t.slice(8, 10)}:${t.slice(10, 12)}` : "",
+      };
+    });
+}
+
+export interface ParkingFee {
+  group: string;
+  lines: string[];
+}
+
+// 인천공항 주차장별 요금 부과 기준 (data.go.kr 15095053). 요금 코드에 주차장 이름이 없어서,
+// 인천공항이 공지한 단기·장기 요금과 일치하는 코드 1·2번만 매칭해 보여준다 (매칭은 추정)
+export async function getParkingFees(place: Place): Promise<ParkingFee[]> {
+  if (!place.airport?.startsWith("ICN")) return [];
+  try {
+    const rows = await dataGoKr("/B551177/ParkingChargeInfo/getParkingChargeInformation", { type: "json", numOfRows: "100" }, 24 * 60 * 60);
+    const by = (id: string) => rows.filter((r) => String(r.charid).endsWith(id)).map((r) => String(r.chardesc));
+    const fee = (n: string) => [...by(`FB0000000${n}`), ...by(`NF0000000${n}`)];
+    return [
+      { group: "단기주차장", lines: fee("1") },
+      { group: "장기주차장", lines: fee("2") },
+    ].filter((f) => f.lines.length > 0);
+  } catch (e) {
+    console.warn(`[airport] ${place.id} fees:`, e instanceof Error ? e.message : e);
+    return [];
+  }
+}
+
+// 한국공항공사 전국공항 주차장 혼잡도 (김포·제주·김해 등), 인천공항은 인천국제공항공사 주차 정보
 export async function getParking(place: Place): Promise<ParkingLot[]> {
-  if (!place.airport || place.airport.startsWith("ICN")) return [];
+  if (!place.airport) return [];
+  if (place.airport.startsWith("ICN")) {
+    try {
+      return await incheonParking(place);
+    } catch (e) {
+      console.warn(`[airport] ${place.id} parking:`, e instanceof Error ? e.message : e);
+      return [];
+    }
+  }
   try {
     const rows = await dataGoKr("/B551178/parking-congestion/info", { schAirportCode: place.airport, type: "json" }, 5 * 60);
     return rows.map((r) => {
