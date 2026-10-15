@@ -51,7 +51,7 @@ export function IconTabPanels({ tabs }: { tabs: (IconTab & { content: React.Reac
   const [active, setActive] = useState(tabs[0]?.id);
   return (
     <div>
-      <div className="sticky top-0 z-20 -mx-5 bg-white/95 px-3 pt-2 backdrop-blur md:top-16 md:mx-0 md:px-0">
+      <div className="sticky top-0 z-20 -mx-5 bg-white/95 px-3 pt-2 backdrop-blur md:top-16 md:mx-0 md:bg-white md:px-0">
         <IconTabBar tabs={tabs} active={active} onChange={setActive} />
       </div>
       {tabs.map((t) => (
