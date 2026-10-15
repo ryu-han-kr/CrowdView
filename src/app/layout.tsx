@@ -3,6 +3,8 @@ import { BottomNav } from "@/components/BottomNav";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  // 공유 링크 미리보기·정식 주소 기준
+  metadataBase: new URL("https://crowdview.app"),
   title: "CrowdView Pulse",
   description: "테마파크·여행지·이벤트 실시간 혼잡도와 AI 예측",
 };
