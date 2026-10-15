@@ -12,6 +12,7 @@ import { daysUntil, formatAge, formatClock, formatHour, kst } from "@/lib/time";
 import type { CrowdResult, HourPoint } from "@/lib/types";
 import { CATEGORY_LABEL } from "@/lib/types";
 import { DataTag } from "@/components/DataTag";
+import { VisitorProfile } from "@/components/VisitorProfile";
 import { headcountInfo, isEstimated } from "@/lib/format";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
@@ -257,6 +258,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             </ul>
           )}
         </section>
+
+        {signals.localPop && <VisitorProfile pop={signals.localPop} />}
 
         {/* 정보 */}
         <section className="mt-8 mb-8 space-y-3 text-sm">

@@ -6,6 +6,8 @@ interface KV {
   /** 여러 키를 명령 1번으로 읽는다 (무료 한도: 월 50만 명령) */
   mget(keys: string[]): Promise<(string | null)[]>;
   set(key: string, value: string, ttlSeconds: number): Promise<void>;
+  /** 키가 없을 때만 저장 (분산 잠금용). 저장했으면 true */
+  setNX(key: string, value: string, ttlSeconds: number): Promise<boolean>;
 }
 
 function memoryKV(): KV {
@@ -21,6 +23,11 @@ function memoryKV(): KV {
     mget: (keys) => Promise.all(keys.map(get)),
     async set(key, v, ttl) {
       store.set(key, { v, exp: Date.now() + ttl * 1000 });
+    },
+    async setNX(key, v, ttl) {
+      if (await get(key)) return false;
+      store.set(key, { v, exp: Date.now() + ttl * 1000 });
+      return true;
     },
   };
 }
@@ -43,6 +50,7 @@ function upstashKV(url: string, token: string): KV {
     set: async (key, value, ttl) => {
       await call(["SET", key, value, "EX", ttl]);
     },
+    setNX: async (key, value, ttl) => (await call(["SET", key, value, "NX", "EX", ttl])) === "OK",
   };
 }
 

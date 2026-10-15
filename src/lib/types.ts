@@ -60,6 +60,8 @@ export interface Place {
   eventEndDate?: string;
   /** 한국관광공사 TourAPI 콘텐츠 (운영 시간·행사 일정 원천). type 12 관광지, 15 행사 */
   ktoContent?: { id: number; type: number };
+  /** 부산시 생활인구 행정동 (예: "해운대구 우1동"). 시간대·성별·연령 패턴 */
+  busanDongs?: string[];
   /** ThemeParks.wiki 엔티티 (놀이기구 대기시간) */
   themeparksId?: string;
   /** TourAPI에서 받아 붙인 정보 (getLivePlaces) */

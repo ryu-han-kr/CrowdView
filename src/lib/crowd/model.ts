@@ -89,8 +89,16 @@ export function expectedScore(place: Place, t: KstParts, s?: Signals): number {
   if (place.info?.closedToday && t.date === kst().date) return 3;
   const pax = s?.pax?.get(t.date)?.[Math.floor(t.hour)];
   if (pax !== undefined && place.paxCapacity) return clamp((90 * pax) / place.paxCapacity);
-  const d = t.hour - place.peakHour;
-  const curve = 0.25 + 0.75 * Math.exp(-(d * d) / (2 * SPREAD[place.category] ** 2));
+  // 부산시 생활인구가 있으면 실제 시간대 방문 패턴, 없으면 피크 시각 중심의 기본 곡선
+  const pop = s?.localPop?.hourly;
+  let curve: number;
+  if (pop?.some((v) => v > 0)) {
+    const [min, max] = [Math.min(...pop), Math.max(...pop)];
+    curve = 0.25 + (0.75 * (pop[Math.floor(t.hour)] - min)) / (max - min || 1);
+  } else {
+    const d = t.hour - place.peakHour;
+    curve = 0.25 + 0.75 * Math.exp(-(d * d) / (2 * SPREAD[place.category] ** 2));
+  }
   return clamp(
     100 * place.popularity * curve * dayFactor(place, t, s) * weatherFactor(place, t, s) * concentrationFactor(s, t.date),
   );

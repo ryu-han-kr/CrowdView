@@ -1,6 +1,6 @@
 // 캐싱 전략
 // - 예약 호출(QStash 10분, Vercel Cron 하루 1번)이 refreshAll() 로 미리 채워 둔다.
-// - 15분(공항은 5분) 이내 데이터는 신선(fresh) → 그대로 반환.
+// - 15분 이내 데이터는 신선(fresh) → 그대로 반환. 수집기가 10분마다 돌아서 사용자 요청은 외부 API를 부르지 않는다.
 // - 15분 초과(stale) → 캐시를 즉시 반환하고 백그라운드에서 갱신 (SWR).
 // - 외부 API 장애 → 기존 데이터를 보존(보관 TTL 연장)하고 "n분 전 데이터"로 표시.
 import { after } from "next/server";
@@ -12,15 +12,15 @@ import { fetchSnapshot } from "./provider";
 import { modelSnapshot } from "./model";
 
 const FRESH_SECONDS = 15 * 60;
-// 공항 혼잡도는 1분 주기로 바뀌어 더 자주 갱신한다
-const freshSeconds = (p: Place) => (p.category === "airport" ? 5 * 60 : FRESH_SECONDS);
+// 수집기가 멈췄을 때만 사용자 요청이 갱신을 맡는다. 동시에 몰려도 장소당 1번만 부르도록 잠근다
+const LOCK_SECONDS = 60;
 const KEEP_SECONDS = 6 * 60 * 60;
 
 const cacheKey = (p: Place) => `crowd:${p.category}:${p.id}`;
 
-function toResult(s: CrowdSnapshot, p: Place): CrowdResult {
+function toResult(s: CrowdSnapshot): CrowdResult {
   const ageMinutes = Math.max(0, Math.floor((Date.now() - Date.parse(s.updatedAt)) / 60_000));
-  return { ...s, ageMinutes, stale: ageMinutes * 60 > freshSeconds(p) };
+  return { ...s, ageMinutes, stale: ageMinutes * 60 > FRESH_SECONDS };
 }
 
 // 장소 여러 곳을 Redis 명령 1번(MGET)으로 읽는다
@@ -67,10 +67,14 @@ export async function getCrowd(id: string): Promise<CrowdResult | null> {
 }
 
 async function getCrowdFor(place: Place, cached: CrowdSnapshot | null): Promise<CrowdResult> {
-  if (!cached) return toResult(await refresh(place, null), place);
+  if (!cached) return toResult(await refresh(place, null));
 
-  const result = toResult(cached, place);
-  if (result.stale) after(() => refresh(place, cached).then(() => {}));
+  const result = toResult(cached);
+  if (result.stale) {
+    after(async () => {
+      if (await kv.setNX(`lock:refresh:${place.id}`, "1", LOCK_SECONDS).catch(() => false)) await refresh(place, cached);
+    });
+  }
   return result;
 }
 
