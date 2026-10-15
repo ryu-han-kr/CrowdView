@@ -70,7 +70,7 @@ const regionOf = (addr: string) => {
 
 // 제목 비교용: 연도·회차·괄호·공백 제거
 const norm = (t: string) =>
-  t.replace(/\[[^\]]*\]|\([^)]*\)|제?\d+회|\d{4}|\s|[^\p{L}\p{N}]/gu, "").toLowerCase();
+  t.replace(/\[[^\]]*\]|\([^)]*\)|제?\d+회|\d{4}년?|\s|[^\p{L}\p{N}]/gu, "").toLowerCase();
 
 function hash(s: string): string {
   let h = 2166136261;
