@@ -12,6 +12,7 @@ import { daysUntil, formatAge, formatClock, formatHour, kst } from "@/lib/time";
 import type { CrowdResult, HourPoint } from "@/lib/types";
 import { CATEGORY_LABEL } from "@/lib/types";
 import { DataTag } from "@/components/DataTag";
+import { FavoriteButton } from "@/components/FavoriteButton";
 import { JudgementCard } from "@/components/JudgementCard";
 import { VisitorProfile } from "@/components/VisitorProfile";
 import { WeatherCard } from "@/components/WeatherCard";
@@ -82,11 +83,16 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     <main>
       <PlaceHero place={place} />
 
-      <div className="relative -mt-6 px-5">
+      {/* 모바일: 한 줄로 쌓기 / PC: 왼쪽(지금·언제 갈까) 고정 + 오른쪽(그래프·정보) */}
+      <div className="relative -mt-6 px-5 md:mt-8 md:px-0 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-10">
+        <div className="lg:sticky lg:top-24 lg:self-start">
         <p className="text-xs font-medium text-gray-500">
           {CATEGORY_LABEL[place.category]} · {place.region}
         </p>
-        <h1 className="mt-1 text-2xl font-bold">{place.name}</h1>
+        <div className="flex items-center justify-between gap-3">
+          <h1 className="mt-1 text-2xl font-bold md:text-3xl">{place.name}</h1>
+          <FavoriteButton placeId={place.id} className="hidden shrink-0 md:inline-flex" />
+        </div>
         <p className="mt-2 text-sm leading-relaxed text-gray-600">{place.description}</p>
 
         {/* 현재 혼잡도 */}
@@ -151,7 +157,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             </div>
           )}
         </section>
+        </div>
 
+        <div className="lg:[&>*:first-child]:mt-0">
         {/* 놀이기구 대기 */}
         {crowd.zones && crowd.zones.length > 0 && (
           <section className="mt-8">
@@ -307,6 +315,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             ))}
           </div>
         </section>
+        </div>
       </div>
     </main>
   );

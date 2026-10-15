@@ -28,7 +28,7 @@ export function PlaceHero({ place }: { place: Place }) {
   return (
     <>
       <div
-        className="fixed inset-x-0 top-0 z-30 mx-auto flex h-14 max-w-md items-center justify-between px-3 transition-colors"
+        className="fixed inset-x-0 top-0 z-30 mx-auto flex h-14 max-w-md items-center justify-between px-3 transition-colors md:hidden"
         style={{
           background: `rgb(255 255 255 / ${progress})`,
           boxShadow: progress >= 1 ? "0 1px 0 #f3f4f6" : "none",
@@ -54,7 +54,7 @@ export function PlaceHero({ place }: { place: Place }) {
       </div>
 
       <div
-        className="relative flex items-center justify-center overflow-hidden"
+        className="relative flex items-center justify-center overflow-hidden md:mt-6 md:h-[380px]! md:rounded-3xl"
         style={{
           height: HERO_HEIGHT,
           background: `linear-gradient(160deg, hsl(${place.hue} 75% 70%), hsl(${place.hue + 50} 70% 45%))`,

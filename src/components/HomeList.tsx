@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useFavorites } from "@/lib/prefs";
 import { CATEGORY_LABEL, type Category, type CrowdResult, type Place } from "@/lib/types";
 import { ICONS, IconTabBar, type IconTab } from "./IconTabs";
-import { PlaceRow } from "./PlaceRow";
+import { PlaceCard, PlaceRow } from "./PlaceRow";
 
 type Filter = "all" | "fav" | Category;
 type Sort = "calm" | "busy";
@@ -55,7 +55,7 @@ export function HomeList({
 
   return (
     <>
-      <div className="sticky top-0 z-20 -mx-5 bg-white/95 px-5 pt-3 pb-2 backdrop-blur">
+      <div className="sticky top-0 z-20 -mx-5 bg-white/95 px-5 pt-3 pb-2 backdrop-blur md:top-16 md:mx-0 md:bg-white md:px-0">
         <label className="flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-3">
           <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2}>
             <circle cx="11" cy="11" r="7" />
@@ -95,13 +95,23 @@ export function HomeList({
           </div>
         </div>
         {list.length ? (
-          <ul className="mt-1 divide-y divide-gray-100">
-            {list.map((p) => (
-              <li key={p.id}>
-                <PlaceRow place={p} crowd={crowd[p.id]} />
-              </li>
-            ))}
-          </ul>
+          <>
+            {/* 모바일: 한 줄 목록 / 태블릿·PC: 사진 카드 그리드 */}
+            <ul className="mt-1 divide-y divide-gray-100 md:hidden">
+              {list.map((p) => (
+                <li key={p.id}>
+                  <PlaceRow place={p} crowd={crowd[p.id]} />
+                </li>
+              ))}
+            </ul>
+            <ul className="mt-4 hidden gap-5 md:grid md:grid-cols-2 lg:grid-cols-3">
+              {list.map((p) => (
+                <li key={p.id}>
+                  <PlaceCard place={p} crowd={crowd[p.id]} />
+                </li>
+              ))}
+            </ul>
+          </>
         ) : (
           <p className="mt-4 rounded-2xl bg-gray-50 p-6 text-center text-sm text-gray-500">
             &lsquo;{query}&rsquo;에 맞는 장소가 없어요.
