@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/i18n/client";
 import { useFavorites, usePreferredTags } from "@/lib/prefs";
 import type { CrowdResult, Place } from "@/lib/types";
 import { PlaceRow } from "./PlaceRow";
 
 export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<string, CrowdResult> }) {
   const { favorites } = useFavorites();
+  const { t } = useI18n();
   const { tags, toggle, setTags } = usePreferredTags();
   const [showAllTags, setShowAllTags] = useState(false);
 
@@ -31,7 +33,7 @@ export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<stri
   return (
     <div className="space-y-8">
       <section>
-        <h2 className="text-lg font-bold">❤️ 즐겨찾기</h2>
+        <h2 className="text-lg font-bold">❤️ {t("즐겨찾기")}</h2>
         {favPlaces.length ? (
           <ul className="mt-1 divide-y divide-gray-100">
             {favPlaces.map((p) => (
@@ -42,21 +44,21 @@ export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<stri
           </ul>
         ) : (
           <p className="mt-2 rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">
-            장소 상세 화면 오른쪽 위 🤍 를 누르면 여기에 모여요.
+            {t("장소 상세 화면 오른쪽 위 🤍 를 누르면 여기에 모여요.")}
           </p>
         )}
       </section>
 
       <section>
-        <h2 className="text-lg font-bold">관심 키워드</h2>
-        <p className="mt-0.5 text-xs text-gray-500">고른 키워드로 지금 한산한 곳을 추천해 드려요.</p>
+        <h2 className="text-lg font-bold">{t("관심 키워드")}</h2>
+        <p className="mt-0.5 text-xs text-gray-500">{t("고른 키워드로 지금 한산한 곳을 추천해 드려요.")}</p>
 
         {/* 선택한 키워드 */}
         <div className="mt-3 rounded-2xl border border-indigo-100 bg-indigo-50/50 p-3">
           <div className="flex items-center justify-between">
             <p className="text-sm font-semibold text-indigo-700">
-              선택한 키워드 <span className="text-indigo-500">{tags.length}</span>
-              <span className="font-normal text-indigo-400"> / {allTags.length}개</span>
+              {t("선택한 키워드")} <span className="text-indigo-500">{tags.length}</span>
+              <span className="font-normal text-indigo-400"> / {t("{n}개", { n: allTags.length })}</span>
             </p>
             <div className="flex gap-1.5 text-xs">
               <button
@@ -64,51 +66,51 @@ export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<stri
                 disabled={tags.length === allTags.length}
                 className="rounded-full bg-white px-2.5 py-1 font-medium text-indigo-600 shadow-sm disabled:opacity-40"
               >
-                전체 선택
+                {t("전체 선택")}
               </button>
               <button
                 onClick={() => setTags([])}
                 disabled={tags.length === 0}
                 className="rounded-full bg-white px-2.5 py-1 font-medium text-gray-600 shadow-sm disabled:opacity-40"
               >
-                초기화
+                {t("초기화")}
               </button>
             </div>
           </div>
           {tags.length > 0 ? (
             <div className="mt-2.5 flex flex-wrap gap-2">
-              {tags.map((t) => (
+              {tags.map((tag) => (
                 <button
-                  key={t}
-                  onClick={() => toggle(t)}
-                  aria-label={`${t} 선택 해제`}
+                  key={tag}
+                  onClick={() => toggle(tag)}
+                  aria-label={t("{tag} 선택 해제", { tag: t(tag) })}
                   className="rounded-full bg-indigo-500 py-1.5 pr-2.5 pl-3 text-sm text-white"
                 >
-                  #{t} <span className="ml-0.5 opacity-70">✕</span>
+                  #{t(tag)} <span className="ml-0.5 opacity-70">✕</span>
                 </button>
               ))}
             </div>
           ) : (
-            <p className="mt-2 text-xs text-indigo-400">아래에서 관심 있는 키워드를 눌러 골라 보세요.</p>
+            <p className="mt-2 text-xs text-indigo-400">{t("아래에서 관심 있는 키워드를 눌러 골라 보세요.")}</p>
           )}
         </div>
 
         {/* 고를 수 있는 키워드 */}
         <div className="mt-3 flex flex-wrap gap-2">
-          {shownTags.map((t) => (
-            <button key={t} onClick={() => toggle(t)} className="rounded-full bg-gray-100 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-200">
-              #{t}
+          {shownTags.map((tag) => (
+            <button key={tag} onClick={() => toggle(tag)} className="rounded-full bg-gray-100 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-200">
+              #{t(tag)}
             </button>
           ))}
           {restTags.length > shownTags.length && (
             <button onClick={() => setShowAllTags(true)} className="rounded-full px-3 py-1.5 text-sm text-gray-500 underline">
-              더보기 +{restTags.length - shownTags.length}
+              {t("더보기")} +{restTags.length - shownTags.length}
             </button>
           )}
         </div>
         {recommended.length > 0 && (
           <div className="mt-4 rounded-3xl bg-indigo-50/60 p-3">
-            <p className="px-1 text-xs font-semibold text-indigo-500">✨ 취향 맞춤 추천</p>
+            <p className="px-1 text-xs font-semibold text-indigo-500">✨ {t("취향 맞춤 추천")}</p>
             <ul className="divide-y divide-indigo-100/70">
               {recommended.map((p) => (
                 <li key={p.id}>

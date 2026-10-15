@@ -2,8 +2,9 @@
 
 // 혼잡도 히트맵. 지금은 자체 SVG 좌표 투영으로 그리고,
 // NEXT_PUBLIC_KAKAO_MAP_KEY 연동 시 카카오맵 위 오버레이로 교체 예정.
-import Link from "next/link";
+import Link from "@/i18n/link";
 import { useState } from "react";
+import { useI18n } from "@/i18n/client";
 import { LEVELS, levelOf } from "@/lib/levels";
 import type { CrowdResult, Place } from "@/lib/types";
 import { LevelBadge } from "./Level";
@@ -27,6 +28,7 @@ const HAN_RIVER: [number, number][] = [
 ];
 
 export function HeatMap({ places, crowd }: { places: Place[]; crowd: Record<string, CrowdResult> }) {
+  const { t } = useI18n();
   const [region, setRegion] = useState<RegionKey>("capital");
   const [selected, setSelected] = useState<string | null>(null);
   const r = REGIONS[region];
@@ -53,7 +55,7 @@ export function HeatMap({ places, crowd }: { places: Place[]; crowd: Record<stri
             }}
             className={`rounded-full px-3 py-1 text-sm font-medium ${region === k ? "bg-gray-900 text-white" : "text-gray-600"}`}
           >
-            {REGIONS[k].label}
+            {t(REGIONS[k].label)}
           </button>
         ))}
       </div>
@@ -120,7 +122,7 @@ export function HeatMap({ places, crowd }: { places: Place[]; crowd: Record<stri
                 {p.emoji}
               </text>
               <text x={x} y={y + 32} textAnchor="middle" fontSize="11" fontWeight="600" fill="#334155" stroke="white" strokeWidth="3" paintOrder="stroke">
-                {p.name}
+                {t(p.name)}
               </text>
             </g>
           );
@@ -134,6 +136,8 @@ export function HeatMap({ places, crowd }: { places: Place[]; crowd: Record<stri
 
 /** 지도에서 핀을 눌렀을 때 하단에 뜨는 장소 카드 */
 export function MapPlaceCard({ place, crowd }: { place: Place; crowd: CrowdResult }) {
+  const { t, lang } = useI18n();
+  const hc = headcountInfo(crowd, { t, lang });
   return (
     <Link
       href={placeHref(place)}
@@ -141,14 +145,14 @@ export function MapPlaceCard({ place, crowd }: { place: Place; crowd: CrowdResul
     >
       <PlaceThumb place={place} size={48} />
       <div className="min-w-0 flex-1">
-        <p className="truncate font-semibold">{place.name}</p>
+        <p className="truncate font-semibold">{t(place.name)}</p>
         <p className="mt-0.5 truncate text-xs text-gray-500">
-          {place.region}
-          {headcountInfo(crowd) && (
+          {t(place.region)}
+          {hc && (
             <>
               {" · "}
-              {headcountInfo(crowd)!.text}
-              {headcountInfo(crowd)!.kind && <DataTag kind={headcountInfo(crowd)!.kind} />}
+              {hc.text}
+              {hc.kind && <DataTag kind={hc.kind} />}
             </>
           )}
         </p>
@@ -157,7 +161,7 @@ export function MapPlaceCard({ place, crowd }: { place: Place; crowd: CrowdResul
           {crowd.open && isEstimated(crowd) && <DataTag />}
         </div>
       </div>
-      <span className="shrink-0 rounded-full bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white">자세히</span>
+      <span className="shrink-0 rounded-full bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white">{t("자세히")}</span>
     </Link>
   );
 }

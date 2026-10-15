@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { compactNumber, SHOW_DATA_LABELS } from "@/lib/format";
+import { useI18n } from "@/i18n/client";
+import { fmtMinutes, fmtPeople } from "@/i18n/patterns";
+import { formatHour } from "@/i18n/translate";
+import { SHOW_DATA_LABELS } from "@/lib/format";
 import { LEVELS, levelOf } from "@/lib/levels";
 import type { HourPoint } from "@/lib/types";
 
@@ -31,8 +34,10 @@ export function HourlyChart({
   points: HourPoint[];
   highlightHour?: number;
   estimated?: boolean;
-  unit?: string;
+  unit?: "명" | "분";
 }) {
+  const { t, lang } = useI18n();
+  const val = (n: number) => (unit === "분" ? fmtMinutes(n, t) : fmtPeople(n, t, lang));
   const nowIdx = points.findIndex((p) => p.hour === highlightHour);
   const [sel, setSel] = useState(nowIdx >= 0 ? nowIdx : points.reduce((m, p, i) => (p.score > points[m].score ? i : m), 0));
   if (points.length === 0) return null;
@@ -58,9 +63,9 @@ export function HourlyChart({
   const delta =
     // 인원 증감은 같은 종류의 수치끼리만 (실측과 추정을 섞으면 엉뚱한 차이가 난다)
     prev && p.people !== undefined && prev.people !== undefined && (p.peopleKind === "est") === (prev.peopleKind === "est")
-      ? { text: `${p.people >= prev.people ? "+" : "−"}${compactNumber(Math.abs(p.people - prev.people))}${unit}`, up: p.people > prev.people }
+      ? { text: `${p.people >= prev.people ? "+" : "−"}${val(Math.abs(p.people - prev.people))}`, up: p.people > prev.people }
       : prev
-        ? { text: `${p.score >= prev.score ? "+" : "−"}${Math.abs(p.score - prev.score)}점`, up: p.score > prev.score }
+        ? { text: `${p.score >= prev.score ? "+" : "−"}${t("{n}점", { n: Math.abs(p.score - prev.score) })}`, up: p.score > prev.score }
         : null;
 
   return (
@@ -69,27 +74,25 @@ export function HourlyChart({
       <div className="mb-3 flex items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3">
         <div className="min-w-0 flex-1">
           <p className="text-xs text-gray-500">
-            {p.hour}시 {sel === nowIdx ? "· 지금" : ""} · {isMeasured ? "실측" : "AI 예측"}
+            {formatHour(p.hour, lang)} {sel === nowIdx ? `· ${t("지금")}` : ""} · {isMeasured ? t("실측") : t("AI 예측")}
           </p>
           <p className="mt-0.5 text-lg font-bold" style={{ color: level.color }}>
-            {level.label}
+            {t(level.label)}
             {p.people !== undefined && (
               <span className="ml-2 text-base font-semibold text-gray-900">
-                {p.peopleKind === "est" ? "약 " : ""}
-                {compactNumber(p.people)}
-                {unit}
+                {p.peopleKind === "est" ? t("약 {v}", { v: val(p.people) }) : val(p.people)}
               </span>
             )}
           </p>
           {p.peopleKind && SHOW_DATA_LABELS && (
             <p className={`text-[11px] ${p.peopleKind === "est" ? "text-amber-600" : "text-gray-400"}`}>
-              인원: {PEOPLE_NOTE[p.peopleKind]}
+              {t("인원")}: {t(PEOPLE_NOTE[p.peopleKind])}
             </p>
           )}
         </div>
         {delta && (
           <div className="shrink-0 text-right">
-            <p className="text-[11px] text-gray-500">{prev!.hour}시 대비</p>
+            <p className="text-[11px] text-gray-500">{t("{h} 대비", { h: formatHour(prev!.hour, lang) })}</p>
             <p className={`text-sm font-bold ${delta.up ? "text-red-500" : "text-emerald-600"}`}>
               {delta.up ? "↑" : "↓"} {delta.text}
             </p>
@@ -97,7 +100,7 @@ export function HourlyChart({
         )}
       </div>
 
-      <svg viewBox={`0 0 ${W} ${H}`} className="block w-full touch-none select-none" role="img" aria-label="시간대별 혼잡도 그래프">
+      <svg viewBox={`0 0 ${W} ${H}`} className="block w-full touch-none select-none" role="img" aria-label={t("시간대별 혼잡도 그래프")}>
         <defs>
           <linearGradient id="hc-measured" x1="0" x2="0" y1="0" y2="1">
             <stop offset="0%" stopColor={MEASURED} stopOpacity="0.32" />
@@ -114,7 +117,7 @@ export function HourlyChart({
           <g key={l.key}>
             <line x1={PAD.l} x2={W - PAD.r} y1={y(l.min)} y2={y(l.min)} stroke={l.color} strokeOpacity="0.25" strokeDasharray="2 4" />
             <text x={W - PAD.r} y={y(l.min) - 3} textAnchor="end" fontSize="8" fill={l.color} fillOpacity="0.8">
-              {l.label}
+              {t(l.label)}
             </text>
           </g>
         ))}
@@ -162,7 +165,7 @@ export function HourlyChart({
           <g>
             <rect x={x(nowIdx) - 17} y={H - 24} width="34" height="16" rx="8" fill="#111827" />
             <text x={x(nowIdx)} y={H - 12.5} textAnchor="middle" fontSize="9" fontWeight="700" fill="#fff">
-              지금
+              {t("지금")}
             </text>
           </g>
         )}
@@ -180,7 +183,7 @@ export function HourlyChart({
             onPointerEnter={(e) => e.pointerType === "mouse" && setSel(i)}
             onPointerDown={() => setSel(i)}
           >
-            <title>{`${pt.hour}시 ${levelOf(pt.score).label}`}</title>
+            <title>{`${formatHour(pt.hour, lang)} ${t(levelOf(pt.score).label)}`}</title>
           </rect>
         ))}
       </svg>
@@ -190,15 +193,15 @@ export function HourlyChart({
           <svg width="18" height="6">
             <line x1="0" x2="18" y1="3" y2="3" stroke={estimated ? FORECAST : MEASURED} strokeWidth="2.5" strokeDasharray={estimated ? "5 4" : undefined} />
           </svg>
-          {estimated ? "지난 시간 (추정)" : "실측"}
+          {estimated ? t("지난 시간 (추정)") : t("실측")}
         </span>
         <span className="flex items-center gap-1.5">
           <svg width="18" height="6">
             <line x1="0" x2="18" y1="3" y2="3" stroke={FORECAST} strokeWidth="2" strokeDasharray="5 4" />
           </svg>
-          AI 예측
+          {t("AI 예측")}
         </span>
-        <span className="ml-auto text-gray-400">시간을 눌러 자세히</span>
+        <span className="ml-auto text-gray-400">{t("시간을 눌러 자세히")}</span>
       </div>
     </div>
   );

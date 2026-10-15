@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import type { HistoryPoint } from "@/lib/crowd/history";
+import { useI18n } from "@/i18n/client";
+import { fmtMinutes, trZone } from "@/i18n/patterns";
 import { levelOf } from "@/lib/levels";
 
 const KST = 9 * 3_600_000;
@@ -18,12 +20,13 @@ export function HistoryChart({
   /** 서버 렌더 시각 (hydration 불일치 방지) */
   now: number;
 }) {
+  const { t } = useI18n();
   const [zone, setZone] = useState("전체");
   const points = days.flatMap((d) => d.points);
   if (points.length === 0) {
     return (
       <p className="rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">
-        아직 쌓인 기록이 없어요. 실시간 데이터를 받을 때마다 기록이 쌓이고, 어제부터 지금까지의 추이를 여기서 볼 수 있어요.
+        {t("아직 쌓인 기록이 없어요. 실시간 데이터를 받을 때마다 기록이 쌓이고, 어제부터 지금까지의 추이를 여기서 볼 수 있어요.")}
       </p>
     );
   }
@@ -52,7 +55,7 @@ export function HistoryChart({
                 z === zone ? "border-gray-900 font-semibold text-gray-900" : "border-gray-200 text-gray-500"
               }`}
             >
-              {z === "전체" ? "전체" : zoneLabels[z]}
+              {z === "전체" ? t("전체") : trZone(zoneLabels[z], t)}
             </button>
           ))}
         </div>
@@ -60,9 +63,9 @@ export function HistoryChart({
 
       {last && peak && (
         <p className="mt-3 text-sm">
-          마지막 기록 <b>{hhmm(last.iso)}</b> {levelOf(last.v!.score).label}
-          {last.v!.wait !== null && ` · 대기 ${last.v!.wait}분`} · 최고 <b>{hhmm(peak.iso)}</b>{" "}
-          {levelOf(peak.v!.score).label}
+          {t("마지막 기록")} <b>{hhmm(last.iso)}</b> {t(levelOf(last.v!.score).label)}
+          {last.v!.wait !== null && ` · ${t("대기")} ${fmtMinutes(last.v!.wait, t)}`} · {t("최고")} <b>{hhmm(peak.iso)}</b>{" "}
+          {t(levelOf(peak.v!.score).label)}
         </p>
       )}
 
@@ -79,7 +82,7 @@ export function HistoryChart({
         {series.map((p) => (
           <div
             key={p.iso}
-            title={`${hhmm(p.iso)} · ${levelOf(p.v!.score).label}${p.v!.wait !== null ? ` · 대기 ${p.v!.wait}분` : ""}`}
+            title={`${hhmm(p.iso)} · ${t(levelOf(p.v!.score).label)}${p.v!.wait !== null ? ` · ${t("대기")} ${fmtMinutes(p.v!.wait, t)}` : ""}`}
             className="absolute bottom-0 w-[3px] -translate-x-1/2 rounded-t-sm"
             style={{
               left: `${((p.t - start) / span) * 100}%`,
@@ -90,10 +93,10 @@ export function HistoryChart({
         ))}
       </div>
       <div className="mt-1 flex justify-between text-[10px] text-gray-400">
-        <span>{days[0].date.slice(5).replace("-", "/")} 0시</span>
-        <span>지금</span>
+        <span>{days[0].date.slice(5).replace("-", "/")} 00:00</span>
+        <span>{t("지금")}</span>
       </div>
-      <p className="mt-2 text-[11px] text-gray-400">실시간 데이터를 받은 시각마다 기록 · 총 {series.length}건</p>
+      <p className="mt-2 text-[11px] text-gray-400">{t("실시간 데이터를 받은 시각마다 기록 · 총 {n}건", { n: series.length })}</p>
     </div>
   );
 }

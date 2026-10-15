@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/i18n/link";
 import { notFound } from "next/navigation";
 import { AirportPaxChart } from "@/components/AirportPaxChart";
 import { DataTag } from "@/components/DataTag";
@@ -15,7 +15,10 @@ import { getHistory } from "@/lib/crowd/history";
 import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
 import { PLACES, getPlace, imageCreditText } from "@/lib/places";
-import { formatAge, kst } from "@/lib/time";
+import { kst } from "@/lib/time";
+import type { Lang } from "@/i18n/config";
+import { fmtAge, fmtMinutes, fmtPeople, trParking, trZone } from "@/i18n/patterns";
+import { getT } from "@/i18n/server";
 import { headcountInfo } from "@/lib/format";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
@@ -32,8 +35,10 @@ const SOURCE_LABEL = {
   "kac-airport": "한국공항공사 공항 혼잡도",
 } as Record<string, string>;
 
-export default async function AirportPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function AirportPage({ params }: { params: Promise<{ id: string; lang: string }> }) {
   const { id } = await params;
+  const lang = (await params).lang as Lang;
+  const t = getT(lang);
   const place = getPlace(id);
   if (!place || place.category !== "airport") notFound();
 
@@ -59,7 +64,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
   return (
     <main className="px-5 pt-4 pb-8 md:px-0 md:pt-8">
       <Link href="/airport" className="text-sm text-gray-500">
-        ← 공항 목록
+        ← {t("공항 목록")}
       </Link>
 
       {/* PC: 왼쪽(사진·지금·날씨) 고정 + 오른쪽(파트 탭) */}
@@ -69,14 +74,14 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
             <div className="relative mt-3 h-40 overflow-hidden rounded-3xl bg-gray-100">
               <Image
                 src={place.image}
-                alt={place.name}
+                alt={t(place.name)}
                 fill
                 priority
                 sizes="(max-width: 448px) 100vw, 448px"
                 className="object-cover"
               />
               <span className="absolute right-2 bottom-2 rounded bg-black/35 px-1.5 py-0.5 text-[10px] text-white/90">
-                {imageCreditText(place)}
+                {imageCreditText(place, t)}
               </span>
             </div>
           )}
@@ -84,7 +89,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
           <header className="mt-3 flex items-center gap-3">
             <PlaceThumb place={place} size={52} />
             <div>
-              <h1 className="text-2xl font-bold">{place.name}</h1>
+              <h1 className="text-2xl font-bold">{t(place.name)}</h1>
               <p className="text-xs text-gray-500">{place.address}</p>
             </div>
           </header>
@@ -94,34 +99,36 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
           <section className="mt-4 rounded-3xl px-4 py-3.5" style={{ background: `${level.color}14` }}>
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs font-medium text-gray-500">지금 출국 혼잡도</p>
+                <p className="text-xs font-medium text-gray-500">{t("지금 출국 혼잡도")}</p>
                 <p className="text-2xl font-extrabold" style={{ color: crowd.open ? level.color : "#6b7280" }}>
-                  {crowd.open ? level.label : "운영 종료"}
+                  {crowd.open ? t(level.label) : t("운영 종료")}
                 </p>
                 <p className="text-sm text-gray-600">
                   {avgWait !== null && (
                     <>
-                      평균 대기 <b>{avgWait}분</b> ·{" "}
+                      {t("평균 대기")} <b>{fmtMinutes(avgWait, t)}</b> ·{" "}
                     </>
                   )}
-                  {headcountInfo(crowd) && !headcountInfo(crowd)!.kind && <>{headcountInfo(crowd)!.text} · </>}
+                  {headcountInfo(crowd, { t, lang }) && !headcountInfo(crowd, { t, lang })!.kind && (
+                    <>{headcountInfo(crowd, { t, lang })!.text} · </>
+                  )}
                   {crowd.trend === "up" ? (
-                    <span className="text-red-500">늘어나는 중</span>
+                    <span className="text-red-500">{t("늘어나는 중")}</span>
                   ) : crowd.trend === "down" ? (
-                    <span className="text-emerald-600">줄어드는 중</span>
+                    <span className="text-emerald-600">{t("줄어드는 중")}</span>
                   ) : (
-                    "변화 없음"
+                    t("변화 없음")
                   )}
                 </p>
               </div>
             </div>
             <p className={`mt-2 text-[11px] ${crowd.stale ? "font-semibold text-amber-600" : "text-gray-400"}`}>
               {crowd.source === "model"
-                ? "실시간 데이터를 받지 못해 예측값을 보여드려요"
-                : `${SOURCE_LABEL[crowd.source]} · ${formatAge(crowd.ageMinutes)} 갱신`}
+                ? t("실시간 데이터를 받지 못해 예측값을 보여드려요")
+                : `${t(SOURCE_LABEL[crowd.source] ?? "")} · ${t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}`}
             </p>
           </section>
-          <WeatherCard signals={signals} />
+          <WeatherCard signals={signals} lang={lang} />
         </div>
 
         <div>
@@ -131,7 +138,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
               tabs={[
                 {
                   id: "zones",
-                  label: crowd.source === "incheon-airport" ? "출국장" : "보안검색",
+                  label: crowd.source === "incheon-airport" ? t("출국장") : t("보안검색"),
                   icon: ICONS.gate,
                   content:
                     zones.length > 0 ? (
@@ -141,14 +148,18 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                           .map((z) => (
                             <li key={z.id} className="flex items-center gap-3 px-4 py-3">
                               <div className="min-w-0 flex-1">
-                                <p className="text-sm font-semibold">{z.label}</p>
-                                {z.hours && <p className="text-[11px] text-gray-400">운영 {z.hours}</p>}
+                                <p className="text-sm font-semibold">{trZone(z.label, t)}</p>
+                                {z.hours && (
+                                  <p className="text-[11px] text-gray-400">
+                                    {t("운영")} {z.hours}
+                                  </p>
+                                )}
                               </div>
                               {z.waitMin !== undefined && (
                                 <span className="text-right text-sm">
-                                  <b>{z.waitMin}분</b>
+                                  <b>{fmtMinutes(z.waitMin, t)}</b>
                                   <span className="block text-[11px] text-gray-400">
-                                    {(z.people ?? 0).toLocaleString()}명 대기
+                                    {t("{n} 대기", { n: fmtPeople(z.people ?? 0, t, lang) })}
                                   </span>
                                 </span>
                               )}
@@ -157,17 +168,17 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                           ))}
                       </ul>
                     ) : (
-                      <Empty>지금은 운영 중인 출국장 정보가 없어요.</Empty>
+                      <Empty>{t("지금은 운영 중인 출국장 정보가 없어요.")}</Empty>
                     ),
                 },
                 {
                   id: "hourly",
-                  label: "시간대",
+                  label: t("시간대"),
                   icon: ICONS.clock,
                   content: (
                     <>
                       <p className="mb-4 text-xs text-gray-500">
-                        공항이 미리 알려주는 시간대별 출발 승객 수로 붐비는 시간을 피하세요
+                        {t("공항이 미리 알려주는 시간대별 출발 승객 수로 붐비는 시간을 피하세요")}
                       </p>
                       <AirportPaxChart
                         days={paxDays}
@@ -180,7 +191,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                 },
                 {
                   id: "history",
-                  label: "기록",
+                  label: t("기록"),
                   icon: ICONS.history,
                   content: (
                     <div className="pt-4">
@@ -190,7 +201,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                 },
                 {
                   id: "parking",
-                  label: "주차",
+                  label: t("주차"),
                   icon: ICONS.parking,
                   content: (
                     <>
@@ -207,12 +218,12 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                                     : "#10b981";
                             const label =
                               lot.rate >= 99
-                                ? "만차"
-                                : lot.status || (lot.rate >= 90 ? "혼잡" : lot.rate >= 70 ? "보통" : "여유");
+                                ? t("만차")
+                                : t(lot.status || (lot.rate >= 90 ? "혼잡" : lot.rate >= 70 ? "보통" : "여유"));
                             return (
                               <li key={lot.name} className="rounded-2xl border border-gray-100 p-3.5">
                                 <div className="flex items-center justify-between text-sm">
-                                  <span className="font-semibold">{lot.name}</span>
+                                  <span className="font-semibold">{trParking(lot.name, t, lang)}</span>
                                   <span className="font-semibold" style={{ color }}>
                                     {label}
                                   </span>
@@ -227,26 +238,26 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                                   />
                                 </div>
                                 <p className="mt-1.5 text-[11px] text-gray-500">
-                                  빈자리 <b>{Math.max(0, lot.total - lot.occupied).toLocaleString()}</b>면 ·{" "}
-                                  {lot.occupied.toLocaleString()} / {lot.total.toLocaleString()}면 ({lot.rate}%) ·{" "}
-                                  {lot.updatedAt} 기준
+                                  {t("빈자리")} <b>{t("{n}면", { n: Math.max(0, lot.total - lot.occupied).toLocaleString() })}</b> ·{" "}
+                                  {lot.occupied.toLocaleString()} / {t("{n}면", { n: lot.total.toLocaleString() })} ({lot.rate}%) ·{" "}
+                                  {t("{time} 기준", { time: lot.updatedAt })}
                                 </p>
                               </li>
                             );
                           })}
                         </ul>
                       ) : (
-                        <Empty>주차장 정보를 불러오지 못했어요.</Empty>
+                        <Empty>{t("주차장 정보를 불러오지 못했어요.")}</Empty>
                       )}
                       {fees.length > 0 && (
                         <div className="mt-5 rounded-2xl bg-gray-50 p-4">
                           <p className="text-sm font-bold">
-                            주차 요금 (소형 기준)
+                            {t("주차 요금 (소형 기준)")}
                             <DataTag />
                           </p>
                           {fees.map((f) => (
                             <div key={f.group} className="mt-2 text-xs">
-                              <p className="font-semibold text-gray-700">{f.group}</p>
+                              <p className="font-semibold text-gray-700">{t(f.group)}</p>
                               <ul className="mt-0.5 list-disc pl-4 text-gray-600">
                                 {f.lines.map((l) => (
                                   <li key={l}>{l}</li>
@@ -255,8 +266,8 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                             </div>
                           ))}
                           <p className="mt-2 text-[11px] text-gray-400">
-                            인천국제공항공사 요금 기준. 요금 코드에 주차장 이름이 없어 공지된 단기·장기 요금과 맞는
-                            항목만 보여줘요.
+                            {t("인천국제공항공사 요금 기준. 요금 코드에 주차장 이름이 없어 공지된 단기·장기 요금과 맞는 항목만 보여줘요.")}
+                            {lang !== "ko" && ` ${t("요금 설명은 공항공사 원문(한국어)이에요.")}`}
                           </p>
                         </div>
                       )}
@@ -267,7 +278,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
             />
           </div>
 
-          <JudgementCard place={place} crowd={crowd} signals={signals} />
+          <JudgementCard place={place} crowd={crowd} signals={signals} lang={lang} />
         </div>
       </div>
     </main>

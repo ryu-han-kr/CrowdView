@@ -1,8 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/i18n/link";
 import { useState } from "react";
 import { isLongRunning, type Festival, type FestivalCrowd } from "@/lib/festivals";
+import { useI18n } from "@/i18n/client";
+import { fmtPeople, trRegion } from "@/i18n/patterns";
 import { compactNumber } from "@/lib/format";
 import type { SeoulLive } from "@/lib/seoul-live";
 import { DataTag } from "./DataTag";
@@ -28,6 +30,7 @@ export function FestivalList({
   hrefs: Record<string, string>;
   today: string;
 }) {
+  const { t, lang } = useI18n();
   const [region, setRegion] = useState("전체");
   const sidos = ["전체", ...new Set(festivals.map((f) => f.region.split(" ")[0]))];
   const list = festivals.filter((f) => region === "전체" || f.region.startsWith(region));
@@ -46,7 +49,7 @@ export function FestivalList({
               s === region ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"
             }`}
           >
-            {s}
+            {s === "전체" ? t("전체") : t(s)}
             <span className="ml-1 text-xs opacity-60">
               {s === "전체" ? festivals.length : festivals.filter((f) => f.region.startsWith(s)).length}
             </span>
@@ -54,8 +57,8 @@ export function FestivalList({
         ))}
       </div>
       {[
-        { title: "지금 진행 중", items: ongoing },
-        { title: "다가오는 축제", items: upcoming },
+        { title: t("지금 진행 중"), items: ongoing },
+        { title: t("다가오는 축제"), items: upcoming },
       ].map(
         (sec) =>
           sec.items.length > 0 && (
@@ -86,20 +89,20 @@ export function FestivalList({
                           <div className="flex items-start justify-between gap-2">
                             <p className="line-clamp-2 text-sm font-semibold">{f.title}</p>
                             <span className="shrink-0 rounded-full bg-gray-900 px-2 py-0.5 text-[11px] font-bold text-white">
-                              {dday <= 0 ? "진행 중" : `D-${dday}`}
+                              {dday <= 0 ? t("진행 중") : `D-${dday}`}
                             </span>
                           </div>
                           <p className="mt-0.5 truncate text-xs text-gray-500">
                             {fmt(f.start)}
-                            {f.end !== f.start && ` ~ ${fmt(f.end)}`} · {f.region}
+                            {f.end !== f.start && ` ~ ${fmt(f.end)}`} · {trRegion(f.region, t)}
                           </p>
                           <div className="mt-1.5 flex items-center gap-1.5 text-[11px] text-gray-500">
                             {live ? (
                               <>
                                 <LevelBadge score={live.score} />
-                                <span className="rounded bg-emerald-600 px-1 py-px text-[10px] font-bold text-white">실시간</span>
+                                <span className="rounded bg-emerald-600 px-1 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
                                 <span>
-                                  {compactNumber(live.min)}~{compactNumber(live.max)}명
+                                  {t("{min}~{max}명", { min: compactNumber(live.min, lang), max: compactNumber(live.max, lang) })}
                                 </span>
                               </>
                             ) : c ? (
@@ -107,13 +110,12 @@ export function FestivalList({
                                 <LevelBadge score={c.score} />
                                 <DataTag />
                                 <span>
-                                  작년 {c.ratio >= 1 ? "+" : ""}
-                                  {Math.round((c.ratio - 1) * 100)}%
+                                  {t("작년 {pct}%", { pct: `${c.ratio >= 1 ? "+" : ""}${Math.round((c.ratio - 1) * 100)}` })}
                                 </span>
                               </>
                             ) : (
                               <span className="text-gray-400">
-                                {liveAreas[f.id] ? `시작하면 실시간 (${liveAreas[f.id]})` : "혼잡 예측 준비 중"}
+                                {liveAreas[f.id] ? t("시작하면 실시간 ({area})", { area: liveAreas[f.id] }) : t("혼잡 예측 준비 중")}
                               </span>
                             )}
                           </div>
@@ -129,8 +131,8 @@ export function FestivalList({
       {longRunning.length > 0 && (
         <details className="mt-6 rounded-2xl border border-gray-100 p-4">
           <summary className="cursor-pointer text-sm font-bold">
-            상설·장기 행사 <span className="font-medium text-gray-400">{longRunning.length}</span>
-            <span className="ml-2 text-xs font-normal text-gray-500">한 달 넘게 이어지는 공연·전시·투어</span>
+            {t("상설·장기 행사")} <span className="font-medium text-gray-400">{longRunning.length}</span>
+            <span className="ml-2 text-xs font-normal text-gray-500">{t("한 달 넘게 이어지는 공연·전시·투어")}</span>
           </summary>
           <ul className="mt-3 divide-y divide-gray-100">
             {longRunning.map((f) => (
@@ -138,7 +140,7 @@ export function FestivalList({
                 <Link href={hrefs[f.id]} className="flex items-center justify-between gap-3 py-2.5 text-sm">
                   <span className="min-w-0 truncate">{f.title}</span>
                   <span className="shrink-0 text-xs text-gray-500">
-                    ~{fmt(f.end)} · {f.region}
+                    ~{fmt(f.end)} · {trRegion(f.region, t)}
                   </span>
                 </Link>
               </li>
@@ -146,7 +148,7 @@ export function FestivalList({
           </ul>
         </details>
       )}
-      {list.length === 0 && <p className="mt-8 text-center text-sm text-gray-500">이 지역에는 예정된 축제가 없어요.</p>}
+      {list.length === 0 && <p className="mt-8 text-center text-sm text-gray-500">{t("이 지역에는 예정된 축제가 없어요.")}</p>}
     </>
   );
 }
