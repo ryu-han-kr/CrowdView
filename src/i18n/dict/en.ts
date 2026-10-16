@@ -51,6 +51,7 @@ const dict: Dict = {
   "발달상권": "Shopping & dining streets",
   "공원·한강": "Parks & Han River",
   "역·인구밀집": "Stations & busy hubs",
+  "SK텔레콤 장소 혼잡도": "SK Telecom place congestion",
   "불꽃·야경": "Fireworks & Night",
   "꽃·자연": "Flowers & Nature",
   "먹거리": "Food",

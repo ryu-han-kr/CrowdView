@@ -48,6 +48,7 @@ export const APIS: ApiInfo[] = [
   { id: "seoul-citydata", name: "서울시 실시간 도시데이터" },
   { id: "seoul-events", name: "서울시 문화행사 정보" },
   // 글자 수로 센다. NCP 콘솔 Application 하루 한도(3만 자)와 맞추고, 90%(2.7만 자)에서 앱이 먼저 멈춘다
+  { id: "skt-congestion", name: "SK 장소 혼잡도·TMAP 장소 검색" },
   { id: "papago", name: "Papago 번역 (글자 수)", limit: 30000, unit: "자" },
 ];
 

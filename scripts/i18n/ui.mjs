@@ -52,6 +52,7 @@ export default {
   발달상권: ["Shopping & dining streets", "商業エリア", "繁华商圈", "繁華商圈"],
   "공원·한강": ["Parks & Han River", "公園・漢江", "公园·汉江", "公園·漢江"],
   "역·인구밀집": ["Stations & busy hubs", "駅・人口密集地", "车站·人口密集区", "車站·人口密集區"],
+  "SK텔레콤 장소 혼잡도": ["SK Telecom place congestion", "SKテレコム 場所の混雑度", "SK电讯 地点拥挤度", "SK電訊 地點擁擠度"],
   // ── 축제 종류
   "불꽃·야경": ["Fireworks & Night", "花火・夜景", "烟花·夜景", "煙火·夜景"],
   "꽃·자연": ["Flowers & Nature", "花・自然", "花卉·自然", "花卉·自然"],

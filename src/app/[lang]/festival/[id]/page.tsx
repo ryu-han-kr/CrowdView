@@ -1,4 +1,5 @@
 import Link from "@/i18n/link";
+import { getSktCongestion } from "@/lib/skt";
 import { notFound } from "next/navigation";
 import { DataTag } from "@/components/DataTag";
 import { LevelBadge } from "@/components/Level";
@@ -26,6 +27,12 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
   if (!f) notFound();
   const [crowd, live] = await Promise.all([getFestivalCrowd(f), getFestivalLive(f)]);
   const area = seoulAreaOf(f);
+  // 서울시 데이터가 없는 진행 중 축제는 SK 장소 혼잡도 (키가 있을 때만)
+  const today0 = kst().date;
+  const skt =
+    !live && !area && f.lat && f.lng && f.start <= today0 && f.end >= today0
+      ? await getSktCongestion(f.title.replace(/\[[^\]]*\]|\d{4}년?|제?\d+회/g, "").trim(), f.lat, f.lng)
+      : undefined;
   // 축제 이름·장소·지역명 번역 (Papago, Redis 캐시). 못 하면 원문
   const names = await translateNames([f.title, f.place, f.region, crowd?.signguName, live?.area, area?.name], lang);
   const tr = (ko: string) => names.get(ko) ?? ko;
@@ -124,6 +131,20 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
               <p className="mt-2 text-[11px] text-gray-400">
                 {t("서울시 실시간 도시데이터")} · {t("서울시 단계 ‘{level}’", { level: t(live.level) })} ·{" "}
                 {t("{time} 기준", { time: live.time })} · {t("축제 장소에서 {m}m 떨어진 실시간 지역", { m: live.distance })}
+              </p>
+            </section>
+          )}
+          {skt && (
+            <section className="mb-4 rounded-3xl p-5" style={{ background: `${levelOf(skt.score).color}14` }}>
+              <p className="text-xs font-medium text-gray-500">
+                <span className="mr-1 rounded bg-emerald-600 px-1 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
+                {t("지금 {area} 일대", { area: skt.poiName })}
+              </p>
+              <p className="mt-1 text-2xl font-extrabold" style={{ color: levelOf(skt.score).color }}>
+                {t(levelOf(skt.score).label)}
+              </p>
+              <p className="mt-2 text-[11px] text-gray-400">
+                {t("SK텔레콤 장소 혼잡도")} {skt.time && `· ${t("{time} 기준", { time: skt.time.slice(11) })}`}
               </p>
             </section>
           )}
