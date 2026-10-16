@@ -145,3 +145,50 @@ async function fetchSeoulLive(key: string, areaName: string): Promise<Omit<Seoul
         : undefined,
   };
 }
+
+/** 지역 상세용 추가 정보 (실시간 도시데이터 전체판에서 필요한 것만) */
+export interface SeoulAreaExtra {
+  /** 상권 전체 결제 붐빔 단계 (한산한 / 보통 / 분주한 / 바쁜) */
+  commerce?: { level: string; time: string; categories: { name: string; group: string; level: string }[] };
+  road?: { index: string; speed: number; message: string };
+  bikes?: number;
+}
+
+/**
+ * 실시간 도시데이터 전체판 (지역 하나에 약 200KB). 지역 상세를 열 때만, 지역마다 10분에 한 번 부르고
+ * 화면에 쓰는 몇 가지만 뽑아 Redis에 저장한다
+ */
+export async function getSeoulAreaExtra(areaName: string): Promise<SeoulAreaExtra | undefined> {
+  const key = process.env.SEOUL_OPENAPI_KEY;
+  if (!key) return undefined;
+  try {
+    return await cached(`seoul:extra:${areaName}`, 600, async () => {
+      await beforeCall(APIS.find((a) => a.id === "seoul-citydata"));
+      const res = await fetch(`http://openapi.seoul.go.kr:8088/${key}/json/citydata/1/5/${encodeURIComponent(areaName)}`, {
+        signal: AbortSignal.timeout(10_000),
+      });
+      if (!res.ok) throw new Error(`seoul citydata ${res.status}`);
+      const c = (await res.json()).CITYDATA ?? {};
+      const cm = c.LIVE_CMRCL_STTS;
+      const road = c.ROAD_TRAFFIC_STTS?.AVG_ROAD_DATA;
+      const bikes = ((c.SBIKE_STTS ?? []) as Record<string, string>[]).reduce((s, b) => s + (Number(b.SBIKE_PARKING_CNT) || 0), 0);
+      return {
+        commerce: cm?.AREA_CMRCL_LVL
+          ? {
+              level: String(cm.AREA_CMRCL_LVL),
+              time: String(cm.CMRCL_TIME ?? ""),
+              categories: ((cm.CMRCL_RSB ?? []) as Record<string, string>[]).map((r) => ({
+                name: r.RSB_MID_CTGR,
+                group: r.RSB_LRG_CTGR,
+                level: r.RSB_PAYMENT_LVL,
+              })),
+            }
+          : undefined,
+        road: road?.ROAD_TRAFFIC_IDX ? { index: road.ROAD_TRAFFIC_IDX, speed: Number(road.ROAD_TRAFFIC_SPD), message: road.ROAD_MSG } : undefined,
+        bikes: bikes || undefined,
+      };
+    });
+  } catch {
+    return undefined;
+  }
+}
