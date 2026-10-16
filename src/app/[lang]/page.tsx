@@ -161,9 +161,25 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           </section>
         )}
         </div>
+        <div className="mt-6 grid grid-cols-2 gap-2">
+          <Link href="/near?tab=toilet" className="flex items-center gap-2 rounded-3xl bg-sky-50 px-4 py-3.5">
+            <span className="text-2xl">🚻</span>
+            <span className="min-w-0">
+              <span className="block text-sm font-bold">{t("내 주변 찾기")}</span>
+              <span className="block truncate text-xs text-gray-500">{t("화장실·와이파이·맛집")}</span>
+            </span>
+          </Link>
+          <Link href="/guide" className="flex items-center gap-2 rounded-3xl bg-amber-50 px-4 py-3.5">
+            <span className="text-2xl">🗺️</span>
+            <span className="min-w-0">
+              <span className="block text-sm font-bold">{t("서울 여행 가이드")}</span>
+              <span className="block truncate text-xs text-gray-500">{t("명소·맛집 + 지금 혼잡도")}</span>
+            </span>
+          </Link>
+        </div>
         <Link
           href="/route"
-          className="mt-6 flex items-center gap-3 rounded-3xl bg-gradient-to-r from-violet-50 to-indigo-50 px-4 py-3.5"
+          className="mt-3 flex items-center gap-3 rounded-3xl bg-gradient-to-r from-violet-50 to-indigo-50 px-4 py-3.5"
         >
           <span className="text-2xl">🧭</span>
           <span className="min-w-0 flex-1">

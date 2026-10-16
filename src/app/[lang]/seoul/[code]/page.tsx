@@ -10,8 +10,9 @@ import { compactNumber } from "@/lib/format";
 import { levelOf } from "@/lib/levels";
 import { translateNames } from "@/lib/name-translate";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
-import { SEOUL_GROUPS, getSeoulAreaLive, seoulGroup } from "@/lib/seoul-live";
+import { SEOUL_GROUPS, getSeoulAreaExtra, getSeoulAreaLive, seoulGroup } from "@/lib/seoul-live";
 import { getSktCongestion } from "@/lib/skt";
+import { GUIDE, GUIDE_KINDS, TOILETS, guideText, nearest } from "@/lib/seoul-guide";
 
 export const revalidate = 600;
 
@@ -40,11 +41,13 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
   const area = SEOUL_AREAS.find((a) => a.code === code);
   if (!area) notFound();
   // 서울시(KT 기반) + SK텔레콤 장소 혼잡도(키가 있을 때)를 함께 보여준다
-  const [live, names, skt] = await Promise.all([
+  const [live, names, skt, extra] = await Promise.all([
     getSeoulAreaLive(area.code),
     translateNames([area.name], lang),
     getSktCongestion(area.name.replace(/\(.*?\)/g, ""), area.lat, area.lng),
+    getSeoulAreaExtra(area.name),
   ]);
+  const BUSY: Record<string, string> = { 한산한: "#10b981", 보통: "#eab308", 분주한: "#f97316", 바쁜: "#ef4444" };
   const name = names.get(area.name) ?? area.name;
   const group = SEOUL_GROUPS.find((g) => g.id === seoulGroup(area.name))!;
   const level = live && levelOf(live.score);
@@ -91,6 +94,38 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
             </section>
           )}
 
+          {extra?.commerce && (
+            <section className="mt-4 rounded-3xl border border-gray-100 p-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-bold">💳 {t("지금 가게들은")}</h2>
+                <span className="text-xs font-bold" style={{ color: BUSY[extra.commerce.level] }}>
+                  {t("상권 전체 '{level}'", { level: t(extra.commerce.level) })}
+                </span>
+              </div>
+              <ul className="mt-3 flex flex-wrap gap-1.5">
+                {[...extra.commerce.categories]
+                  .sort((a, b) => Object.keys(BUSY).indexOf(b.level) - Object.keys(BUSY).indexOf(a.level))
+                  .map((c) => (
+                    <li
+                      key={c.name}
+                      className="rounded-full px-2.5 py-1 text-[11px] font-semibold"
+                      style={{ color: BUSY[c.level] ?? "#6b7280", background: `${BUSY[c.level] ?? "#6b7280"}1a` }}
+                    >
+                      {t(c.name)} · {t(c.level)}
+                    </li>
+                  ))}
+              </ul>
+              <p className="mt-2 text-[11px] text-gray-400">{t("카드 결제 건수로 본 업종별 붐빔 (서울시 실시간 도시데이터)")}</p>
+              {(extra.road || extra.bikes) && (
+                <p className="mt-3 text-xs text-gray-600">
+                  {extra.road && `🚗 ${t("주변 도로")} ${t(extra.road.index)} (${extra.road.speed}km/h)`}
+                  {extra.road && extra.bikes ? " · " : ""}
+                  {extra.bikes ? `🚲 ${t("따릉이 {n}대", { n: extra.bikes })}` : ""}
+                </p>
+              )}
+            </section>
+          )}
+
           {live?.profile && (
             <section className="mt-4 rounded-3xl border border-gray-100 p-4">
               <h2 className="text-sm font-bold">{t("지금 이곳에 있는 사람들")}</h2>
@@ -123,6 +158,35 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
               </p>
             </section>
           )}
+          {(() => {
+            const toilets = nearest(TOILETS, area, (x) => ({ lat: x[1], lng: x[2] }), 50, 0.8).length;
+            const spots = nearest(GUIDE, area, (g) => (g.lat && g.lng ? { lat: g.lat, lng: g.lng } : undefined), 6, 1);
+            return (
+              <section className="mt-4 rounded-3xl border border-gray-100 p-4">
+                <Link
+                  href={`/near?tab=toilet&lat=${area.lat}&lng=${area.lng}&name=${encodeURIComponent(name)}`}
+                  className="flex items-center justify-between text-sm font-semibold"
+                >
+                  <span>🚻 {t("800m 안 공중화장실 {n}곳", { n: toilets })}</span>
+                  <span className="text-indigo-600">{t("보기")} ›</span>
+                </Link>
+                {spots.length > 0 && (
+                  <>
+                    <p className="mt-4 text-sm font-bold">{t("이 동네 명소·맛집")}</p>
+                    <ul className="mt-2 grid grid-cols-2 gap-2">
+                      {spots.map(({ item: g }) => (
+                        <li key={g.id}>
+                          <Link href={`/guide/${g.id}`} className="block truncate rounded-xl bg-gray-50 px-3 py-2 text-xs font-semibold">
+                            {GUIDE_KINDS.find((k) => k.id === g.kind)?.emoji} {guideText(g, lang).text.n}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </section>
+            );
+          })()}
           <a
             href={`https://map.naver.com/p/search/${encodeURIComponent(area.name)}`}
             target="_blank"

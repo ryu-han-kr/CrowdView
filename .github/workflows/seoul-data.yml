@@ -1,0 +1,32 @@
+# 서울시 정적 데이터(화장실·와이파이·문화공간·Visit Seoul·체험 예약) 주 1회 갱신 → 바뀐 게 있으면 PR
+# 필요: 저장소 Settings → Secrets and variables → Actions → SEOUL_OPENAPI_KEY
+name: seoul-data
+
+on:
+  schedule:
+    - cron: "0 18 * * 0" # 매주 월요일 03:00 KST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/seoul-data/sync.mjs
+        env:
+          SEOUL_OPENAPI_KEY: ${{ secrets.SEOUL_OPENAPI_KEY }}
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/seoul-data
+          title: "chore: 서울시 정적 데이터 주간 갱신"
+          commit-message: "chore: weekly Seoul open data sync"
+          body: "화장실·와이파이·문화공간·Visit Seoul·체험 예약 데이터를 다시 받았어요 (scripts/seoul-data/sync.mjs). 변경분 확인 후 머지하세요."
+          add-paths: src/data/seoul/*.json
+          delete-branch: true
