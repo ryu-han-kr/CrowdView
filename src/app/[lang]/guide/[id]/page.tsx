@@ -128,7 +128,7 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
               </a>
             )}
           </div>
-          {at && <p className="mt-2 text-[11px] text-gray-400">{t("위치는 가까운 지하철역({station}) 기준이에요.", { station: p.station ?? "" })}</p>}
+          {at && !p.exact && <p className="mt-2 text-[11px] text-gray-400">{t("위치는 가까운 지하철역({station}) 기준이에요.", { station: p.station ?? "" })}</p>}
         </div>
 
         <div className="mt-8 space-y-8 lg:mt-0">

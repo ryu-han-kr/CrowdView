@@ -37,6 +37,8 @@ export interface GuidePlace {
   lat?: number;
   lng?: number;
   station?: string;
+  /** 주소로 찾은 정확한 좌표면 true (아니면 가까운 역 좌표) */
+  exact?: boolean;
   t: Partial<Record<Lang, GuideText>>;
 }
 

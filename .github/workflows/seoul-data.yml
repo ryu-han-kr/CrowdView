@@ -22,6 +22,9 @@ jobs:
       - run: node scripts/seoul-data/sync.mjs
         env:
           SEOUL_OPENAPI_KEY: ${{ secrets.SEOUL_OPENAPI_KEY }}
+          # 새로 생긴 주소만 좌표로 바꾼다 (geocode.json 캐시, 실행당 최대 3,000건)
+          NEXT_PUBLIC_NAVER_MAP_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID }}
+          NAVER_MAP_CLIENT_SECRET: ${{ secrets.NAVER_MAP_CLIENT_SECRET }}
       - uses: peter-evans/create-pull-request@v7
         with:
           branch: chore/seoul-data
