@@ -12,7 +12,7 @@ const NAVER_FREE: Record<string, { free: number; unitPrice?: number }> = {
 // 아직 API로 집계하지 않는 서비스의 월 고정비 (원). 서비스를 도입하면 금액을 갱신한다
 // 네이버 클라우드(지도·Papago)는 위 NCP 청구 금액에 이미 들어 있다
 const FIXED_MONTHLY: { name: string; note: string; krw: number }[] = [
-  { name: "Vercel", note: "Pro $20 (Spend Management 상한 $100)", krw: 28_000 },
+  { name: "Vercel", note: "Pro $20 (Spend Management 상한 $50)", krw: 28_000 },
   { name: "Upstash Redis", note: "Free (월 50만 명령·256MB)", krw: 0 },
   { name: "Resend", note: "무료 (월 3,000통)", krw: 0 },
   { name: "공공데이터·서울시 API", note: "무료 (하루 한도, 2쪽 참고)", krw: 0 },
