@@ -102,7 +102,7 @@ export async function renderReportPdf(r: CostReport): Promise<Uint8Array> {
   table(page2, regular, bold, y2, [200, 70, 80, 70, 79], ["API", "호출", "하루 한도", "사용률", "데이터셋"],
     r.apiUsage.map((a) => [
       a.name,
-      `${num(a.count)}회`,
+      `${num(a.count)}${a.unit ?? "회"}`,
       a.limit ? `${num(a.limit)}${a.limitGuess ? "*" : ""}` : "-",
       a.pct !== undefined ? `${a.pct.toFixed(1)}%` : "-",
       a.dataset ?? "-",

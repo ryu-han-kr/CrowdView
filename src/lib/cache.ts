@@ -8,9 +8,9 @@ interface KV {
   set(key: string, value: string, ttlSeconds: number): Promise<void>;
   /** 키가 없을 때만 저장 (분산 잠금용). 저장했으면 true */
   setNX(key: string, value: string, ttlSeconds: number): Promise<boolean>;
-  /** 1 올리고 새 값을 돌려준다. 처음 만들 때만 만료 시간을 건다 (API 호출 수 집계용) */
-  incr(key: string, ttlSeconds: number): Promise<number>;
-  decr(key: string): Promise<number>;
+  /** by(기본 1)만큼 올리고 새 값을 돌려준다. 처음 만들 때만 만료 시간을 건다 (API 호출 수 집계용) */
+  incr(key: string, ttlSeconds: number, by?: number): Promise<number>;
+  decr(key: string, by?: number): Promise<number>;
 }
 
 function memoryKV(): KV {
@@ -28,20 +28,22 @@ function memoryKV(): KV {
       store.set(key, { v, exp: Date.now() + ttl * 1000 });
     },
     async setNX(key, v, ttl) {
-      if (await get(key)) return false;
+      // await 없이 확인·저장해야 동시에 들어온 요청 중 하나만 잡는다
+      const hit = store.get(key);
+      if (hit && hit.exp >= Date.now()) return false;
       store.set(key, { v, exp: Date.now() + ttl * 1000 });
       return true;
     },
-    async incr(key, ttl) {
+    async incr(key, ttl, by = 1) {
       const hit = store.get(key);
       const live = hit && hit.exp >= Date.now();
-      const n = (live ? Number(hit.v) : 0) + 1;
+      const n = (live ? Number(hit.v) : 0) + by;
       store.set(key, { v: String(n), exp: live ? hit.exp : Date.now() + ttl * 1000 });
       return n;
     },
-    async decr(key) {
+    async decr(key, by = 1) {
       const hit = store.get(key);
-      const n = (hit ? Number(hit.v) : 0) - 1;
+      const n = (hit ? Number(hit.v) : 0) - by;
       store.set(key, { v: String(n), exp: hit?.exp ?? Date.now() + 86_400_000 });
       return n;
     },
@@ -69,12 +71,12 @@ function upstashKV(url: string, token: string): KV {
       await call(["SET", key, value, "EX", ttl], true);
     },
     setNX: async (key, value, ttl) => (await call(["SET", key, value, "NX", "EX", ttl], true)) === "OK",
-    incr: async (key, ttl) => {
-      const n = Number(await call(["INCR", key], true));
-      if (n === 1) await call(["EXPIRE", key, ttl], true);
+    incr: async (key, ttl, by = 1) => {
+      const n = Number(await call(["INCRBY", key, by], true));
+      if (n === by) await call(["EXPIRE", key, ttl], true);
       return n;
     },
-    decr: async (key) => Number(await call(["DECR", key], true)),
+    decr: async (key, by = 1) => Number(await call(["DECRBY", key, by], true)),
   };
 }
 
