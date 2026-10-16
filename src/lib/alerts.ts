@@ -3,6 +3,7 @@
 import webpush from "web-push";
 import { getT } from "@/i18n/server";
 import { localePath, type Lang } from "@/i18n/config";
+import { kv } from "./cache";
 import { pool, sql } from "./db";
 import { levelOf } from "./levels";
 import { PLACES, placeHref } from "./places";
@@ -40,15 +41,24 @@ interface Due {
   last_sent_at: Date | null;
 }
 
+// 알림이 하나라도 있는지 Redis에 표시해 둔다. 없으면 10분 수집기가 DB를 깨우지 않는다
+// (Neon 같은 서버리스 Postgres는 깨어 있는 시간만큼 요금이 나간다)
+const ANY_KEY = "alerts:any";
+export const markAlertsExist = () => kv.set(ANY_KEY, "1", 35 * 24 * 3600).catch(() => {});
+
 /** 알림 조건을 확인하고 보낸다. 보낸 수를 돌려준다 */
 export async function checkAlerts(crowd: Record<string, CrowdResult>): Promise<number> {
   if (!pushEnabled) return 0;
+  if (!(await kv.get(ANY_KEY).catch(() => "1"))) return 0;
   // 지금 Plus인 회원의 알림만
   const alerts = await sql<Due>(
     `select a.user_id, a.place_id, a.kind, a.last_score, a.last_sent_at
      from crowd_alert a join plus_subscription s on s.user_id = a.user_id
      where s.status <> 'expired' and s.current_period_end > now()`,
   );
+  // 알림이 남아 있으면 표시를 연장하고, 다 지워졌으면 표시를 내린다
+  if (alerts.length) await markAlertsExist();
+  else await kv.set(ANY_KEY, "", 1).catch(() => {});
   let sent = 0;
   for (const a of alerts) {
     const c = crowd[a.place_id];
