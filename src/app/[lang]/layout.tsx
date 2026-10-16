@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
+import { Analytics } from "@vercel/analytics/next";
 import { AdRail } from "@/components/AdRail";
 import { BottomNav, TopNav } from "@/components/BottomNav";
 import { I18nProvider } from "@/i18n/client";
@@ -54,6 +55,7 @@ export default async function RootLayout({ children, params }: { children: React
           <AdRail side="right" />
           <BottomNav />
         </I18nProvider>
+        <Analytics />
       </body>
     </html>
   );
