@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { refreshAll } from "@/lib/crowd/service";
 
-// Vercel Cron(vercel.json, 하루 1번, GET)과 Upstash QStash 예약 호출(10분, POST)이 호출한다.
-// QStash는 Upstash-Forward-Authorization 헤더로 같은 Bearer 토큰을 넘긴다
+// Vercel Cron(vercel.json, 10분마다, GET)이 Authorization: Bearer CRON_SECRET 헤더로 호출한다.
+// 다른 클라우드로 옮기면 그쪽 스케줄러가 같은 헤더를 붙여 GET 또는 POST로 부르면 된다
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET;
   if (secret && req.headers.get("authorization") !== `Bearer ${secret}`) {
