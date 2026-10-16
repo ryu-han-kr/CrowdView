@@ -162,8 +162,19 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         )}
         </div>
         <Link
+          href="/route"
+          className="mt-6 flex items-center gap-3 rounded-3xl bg-gradient-to-r from-violet-50 to-indigo-50 px-4 py-3.5"
+        >
+          <span className="text-2xl">🧭</span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-bold">{t("한산한 코스 추천")}</span>
+            <span className="block truncate text-xs text-gray-500">{t("내 위치에서 출발해 붐비는 시간을 피해 도는 순서")}</span>
+          </span>
+          <span className="text-sm font-semibold text-indigo-600">{t("보기")} ›</span>
+        </Link>
+        <Link
           href="/seoul"
-          className="mt-6 flex items-center gap-3 rounded-3xl bg-gradient-to-r from-indigo-50 to-sky-50 px-4 py-3.5"
+          className="mt-3 flex items-center gap-3 rounded-3xl bg-gradient-to-r from-indigo-50 to-sky-50 px-4 py-3.5"
         >
           <span className="text-2xl">📍</span>
           <span className="min-w-0 flex-1">

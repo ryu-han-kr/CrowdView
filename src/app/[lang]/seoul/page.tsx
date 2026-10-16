@@ -30,6 +30,8 @@ export default async function SeoulPage({ params }: { params: Promise<{ lang: st
     code: a.code,
     name: a.name,
     group: seoulGroup(a.name),
+    lat: a.lat,
+    lng: a.lng,
     score: live[a.code]?.score,
     min: live[a.code]?.min,
     max: live[a.code]?.max,

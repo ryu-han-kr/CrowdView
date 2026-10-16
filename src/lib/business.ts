@@ -4,18 +4,18 @@
 export const BUSINESS = {
   serviceName: "CrowdView",
   /** 상호 */
-  company: "등록 예정",
+  company: "한경수",
   /** 대표자 */
-  ceo: "등록 예정",
+  ceo: "한경수",
   /** 사업자등록번호 (예: 123-45-67890) */
-  bizNo: "등록 예정",
+  bizNo: "528-25-02324",
   /** 통신판매업 신고번호 (예: 제2026-서울강남-0000호) */
   mailOrderNo: "등록 예정",
   address: "등록 예정",
   phone: "등록 예정",
   email: "등록 예정",
   /** 개인정보 보호책임자 */
-  privacyOfficer: "등록 예정",
+  privacyOfficer: "한경수",
   url: "https://crowdview.app",
 } as const;
 
