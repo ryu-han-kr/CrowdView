@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { InlineAd } from "@/components/AdUnit";
 import { SeoulAreaList, type SeoulAreaRow } from "@/components/SeoulAreaList";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
@@ -42,6 +43,7 @@ export default async function SeoulPage({ params }: { params: Promise<{ lang: st
         {t("관광특구·고궁·상권·공원·역 주변에 지금 몇 명이 있는지 5분마다 바뀌는 서울시 데이터로 보여드려요")}
       </p>
       <SeoulAreaList rows={rows} names={names} />
+      <InlineAd className="mt-6" />
       <p className="mt-6 text-center text-[11px] text-gray-400">
         {t("서울시 실시간 도시데이터 (통신사 기지국 기반 추정 인구)")}
         {time && ` · ${t("{time} 기준", { time: time.slice(11) })}`}

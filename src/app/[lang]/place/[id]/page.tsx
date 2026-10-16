@@ -24,6 +24,7 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 import { JudgementCard } from "@/components/JudgementCard";
 import { VisitorProfile } from "@/components/VisitorProfile";
 import { WeatherCard } from "@/components/WeatherCard";
+import { InlineAd } from "@/components/AdUnit";
 import { headcountInfo, isEstimated } from "@/lib/format";
 import { translateNames } from "@/lib/name-translate";
 import { getRelatedPlaces } from "@/lib/related-places";
@@ -349,6 +350,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           {signals.localPop && <VisitorProfile pop={signals.localPop} lang={lang} />}
 
           <JudgementCard place={place} crowd={crowd} signals={signals} lang={lang} />
+          <InlineAd className="mt-6" />
 
           {/* 함께 가면 좋은 곳 (관광공사 연관 관광지: 내비 이동 데이터) */}
           {related.length > 0 && (

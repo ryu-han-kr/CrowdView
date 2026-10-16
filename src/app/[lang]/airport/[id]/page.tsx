@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { AirportPaxChart } from "@/components/AirportPaxChart";
 import { DataTag } from "@/components/DataTag";
 import { JudgementCard } from "@/components/JudgementCard";
+import { InlineAd } from "@/components/AdUnit";
 import { WeatherCard } from "@/components/WeatherCard";
 import { getSignals } from "@/lib/crowd/signals";
 import { HistoryChart } from "@/components/HistoryChart";
@@ -360,6 +361,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
           </div>
 
           <JudgementCard place={place} crowd={crowd} signals={signals} lang={lang} />
+          <InlineAd className="mt-6" />
         </div>
       </div>
     </main>

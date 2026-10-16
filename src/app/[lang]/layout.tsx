@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { notFound } from "next/navigation";
 import { AdRail } from "@/components/AdRail";
 import { BottomNav, TopNav } from "@/components/BottomNav";
@@ -59,6 +60,15 @@ export default async function RootLayout({ children, params }: { children: React
         />
       </head>
       <body className="font-sans antialiased">
+        {/* 구글 애드센스 (발행자 ID가 있을 때만). EEA·영국 이용자 동의 화면은 애드센스 콘솔 '개인 정보 보호 및 메시지'에서 켠다 */}
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && (
+          <Script
+            async
+            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`}
+            crossOrigin="anonymous"
+            strategy="afterInteractive"
+          />
+        )}
         <I18nProvider lang={lang} dict={getDict(lang)}>
           <NavProgress />
           <TopNav />
