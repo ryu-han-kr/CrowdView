@@ -10,6 +10,7 @@ import { levelOf } from "@/lib/levels";
 import { translateNames } from "@/lib/name-translate";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { SEOUL_GROUPS, getSeoulAreaLive, seoulGroup } from "@/lib/seoul-live";
+import { getSktCongestion } from "@/lib/skt";
 
 export const revalidate = 600;
 
@@ -37,7 +38,12 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
   const t = getT(lang);
   const area = SEOUL_AREAS.find((a) => a.code === code);
   if (!area) notFound();
-  const [live, names] = await Promise.all([getSeoulAreaLive(area.code), translateNames([area.name], lang)]);
+  // 서울시(KT 기반) + SK텔레콤 장소 혼잡도(키가 있을 때)를 함께 보여준다
+  const [live, names, skt] = await Promise.all([
+    getSeoulAreaLive(area.code),
+    translateNames([area.name], lang),
+    getSktCongestion(area.name.replace(/\(.*?\)/g, ""), area.lat, area.lng),
+  ]);
   const name = names.get(area.name) ?? area.name;
   const group = SEOUL_GROUPS.find((g) => g.id === seoulGroup(area.name))!;
   const level = live && levelOf(live.score);
@@ -72,6 +78,16 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
             <p className="rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">
               {t("지금은 서울시 데이터를 받지 못했어요. 잠시 후 다시 확인해 주세요.")}
             </p>
+          )}
+
+          {skt && (
+            <section className="mt-3 flex items-center justify-between rounded-2xl border border-gray-100 px-4 py-3">
+              <div>
+                <p className="text-xs text-gray-500">{t("SK텔레콤 장소 혼잡도")}</p>
+                <p className="text-sm font-semibold">{skt.poiName}</p>
+              </div>
+              <LevelBadge score={skt.score} />
+            </section>
           )}
 
           {live?.profile && (
