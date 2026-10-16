@@ -1,6 +1,7 @@
 // 공항 탭 상세 데이터: 날짜·시간대별 출발 승객 수(출국장별), 주차장 혼잡도.
 // 실시간 혼잡도·구역별 대기는 crowd/service의 스냅샷(zones)에서 온다.
 import { kv } from "./cache";
+import { cached } from "./cached";
 import { dataGoKr, ymd } from "./datagokr";
 import { addDays, kst } from "./time";
 import type { Place } from "./types";
@@ -153,6 +154,112 @@ export async function getParking(place: Place): Promise<ParkingLot[]> {
     });
   } catch (e) {
     console.warn(`[airport] ${place.id} parking:`, e instanceof Error ? e.message : e);
+    return [];
+  }
+}
+
+export interface ArrivalFlight {
+  flight: string;
+  /** 출발 공항 IATA */
+  from: string;
+  /** HH:MM (예상) */
+  time: string;
+  late: boolean;
+  entryGate: string;
+  gate: string;
+  korean: number;
+  foreigner: number;
+}
+
+export interface ArrivalGate {
+  gate: string;
+  flights: number;
+  waiting: number;
+}
+
+// YYYYMMDDHHMM → 분 단위 시각 (지연 계산용)
+const minutesOf = (s: unknown) => {
+  const v = String(s ?? "");
+  return v.length >= 12 ? Date.UTC(+v.slice(0, 4), +v.slice(4, 6) - 1, +v.slice(6, 8), +v.slice(8, 10), +v.slice(10, 12)) / 60_000 : NaN;
+};
+const hhmm = (s: unknown) => {
+  const v = String(s ?? "");
+  return v.length >= 12 ? `${v.slice(8, 10)}:${v.slice(10, 12)}` : "";
+};
+
+// 인천공항 입국장 현황 (data.go.kr 15095061): 지금 기준 -2시간 ~ +2시간 도착편과 입국장별 대기 인원.
+// 개발계정 하루 500회라 20분 캐시 (터미널 2개 × 72회 = 144회, 29%)
+export async function getArrivals(place: Place): Promise<{ flights: ArrivalFlight[]; gates: ArrivalGate[] }> {
+  if (!place.airport?.startsWith("ICN")) return { flights: [], gates: [] };
+  try {
+    const rows = await dataGoKr(
+      "/B551177/StatusOfArrivals/getArrivalsCongestion",
+      { type: "json", numOfRows: "300", terno: place.airport === "ICN1" ? "T1" : "T2" },
+      20 * 60,
+    );
+    const flights = rows
+      .map((r) => ({
+        flight: String(r.flightid ?? ""),
+        from: String(r.airport ?? ""),
+        time: hhmm(r.estimatedtime || r.scheduletime),
+        // 30분 이상 늦으면 지연
+        late: minutesOf(r.estimatedtime) - minutesOf(r.scheduletime) >= 30,
+        entryGate: String(r.entrygate ?? ""),
+        gate: String(r.gatenumber ?? ""),
+        korean: Math.round(Number(r.korean ?? 0)),
+        foreigner: Math.round(Number(r.foreigner ?? 0)),
+      }))
+      .sort((a, b) => a.time.localeCompare(b.time));
+    const by = new Map<string, ArrivalGate>();
+    for (const f of flights) {
+      if (!f.entryGate) continue;
+      const g = by.get(f.entryGate) ?? { gate: f.entryGate, flights: 0, waiting: 0 };
+      g.flights++;
+      g.waiting += f.korean + f.foreigner;
+      by.set(f.entryGate, g);
+    }
+    return { flights, gates: [...by.values()].sort((a, b) => a.gate.localeCompare(b.gate)) };
+  } catch (e) {
+    console.warn(`[airport] ${place.id} arrivals:`, e instanceof Error ? e.message : e);
+    return { flights: [], gates: [] };
+  }
+}
+
+export interface ParkingZone {
+  /** 주차장-구역 번호 (예: 01-03). 공항공사가 이름을 주지 않아 번호로 표시 */
+  zone: string;
+  total: number;
+  free: number;
+}
+
+// 인천공항 주차면 센서 (T1 15107228 단기주차장, T2 15160956): 면 단위 상태를 구역별 빈자리로 묶는다.
+// 원본이 수천 줄(최대 2MB)이라 원본 대신 묶은 결과만 10분 캐시 (하루 144회, 14%)
+export async function getParkingZones(place: Place): Promise<ParkingZone[]> {
+  if (!place.airport?.startsWith("ICN")) return [];
+  const t1 = place.airport === "ICN1";
+  try {
+    return await cached(
+      `icn:zones:${place.airport}`,
+      10 * 60,
+      async () => {
+        const rows = await dataGoKr(
+          t1 ? "/B551177/ParkLocationData/getParkLocationData" : "/B551177/parkLocationAreaData/getParkLocationAreaData",
+          { type: "json", numOfRows: t1 ? "6000" : "14000" },
+        );
+        const by = new Map<string, ParkingZone>();
+        for (const r of rows) {
+          const zone = `${r.parklotno}-${r.parkzoneno}`;
+          const z = by.get(zone) ?? { zone, total: 0, free: 0 };
+          z.total++;
+          if (r.carstatus === "N") z.free++;
+          by.set(zone, z);
+        }
+        return [...by.values()].sort((a, b) => a.zone.localeCompare(b.zone));
+      },
+      (v) => v.length === 0,
+    );
+  } catch (e) {
+    console.warn(`[airport] ${place.id} zones:`, e instanceof Error ? e.message : e);
     return [];
   }
 }

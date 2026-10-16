@@ -10,7 +10,7 @@ import { HistoryChart } from "@/components/HistoryChart";
 import { ICONS, IconTabPanels } from "@/components/IconTabs";
 import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
-import { getAirportPaxDays, getParking, getParkingFees } from "@/lib/airport";
+import { getAirportPaxDays, getArrivals, getParking, getParkingFees, getParkingZones } from "@/lib/airport";
 import { getHistory } from "@/lib/crowd/history";
 import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
@@ -42,13 +42,15 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
   const place = getPlace(id);
   if (!place || place.category !== "airport") notFound();
 
-  const [crowd, paxDays, parking, history, fees, signals] = await Promise.all([
+  const [crowd, paxDays, parking, history, fees, signals, arrivals, zones2] = await Promise.all([
     getCrowd(id),
     getAirportPaxDays(place),
     getParking(place),
     getHistory(id, 2),
     getParkingFees(place),
     getSignals(place),
+    getArrivals(place),
+    getParkingZones(place),
   ]);
   if (!crowd) notFound();
 
@@ -128,7 +130,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                 : `${t(SOURCE_LABEL[crowd.source] ?? "")} · ${t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}`}
             </p>
           </section>
-          <WeatherCard signals={signals} lang={lang} />
+          <WeatherCard signals={signals} lang={lang} place={place} />
         </div>
 
         <div>
@@ -171,6 +173,47 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                       <Empty>{t("지금은 운영 중인 출국장 정보가 없어요.")}</Empty>
                     ),
                 },
+                ...(place.airport?.startsWith("ICN")
+                  ? [
+                      {
+                        id: "arrivals",
+                        label: t("입국"),
+                        icon: ICONS.arrival,
+                        content:
+                          arrivals.flights.length > 0 ? (
+                            <>
+                              <p className="mb-3 text-xs text-gray-500">{t("지금 기준 앞뒤 2시간 도착편과 입국장(A~F)별 대기 인원이에요. 마중 나갈 때 참고하세요.")}</p>
+                              <ul className="grid grid-cols-3 gap-2 md:grid-cols-6">
+                                {arrivals.gates.map((g) => (
+                                  <li key={g.gate} className="rounded-2xl border border-gray-100 px-3 py-2.5 text-center">
+                                    <p className="text-xs text-gray-500">{t("입국장 {gate}", { gate: g.gate })}</p>
+                                    <p className="text-lg font-bold">{t("{n}편", { n: g.flights })}</p>
+                                    <p className="text-[11px] text-gray-500">{t("{n} 대기", { n: fmtPeople(g.waiting, t, lang) })}</p>
+                                  </li>
+                                ))}
+                              </ul>
+                              <ul className="mt-4 divide-y divide-gray-100 rounded-2xl border border-gray-100 text-sm">
+                                {arrivals.flights.slice(0, 30).map((f) => (
+                                  <li key={`${f.flight}-${f.time}`} className="flex items-center gap-3 px-4 py-2.5">
+                                    <span className={`w-12 shrink-0 font-semibold ${f.late ? "text-amber-600" : ""}`}>{f.time}</span>
+                                    <span className="min-w-0 flex-1 truncate">
+                                      <b>{f.flight}</b> <span className="text-gray-500">{t("{from} 출발", { from: f.from })}</span>
+                                      {f.late && <span className="ml-1 text-[11px] font-semibold text-amber-600">{t("지연")}</span>}
+                                    </span>
+                                    <span className="shrink-0 text-xs text-gray-500">
+                                      {f.entryGate && t("입국장 {gate}", { gate: f.entryGate })}
+                                    </span>
+                                  </li>
+                                ))}
+                              </ul>
+                              <p className="mt-2 text-[11px] text-gray-400">{t("인천국제공항공사 입국장 현황 (20분 주기)")}</p>
+                            </>
+                          ) : (
+                            <Empty>{t("지금 앞뒤 2시간 안에 도착하는 항공편 정보가 없어요.")}</Empty>
+                          ),
+                      },
+                    ]
+                  : []),
                 {
                   id: "hourly",
                   label: t("시간대"),
@@ -248,6 +291,28 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                         </ul>
                       ) : (
                         <Empty>{t("주차장 정보를 불러오지 못했어요.")}</Empty>
+                      )}
+                      {zones2.length > 0 && (
+                        <div className="mt-5">
+                          <p className="text-sm font-bold">{t("단기주차장 구역별 빈자리")}</p>
+                          <p className="text-[11px] text-gray-500">{t("주차면 센서 기준이에요. 공항공사가 구역 이름을 주지 않아 번호로 보여드려요.")}</p>
+                          <ul className="mt-2 grid grid-cols-2 gap-2 md:grid-cols-4">
+                            {zones2.map((z) => {
+                              const pct = Math.round((z.free / Math.max(1, z.total)) * 100);
+                              return (
+                                <li key={z.zone} className="rounded-2xl bg-gray-50 px-3 py-2">
+                                  <p className="text-xs text-gray-500">{t("구역 {n}", { n: z.zone })}</p>
+                                  <p className="text-sm">
+                                    <b className={pct < 10 ? "text-red-500" : pct < 25 ? "text-orange-500" : "text-emerald-600"}>
+                                      {t("{n}면", { n: z.free.toLocaleString() })}
+                                    </b>
+                                    <span className="text-[11px] text-gray-400"> / {z.total.toLocaleString()}</span>
+                                  </p>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
                       )}
                       {fees.length > 0 && (
                         <div className="mt-5 rounded-2xl bg-gray-50 p-4">

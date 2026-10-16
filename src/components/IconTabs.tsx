@@ -90,4 +90,5 @@ export const ICONS = {
   clock: "M12 7v5l3 2M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z",
   history: "M3 12a9 9 0 1 0 3-6.7L3 8m0-5v5h5M12 8v4l3 2",
   parking: "M5 3h14v18H5zM10 16V8h3a2.5 2.5 0 0 1 0 5h-3",
+  arrival: "M3 20h18M5 15l14-4.5a2 2 0 0 0-1.2-3.8L13 8 8 3H6l2.5 6L5 10 3.5 8.5H2l1.5 5Z",
 } as const;
