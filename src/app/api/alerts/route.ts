@@ -1,6 +1,6 @@
 // 혼잡 알림 (Plus). GET: 내 알림 목록, POST {placeId, kind, subscription, lang}: 켜기, DELETE {placeId, kind}: 끄기
 import { NextResponse } from "next/server";
-import { pushEnabled, savePushSubscription, type PushSub } from "@/lib/alerts";
+import { markAlertsExist, pushEnabled, savePushSubscription, type PushSub } from "@/lib/alerts";
 import { sql } from "@/lib/db";
 import { PLACES } from "@/lib/places";
 import { isPlus, markPlusUsed } from "@/lib/plus";
@@ -25,6 +25,7 @@ export async function POST(req: Request) {
   if (!body.subscription?.endpoint || !body.subscription.keys?.p256dh) return errorJson("알림 권한이 필요해요");
   await savePushSubscription(user.id, body.subscription, body.lang ?? "ko");
   await sql("insert into crowd_alert (user_id, place_id, kind) values ($1, $2, $3) on conflict do nothing", [user.id, body.placeId, body.kind]);
+  await markAlertsExist();
   // 유료 기능 사용 기록 (7일 환불 판단)
   await markPlusUsed(user.id);
   return NextResponse.json({ ok: true });
