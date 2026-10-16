@@ -22,8 +22,10 @@ export interface Festival {
   lat?: number;
   lng?: number;
   image?: string;
-  /** 데이터랩 시군구 코드 (예: 11710 송파구) */
+  /** 행정구역 시군구 코드 (예: 11710 송파구). 2026 신설 행정구역은 데이터랩과 코드가 다를 수 있다 */
   signguCode?: string;
+  /** 시군구 이름 (예: 송파구) */
+  signguName?: string;
   source: "tourapi" | "seoul";
   tel?: string;
   fee?: string;
@@ -59,6 +61,17 @@ const SIDO_SHORT: Record<string, string> = {
   서울특별시: "서울", 부산광역시: "부산", 대구광역시: "대구", 인천광역시: "인천", 광주광역시: "광주", 대전광역시: "대전",
   울산광역시: "울산", 세종특별자치시: "세종", 경기도: "경기", 강원특별자치도: "강원", 충청북도: "충북", 충청남도: "충남",
   전북특별자치도: "전북", 전라남도: "전남", 경상북도: "경북", 경상남도: "경남", 제주특별자치도: "제주",
+  전남광주통합특별시: "전남광주",
+};
+
+// 2026 신설 행정구역 → 데이터랩이 아직 쓰는 예전 코드
+// - 전남광주통합특별시(12xxx): 시군구 이름이 그대로라 광주(29)·전남(46)에서 같은 이름을 찾는다
+// - 인천 신설 구: 대부분을 차지하는 예전 구로 대신한다 (추정)
+const LEGACY_SIDO: Record<string, string[]> = { "12": ["29", "46"] };
+const LEGACY_SIGNGU: Record<string, string> = {
+  "28125": "28140", // 제물포구 ← 동구 (중구 내륙 포함, 중구는 공항이 섞여 제외)
+  "28155": "28110", // 영종구 ← 중구 (영종도가 중구 방문객 대부분)
+  "28290": "28260", // 검단구 ← 서구
 };
 
 const ymdDash = (v: unknown) => {
@@ -101,6 +114,7 @@ async function tourApiFestivals(from: string): Promise<Festival[]> {
         end,
         place: [addr, r.addr2].filter(Boolean).join(" "),
         region: regionOf(addr),
+        signguName: addr.split(/\s+/)[1],
         lat: r.mapy ? Number(r.mapy) : undefined,
         lng: r.mapx ? Number(r.mapx) : undefined,
         image: r.firstimage ? String(r.firstimage).replace(/^http:/, "https:") : undefined,
@@ -146,6 +160,7 @@ async function seoulFestivals(): Promise<Festival[]> {
           lng: Number(r.LOT) || undefined,
           image: r.MAIN_IMG || undefined,
           signguCode: SEOUL_GU[r.GUNAME],
+          signguName: r.GUNAME,
           source: "seoul",
           fee: r.USE_FEE || undefined,
           link: r.HMPG_ADDR || r.ORG_LINK || undefined,
@@ -181,14 +196,14 @@ export async function getFestival(id: string): Promise<Festival | undefined> {
 }
 
 /** 그날 시군구별 외지인+외국인 방문객 (데이터랩, 과거 날짜라 바뀌지 않아 30일 캐시) */
-async function visitorsOn(date: string): Promise<Map<string, { name: string; visitors: number }>> {
+async function visitorsOn(date: string): Promise<DayVisitors> {
   const ymd = date.replaceAll("-", "");
   const rows = await dataGoKr(
     "/B551011/DataLabService/locgoRegnVisitrDDList",
     { startYmd: ymd, endYmd: ymd, numOfRows: "1000", MobileOS: "WEB", MobileApp: "CrowdView", _type: "json" },
     30 * DAY,
   );
-  const map = new Map<string, { name: string; visitors: number }>();
+  const map: DayVisitors = new Map();
   for (const r of rows) {
     if (r.touDivCd === "1") continue; // 현지인 제외: 축제 인파는 외지인·외국인
     const code = String(r.signguCode);
@@ -197,6 +212,20 @@ async function visitorsOn(date: string): Promise<Map<string, { name: string; vis
     map.set(code, cur);
   }
   return map;
+}
+
+type DayVisitors = Map<string, { name: string; visitors: number }>;
+
+/** 축제 시군구의 그날 방문객. 데이터랩에 코드가 없으면 예전 행정구역 코드로 찾는다 */
+function visitorsOf(day: DayVisitors, f: Festival) {
+  const code = f.signguCode!;
+  const direct = day.get(code);
+  if (direct) return direct;
+  if (LEGACY_SIGNGU[code]) return day.get(LEGACY_SIGNGU[code]);
+  const prefixes = LEGACY_SIDO[code.slice(0, 2)];
+  if (!prefixes || !f.signguName) return undefined;
+  for (const [c, v] of day) if (prefixes.includes(c.slice(0, 2)) && v.name === f.signguName) return v;
+  return undefined;
 }
 
 /** 한 달 넘게 이어지는 상설·장기 행사 (축제처럼 특정일에 몰리지 않아 혼잡 예측을 하지 않는다) */
@@ -211,7 +240,7 @@ export async function getFestivalCrowd(f: Festival): Promise<FestivalCrowd | und
   const days = Array.from({ length: span }, (_, i) => addDays(addDays(from, i), -364));
   const base = days.flatMap((d) => [7, 14, 21, 28].map((w) => addDays(d, -w)));
   try {
-    const value = async (d: string) => (await visitorsOn(d)).get(f.signguCode!);
+    const value = async (d: string) => visitorsOf(await visitorsOn(d), f);
     const [fest, before] = await Promise.all([Promise.all(days.map(value)), Promise.all(base.map(value))]);
     const fv = fest.filter((v) => v !== undefined).map((v) => v!.visitors);
     const bv = before.filter((v) => v !== undefined).map((v) => v!.visitors);
