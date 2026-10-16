@@ -1,4 +1,6 @@
 import { MePanel } from "@/components/MePanel";
+import { AccountCard } from "@/components/AccountCard";
+import { authEnabled } from "@/lib/auth";
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import { getT as getMetaT } from "@/i18n/server";
@@ -30,6 +32,10 @@ export default async function MePage({ params }: { params: Promise<{ lang: strin
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold md:text-3xl">{t("마이페이지")}</h1>
         <LangSwitcher compact />
+      </div>
+
+      <div className="mt-5">
+        <AccountCard enabled={authEnabled} />
       </div>
 
       <div className="mt-6">

@@ -4,6 +4,7 @@ import Link from "@/i18n/link";
 import { usePathname } from "next/navigation";
 import { useI18n } from "@/i18n/client";
 import { stripLang } from "@/i18n/config";
+import { NavAuth } from "./AuthButtons";
 import { LangSwitcher } from "./LangSwitcher";
 
 export const TABS = [
@@ -24,7 +25,7 @@ export function isTabActive(href: string, fullPath: string): boolean {
 }
 
 /** 태블릿·PC(md 이상) 상단 내비게이션. 모바일은 하단 탭(BottomNav)을 그대로 쓴다 */
-export function TopNav() {
+export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
   const pathname = usePathname();
   const { t } = useI18n();
   return (
@@ -56,6 +57,7 @@ export function TopNav() {
         </nav>
         <p className="ml-auto text-xs text-gray-400">{t("실시간 혼잡도 · AI 예측")}</p>
         <LangSwitcher />
+        <NavAuth enabled={authEnabled} />
       </div>
     </header>
   );
