@@ -10,6 +10,8 @@ export const TABS = [
   { href: "/", label: "홈", icon: "M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" },
   { href: "/map", label: "지도", icon: "M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 0v14m6-12v14" },
   { href: "/airport", label: "공항", icon: "M10.5 3.5a1.5 1.5 0 0 1 3 0V9l7 4v2l-7-2v4.5l2 1.5v1.5l-3.5-1-3.5 1V19l2-1.5V13l-7 2v-2l7-4z" },
+  // 서울 실시간은 PC 상단 메뉴에만 (모바일 하단 탭은 그대로, 홈의 카드로 들어간다)
+  { href: "/seoul", label: "서울 실시간", icon: "M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", desktopOnly: true },
   { href: "/me", label: "마이", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 9a8 8 0 0 1 16 0" },
 ];
 
@@ -65,7 +67,7 @@ export function BottomNav() {
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 md:hidden border-t border-gray-100 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur">
       <ul className="mx-auto grid max-w-md grid-cols-4">
-        {TABS.map((tab) => {
+        {TABS.filter((tab) => !tab.desktopOnly).map((tab) => {
           const active = isTabActive(tab.href, pathname);
           return (
             <li key={tab.href}>

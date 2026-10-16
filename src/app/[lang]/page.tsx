@@ -16,6 +16,7 @@ import { getT } from "@/i18n/server";
 import { fmtAge, trRegion } from "@/i18n/patterns";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
+import { SEOUL_AREAS } from "@/lib/seoul-areas";
 export const revalidate = 60;
 
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
@@ -133,6 +134,17 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           </section>
         )}
         </div>
+        <Link
+          href="/seoul"
+          className="mt-6 flex items-center gap-3 rounded-3xl bg-gradient-to-r from-indigo-50 to-sky-50 px-4 py-3.5"
+        >
+          <span className="text-2xl">📍</span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-bold">{t("서울 실시간 인구 {n}곳", { n: SEOUL_AREAS.length })}</span>
+            <span className="block truncate text-xs text-gray-500">{t("강남역·성수·홍대·한강공원… 지금 몇 명이 있을까?")}</span>
+          </span>
+          <span className="text-sm font-semibold text-indigo-600">{t("보기")} ›</span>
+        </Link>
       </HomeList>
     </main>
   );
