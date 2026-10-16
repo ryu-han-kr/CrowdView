@@ -28,6 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     entry("/", "hourly", 1),
     entry("/seoul", "hourly", 0.9),
+    entry("/route", "daily", 0.8),
     entry("/events", "daily", 0.9),
     entry("/airport", "hourly", 0.8),
     entry("/map", "hourly", 0.7),

@@ -4,6 +4,7 @@ import Link from "@/i18n/link";
 import { useMemo, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { compactNumber } from "@/lib/format";
+import { currentPosition, distanceKm, type LatLng } from "@/lib/geo";
 import { SEOUL_GROUPS, type SeoulGroup } from "@/lib/seoul-live";
 import { LevelBadge } from "./Level";
 
@@ -11,6 +12,8 @@ export interface SeoulAreaRow {
   code: string;
   name: string;
   group: SeoulGroup;
+  lat: number;
+  lng: number;
   score?: number;
   min?: number;
   max?: number;
@@ -20,7 +23,18 @@ export interface SeoulAreaRow {
 export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; names?: Record<string, string> }) {
   const { t, lang } = useI18n();
   const [group, setGroup] = useState<SeoulGroup | "all">("all");
-  const [sort, setSort] = useState<"busy" | "calm">("busy");
+  const [sort, setSort] = useState<"busy" | "calm" | "near">("busy");
+  const [me, setMe] = useState<LatLng | null>(null);
+  const [geoError, setGeoError] = useState<string | null>(null);
+  const useNearby = async () => {
+    setGeoError(null);
+    try {
+      setMe(await currentPosition());
+      setSort("near");
+    } catch {
+      setGeoError(t("위치를 쓸 수 없어요. 브라우저에서 위치 권한을 허용해 주세요."));
+    }
+  };
   const [q, setQ] = useState("");
   const list = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -28,8 +42,12 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
     return rows
       .filter((r) => group === "all" || r.group === group)
       .filter((r) => !needle || r.name.toLowerCase().includes(needle) || tr(r.name).toLowerCase().includes(needle))
-      .sort((a, b) => (sort === "busy" ? 1 : -1) * ((b.score ?? -1) - (a.score ?? -1)) || a.name.localeCompare(b.name));
-  }, [rows, names, group, sort, q]);
+      .sort((a, b) =>
+        sort === "near" && me
+          ? distanceKm(me, a) - distanceKm(me, b)
+          : (sort === "busy" ? 1 : -1) * ((b.score ?? -1) - (a.score ?? -1)) || a.name.localeCompare(b.name),
+      );
+  }, [rows, names, group, sort, q, me]);
 
   return (
     <>
@@ -62,17 +80,18 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
       <div className="mt-4 flex items-center justify-between">
         <p className="text-sm text-gray-500">{t("{n}곳", { n: list.length })}</p>
         <div className="flex rounded-full bg-gray-100 p-0.5 text-xs font-semibold">
-          {(["busy", "calm"] as const).map((s) => (
+          {(["busy", "calm", "near"] as const).map((s) => (
             <button
               key={s}
-              onClick={() => setSort(s)}
+              onClick={() => (s === "near" && !me ? useNearby() : setSort(s))}
               className={`rounded-full px-3 py-1 ${sort === s ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
             >
-              {s === "busy" ? t("붐비는 순") : t("한산한 순")}
+              {s === "busy" ? t("붐비는 순") : s === "calm" ? t("한산한 순") : `📍 ${t("내 주변")}`}
             </button>
           ))}
         </div>
       </div>
+      {geoError && <p className="mt-2 text-xs font-semibold text-red-600">{geoError}</p>}
       <ul className="mt-3 grid gap-2 md:grid-cols-2 lg:grid-cols-3">
         {list.map((r) => (
           <li key={r.code}>
@@ -84,6 +103,7 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
                   {r.min !== undefined
                     ? t("{min}~{max}명", { min: compactNumber(r.min, lang), max: compactNumber(r.max ?? r.min, lang) })
                     : t("정보 없음")}
+                  {me && sort === "near" && ` · ${distanceKm(me, r).toFixed(1)}km`}
                 </span>
               </span>
               {r.score !== undefined && <LevelBadge score={r.score} />}
