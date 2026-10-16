@@ -4,14 +4,14 @@ import { PLACES } from "@/lib/places";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { LangSwitcher } from "@/components/LangSwitcher";
+import { SiteFooter } from "@/components/SiteFooter";
+import Link from "@/i18n/link";
+import { PLUS } from "@/lib/business";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 export const revalidate = 60;
 
-const PLANS = [
-  { name: "6개월", price: "3,000" },
-  { name: "1년", price: "6,000", highlight: true },
-];
+
 
 export default async function MePage({ params }: { params: Promise<{ lang: string }> }) {
   const lang = (await params).lang as Lang;
@@ -28,20 +28,12 @@ export default async function MePage({ params }: { params: Promise<{ lang: strin
         <MePanel places={PLACES} crowd={crowd} />
       </div>
 
-      <section className="mt-10 mb-6 rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-600 p-5 text-white">
-        <p className="text-xs font-semibold opacity-80">CrowdView Pulse+</p>
-        <p className="mt-1 text-lg font-bold">{t("AI 예측 · 혼잡 알림 · 광고 제거")}</p>
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          {PLANS.map((p) => (
-            <div key={p.name} className={`rounded-2xl p-3 ${p.highlight ? "bg-white text-gray-900" : "bg-white/15"}`}>
-              <p className="text-xs opacity-70">{t(p.name)}</p>
-              <p className="text-lg font-extrabold">{t("{n}원", { n: p.price })}</p>
-              <p className="text-[11px] opacity-70">{p.highlight ? `${t("월 {n}원", { n: "500" })} · ${t("추천")}` : t("월 {n}원", { n: "500" })}</p>
-            </div>
-          ))}
-        </div>
-        <p className="mt-3 text-[11px] opacity-70">{t("결제 연동 준비 중")}</p>
-      </section>
+      <Link href="/pricing" className="mt-10 mb-6 block rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-600 p-5 text-white">
+        <p className="text-xs font-semibold opacity-80">{PLUS.name}</p>
+        <p className="mt-1 text-lg font-bold">{t("광고 제거 · 혼잡 알림")}</p>
+        <p className="mt-2 text-2xl font-extrabold">{t("월 {n}원", { n: PLUS.priceKrw.toLocaleString() })}</p>
+        <p className="mt-1 text-[11px] opacity-80">{t("혼잡도와 예측은 계속 무료예요")} · {t("요금 안내")} ›</p>
+      </Link>
 
       <p className="mb-6 text-center text-[11px] leading-relaxed text-gray-400">
         {t("혼잡도: 서울시, 인천국제공항공사, 한국공항공사, 한국관광공사, 기상청 (공공데이터포털)")}
@@ -60,6 +52,7 @@ export default async function MePage({ params }: { params: Promise<{ lang: strin
           </span>
         ))}
       </p>
+      <SiteFooter lang={lang} className="md:hidden" />
     </main>
   );
 }

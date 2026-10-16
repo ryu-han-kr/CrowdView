@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { AdRail } from "@/components/AdRail";
 import { BottomNav, TopNav } from "@/components/BottomNav";
 import { NavProgress } from "@/components/NavProgress";
+import { SiteFooter } from "@/components/SiteFooter";
 import { I18nProvider } from "@/i18n/client";
 import { LANGS, isLang } from "@/i18n/config";
 import { getDict, getT } from "@/i18n/server";
@@ -51,6 +52,8 @@ export default async function RootLayout({ children, params }: { children: React
           {/* 모바일: 가운데 448px 앱 화면 그대로 / 태블릿·PC: 넓은 웹 화면 */}
           <div className="mx-auto min-h-dvh max-w-md bg-white pb-[calc(4.5rem+env(safe-area-inset-bottom))] shadow-sm md:max-w-6xl md:px-6 md:pb-16 md:shadow-none">
             {children}
+            {/* 태블릿·PC는 모든 페이지 아래에, 모바일은 마이 탭 아래에 (앱 화면 유지) */}
+            <SiteFooter lang={lang} className="mt-10 hidden md:block" />
           </div>
           <AdRail side="left" />
           <AdRail side="right" />
