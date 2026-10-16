@@ -17,6 +17,8 @@ export interface ApiInfo {
   limit?: number;
   /** 한도가 공식 확인값이 아니면 true */
   limitGuess?: boolean;
+  /** 세는 단위 (기본 "회") */
+  unit?: string;
 }
 
 export const APIS: ApiInfo[] = [
@@ -39,7 +41,8 @@ export const APIS: ApiInfo[] = [
   // 공공데이터포털 밖
   { id: "seoul-citydata", name: "서울시 실시간 도시데이터" },
   { id: "seoul-events", name: "서울시 문화행사 정보" },
-  { id: "papago", name: "Papago 번역 (요청 수)" },
+  // 글자 수로 센다. NCP 콘솔 Application 하루 한도(3만 자)와 맞추고, 90%(2.7만 자)에서 앱이 먼저 멈춘다
+  { id: "papago", name: "Papago 번역 (글자 수)", limit: 30000, unit: "자" },
 ];
 
 const SAFETY = 0.9;
@@ -51,20 +54,22 @@ export const apiOfPath = (path: string) => APIS.find((a) => a.prefix && path.sta
 const quotaKey = (id: string, date = kst().date) => `quota:${date}:${id}`;
 
 /**
- * 원본 API를 부르기 직전에 호출한다. 한도(90%)를 넘었으면 QuotaError.
- * Redis가 안 되면 막지 않는다 (집계보다 서비스가 먼저)
+ * 원본 API를 부르기 직전에 호출한다. amount는 이번 호출의 양 (기본 1회, Papago는 글자 수).
+ * 한도(90%)를 넘으면 QuotaError. Redis가 안 되면 막지 않는다 (집계보다 서비스가 먼저)
  */
-export async function beforeCall(api: ApiInfo | undefined): Promise<void> {
+export async function beforeCall(api: ApiInfo | undefined, amount = 1): Promise<void> {
   if (!api) return;
   let n: number;
   try {
-    n = await kv.incr(quotaKey(api.id), KEEP_DAYS * 86_400);
+    n = await kv.incr(quotaKey(api.id), KEEP_DAYS * 86_400, amount);
   } catch {
     return;
   }
   if (api.limit && n > api.limit * SAFETY) {
-    await kv.decr(quotaKey(api.id)).catch(() => {});
-    throw new QuotaError(`${api.name}: 오늘 호출 ${n - 1}회로 한도(${api.limit})의 ${SAFETY * 100}% 도달`);
+    await kv.decr(quotaKey(api.id), amount).catch(() => {});
+    throw new QuotaError(
+      `${api.name}: 오늘 ${n - amount}${api.unit ?? "회"}로 한도(${api.limit})의 ${SAFETY * 100}% 도달`,
+    );
   }
 }
 

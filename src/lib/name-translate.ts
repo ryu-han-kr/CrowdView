@@ -21,12 +21,14 @@ function hash(s: string): string {
 }
 const cacheKey = (lang: Lang, text: string) => `tr:${lang}:${hash(text)}:${text.length}`;
 
-/** 줄바꿈으로 묶어 한 번에 번역 (Papago는 줄 구분을 유지한다) */
+/** 줄바꿈으로 묶어 한 번에 번역 (Papago는 줄 구분을 유지한다). 줄 수가 안 맞으면 null */
 async function papago(texts: string[], lang: Lang): Promise<string[] | null> {
   const id = clientId();
   const secret = clientSecret();
   if (!id || !secret) return null;
-  await beforeCall(APIS.find((a) => a.id === "papago"));
+  const text = texts.join("\n");
+  // 요금은 글자 수로 나가므로 글자 수로 센다
+  await beforeCall(APIS.find((a) => a.id === "papago"), text.length);
   const res = await fetch(ENDPOINT, {
     method: "POST",
     headers: {
@@ -34,7 +36,7 @@ async function papago(texts: string[], lang: Lang): Promise<string[] | null> {
       "X-NCP-APIGW-API-KEY": secret,
       "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: new URLSearchParams({ source: "ko", target: lang, text: texts.join("\n") }),
+    body: new URLSearchParams({ source: "ko", target: lang, text }),
     signal: AbortSignal.timeout(10_000),
   });
   if (!res.ok) throw new Error(`papago ${res.status}: ${(await res.text()).slice(0, 120)}`);
@@ -43,7 +45,48 @@ async function papago(texts: string[], lang: Lang): Promise<string[] | null> {
 }
 
 const HANGUL = /[가-힣]/;
-let disabledUntil = 0; // 권한 없음 등으로 실패하면 잠시 호출을 멈춘다
+let disabledUntil = 0; // 권한 없음·한도 초과 등으로 실패하면 잠시 호출을 멈춘다
+const LOCK_TTL = 60;
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+// 이 서버에서 지금 번역 중인 이름 → 결과. 같은 이름을 동시에 두 번 보내지 않는다
+const inflight = new Map<string, Promise<string | undefined>>();
+
+/** 이름들을 번역해 Redis에 저장한다. 묶음의 줄 수가 안 맞으면 버리지 않고 하나씩 다시 보낸다 */
+async function translateMissing(names: string[], lang: Lang): Promise<Map<string, string>> {
+  const out = new Map<string, string>();
+  const save = (s: string, tr: string | undefined) => {
+    if (!tr) return;
+    out.set(s, tr);
+    return kv.set(cacheKey(lang, s), tr, TTL).catch(() => {});
+  };
+
+  // 글자 수 제한에 맞춰 나눠 보낸다
+  const batches: string[][] = [[]];
+  let len = 0;
+  for (const s of names) {
+    if (len + s.length + 1 > MAX_CHARS && batches.at(-1)!.length) {
+      batches.push([]);
+      len = 0;
+    }
+    batches.at(-1)!.push(s);
+    len += s.length + 1;
+  }
+  try {
+    for (const batch of batches) {
+      const result = await papago(batch.map((s) => s.replace(/\n/g, " ")), lang);
+      if (result) {
+        await Promise.all(batch.map((s, i) => save(s, result[i])));
+      } else if (batch.length > 1) {
+        for (const s of batch) await save(s, (await papago([s.replace(/\n/g, " ")], lang))?.[0]);
+      }
+    }
+  } catch (e) {
+    disabledUntil = Date.now() + 10 * 60 * 1000;
+    console.warn("[name-translate]", e instanceof Error ? e.message : e);
+  }
+  return out;
+}
 
 /** 한국어 이름들 → 번역 Map (번역 못 한 것은 원문). ko면 그대로 */
 export async function translateNames(texts: (string | undefined)[], lang: Lang): Promise<Map<string, string>> {
@@ -56,34 +99,36 @@ export async function translateNames(texts: (string | undefined)[], lang: Lang):
   uniq.forEach((s, i) => (cached[i] ? out.set(s, cached[i]!) : missing.push(s)));
   if (missing.length === 0 || Date.now() < disabledUntil) return out;
 
-  // 글자 수 제한에 맞춰 나눠 보낸다
-  const batches: string[][] = [[]];
-  let len = 0;
-  for (const s of missing) {
-    if (len + s.length + 1 > MAX_CHARS && batches.at(-1)!.length) {
-      batches.push([]);
-      len = 0;
+  // 1) 이 서버에서 이미 번역 중인 이름은 그 결과를 기다린다
+  const waiting = missing.filter((s) => inflight.has(cacheKey(lang, s)));
+  const rest = missing.filter((s) => !inflight.has(cacheKey(lang, s)));
+
+  // 2) 다른 서버(동시에 도는 빌드·미리보기 배포)와 겹치지 않게 이름마다 Redis 잠금을 잡는다
+  const locks = await Promise.all(
+    rest.map((s) => kv.setNX(`trlock:${cacheKey(lang, s)}`, "1", LOCK_TTL).catch(() => true)),
+  );
+  const mine = rest.filter((_, i) => locks[i]);
+  const elsewhere = rest.filter((_, i) => !locks[i]);
+
+  if (mine.length) {
+    const job = translateMissing(mine, lang);
+    for (const s of mine) {
+      const key = cacheKey(lang, s);
+      inflight.set(key, job.then((m) => m.get(s)));
+      job.finally(() => inflight.delete(key));
     }
-    batches.at(-1)!.push(s.replace(/\n/g, " "));
-    len += s.length + 1;
   }
-  try {
-    for (const batch of batches) {
-      const result = await papago(batch, lang);
-      if (!result) break;
-      await Promise.all(
-        batch.map((s, i) => {
-          const tr = result[i];
-          if (!tr) return;
-          out.set(s, tr);
-          return kv.set(cacheKey(lang, s), tr, TTL).catch(() => {});
-        }),
-      );
-    }
-  } catch (e) {
-    disabledUntil = Date.now() + 10 * 60 * 1000;
-    console.warn("[name-translate]", e instanceof Error ? e.message : e);
-  }
+
+  const pending = [...waiting, ...mine].map((s) => [s, inflight.get(cacheKey(lang, s))!] as const);
+  const [results, later] = await Promise.all([
+    Promise.all(pending.map(([, p]) => p)),
+    // 다른 서버가 번역 중이면 잠깐 기다렸다가 Redis에서 한 번 더 읽는다 (없으면 이번엔 원문)
+    elsewhere.length
+      ? sleep(3000).then(() => kv.mget(elsewhere.map((s) => cacheKey(lang, s))).catch(() => []))
+      : Promise.resolve([] as (string | null)[]),
+  ]);
+  pending.forEach(([s], i) => results[i] && out.set(s, results[i]!));
+  elsewhere.forEach((s, i) => later[i] && out.set(s, later[i]!));
   return out;
 }
 
