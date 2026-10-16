@@ -5,8 +5,18 @@ import { useI18n } from "@/i18n/client";
 import { signIn, signOut, useSession } from "@/lib/auth-client";
 
 /** 카카오·구글 로그인 버튼 (켜진 수단만) */
-export function SocialLoginButtons({ providers, callbackURL = "/me" }: { providers: ("kakao" | "google")[]; callbackURL?: string }) {
-  const { t, lp } = useI18n();
+export function SocialLoginButtons({
+  providers,
+  callbackURL = "/me",
+  raw = false,
+}: {
+  providers: ("kakao" | "google")[];
+  callbackURL?: string;
+  /** callbackURL에 이미 언어 접두사가 붙어 있으면 true */
+  raw?: boolean;
+}) {
+  const { t, lp: toLang } = useI18n();
+  const lp = (p: string) => (raw ? p : toLang(p));
   if (!providers.length) return <p className="rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">{t("로그인 준비 중이에요.")}</p>;
   return (
     <div className="space-y-2.5">

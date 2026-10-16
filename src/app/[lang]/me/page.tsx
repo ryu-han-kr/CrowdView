@@ -1,5 +1,6 @@
 import { MePanel } from "@/components/MePanel";
 import { AccountCard } from "@/components/AccountCard";
+import { PlusPanel } from "@/components/PlusPanel";
 import { authEnabled } from "@/lib/auth";
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
@@ -35,7 +36,7 @@ export default async function MePage({ params }: { params: Promise<{ lang: strin
       </div>
 
       <div className="mt-5">
-        <AccountCard enabled={authEnabled} />
+        <AccountCard enabled={authEnabled} plusSlot={<PlusPanel />} />
       </div>
 
       <div className="mt-6">

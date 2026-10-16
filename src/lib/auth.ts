@@ -40,7 +40,16 @@ export const auth = betterAuth({
   socialProviders: providers,
   account: { accountLinking: { enabled: true, trustedProviders: ["kakao", "google"] } },
   // 마이페이지 '회원 탈퇴' (찜·알림·구독은 DB에서 함께 지워지고, 결제 기록은 법정 보관을 위해 user_id만 비운다)
-  user: { deleteUser: { enabled: true } },
+  user: {
+    deleteUser: {
+      enabled: true,
+      // 탈퇴 전에 정기결제 예약을 취소한다 (환불은 환불정책대로 고객센터에서)
+      beforeDelete: async (user) => {
+        const { cancel } = await import("./plus");
+        await cancel(user.id).catch(() => {});
+      },
+    },
+  },
   session: {
     expiresIn: 60 * 60 * 24 * 30,
     updateAge: 60 * 60 * 24,

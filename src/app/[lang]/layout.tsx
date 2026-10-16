@@ -40,6 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
         : undefined,
     },
     formatDetection: { telephone: false },
+    icons: { icon: "/icon-192.png", apple: "/icon.png" },
   };
 }
 

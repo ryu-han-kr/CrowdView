@@ -7,8 +7,9 @@ create table if not exists plus_subscription (
   status text not null check (status in ('active', 'canceled', 'past_due', 'expired')),
   billing_key text,
   current_period_end timestamptz not null,
-  -- 포트원에 예약해 둔 다음 결제 ID (해지하면 예약 취소)
+  -- 포트원에 예약해 둔 다음 결제 ID·예약 ID (해지하면 예약 취소)
   next_payment_id text,
+  next_schedule_id text,
   canceled_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

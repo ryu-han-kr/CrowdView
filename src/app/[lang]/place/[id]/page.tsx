@@ -25,6 +25,9 @@ import { JudgementCard } from "@/components/JudgementCard";
 import { VisitorProfile } from "@/components/VisitorProfile";
 import { WeatherCard } from "@/components/WeatherCard";
 import { InlineAd } from "@/components/AdUnit";
+import { AlertButtons } from "@/components/AlertButtons";
+import { pushEnabled } from "@/lib/alerts";
+import { authEnabled } from "@/lib/auth";
 import { headcountInfo, isEstimated } from "@/lib/format";
 import { translateNames } from "@/lib/name-translate";
 import { getRelatedPlaces } from "@/lib/related-places";
@@ -192,6 +195,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           </section>
 
           <WeatherCard signals={signals} lang={lang} place={place} />
+          <AlertButtons placeId={place.id} enabled={authEnabled && pushEnabled} />
 
         {/* 언제 가면 좋을까 */}
           <section className="mt-4 rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">

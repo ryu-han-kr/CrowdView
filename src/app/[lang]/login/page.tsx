@@ -11,8 +11,17 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return pageMeta({ lang, path: "/login", title: getT(lang)("로그인"), noindex: true });
 }
 
-export default async function LoginPage({ params }: { params: Promise<{ lang: string }> }) {
+export default async function LoginPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ lang: string }>;
+  searchParams: Promise<{ next?: string }>;
+}) {
   const lang = (await params).lang as Lang;
+  // 로그인 후 돌아갈 곳 (같은 사이트 주소만)
+  const next = (await searchParams).next;
+  const callbackURL = next?.startsWith("/") && !next.startsWith("//") ? next : undefined;
   const t = getT(lang);
   return (
     <main className="px-5 pt-10 pb-12 md:px-0 md:pt-16">
@@ -20,7 +29,7 @@ export default async function LoginPage({ params }: { params: Promise<{ lang: st
         <h1 className="text-2xl font-bold">{t("로그인")}</h1>
         <p className="mt-2 text-sm text-gray-500">{t("로그인하면 찜한 장소가 모든 기기에서 같이 보이고, Plus와 혼잡 알림을 쓸 수 있어요.")}</p>
         <div className="mt-8">
-          <SocialLoginButtons providers={authEnabled ? enabledProviders : []} />
+          <SocialLoginButtons providers={authEnabled ? enabledProviders : []} callbackURL={callbackURL} raw={!!callbackURL} />
         </div>
         <p className="mt-6 text-center text-[11px] leading-relaxed text-gray-400">
           {t("시작하면")}{" "}
