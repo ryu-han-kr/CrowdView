@@ -1,4 +1,6 @@
 import { notFound, redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { jsonLd, pageMeta, SITE } from "@/lib/seo";
 import { HourlyChart } from "@/components/HourlyChart";
 import { LevelBadge } from "@/components/Level";
 import { PlaceHero } from "@/components/PlaceHero";
@@ -22,7 +24,13 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 import { JudgementCard } from "@/components/JudgementCard";
 import { VisitorProfile } from "@/components/VisitorProfile";
 import { WeatherCard } from "@/components/WeatherCard";
+import { InlineAd } from "@/components/AdUnit";
+import { AlertButtons } from "@/components/AlertButtons";
+import { pushEnabled } from "@/lib/alerts";
+import { authEnabled } from "@/lib/auth";
 import { headcountInfo, isEstimated } from "@/lib/format";
+import { translateNames } from "@/lib/name-translate";
+import { getRelatedPlaces } from "@/lib/related-places";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 export const revalidate = 60;
@@ -73,6 +81,20 @@ function bestUpcoming(points: HourPoint[], open: number, close: number): HourPoi
   return points.filter((p) => p.forecast && p.hour >= open && p.hour < close).sort((a, b) => a.score - b.score)[0];
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ id: string; lang: string }> }): Promise<Metadata> {
+  const { id, lang } = await params;
+  const place = PLACES.find((p) => p.id === id);
+  if (!place) return {};
+  const t = getT(lang);
+  return pageMeta({
+    lang,
+    path: placeHref(place),
+    title: t("{name} 실시간 혼잡도", { name: t(place.name) }),
+    description: t("{name} 지금 혼잡도와 오늘 시간대별 예측, 언제 가면 한산한지 알려드려요", { name: t(place.name) }),
+    image: place.image,
+  });
+}
+
 export default async function PlacePage({ params }: { params: Promise<{ id: string; lang: string }> }) {
   const { id } = await params;
   const lang = (await params).lang as Lang;
@@ -81,7 +103,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const [place, crowd] = await Promise.all([getLivePlace(id), getCrowd(id)]);
   if (!place || !crowd) notFound();
   if (place.category === "airport") redirect(localePath(lang, placeHref(place)));
-  const [signals, [today]] = await Promise.all([getSignals(place), getHistory(id, 1)]);
+  const [signals, [today], related] = await Promise.all([getSignals(place), getHistory(id, 1), getRelatedPlaces(place)]);
+  const relatedNames = await translateNames(related.flatMap((r) => [r.name, r.region]), lang);
   // 오늘 지난 시간은 10분마다 쌓은 실측 기록으로 채운다 (시간마다 마지막 기록)
   const hourly = withRecordedHours(crowd.hourly, today.points, crowd.source !== "model" && place.criteria?.unit === "명");
   const week = weekForecast(place, signals);
@@ -105,6 +128,21 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
 
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd({
+            "@context": "https://schema.org",
+            "@type": place.category === "themepark" ? "AmusementPark" : place.category === "beach" ? "Beach" : "TouristAttraction",
+            name: t(place.name),
+            description: t(place.description),
+            url: `${SITE}${localePath(lang, placeHref(place))}`,
+            address: { "@type": "PostalAddress", streetAddress: place.address, addressCountry: "KR" },
+            geo: { "@type": "GeoCoordinates", latitude: place.lat, longitude: place.lng },
+            ...(place.image && { image: `${SITE}${place.image}` }),
+          }),
+        }}
+      />
       <PlaceHero place={place} />
 
       {/* 모바일: 한 줄로 쌓기 / PC: 왼쪽(지금·언제 갈까) 고정 + 오른쪽(그래프·정보) */}
@@ -156,7 +194,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             </p>
           </section>
 
-          <WeatherCard signals={signals} lang={lang} />
+          <WeatherCard signals={signals} lang={lang} place={place} />
+          <AlertButtons placeId={place.id} enabled={authEnabled && pushEnabled} />
 
         {/* 언제 가면 좋을까 */}
           <section className="mt-4 rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">
@@ -315,6 +354,33 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           {signals.localPop && <VisitorProfile pop={signals.localPop} lang={lang} />}
 
           <JudgementCard place={place} crowd={crowd} signals={signals} lang={lang} />
+          <InlineAd className="mt-6" />
+
+          {/* 함께 가면 좋은 곳 (관광공사 연관 관광지: 내비 이동 데이터) */}
+          {related.length > 0 && (
+            <section className="mt-8">
+              <h2 className="text-lg font-bold">{t("함께 가면 좋은 곳")}</h2>
+              <p className="mt-0.5 text-xs text-gray-500">{t("이곳에 온 사람들이 같은 날 많이 들른 곳이에요. 붐빌 때 대신 가 보세요.")}</p>
+              <ul className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-3">
+                {related.map((r) => (
+                  <li key={r.name}>
+                    <a
+                      href={`https://map.naver.com/p/search/${encodeURIComponent(`${r.name} ${r.region}`)}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block h-full rounded-2xl border border-gray-100 px-3 py-2.5"
+                    >
+                      <span className="block truncate text-sm font-semibold">{relatedNames.get(r.name) ?? r.name}</span>
+                      <span className="block truncate text-[11px] text-gray-500">
+                        {t(r.category.split(" > ")[0])} · {relatedNames.get(r.region) ?? r.region}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2 text-[11px] text-gray-400">{t("한국관광공사 관광지별 연관 관광지 (티맵 이동 데이터)")}</p>
+            </section>
+          )}
 
           {/* 정보 */}
           <section className="mt-8 mb-8 space-y-3 text-sm">

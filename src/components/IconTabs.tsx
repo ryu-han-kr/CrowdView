@@ -31,11 +31,12 @@ export function IconTabBar({
             role="tab"
             aria-selected={on}
             onClick={() => onChange(t.id)}
-            className={`flex min-w-[64px] flex-1 shrink-0 flex-col items-center gap-1 border-b-2 px-2 pt-1 pb-2 text-xs font-semibold transition-colors ${
-              on ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-500"
+            className={`group flex min-w-[64px] flex-1 shrink-0 flex-col items-center gap-1 border-b-2 px-2 pt-1 pb-2 text-xs font-semibold transition-colors md:gap-2 md:border-b-[3px] md:pt-3 md:pb-3 md:text-sm ${
+              on ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-500 md:text-gray-800 md:hover:text-indigo-600"
             }`}
           >
-            <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth={on ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round">
+            {/* 태블릿·PC는 아이콘을 늘 파란색으로 크게 (고른 탭은 글자와 밑줄로 구분) */}
+            <svg viewBox="0 0 24 24" className="h-7 w-7 md:h-9 md:w-9 md:text-indigo-600" fill="none" stroke="currentColor" strokeWidth={on ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round">
               <path d={t.icon} />
             </svg>
             {t.label}
@@ -89,4 +90,5 @@ export const ICONS = {
   clock: "M12 7v5l3 2M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Z",
   history: "M3 12a9 9 0 1 0 3-6.7L3 8m0-5v5h5M12 8v4l3 2",
   parking: "M5 3h14v18H5zM10 16V8h3a2.5 2.5 0 0 1 0 5h-3",
+  arrival: "M3 20h18M5 15l14-4.5a2 2 0 0 0-1.2-3.8L13 8 8 3H6l2.5 6L5 10 3.5 8.5H2l1.5 5Z",
 } as const;

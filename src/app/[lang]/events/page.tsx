@@ -1,4 +1,8 @@
+import { InlineAd } from "@/components/AdUnit";
 import { FestivalList } from "@/components/FestivalList";
+import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
+import { getT as getMetaT } from "@/i18n/server";
 import { festivalHref, getFestivalCrowd, getFestivalLive, getFestivals, isLongRunning, seoulAreaOf, type FestivalCrowd } from "@/lib/festivals";
 import type { SeoulLive } from "@/lib/seoul-live";
 import { addDays, kst } from "@/lib/time";
@@ -8,6 +12,17 @@ import { translateNames } from "@/lib/name-translate";
 
 // 축제 일정은 6시간마다 바뀌어 1시간 단위로 다시 렌더링해도 충분하다
 export const revalidate = 3600;
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const lang = (await params).lang;
+  const t = getMetaT(lang);
+  return pageMeta({
+    lang,
+    path: "/events",
+    title: t("전국 축제 일정 · 혼잡 예측"),
+    description: t("이번 달 전국 축제 일정과 지역·종류별 목록, 작년 방문객으로 본 예상 혼잡도"),
+  });
+}
 
 export default async function EventsPage({ params }: { params: Promise<{ lang: string }> }) {
   const lang = (await params).lang as Lang;
@@ -45,6 +60,7 @@ export default async function EventsPage({ params }: { params: Promise<{ lang: s
         today={today}
         names={names}
       />
+      <InlineAd className="mt-6" />
       <p className="mt-6 text-center text-[11px] text-gray-400">
         {t("일정: 한국관광공사 TourAPI, 서울시 문화행사 정보 · 실시간: 서울시 실시간 도시데이터 · 혼잡 예측: 한국관광공사 데이터랩(이동통신 방문자)")}
       </p>

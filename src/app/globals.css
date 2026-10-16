@@ -43,3 +43,54 @@ body {
 .pulse-ring {
   animation: pulse-ring 1.8s ease-out infinite;
 }
+
+/* ── 누를 때·마우스를 올렸을 때 반응 (모든 링크·버튼·탭 공통)
+   - 누르는 순간: 살짝 작아지고 어두워진다 (모바일 터치 포함)
+   - 마우스를 올리면: 살짝 어두워지고, 카드형 링크는 그림자와 함께 떠오른다
+   - 키보드로 이동하면: 파란 테두리 */
+:where(a[href], button, summary, label:has(input), [role="tab"], [role="button"]) {
+  cursor: pointer;
+  transition: transform 0.12s ease, filter 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease,
+    color 0.15s ease, border-color 0.15s ease;
+}
+:where(a[href], button, summary, [role="tab"], [role="button"]):not(:disabled):active {
+  transform: scale(0.97);
+  filter: brightness(0.9);
+}
+:where(button, [role="button"]):disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+:where(a[href], button, summary, input, select, textarea, [role="tab"], [role="button"]):focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  :where(a[href], button, summary, [role="tab"], [role="button"]):not(:disabled):hover {
+    filter: brightness(0.95);
+  }
+  /* 둥근 카드형 링크는 떠오르는 느낌 */
+  :where(a[href][class*="rounded-2xl"], a[href][class*="rounded-3xl"]):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgb(17 24 39 / 0.1);
+    filter: none;
+  }
+  :where(a[href][class*="rounded-2xl"], a[href][class*="rounded-3xl"]):active {
+    transform: translateY(0) scale(0.98);
+  }
+}
+/* 모바일 터치: 누른 자리에 옅은 파란색 */
+:where(a[href], button, [role="tab"], [role="button"]) {
+  -webkit-tap-highlight-color: rgb(99 102 241 / 0.12);
+}
+
+/* 페이지 이동 중 상단 진행 막대 (NavProgress) */
+@keyframes nav-progress {
+  0% { transform: scaleX(0); }
+  60% { transform: scaleX(0.7); }
+  100% { transform: scaleX(0.92); }
+}
+.nav-progress {
+  transform-origin: left;
+  animation: nav-progress 2.5s cubic-bezier(0.1, 0.6, 0.3, 1) forwards;
+}

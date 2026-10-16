@@ -35,7 +35,7 @@ function useStoredList(key: string): [string[], (next: string[]) => void] {
 export function useFavorites() {
   const [list, set] = useStoredList("cv:favorites");
   const toggle = (id: string) => set(list.includes(id) ? list.filter((x) => x !== id) : [...list, id]);
-  return { favorites: list, isFavorite: (id: string) => list.includes(id), toggle };
+  return { favorites: list, isFavorite: (id: string) => list.includes(id), toggle, replace: set };
 }
 
 export function usePreferredTags() {

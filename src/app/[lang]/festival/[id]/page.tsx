@@ -1,8 +1,11 @@
 import Link from "@/i18n/link";
+import type { Metadata } from "next";
+import { jsonLd, pageMeta, SITE } from "@/lib/seo";
+import { getSktCongestion } from "@/lib/skt";
 import { notFound } from "next/navigation";
 import { DataTag } from "@/components/DataTag";
 import { LevelBadge } from "@/components/Level";
-import { FESTIVAL_STEPS, getFestival, getFestivalCrowd, getFestivalLive, isLongRunning, seoulAreaOf } from "@/lib/festivals";
+import { FESTIVAL_CATEGORIES, FESTIVAL_STEPS, getFestival, getFestivalCrowd, getFestivalLive, isLongRunning, seoulAreaOf } from "@/lib/festivals";
 import { compactNumber } from "@/lib/format";
 import { LEVELS, levelOf } from "@/lib/levels";
 import { daysUntil, kst } from "@/lib/time";
@@ -18,6 +21,23 @@ const pct = (r: number) => `${r >= 1 ? "+" : ""}${Math.round((r - 1) * 100)}%`;
 /** 많았어요/적었어요 문장용: 부호 없이 */
 const pctAbs = (r: number) => `${Math.abs(Math.round((r - 1) * 100))}%`;
 
+export async function generateMetadata({ params }: { params: Promise<{ id: string; lang: string }> }): Promise<Metadata> {
+  const { id, lang } = await params;
+  const f = await getFestival(id);
+  if (!f) return {};
+  const t = getT(lang);
+  const names = await translateNames([f.title, f.region], lang as Lang);
+  const title = names.get(f.title) ?? f.title;
+  const region = names.get(f.region) ?? f.region;
+  return pageMeta({
+    lang,
+    path: `/festival/${id}`,
+    title: t("{name} 혼잡도·일정", { name: title }),
+    description: t("{name} ({start}~{end}, {region}) 예상 혼잡도와 일정, 장소, 날씨", { name: title, start: f.start, end: f.end, region }),
+    image: f.image,
+  });
+}
+
 export default async function FestivalPage({ params }: { params: Promise<{ id: string; lang: string }> }) {
   const { id } = await params;
   const lang = (await params).lang as Lang;
@@ -26,6 +46,12 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
   if (!f) notFound();
   const [crowd, live] = await Promise.all([getFestivalCrowd(f), getFestivalLive(f)]);
   const area = seoulAreaOf(f);
+  // 서울시 데이터가 없는 진행 중 축제는 SK 장소 혼잡도 (키가 있을 때만)
+  const today0 = kst().date;
+  const skt =
+    !live && !area && f.lat && f.lng && f.start <= today0 && f.end >= today0
+      ? await getSktCongestion(f.title.replace(/\[[^\]]*\]|\d{4}년?|제?\d+회/g, "").trim(), f.lat, f.lng)
+      : undefined;
   // 축제 이름·장소·지역명 번역 (Papago, Redis 캐시). 못 하면 원문
   const names = await translateNames([f.title, f.place, f.region, crowd?.signguName, live?.area, area?.name], lang);
   const tr = (ko: string) => names.get(ko) ?? ko;
@@ -34,10 +60,35 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
   const dday = daysUntil(f.start);
   const ongoing = f.start <= today && f.end >= today;
   const level = crowd && levelOf(crowd.score);
+  const cat = FESTIVAL_CATEGORIES.find((c) => c.id === f.category)!;
   const mapUrl = `https://map.naver.com/p/search/${encodeURIComponent(`${f.title} ${f.region}`)}`;
 
   return (
     <main className="px-5 pt-4 pb-10 md:px-0 md:pt-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd({
+            "@context": "https://schema.org",
+            "@type": "Festival",
+            name: tr(f.title),
+            startDate: f.start,
+            endDate: f.end,
+            eventStatus: "https://schema.org/EventScheduled",
+            eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+            location: {
+              "@type": "Place",
+              name: f.place || f.region,
+              address: { "@type": "PostalAddress", streetAddress: f.place, addressRegion: f.region, addressCountry: "KR" },
+              ...(f.lat && f.lng && { geo: { "@type": "GeoCoordinates", latitude: f.lat, longitude: f.lng } }),
+            },
+            ...(f.image && { image: [f.image] }),
+            ...(f.link && { url: f.link }),
+            ...(f.fee && { isAccessibleForFree: /무료/.test(f.fee) }),
+            organizer: { "@type": "Organization", name: f.source === "tourapi" ? "한국관광공사 TourAPI" : "서울특별시", url: SITE },
+          }),
+        }}
+      />
       <Link href="/events" className="text-sm text-gray-500">
         ← {t("축제 목록")}
       </Link>
@@ -49,7 +100,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
               // eslint-disable-next-line @next/next/no-img-element
               <img src={f.image} alt={tr(f.title)} className="h-full w-full object-cover" />
             ) : (
-              <div className="flex h-full items-center justify-center text-7xl">🎪</div>
+              <div className="flex h-full items-center justify-center text-7xl">{cat.emoji}</div>
             )}
             <span className="absolute right-2 bottom-2 rounded bg-black/40 px-1.5 py-0.5 text-[10px] text-white/90">
               {f.source === "tourapi" ? t("사진 한국관광공사") : t("사진 서울시 문화행사 정보")}
@@ -57,6 +108,9 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
           </div>
           <div className="mt-4 flex items-start justify-between gap-3">
             <div>
+              <Link href={`/events?type=${cat.id}`} className="text-xs font-semibold text-indigo-600">
+                {cat.emoji} {t(cat.label)}
+              </Link>
               <h1 className="text-2xl font-bold md:text-3xl">{tr(f.title)}</h1>
               {lang !== "ko" && (
                 <p className="mt-1 text-xs text-gray-400">
@@ -120,6 +174,20 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
               <p className="mt-2 text-[11px] text-gray-400">
                 {t("서울시 실시간 도시데이터")} · {t("서울시 단계 ‘{level}’", { level: t(live.level) })} ·{" "}
                 {t("{time} 기준", { time: live.time })} · {t("축제 장소에서 {m}m 떨어진 실시간 지역", { m: live.distance })}
+              </p>
+            </section>
+          )}
+          {skt && (
+            <section className="mb-4 rounded-3xl p-5" style={{ background: `${levelOf(skt.score).color}14` }}>
+              <p className="text-xs font-medium text-gray-500">
+                <span className="mr-1 rounded bg-emerald-600 px-1 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
+                {t("지금 {area} 일대", { area: skt.poiName })}
+              </p>
+              <p className="mt-1 text-2xl font-extrabold" style={{ color: levelOf(skt.score).color }}>
+                {t(levelOf(skt.score).label)}
+              </p>
+              <p className="mt-2 text-[11px] text-gray-400">
+                {t("SK텔레콤 장소 혼잡도")} {skt.time && `· ${t("{time} 기준", { time: skt.time.slice(11) })}`}
               </p>
             </section>
           )}

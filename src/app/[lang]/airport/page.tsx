@@ -1,4 +1,7 @@
 import Link from "@/i18n/link";
+import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
+import { getT as getMetaT } from "@/i18n/server";
 import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
 import { getParking } from "@/lib/airport";
@@ -13,6 +16,17 @@ import { fmtAge, fmtMinutes, trZone } from "@/i18n/patterns";
 export const revalidate = 60;
 
 const AIRPORTS = PLACES.filter((p) => p.category === "airport");
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const lang = (await params).lang;
+  const t = getMetaT(lang);
+  return pageMeta({
+    lang,
+    path: "/airport",
+    title: t("공항 혼잡도 · 출국장 대기시간"),
+    description: t("인천공항 제1·2터미널, 김포·제주·김해공항의 실시간 출국장 혼잡도와 대기시간, 주차장 빈자리"),
+  });
+}
 
 export default async function AirportListPage({ params }: { params: Promise<{ lang: string }> }) {
   const lang = (await params).lang as Lang;

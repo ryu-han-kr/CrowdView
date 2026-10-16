@@ -1,4 +1,8 @@
 import Link from "@/i18n/link";
+import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
+import { getT as getMetaT } from "@/i18n/server";
+import { jsonLd, SITE } from "@/lib/seo";
 import { DataTag } from "@/components/DataTag";
 import { HomeList } from "@/components/HomeList";
 import { LevelBadge } from "@/components/Level";
@@ -16,7 +20,19 @@ import { getT } from "@/i18n/server";
 import { fmtAge, trRegion } from "@/i18n/patterns";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
+import { SEOUL_AREAS } from "@/lib/seoul-areas";
 export const revalidate = 60;
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const lang = (await params).lang;
+  const t = getMetaT(lang);
+  return pageMeta({
+    lang,
+    path: "/",
+    title: t("지금 어디가 한산할까? 실시간 혼잡도"),
+    description: t("인천공항 출국장 대기시간, 에버랜드·롯데월드 놀이기구 대기, 서울 주요 장소 실시간 인구, 전국 축제 혼잡 예측을 한눈에"),
+  });
+}
 
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const lang = (await params).lang as Lang;
@@ -36,19 +52,45 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   return (
     <main className="px-5 pt-6 pb-4 md:px-0 md:pt-10">
-      <header className="flex items-end justify-between gap-3">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd({
+            "@context": "https://schema.org",
+            "@graph": [
+              { "@type": "WebSite", name: "CrowdView", url: SITE, inLanguage: lang },
+              { "@type": "Organization", name: "CrowdView", url: SITE, logo: `${SITE}/icon.png` },
+            ],
+          }),
+        }}
+      />
+      {/* 모바일: 글자 헤더 그대로 / 태블릿·PC: 파란 배너 (가운데 정렬) */}
+      <header className="relative flex items-end justify-between gap-3 md:flex-col md:items-center md:overflow-hidden md:rounded-3xl md:bg-gradient-to-br md:from-indigo-600 md:via-blue-600 md:to-sky-500 md:px-8 md:py-12 md:text-center md:text-white">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-xs font-semibold tracking-wide text-indigo-500">CrowdView</p>
+          <div className="flex items-center justify-between gap-3 md:justify-center">
+            <p className="text-xs font-semibold tracking-wide text-indigo-500 md:text-white/80">CrowdView</p>
             <div className="md:hidden">
               <LangSwitcher compact />
             </div>
           </div>
           <h1 className="mt-1 text-2xl font-bold md:text-4xl">{t("지금 어디가 한산할까?")}</h1>
-          <p className="mt-2 hidden text-gray-500 md:block">{t("공항·놀이공원·명소·축제의 실시간 혼잡도와 AI 예측을 한눈에")}</p>
+          <p className="mt-2 hidden text-gray-500 md:block md:text-white/85">{t("공항·놀이공원·명소·축제의 실시간 혼잡도와 AI 예측을 한눈에")}</p>
+          <ul className="mt-5 hidden items-center justify-center gap-4 text-sm font-medium text-white/90 md:flex">
+            {[
+              ["📡", t("공공데이터 실시간")],
+              ["📈", t("시간대별 혼잡 예측")],
+              ["🌏", t("5개 언어")],
+            ].map(([icon, label], i) => (
+              <li key={label} className="flex items-center gap-1.5">
+                {i > 0 && <span className="mr-2.5 h-3 w-px bg-white/40" />}
+                <span>{icon}</span>
+                {label}
+              </li>
+            ))}
+          </ul>
         </div>
         {newest !== null && (
-          <span className="flex items-center gap-1.5 text-xs text-gray-500">
+          <span className="flex items-center gap-1.5 text-xs text-gray-500 md:absolute md:top-4 md:right-5 md:rounded-full md:bg-white/15 md:px-2.5 md:py-1 md:text-white">
             <span className="relative flex h-2 w-2">
               <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-emerald-400" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
@@ -119,6 +161,17 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           </section>
         )}
         </div>
+        <Link
+          href="/seoul"
+          className="mt-6 flex items-center gap-3 rounded-3xl bg-gradient-to-r from-indigo-50 to-sky-50 px-4 py-3.5"
+        >
+          <span className="text-2xl">📍</span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-bold">{t("서울 실시간 인구 {n}곳", { n: SEOUL_AREAS.length })}</span>
+            <span className="block truncate text-xs text-gray-500">{t("강남역·성수·홍대·한강공원… 지금 몇 명이 있을까?")}</span>
+          </span>
+          <span className="text-sm font-semibold text-indigo-600">{t("보기")} ›</span>
+        </Link>
       </HomeList>
     </main>
   );
