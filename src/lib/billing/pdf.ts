@@ -90,6 +90,28 @@ export async function renderReportPdf(r: CostReport): Promise<Uint8Array> {
     r.fixed.map((f) => [f.name, won(f.krw), f.note]),
   );
 
+  // 2쪽: 외부 API 하루 호출 수
+  const page2 = doc.addPage([W, H]);
+  let y2 = H - M - 6;
+  page2.drawText(`외부 API 호출 수 (${r.periodEnd}, 원본 호출만)`, { x: M, y: y2, size: 15, font: bold, color: INK });
+  y2 -= 18;
+  page2.drawText("캐시(메모리·Redis)에서 읽은 건 세지 않습니다. 한도의 90%에 닿으면 그날은 마지막 데이터로 버팁니다.", {
+    x: M, y: y2, size: 9, font: regular, color: MUTED,
+  });
+  y2 -= 8;
+  table(page2, regular, bold, y2, [200, 70, 80, 70, 79], ["API", "호출", "하루 한도", "사용률", "데이터셋"],
+    r.apiUsage.map((a) => [
+      a.name,
+      `${num(a.count)}회`,
+      a.limit ? `${num(a.limit)}${a.limitGuess ? "*" : ""}` : "-",
+      a.pct !== undefined ? `${a.pct.toFixed(1)}%` : "-",
+      a.dataset ?? "-",
+    ]),
+  );
+  page2.drawText("* 공식 확인 전 추정 한도. 한도는 공공데이터포털 개발계정 기준이며 운영계정 전환 시 늘어납니다.", {
+    x: M, y: M + 4, size: 8.5, font: regular, color: MUTED,
+  });
+
   // 꼬리말
   const notes = [
     "· 네이버 클라우드 사용량은 하루 늦게 집계되어, 집계된 가장 최근 날짜를 기준으로 표시합니다.",

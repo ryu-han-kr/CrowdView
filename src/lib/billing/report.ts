@@ -1,4 +1,5 @@
 // 매일 비용 정산 리포트: 서비스별 이번 달 비용과 사용량을 모은다.
+import { getApiUsage, type ApiUsage } from "../api-quota";
 import { kst } from "../time";
 import { getDailyUsage, getMonthDemand, type DailyUsage } from "./ncp";
 
@@ -9,14 +10,15 @@ const NAVER_FREE: Record<string, { free: number; unitPrice?: number }> = {
 };
 
 // 아직 API로 집계하지 않는 서비스의 월 고정비 (원). 서비스를 도입하면 금액을 갱신한다
+// 네이버 클라우드(지도·Papago)는 위 NCP 청구 금액에 이미 들어 있다
 const FIXED_MONTHLY: { name: string; note: string; krw: number }[] = [
   { name: "Vercel", note: "Hobby (Pro 전환 시 $20)", krw: 0 },
-  { name: "Supabase", note: "미사용", krw: 0 },
   { name: "Upstash Redis", note: "Free (월 50만 명령·256MB)", krw: 0 },
+  { name: "Upstash QStash", note: "Free (하루 1,000건, 10분 수집 144건)", krw: 0 },
   { name: "Resend", note: "무료 (월 3,000통)", krw: 0 },
-  { name: "Claude API", note: "미사용", krw: 0 },
-  { name: "토스페이먼츠", note: "미연동", krw: 0 },
-  { name: "도메인", note: "없음", krw: 0 },
+  { name: "공공데이터·서울시 API", note: "무료 (하루 한도, 2쪽 참고)", krw: 0 },
+  { name: "도메인 crowdview.app", note: "Cloudflare 연 약 $14 (월할)", krw: 1_700 },
+  { name: "토스페이먼츠·포트원", note: "미연동 (결제액 수수료)", krw: 0 },
 ];
 
 export interface UsageLine {
@@ -38,6 +40,8 @@ export interface CostReport {
   daysElapsed: number;
   naver: { demandKrw: number; usage: UsageLine[] } | { error: string };
   fixed: typeof FIXED_MONTHLY;
+  /** 어제 API별 원본 호출 수 (한도 대비) */
+  apiUsage: ApiUsage[];
   monthToDateKrw: number;
   projectedKrw: number;
 }
@@ -65,6 +69,7 @@ export async function buildCostReport(now = new Date()): Promise<CostReport> {
     naver = { error: e instanceof Error ? e.message : String(e) };
   }
 
+  const apiUsage = await getApiUsage(yesterday);
   const fixedKrw = FIXED_MONTHLY.reduce((s, f) => s + f.krw, 0);
   const naverKrw = "error" in naver ? 0 : naver.demandKrw;
   const overageKrw = "error" in naver ? 0 : naver.usage.reduce((s, u) => s + (u.overageKrw ?? 0), 0);
@@ -83,6 +88,7 @@ export async function buildCostReport(now = new Date()): Promise<CostReport> {
     daysElapsed,
     naver,
     fixed: FIXED_MONTHLY,
+    apiUsage,
     monthToDateKrw,
     projectedKrw,
   };
@@ -126,6 +132,14 @@ export function reportTitle(r: CostReport): string {
 // 메시지 본문은 한 줄 요약만, 상세는 첨부 PDF
 export function reportSummary(r: CostReport): string {
   const naver = "error" in r.naver ? " · ⚠️ 네이버 클라우드 조회 실패" : "";
+  const near = apiWarnings(r);
+  const api = near.length ? `
+⚠️ API 한도 70% 이상: ${near.join(", ")}` : "";
   return `📄 CrowdView 비용 정산 리포트 · ${reportStamp(r)}
-이번 달 누적 ${won(r.monthToDateKrw)} · 월말 예상 ${won(r.projectedKrw)}${naver}`;
+이번 달 누적 ${won(r.monthToDateKrw)} · 월말 예상 ${won(r.projectedKrw)}${naver}${api}`;
+}
+
+/** 어제 한도의 70% 넘게 쓴 API */
+export function apiWarnings(r: CostReport): string[] {
+  return r.apiUsage.filter((a) => (a.pct ?? 0) >= 70).map((a) => `${a.name} ${Math.round(a.pct!)}%`);
 }
