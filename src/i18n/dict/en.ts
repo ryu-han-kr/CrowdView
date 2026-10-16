@@ -2,6 +2,9 @@
 import type { Dict } from "../translate";
 
 const dict: Dict = {
+  "공공데이터 실시간": "Live public data",
+  "시간대별 혼잡 예측": "Hourly crowd forecast",
+  "5개 언어": "5 languages",
   "불꽃·야경": "Fireworks & Night",
   "꽃·자연": "Flowers & Nature",
   "먹거리": "Food",

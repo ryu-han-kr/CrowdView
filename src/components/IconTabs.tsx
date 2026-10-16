@@ -31,11 +31,12 @@ export function IconTabBar({
             role="tab"
             aria-selected={on}
             onClick={() => onChange(t.id)}
-            className={`flex min-w-[64px] flex-1 shrink-0 flex-col items-center gap-1 border-b-2 px-2 pt-1 pb-2 text-xs font-semibold transition-colors ${
-              on ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-500"
+            className={`group flex min-w-[64px] flex-1 shrink-0 flex-col items-center gap-1 border-b-2 px-2 pt-1 pb-2 text-xs font-semibold transition-colors md:gap-2 md:border-b-[3px] md:pt-3 md:pb-3 md:text-sm ${
+              on ? "border-indigo-600 text-indigo-600" : "border-transparent text-gray-500 md:text-gray-800 md:hover:text-indigo-600"
             }`}
           >
-            <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth={on ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round">
+            {/* 태블릿·PC는 아이콘을 늘 파란색으로 크게 (고른 탭은 글자와 밑줄로 구분) */}
+            <svg viewBox="0 0 24 24" className="h-7 w-7 md:h-9 md:w-9 md:text-indigo-600" fill="none" stroke="currentColor" strokeWidth={on ? 2 : 1.7} strokeLinecap="round" strokeLinejoin="round">
               <path d={t.icon} />
             </svg>
             {t.label}
