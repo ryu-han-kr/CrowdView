@@ -2,6 +2,8 @@
 // 일정: 한국관광공사 TourAPI 행사(전국) + 서울시 문화행사 정보의 '축제' 분류. 6시간마다 새로 받는다.
 // 혼잡: 실시간 공개 데이터가 없어서, 한국관광공사 데이터랩 시군구 일별 방문자로
 //       '작년 같은 기간(같은 요일) 외지인·외국인 방문객 ÷ 그 전 4주 같은 요일 평균'을 계산한다 (추정).
+import { APIS, beforeCall } from "./api-quota";
+import { cached } from "./cached";
 import { dataGoKr } from "./datagokr";
 import { scoreFromValue, type LevelSteps } from "./levels";
 import { PLACES, placeHref } from "./places";
@@ -113,16 +115,22 @@ async function tourApiFestivals(from: string): Promise<Festival[]> {
 async function seoulFestivals(): Promise<Festival[]> {
   const key = process.env.SEOUL_OPENAPI_KEY;
   if (!key) return [];
-  // 최근 등록 1000건 중 '축제' 분류만 (문화행사 전체는 약 2만 건)
-  const res = await fetch(`http://openapi.seoul.go.kr:8088/${key}/json/culturalEventInfo/1/1000/`, {
-    signal: AbortSignal.timeout(10_000),
-    next: { revalidate: 6 * HOUR },
-  });
-  if (!res.ok) throw new Error(`seoul culturalEventInfo ${res.status}`);
-  const rows = ((await res.json()).culturalEventInfo?.row ?? []) as Record<string, string>[];
-  return rows
-    .filter((r) => String(r.CODENAME).startsWith("축제"))
-    .flatMap((r): Festival[] => {
+  // 최근 등록 1000건 중 '축제' 분류만 (문화행사 전체는 약 2만 건). 6시간마다 한 번 (Redis 공유 캐시)
+  const rows = await cached(
+    "seoul:events:festivals",
+    6 * HOUR,
+    async () => {
+      await beforeCall(APIS.find((a) => a.id === "seoul-events"));
+      const res = await fetch(`http://openapi.seoul.go.kr:8088/${key}/json/culturalEventInfo/1/1000/`, {
+        signal: AbortSignal.timeout(10_000),
+      });
+      if (!res.ok) throw new Error(`seoul culturalEventInfo ${res.status}`);
+      const all = ((await res.json()).culturalEventInfo?.row ?? []) as Record<string, string>[];
+      return all.filter((r) => String(r.CODENAME).startsWith("축제"));
+    },
+    (v) => v.length === 0,
+  );
+  return rows.flatMap((r): Festival[] => {
       const start = ymdDash(r.STRTDATE);
       const end = ymdDash(r.END_DATE) ?? start;
       if (!start || !end) return [];

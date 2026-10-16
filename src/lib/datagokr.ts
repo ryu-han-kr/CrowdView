@@ -1,51 +1,30 @@
 // 공공데이터포털(apis.data.go.kr) 공통 호출. DATA_GO_KR_KEY 하나로 활용신청한 API를 모두 쓴다.
-import { unstable_cache } from "next/cache";
+import { apiOfPath, beforeCall, markExhausted } from "./api-quota";
+import { cached, shortHash } from "./cached";
 
 const BASE = "https://apis.data.go.kr";
+const inflight = new Map<string, Promise<Item[]>>();
 
 export type Item = Record<string, string | number | undefined>;
 
 /**
  * items 배열을 돌려준다. 응답 형식 파라미터(type, _type, dataType)는 API마다 달라 호출부에서 넘긴다.
- * revalidate(초)를 주면 그 시간 동안 캐시한다. 단 결과가 있을 때만 저장한다:
- * 기상청 NO_DATA처럼 200으로 오는 일시적 빈 응답이 캐시에 남아 한 시간 동안 고장 나는 것을 막는다.
- * cache: "no-store"는 쓰지 않는다 (ISR 페이지에서 정적 렌더링이 깨진다).
+ * revalidate(초)를 주면 그동안 원본을 다시 부르지 않는다 (메모리 → Redis 캐시, lib/cached.ts).
+ * 빈 결과는 저장하지 않고, 원본이 실패하거나 하루 한도에 걸리면 마지막으로 받은 데이터를 쓴다.
+ * revalidate가 없으면 매번 원본을 부른다 (10분 수집기가 부르는 실시간 공항 혼잡도. 결과는 수집기가 Redis에 저장)
  */
 export async function dataGoKr(path: string, params: Record<string, string>, revalidate?: number): Promise<Item[]> {
-  // 같은 요청이 동시에 여러 번 나가지 않게 진행 중인 호출을 공유한다 (예: 시도별 미세먼지를 장소 8곳이 동시에 요청)
-  const key = `${path}?${JSON.stringify(params)}:${revalidate ?? 0}`;
-  const pending = inflight.get(key);
-  if (pending) return pending;
-  const p = load(path, params, revalidate).finally(() => inflight.delete(key));
-  inflight.set(key, p);
-  return p;
-}
-
-const inflight = new Map<string, Promise<Item[]>>();
-
-async function load(path: string, params: Record<string, string>, revalidate?: number): Promise<Item[]> {
-  if (!revalidate) return fetchItems(path, params);
-  try {
-    return await cachedNonEmpty(path, JSON.stringify(params), revalidate);
-  } catch (e) {
-    if (e instanceof EmptyResult) return [];
-    throw e;
+  if (!revalidate) {
+    // 같은 요청이 동시에 여러 번 나가지 않게 공유 (예: 김포·제주·김해가 같은 한국공항공사 API를 동시에 요청)
+    const key = `${path}?${JSON.stringify(params)}`;
+    const pending = inflight.get(key);
+    if (pending) return pending;
+    const p = fetchItems(path, params).finally(() => inflight.delete(key));
+    inflight.set(key, p);
+    return p;
   }
+  return cached(`dg:${path}:${shortHash(JSON.stringify(params))}`, revalidate, () => fetchItems(path, params), (v) => v.length === 0);
 }
-
-class EmptyResult extends Error {}
-
-// unstable_cache는 함수가 예외를 던지면 저장하지 않는다 → 빈 결과는 예외로 바꿔 캐시를 건너뛴다
-const cachedNonEmpty = (path: string, paramsJson: string, revalidate: number) =>
-  unstable_cache(
-    async () => {
-      const items = await fetchItems(path, JSON.parse(paramsJson));
-      if (!items.length) throw new EmptyResult(path);
-      return items;
-    },
-    ["datagokr", path, paramsJson],
-    { revalidate },
-  )();
 
 // 공공데이터포털 게이트웨이는 한 키로 동시에 많이 부르면 응답을 늦춘다 (타임아웃).
 // 수집기가 16곳을 한꺼번에 갱신해도 동시에 나가는 호출은 MAX_CONCURRENT개로 제한한다
@@ -71,11 +50,15 @@ function fetchItems(path: string, params: Record<string, string>): Promise<Item[
 async function fetchItemsNow(path: string, params: Record<string, string>): Promise<Item[]> {
   const key = process.env.DATA_GO_KR_KEY;
   if (!key) throw new Error("DATA_GO_KR_KEY 미설정");
+  // 하루 한도 집계·보호 (lib/api-quota.ts). 한도 90%면 QuotaError → 캐시의 마지막 데이터를 쓴다
+  const api = apiOfPath(path);
+  await beforeCall(api);
   const qs = new URLSearchParams({ serviceKey: key, pageNo: "1", numOfRows: "100", ...params });
   const res = await fetch(`${BASE}${path}?${qs}`, { signal: AbortSignal.timeout(8000) });
   const text = await res.text();
   // 활용신청 전이면 403 + SERVICE_KEY_IS_NOT_REGISTERED_ERROR
-  const errMsg = text.match(/"errMsg":\s*"([^"]+)"/)?.[1];
+  const errMsg = text.match(/"errMsg":\s*"([^"]+)"/)?.[1] ?? text.match(/<returnAuthMsg>([^<]+)</)?.[1];
+  if (errMsg?.includes("LIMITED_NUMBER_OF_SERVICE_REQUESTS")) await markExhausted(api);
   if (!res.ok || errMsg) throw new Error(`${path} ${res.status}: ${errMsg ?? text.slice(0, 80)}`);
   let json: { response?: { body?: unknown }; body?: unknown };
   try {

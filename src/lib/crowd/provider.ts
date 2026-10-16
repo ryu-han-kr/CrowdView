@@ -1,5 +1,6 @@
 // 외부 혼잡도 데이터 소스.
 // 서울시 실시간 도시데이터(citydata_ppltn)·공항 혼잡도가 있는 장소는 실데이터, 나머지는 모델값.
+import { APIS, beforeCall } from "../api-quota";
 import type { CrowdSnapshot, Place } from "../types";
 import { fetchAirport } from "./airport";
 import { scoreFromValue } from "../levels";
@@ -19,6 +20,7 @@ interface SeoulPpltn {
 }
 
 async function fetchSeoulCitydata(place: Place, key: string, s: Signals): Promise<CrowdSnapshot> {
+  await beforeCall(APIS.find((a) => a.id === "seoul-citydata"));
   const url = `http://openapi.seoul.go.kr:8088/${key}/json/citydata_ppltn/1/5/${encodeURIComponent(place.seoulArea!)}`;
   const res = await fetch(url, { signal: AbortSignal.timeout(5000)});
   if (!res.ok) throw new Error(`seoul citydata ${res.status}`);

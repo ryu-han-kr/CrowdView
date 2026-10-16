@@ -2,6 +2,7 @@
 // 이름마다 한 번만 번역해 Redis에 90일 저장 → Papago 호출은 새 이름이 생길 때만.
 // 키가 없거나 실패하면 원문(한국어)을 그대로 쓴다.
 import type { Lang } from "@/i18n/config";
+import { APIS, beforeCall } from "./api-quota";
 import { kv } from "./cache";
 
 const ENDPOINT = process.env.PAPAGO_ENDPOINT ?? "https://papago.apigw.ntruss.com/nmt/v1/translation";
@@ -10,7 +11,8 @@ const MAX_CHARS = 4500; // 요청당 5000자 제한
 
 // 지도와 같은 NCP Application을 쓴다 (콘솔에서 Papago Translation 사용 설정 필요)
 const clientId = () => process.env.PAPAGO_CLIENT_ID ?? process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID;
-const clientSecret = () => process.env.PAPAGO_CLIENT_SECRET ?? process.env.NAVER_MAP_CLIENT_SECRET;
+const clientSecret = () =>
+  process.env.PAPAGO_CLIENT_SECRET ?? process.env.PAPAGO_CLIENT_PASSWORD ?? process.env.NAVER_MAP_CLIENT_SECRET;
 
 function hash(s: string): string {
   let h = 2166136261;
@@ -24,6 +26,7 @@ async function papago(texts: string[], lang: Lang): Promise<string[] | null> {
   const id = clientId();
   const secret = clientSecret();
   if (!id || !secret) return null;
+  await beforeCall(APIS.find((a) => a.id === "papago"));
   const res = await fetch(ENDPOINT, {
     method: "POST",
     headers: {

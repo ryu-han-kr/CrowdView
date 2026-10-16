@@ -1,4 +1,6 @@
 // 서울 축제·행사 장소를 서울시 실시간 도시데이터 지역에 연결해 실시간 인구를 받는다.
+import { APIS, beforeCall } from "./api-quota";
+import { cached } from "./cached";
 import { SEOUL_AREAS, type SeoulArea } from "./seoul-areas";
 
 // 서울시 4단계 → 0~100 점수 (5단계 기준 각 구간의 중앙 부근)
@@ -48,30 +50,35 @@ export async function getSeoulLive(lat: number, lng: number): Promise<SeoulLive 
   const area = nearestSeoulArea(lat, lng);
   if (!key || !area) return undefined;
   try {
-    const res = await fetch(
-      `http://openapi.seoul.go.kr:8088/${key}/json/citydata_ppltn/1/5/${encodeURIComponent(area.name)}`,
-      { signal: AbortSignal.timeout(6000), next: { revalidate: 600 } },
-    );
-    if (!res.ok) return undefined;
-    const row = (await res.json())["SeoulRtd.citydata_ppltn"]?.[0];
-    if (!row || SEOUL_LEVEL_SCORE[row.AREA_CONGEST_LVL] === undefined) return undefined;
-    return {
-      area: area.name,
-      distance: area.distance,
-      level: row.AREA_CONGEST_LVL,
-      score: SEOUL_LEVEL_SCORE[row.AREA_CONGEST_LVL],
-      min: Number(row.AREA_PPLTN_MIN),
-      max: Number(row.AREA_PPLTN_MAX),
-      time: String(row.PPLTN_TIME ?? ""),
-      forecast: ((row.FCST_PPLTN ?? []) as Record<string, string>[]).map((f) => ({
-        time: f.FCST_TIME,
-        level: f.FCST_CONGEST_LVL,
-        score: SEOUL_LEVEL_SCORE[f.FCST_CONGEST_LVL] ?? 0,
-        min: Number(f.FCST_PPLTN_MIN),
-        max: Number(f.FCST_PPLTN_MAX),
-      })),
-    };
+    // 지역마다 10분에 한 번만 서울시를 부른다 (Redis 공유 캐시)
+    const live = await cached(`seoul:live:${area.name}`, 600, () => fetchSeoulLive(key, area.name));
+    return { ...live, distance: area.distance };
   } catch {
     return undefined;
   }
+}
+
+async function fetchSeoulLive(key: string, areaName: string): Promise<Omit<SeoulLive, "distance">> {
+  await beforeCall(APIS.find((a) => a.id === "seoul-citydata"));
+  const res = await fetch(`http://openapi.seoul.go.kr:8088/${key}/json/citydata_ppltn/1/5/${encodeURIComponent(areaName)}`, {
+    signal: AbortSignal.timeout(6000),
+  });
+  if (!res.ok) throw new Error(`seoul citydata ${res.status}`);
+  const row = (await res.json())["SeoulRtd.citydata_ppltn"]?.[0];
+  if (!row || SEOUL_LEVEL_SCORE[row.AREA_CONGEST_LVL] === undefined) throw new Error("seoul citydata: unexpected payload");
+  return {
+    area: areaName,
+    level: row.AREA_CONGEST_LVL,
+    score: SEOUL_LEVEL_SCORE[row.AREA_CONGEST_LVL],
+    min: Number(row.AREA_PPLTN_MIN),
+    max: Number(row.AREA_PPLTN_MAX),
+    time: String(row.PPLTN_TIME ?? ""),
+    forecast: ((row.FCST_PPLTN ?? []) as Record<string, string>[]).map((f) => ({
+      time: f.FCST_TIME,
+      level: f.FCST_CONGEST_LVL,
+      score: SEOUL_LEVEL_SCORE[f.FCST_CONGEST_LVL] ?? 0,
+      min: Number(f.FCST_PPLTN_MIN),
+      max: Number(f.FCST_PPLTN_MAX),
+    })),
+  };
 }

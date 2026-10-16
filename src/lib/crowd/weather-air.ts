@@ -70,7 +70,8 @@ export async function getAirNow(place: Place): Promise<AirNow | undefined> {
   const rows = await dataGoKr(
     "/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty",
     { sidoName: place.airStation.sido, returnType: "json", numOfRows: "200", ver: "1.0" },
-    30 * 60,
+    // 측정값은 1시간마다 바뀐다. 에어코리아는 하루 500건 한도라 1시간 캐시 (시도 5곳 × 24 = 120건)
+    HOUR,
   );
   const r = rows.find((x) => x.stationName === place.airStation!.name);
   if (!r) return undefined;
