@@ -88,6 +88,7 @@ const dict: Dict = {
   "충남": "Chungnam",
   "전북": "Jeonbuk",
   "전남": "Jeonnam",
+  "전남광주": "Jeonnam-Gwangju",
   "경북": "Gyeongbuk",
   "경남": "Gyeongnam",
   "대구": "Daegu",
