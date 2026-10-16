@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { I18nProvider } from "@/i18n/client";
 import { LANGS, isLang } from "@/i18n/config";
 import { getDict, getT } from "@/i18n/server";
+import { SITE, pageMeta } from "@/lib/seo";
 import "../globals.css";
 
 // 언어별로 미리 만들고, 그 외 언어 주소는 404
@@ -18,12 +19,24 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
   const t = getT(lang);
+  const description = t("공항·놀이공원·명소·축제의 실시간 혼잡도와 AI 예측");
   return {
     // 공유 링크 미리보기·정식 주소 기준
-    metadataBase: new URL("https://crowdview.app"),
-    title: "CrowdView",
-    description: t("공항·놀이공원·명소·축제의 실시간 혼잡도와 AI 예측"),
-    // 언어별 주소(hreflang)는 페이지마다 다르므로 proxy.ts가 Link 헤더로 알려준다
+    metadataBase: new URL(SITE),
+    title: { default: `CrowdView - ${t("실시간 혼잡도")}`, template: "%s | CrowdView" },
+    description,
+    applicationName: "CrowdView",
+    keywords: [t("혼잡도"), t("실시간 인구"), t("인천공항 출국장 혼잡도"), t("축제"), t("놀이공원 대기시간"), t("서울 실시간 도시데이터")],
+    // 페이지별 정식 주소·언어별 주소는 각 페이지가 pageMeta()로 넣는다 (proxy.ts도 Link 헤더로 알려준다)
+    ...pageMeta({ lang, path: "/", description }),
+    alternates: undefined,
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+      other: process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION
+        ? { "naver-site-verification": process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION }
+        : undefined,
+    },
+    formatDetection: { telephone: false },
   };
 }
 

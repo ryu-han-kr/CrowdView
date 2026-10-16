@@ -1,4 +1,6 @@
 import { notFound, redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { jsonLd, pageMeta, SITE } from "@/lib/seo";
 import { HourlyChart } from "@/components/HourlyChart";
 import { LevelBadge } from "@/components/Level";
 import { PlaceHero } from "@/components/PlaceHero";
@@ -75,6 +77,20 @@ function bestUpcoming(points: HourPoint[], open: number, close: number): HourPoi
   return points.filter((p) => p.forecast && p.hour >= open && p.hour < close).sort((a, b) => a.score - b.score)[0];
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ id: string; lang: string }> }): Promise<Metadata> {
+  const { id, lang } = await params;
+  const place = PLACES.find((p) => p.id === id);
+  if (!place) return {};
+  const t = getT(lang);
+  return pageMeta({
+    lang,
+    path: placeHref(place),
+    title: t("{name} 실시간 혼잡도", { name: t(place.name) }),
+    description: t("{name} 지금 혼잡도와 오늘 시간대별 예측, 언제 가면 한산한지 알려드려요", { name: t(place.name) }),
+    image: place.image,
+  });
+}
+
 export default async function PlacePage({ params }: { params: Promise<{ id: string; lang: string }> }) {
   const { id } = await params;
   const lang = (await params).lang as Lang;
@@ -108,6 +124,21 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
 
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd({
+            "@context": "https://schema.org",
+            "@type": place.category === "themepark" ? "AmusementPark" : place.category === "beach" ? "Beach" : "TouristAttraction",
+            name: t(place.name),
+            description: t(place.description),
+            url: `${SITE}${localePath(lang, placeHref(place))}`,
+            address: { "@type": "PostalAddress", streetAddress: place.address, addressCountry: "KR" },
+            geo: { "@type": "GeoCoordinates", latitude: place.lat, longitude: place.lng },
+            ...(place.image && { image: `${SITE}${place.image}` }),
+          }),
+        }}
+      />
       <PlaceHero place={place} />
 
       {/* 모바일: 한 줄로 쌓기 / PC: 왼쪽(지금·언제 갈까) 고정 + 오른쪽(그래프·정보) */}

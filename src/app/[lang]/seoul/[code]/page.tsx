@@ -4,6 +4,7 @@ import Link from "@/i18n/link";
 import { LevelBadge } from "@/components/Level";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
+import { pageMeta } from "@/lib/seo";
 import { compactNumber } from "@/lib/format";
 import { levelOf } from "@/lib/levels";
 import { translateNames } from "@/lib/name-translate";
@@ -22,10 +23,12 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const area = SEOUL_AREAS.find((a) => a.code === code);
   if (!area) return {};
   const name = (await translateNames([area.name], lang as Lang)).get(area.name) ?? area.name;
-  return {
+  return pageMeta({
+    lang,
+    path: `/seoul/${code}`,
     title: t("{name} 실시간 인구·혼잡도", { name }),
     description: t("{name}에 지금 몇 명이 있는지, 앞으로 12시간 혼잡 예측과 성별·연령대 (서울시 실시간 도시데이터)", { name }),
-  };
+  });
 }
 
 export default async function SeoulAreaPage({ params }: { params: Promise<{ lang: string; code: string }> }) {

@@ -1,4 +1,6 @@
 import Image from "next/image";
+import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import Link from "@/i18n/link";
 import { notFound } from "next/navigation";
 import { AirportPaxChart } from "@/components/AirportPaxChart";
@@ -34,6 +36,20 @@ const SOURCE_LABEL = {
   "incheon-airport": "인천국제공항공사 출국장 혼잡도 (1분 주기)",
   "kac-airport": "한국공항공사 공항 혼잡도",
 } as Record<string, string>;
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string; lang: string }> }): Promise<Metadata> {
+  const { id, lang } = await params;
+  const place = getPlace(id);
+  if (!place) return {};
+  const t = getT(lang);
+  return pageMeta({
+    lang,
+    path: `/airport/${id}`,
+    title: t("{name} 출국장 혼잡도·대기시간", { name: t(place.name) }),
+    description: t("{name} 출국장별 실시간 대기시간, 시간대별 출발 승객, 주차장 빈자리와 요금", { name: t(place.name) }),
+    image: place.image,
+  });
+}
 
 export default async function AirportPage({ params }: { params: Promise<{ id: string; lang: string }> }) {
   const { id } = await params;

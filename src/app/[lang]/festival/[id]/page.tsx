@@ -1,4 +1,6 @@
 import Link from "@/i18n/link";
+import type { Metadata } from "next";
+import { jsonLd, pageMeta, SITE } from "@/lib/seo";
 import { getSktCongestion } from "@/lib/skt";
 import { notFound } from "next/navigation";
 import { DataTag } from "@/components/DataTag";
@@ -18,6 +20,23 @@ export const revalidate = 3600;
 const pct = (r: number) => `${r >= 1 ? "+" : ""}${Math.round((r - 1) * 100)}%`;
 /** 많았어요/적었어요 문장용: 부호 없이 */
 const pctAbs = (r: number) => `${Math.abs(Math.round((r - 1) * 100))}%`;
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string; lang: string }> }): Promise<Metadata> {
+  const { id, lang } = await params;
+  const f = await getFestival(id);
+  if (!f) return {};
+  const t = getT(lang);
+  const names = await translateNames([f.title, f.region], lang as Lang);
+  const title = names.get(f.title) ?? f.title;
+  const region = names.get(f.region) ?? f.region;
+  return pageMeta({
+    lang,
+    path: `/festival/${id}`,
+    title: t("{name} 혼잡도·일정", { name: title }),
+    description: t("{name} ({start}~{end}, {region}) 예상 혼잡도와 일정, 장소, 날씨", { name: title, start: f.start, end: f.end, region }),
+    image: f.image,
+  });
+}
 
 export default async function FestivalPage({ params }: { params: Promise<{ id: string; lang: string }> }) {
   const { id } = await params;
@@ -46,6 +65,30 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
 
   return (
     <main className="px-5 pt-4 pb-10 md:px-0 md:pt-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd({
+            "@context": "https://schema.org",
+            "@type": "Festival",
+            name: tr(f.title),
+            startDate: f.start,
+            endDate: f.end,
+            eventStatus: "https://schema.org/EventScheduled",
+            eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+            location: {
+              "@type": "Place",
+              name: f.place || f.region,
+              address: { "@type": "PostalAddress", streetAddress: f.place, addressRegion: f.region, addressCountry: "KR" },
+              ...(f.lat && f.lng && { geo: { "@type": "GeoCoordinates", latitude: f.lat, longitude: f.lng } }),
+            },
+            ...(f.image && { image: [f.image] }),
+            ...(f.link && { url: f.link }),
+            ...(f.fee && { isAccessibleForFree: /무료/.test(f.fee) }),
+            organizer: { "@type": "Organization", name: f.source === "tourapi" ? "한국관광공사 TourAPI" : "서울특별시", url: SITE },
+          }),
+        }}
+      />
       <Link href="/events" className="text-sm text-gray-500">
         ← {t("축제 목록")}
       </Link>

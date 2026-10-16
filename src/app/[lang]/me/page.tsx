@@ -1,4 +1,7 @@
 import { MePanel } from "@/components/MePanel";
+import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
+import { getT as getMetaT } from "@/i18n/server";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { PLACES } from "@/lib/places";
 import type { Lang } from "@/i18n/config";
@@ -12,6 +15,11 @@ import { PLUS } from "@/lib/business";
 export const revalidate = 60;
 
 
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const lang = (await params).lang;
+  return pageMeta({ lang, path: "/me", title: getMetaT(lang)("마이페이지"), noindex: true });
+}
 
 export default async function MePage({ params }: { params: Promise<{ lang: string }> }) {
   const lang = (await params).lang as Lang;

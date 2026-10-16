@@ -1,4 +1,8 @@
 import Link from "@/i18n/link";
+import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
+import { getT as getMetaT } from "@/i18n/server";
+import { jsonLd, SITE } from "@/lib/seo";
 import { DataTag } from "@/components/DataTag";
 import { HomeList } from "@/components/HomeList";
 import { LevelBadge } from "@/components/Level";
@@ -19,6 +23,17 @@ import { fmtAge, trRegion } from "@/i18n/patterns";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 export const revalidate = 60;
 
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const lang = (await params).lang;
+  const t = getMetaT(lang);
+  return pageMeta({
+    lang,
+    path: "/",
+    title: t("지금 어디가 한산할까? 실시간 혼잡도"),
+    description: t("인천공항 출국장 대기시간, 에버랜드·롯데월드 놀이기구 대기, 서울 주요 장소 실시간 인구, 전국 축제 혼잡 예측을 한눈에"),
+  });
+}
+
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const lang = (await params).lang as Lang;
   const t = getT(lang);
@@ -37,6 +52,18 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   return (
     <main className="px-5 pt-6 pb-4 md:px-0 md:pt-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd({
+            "@context": "https://schema.org",
+            "@graph": [
+              { "@type": "WebSite", name: "CrowdView", url: SITE, inLanguage: lang },
+              { "@type": "Organization", name: "CrowdView", url: SITE, logo: `${SITE}/icon.png` },
+            ],
+          }),
+        }}
+      />
       {/* 모바일: 글자 헤더 그대로 / 태블릿·PC: 파란 배너 (가운데 정렬) */}
       <header className="relative flex items-end justify-between gap-3 md:flex-col md:items-center md:overflow-hidden md:rounded-3xl md:bg-gradient-to-br md:from-indigo-600 md:via-blue-600 md:to-sky-500 md:px-8 md:py-12 md:text-center md:text-white">
         <div className="min-w-0 flex-1">

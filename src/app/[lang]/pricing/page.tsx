@@ -3,11 +3,12 @@ import Link from "@/i18n/link";
 import { PlusCheckoutButton } from "@/components/PlusCheckoutButton";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
+import { pageMeta } from "@/lib/seo";
 import { PLUS } from "@/lib/business";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const t = getT((await params).lang);
-  return { title: t("요금 안내"), description: t("CrowdView는 무료로 쓸 수 있어요. Plus는 광고 제거와 혼잡 알림을 월 {price}원에 제공해요.", { price: PLUS.priceKrw.toLocaleString() }) };
+  return pageMeta({ lang: (await params).lang, path: "/pricing", title: t("요금 안내"), description: t("CrowdView는 무료로 쓸 수 있어요. Plus는 광고 제거와 혼잡 알림을 월 {price}원에 제공해요.", { price: PLUS.priceKrw.toLocaleString() }) });
 }
 
 // 무료 / Plus 비교 (✓ 제공, – 미제공)
