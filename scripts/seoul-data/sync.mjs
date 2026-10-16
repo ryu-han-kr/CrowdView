@@ -49,10 +49,58 @@ const num = (v) => {
 };
 const clean = (s) => String(s ?? "").replace(/\r/g, "").replace(/\s+\n/g, "\n").trim();
 const inSeoul = (lat, lng) => lat > 37.4 && lat < 37.72 && lng > 126.76 && lng < 127.19;
+let changed = false;
 const write = (name, data) => {
-  fs.writeFileSync(path.join(OUT, name), JSON.stringify(data));
+  const file = path.join(OUT, name);
+  const next = JSON.stringify(data);
+  if (!fs.existsSync(file) || fs.readFileSync(file, "utf8") !== next) changed = true;
+  fs.writeFileSync(file, next);
   console.log(`  → ${name} ${(fs.statSync(path.join(OUT, name)).size / 1024).toFixed(0)}KB`);
 };
+
+// ── 주소 → 좌표 (키가 있는 쪽을 쓴다: 카카오 로컬 → 네이버 NCP Geocoding). 결과는 geocode.json에 모아 두고 새 주소만 묻는다
+const GEO_FILE = path.join(OUT, "geocode.json");
+const geoCache = fs.existsSync(GEO_FILE) ? JSON.parse(fs.readFileSync(GEO_FILE, "utf8")) : {};
+const KAKAO = process.env.KAKAO_REST_API_KEY ?? process.env.KAKAO_CLIENT_ID;
+const NCP_ID = process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID;
+const NCP_SECRET = process.env.NAVER_MAP_CLIENT_SECRET;
+let geoAsked = 0;
+// 요금 보호: 실행 한 번에 묻는 주소 수 상한 (처음 약 2,000건, 이후 주마다 새 주소 몇 건)
+const MAX_GEOCODE_PER_RUN = 3000;
+let geoProvider = KAKAO ? "kakao" : NCP_ID && NCP_SECRET ? "ncp" : null;
+async function geocode(address) {
+  const q = address.replace(/^\d{5}\s*/, "").replace(/\(.*?\)/g, "").replace(/\s+\S*(층|호|F)\s*$/i, "").trim();
+  if (!q) return undefined;
+  if (q in geoCache) return geoCache[q] ?? undefined;
+  if (!geoProvider || geoAsked >= MAX_GEOCODE_PER_RUN) return undefined;
+  geoAsked++;
+  try {
+    let hit;
+    if (geoProvider === "kakao") {
+      const res = await fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(q)}`, {
+        headers: { Authorization: `KakaoAK ${KAKAO}` },
+        signal: AbortSignal.timeout(8000),
+      });
+      if (res.status === 401 || res.status === 403) throw new Error(`kakao ${res.status} (카카오맵 서비스 활성화 확인)`);
+      const d = (await res.json()).documents?.[0];
+      if (d) hit = [Number(d.y), Number(d.x)];
+    } else {
+      const res = await fetch(`https://maps.apigw.ntruss.com/map-geocode/v2/geocode?query=${encodeURIComponent(q)}`, {
+        headers: { "x-ncp-apigw-api-key-id": NCP_ID, "x-ncp-apigw-api-key": NCP_SECRET },
+        signal: AbortSignal.timeout(8000),
+      });
+      if (res.status === 401 || res.status === 403) throw new Error(`ncp ${res.status} (콘솔에서 Geocoding 사용 설정 확인)`);
+      const a = (await res.json()).addresses?.[0];
+      if (a) hit = [Number(a.y), Number(a.x)];
+    }
+    geoCache[q] = hit ? [Math.round(hit[0] * 1e5) / 1e5, Math.round(hit[1] * 1e5) / 1e5] : null;
+    return geoCache[q] ?? undefined;
+  } catch (e) {
+    console.warn(`  주소 변환 중단: ${e.message}`);
+    geoProvider = null; // 키 문제면 이번 실행에서는 더 묻지 않는다 (역 위치로 대신)
+    return undefined;
+  }
+}
 
 // ── 지하철역 좌표 (Visit Seoul은 좌표가 없어 '가까운 역'으로 위치를 잡는다)
 const stationRows = await fetchAll("subwayStationMaster");
@@ -157,6 +205,8 @@ function stationOf(subwayInfo) {
     for (const [code, g] of groups) {
       const ko = g.ko;
       const st = stationOf(ko?.SUBWAY_INFO ?? "");
+      // 한국어 주소로 정확한 좌표 (없으면 가까운 역 좌표)
+      const exact = ko ? await geocode(clean(ko.NEW_ADDRESS || ko.ADDRESS)) : undefined;
       const gu = clean(ko?.NEW_ADDRESS ?? ko?.ADDRESS).match(/서울(?:특별시)?\s+(\S+구)/)?.[1];
       const t = {};
       for (const [lang, r] of Object.entries(g)) {
@@ -173,10 +223,20 @@ function stationOf(subwayInfo) {
           web: clean(r.CMMN_HMPG_URL) || undefined,
         };
       }
-      places.push({ id: `vs-${code}`, kind, gu, ...(st && { lat: st.lat, lng: st.lng, station: st.name }), t });
+      places.push({
+        id: `vs-${code}`,
+        kind,
+        gu,
+        ...(exact ? { lat: exact[0], lng: exact[1], exact: true } : st ? { lat: st.lat, lng: st.lng } : {}),
+        ...(st && { station: st.name }),
+        t,
+      });
     }
   }
-  console.log(`  위치를 잡은 곳 ${places.filter((p) => p.lat).length} / ${places.length}`);
+  console.log(
+    `  위치를 잡은 곳 ${places.filter((p) => p.lat).length} / ${places.length} (주소 좌표 ${places.filter((p) => p.exact).length}, 이번에 물어본 주소 ${geoAsked}, ${geoProvider ?? "주소 변환 없음"})`,
+  );
+  fs.writeFileSync(GEO_FILE, JSON.stringify(geoCache));
   write("guide.json", places);
 }
 
@@ -205,5 +265,8 @@ function stationOf(subwayInfo) {
   write("reservations.json", out);
 }
 
-fs.writeFileSync(path.join(OUT, "meta.json"), JSON.stringify({ syncedAt: new Date().toISOString() }));
-console.log("완료");
+// 데이터가 바뀐 경우에만 갱신 시각을 바꾼다 (바뀐 게 없으면 주간 PR도 생기지 않는다)
+if (changed || !fs.existsSync(path.join(OUT, "meta.json"))) {
+  fs.writeFileSync(path.join(OUT, "meta.json"), JSON.stringify({ syncedAt: new Date().toISOString() }));
+}
+console.log(changed ? "완료 (변경 있음)" : "완료 (변경 없음)");
