@@ -2,6 +2,15 @@
 import type { Dict } from "../translate";
 
 const dict: Dict = {
+  "불꽃·야경": "Fireworks & Night",
+  "꽃·자연": "Flowers & Nature",
+  "먹거리": "Food",
+  "전통·역사": "Tradition & History",
+  "음악·공연": "Music & Shows",
+  "전시·박람회": "Exhibitions & Expos",
+  "문화·체험": "Culture & Activities",
+  "전체 종류": "All types",
+  "이 종류의 축제가 없어요.": "No festivals of this type.",
   "{n}명": "{n} people",
   "{n}분": "{n} min",
   "{n}점": "{n} pts",

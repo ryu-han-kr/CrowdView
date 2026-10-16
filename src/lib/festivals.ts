@@ -27,6 +27,7 @@ export interface Festival {
   /** 시군구 이름 (예: 송파구) */
   signguName?: string;
   source: "tourapi" | "seoul";
+  category: FestivalCategory;
   tel?: string;
   fee?: string;
   link?: string;
@@ -41,6 +42,44 @@ export interface FestivalCrowd {
   /** 비교한 작년 날짜 */
   days: string[];
   signguName: string;
+}
+
+export type FestivalCategory = "light" | "nature" | "food" | "tradition" | "music" | "expo" | "etc";
+
+/** 축제 종류 (목록 필터 순서). 사진이 없을 때 이모지를 쓴다 */
+export const FESTIVAL_CATEGORIES: { id: FestivalCategory; label: string; emoji: string }[] = [
+  { id: "light", label: "불꽃·야경", emoji: "🎆" },
+  { id: "nature", label: "꽃·자연", emoji: "🌸" },
+  { id: "food", label: "먹거리", emoji: "🍜" },
+  { id: "tradition", label: "전통·역사", emoji: "🏯" },
+  { id: "music", label: "음악·공연", emoji: "🎵" },
+  { id: "expo", label: "전시·박람회", emoji: "🖼️" },
+  { id: "etc", label: "문화·체험", emoji: "🎪" },
+];
+
+// 제목 키워드가 먼저 (서울시 데이터는 분류 코드가 없다), 없으면 관광공사 분류 코드(lclsSystm3)
+const CATEGORY_WORDS: [FestivalCategory, RegExp][] = [
+  ["light", /불꽃|드론|빛|야행|라이트|미디어아트|야경|루미나리에|유등|등불|별빛|달빛|랜턴/],
+  ["expo", /박람회|엑스포|전시|아트페어|비엔날레/],
+  ["food", /맥주|커피|음식|푸드|김치|한우|젓갈|대추|유자|인삼|라면|김밥|국수|디저트|와인|특산|농산물|사과|전어|새우|대하|굴|김장|막걸리|빵|치맥|떡|한과|고구마|감자|버섯|꽃게|한돈|밥|미식|맛/],
+  ["nature", /꽃|국화|억새|단풍|코스모스|핑크뮬리|갈대|생태|숲|자연|해바라기|장미|튤립|벚꽃|산수유|진달래|철쭉|정원|가든/],
+  ["tradition", /국가유산|전통|역사|문화제|민속|궁중|궁|성곽|산성|향교|국악|선사|모양성|왕|유교|한옥|도자기|탈춤|농악|수문장|파수|의식|행궁|석조전/],
+  ["music", /음악|뮤직|콘서트|재즈|버스킹|공연|마당극|연극|무용|댄스|오페라|영화|K-?POP|케이팝|힙합|락|록페/i],
+];
+const CATEGORY_CODES: [string, FestivalCategory][] = [
+  ["EV010300", "food"],
+  ["EV010400", "tradition"],
+  ["EV020100", "tradition"],
+  ["EV010500", "nature"],
+  ["EV0301", "expo"],
+  ["EV0302", "expo"],
+  ["EV02", "music"],
+];
+
+export function festivalCategory(title: string, code?: string): FestivalCategory {
+  for (const [id, re] of CATEGORY_WORDS) if (re.test(title)) return id;
+  for (const [prefix, id] of CATEGORY_CODES) if (code?.startsWith(prefix)) return id;
+  return "etc";
 }
 
 const HOUR = 3600;
@@ -120,6 +159,7 @@ async function tourApiFestivals(from: string): Promise<Festival[]> {
         image: r.firstimage ? String(r.firstimage).replace(/^http:/, "https:") : undefined,
         signguCode: code,
         source: "tourapi",
+        category: festivalCategory(String(r.title), r.lclsSystm3 ? String(r.lclsSystm3) : undefined),
         tel: r.tel ? String(r.tel) : undefined,
       },
     ];
@@ -162,6 +202,7 @@ async function seoulFestivals(): Promise<Festival[]> {
           signguCode: SEOUL_GU[r.GUNAME],
           signguName: r.GUNAME,
           source: "seoul",
+          category: festivalCategory(r.TITLE),
           fee: r.USE_FEE || undefined,
           link: r.HMPG_ADDR || r.ORG_LINK || undefined,
         },

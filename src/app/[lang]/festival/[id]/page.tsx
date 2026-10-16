@@ -2,7 +2,7 @@ import Link from "@/i18n/link";
 import { notFound } from "next/navigation";
 import { DataTag } from "@/components/DataTag";
 import { LevelBadge } from "@/components/Level";
-import { FESTIVAL_STEPS, getFestival, getFestivalCrowd, getFestivalLive, isLongRunning, seoulAreaOf } from "@/lib/festivals";
+import { FESTIVAL_CATEGORIES, FESTIVAL_STEPS, getFestival, getFestivalCrowd, getFestivalLive, isLongRunning, seoulAreaOf } from "@/lib/festivals";
 import { compactNumber } from "@/lib/format";
 import { LEVELS, levelOf } from "@/lib/levels";
 import { daysUntil, kst } from "@/lib/time";
@@ -34,6 +34,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
   const dday = daysUntil(f.start);
   const ongoing = f.start <= today && f.end >= today;
   const level = crowd && levelOf(crowd.score);
+  const cat = FESTIVAL_CATEGORIES.find((c) => c.id === f.category)!;
   const mapUrl = `https://map.naver.com/p/search/${encodeURIComponent(`${f.title} ${f.region}`)}`;
 
   return (
@@ -49,7 +50,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
               // eslint-disable-next-line @next/next/no-img-element
               <img src={f.image} alt={tr(f.title)} className="h-full w-full object-cover" />
             ) : (
-              <div className="flex h-full items-center justify-center text-7xl">🎪</div>
+              <div className="flex h-full items-center justify-center text-7xl">{cat.emoji}</div>
             )}
             <span className="absolute right-2 bottom-2 rounded bg-black/40 px-1.5 py-0.5 text-[10px] text-white/90">
               {f.source === "tourapi" ? t("사진 한국관광공사") : t("사진 서울시 문화행사 정보")}
@@ -57,6 +58,9 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
           </div>
           <div className="mt-4 flex items-start justify-between gap-3">
             <div>
+              <Link href={`/events?type=${cat.id}`} className="text-xs font-semibold text-indigo-600">
+                {cat.emoji} {t(cat.label)}
+              </Link>
               <h1 className="text-2xl font-bold md:text-3xl">{tr(f.title)}</h1>
               {lang !== "ko" && (
                 <p className="mt-1 text-xs text-gray-400">

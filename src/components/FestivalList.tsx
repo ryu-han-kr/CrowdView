@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "@/i18n/link";
-import { useState } from "react";
-import { isLongRunning, type Festival, type FestivalCrowd } from "@/lib/festivals";
+import { useEffect, useState } from "react";
+import { FESTIVAL_CATEGORIES, isLongRunning, type Festival, type FestivalCategory, type FestivalCrowd } from "@/lib/festivals";
 import { useI18n } from "@/i18n/client";
 import { fmtPeople, trRegion } from "@/i18n/patterns";
 import { compactNumber } from "@/lib/format";
@@ -12,7 +12,9 @@ import { LevelBadge } from "./Level";
 
 const fmt = (d: string) => d.slice(5).replace("-", "/");
 
-/** 축제 목록 (지역 필터 + 진행 중 / 다가오는 축제) */
+const EMOJI = Object.fromEntries(FESTIVAL_CATEGORIES.map((c) => [c.id, c.emoji])) as Record<FestivalCategory, string>;
+
+/** 축제 목록 (지역·종류 필터 + 진행 중 / 다가오는 축제) */
 export function FestivalList({
   festivals,
   crowds,
@@ -37,8 +39,16 @@ export function FestivalList({
   const tr = (ko: string) => names[ko] ?? ko;
   const reg = (ko: string) => names[ko] ?? trRegion(ko, t);
   const [region, setRegion] = useState("전체");
+  const [category, setCategory] = useState<FestivalCategory | "all">("all");
+  // 축제 상세의 종류 링크(?type=food)로 들어오면 그 종류를 고른 채로 연다 (ISR 페이지라 클라이언트에서 읽는다)
+  useEffect(() => {
+    const type = new URLSearchParams(location.search).get("type");
+    if (FESTIVAL_CATEGORIES.some((c) => c.id === type)) setCategory(type as FestivalCategory);
+  }, []);
   const sidos = ["전체", ...new Set(festivals.map((f) => f.region.split(" ")[0]))];
-  const list = festivals.filter((f) => region === "전체" || f.region.startsWith(region));
+  const inRegion = festivals.filter((f) => region === "전체" || f.region.startsWith(region));
+  const list = inRegion.filter((f) => category === "all" || f.category === category);
+  const cats = FESTIVAL_CATEGORIES.filter((c) => inRegion.some((f) => f.category === c.id));
   const ongoing = list.filter((f) => f.start <= today && !isLongRunning(f));
   const upcoming = list.filter((f) => f.start > today && !isLongRunning(f));
   const longRunning = list.filter(isLongRunning);
@@ -57,6 +67,23 @@ export function FestivalList({
             {s === "전체" ? t("전체") : t(s)}
             <span className="ml-1 text-xs opacity-60">
               {s === "전체" ? festivals.length : festivals.filter((f) => f.region.startsWith(s)).length}
+            </span>
+          </button>
+        ))}
+      </div>
+      <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
+        {[{ id: "all" as const, label: "전체 종류", emoji: "" }, ...cats].map((c) => (
+          <button
+            key={c.id}
+            onClick={() => setCategory(c.id)}
+            className={`shrink-0 rounded-full border px-3 py-1 text-[13px] font-medium ${
+              c.id === category ? "border-indigo-500 bg-indigo-50 text-indigo-700" : "border-gray-200 text-gray-600"
+            }`}
+          >
+            {c.emoji && <span className="mr-1">{c.emoji}</span>}
+            {t(c.label)}
+            <span className="ml-1 text-xs opacity-60">
+              {c.id === "all" ? inRegion.length : inRegion.filter((f) => f.category === c.id).length}
             </span>
           </button>
         ))}
@@ -87,7 +114,7 @@ export function FestivalList({
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={f.image} alt="" loading="lazy" className="h-full w-full object-cover" />
                           ) : (
-                            <div className="flex h-full items-center justify-center text-3xl">🎪</div>
+                            <div className="flex h-full items-center justify-center text-3xl">{EMOJI[f.category]}</div>
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
@@ -153,7 +180,7 @@ export function FestivalList({
           </ul>
         </details>
       )}
-      {list.length === 0 && <p className="mt-8 text-center text-sm text-gray-500">{t("이 지역에는 예정된 축제가 없어요.")}</p>}
+      {list.length === 0 && <p className="mt-8 text-center text-sm text-gray-500">{category === "all" ? t("이 지역에는 예정된 축제가 없어요.") : t("이 종류의 축제가 없어요.")}</p>}
     </>
   );
 }
