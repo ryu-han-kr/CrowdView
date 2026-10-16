@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "@/i18n/link";
 import { LevelBadge } from "@/components/Level";
+import { FaqBlock } from "@/components/FaqBlock";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { pageMeta } from "@/lib/seo";
@@ -148,6 +149,37 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
           </section>
         )}
       </div>
+      {live && (
+        <FaqBlock
+          className="mt-8"
+          title={t("자주 묻는 질문")}
+          items={[
+            {
+              q: t("지금 {name}에 사람이 얼마나 있나요?", { name }),
+              a: t("{time} 기준 {name} 일대에는 약 {range}이 있어요. 서울시 혼잡 단계는 '{level}'이에요.", {
+                time: live.time.slice(11),
+                name,
+                range: people(live.min, live.max),
+                level: t(live.level),
+              }),
+            },
+            ...(live.forecast.length
+              ? [
+                  {
+                    q: t("{name} 오늘 언제 가장 한산한가요?", { name }),
+                    a: (() => {
+                      const calm = [...live.forecast].sort((a, b) => a.min - b.min)[0];
+                      return t("앞으로 12시간 중에는 {hour}쯤이 가장 한산할 것으로 예상돼요 (약 {range}).", {
+                        hour: calm.time.slice(11, 16),
+                        range: people(calm.min, calm.max),
+                      });
+                    })(),
+                  },
+                ]
+              : []),
+          ]}
+        />
+      )}
       <p className="mt-8 text-center text-[11px] text-gray-400">{t("서울시 실시간 도시데이터 (통신사 기지국 기반 추정 인구)")}</p>
     </main>
   );

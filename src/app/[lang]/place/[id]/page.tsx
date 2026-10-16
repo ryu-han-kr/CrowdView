@@ -25,6 +25,7 @@ import { JudgementCard } from "@/components/JudgementCard";
 import { VisitorProfile } from "@/components/VisitorProfile";
 import { WeatherCard } from "@/components/WeatherCard";
 import { InlineAd } from "@/components/AdUnit";
+import { FaqBlock } from "@/components/FaqBlock";
 import { AlertButtons } from "@/components/AlertButtons";
 import { pushEnabled } from "@/lib/alerts";
 import { authEnabled } from "@/lib/auth";
@@ -381,6 +382,42 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               <p className="mt-2 text-[11px] text-gray-400">{t("한국관광공사 관광지별 연관 관광지 (티맵 이동 데이터)")}</p>
             </section>
           )}
+
+          {/* 생성형 AI 검색이 인용하기 좋은 질문-답 (실시간 수치 + 기준 시각) */}
+          <FaqBlock
+            className="mt-8"
+            title={t("자주 묻는 질문")}
+            items={[
+              {
+                q: t("{name} 지금 붐비나요?", { name: t(place.name) }),
+                a: isOpen
+                  ? t("{time} 기준 {name}의 혼잡도는 '{level}'이에요. {detail}", {
+                      time: formatClock(kst().hour),
+                      name: t(place.name),
+                      level: t(level.label),
+                      detail: headcountInfo(crowd, { t, lang })?.text ?? t(level.desc),
+                    })
+                  : t("{name}은 지금 운영 시간이 아니에요. 운영 시간은 {from}~{to}예요.", {
+                      name: t(place.name),
+                      from: formatClock(place.hours[0]),
+                      to: formatClock(place.hours[1]),
+                    }),
+              },
+              {
+                q: t("{name} 언제 가면 한산한가요?", { name: t(place.name) }),
+                a: best
+                  ? t("오늘은 {hour}가 가장 한산할 것으로 예상돼요 (예상 '{level}').", {
+                      hour: formatHour(best.hour, lang),
+                      level: t(levelOf(best.score).label),
+                    })
+                  : t("오늘 남은 운영 시간 중에는 지금이 가장 한산한 편이에요."),
+              },
+              {
+                q: t("이 혼잡도 정보는 어디서 나오나요?"),
+                a: t("{source}를 바탕으로 CrowdView가 10분마다 갱신해요. 실제 현장과 다를 수 있어요.", { source: t(SOURCE_LABEL[crowd.source]) }),
+              },
+            ]}
+          />
 
           {/* 정보 */}
           <section className="mt-8 mb-8 space-y-3 text-sm">

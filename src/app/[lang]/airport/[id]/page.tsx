@@ -7,6 +7,7 @@ import { AirportPaxChart } from "@/components/AirportPaxChart";
 import { DataTag } from "@/components/DataTag";
 import { JudgementCard } from "@/components/JudgementCard";
 import { InlineAd } from "@/components/AdUnit";
+import { FaqBlock } from "@/components/FaqBlock";
 import { WeatherCard } from "@/components/WeatherCard";
 import { getSignals } from "@/lib/crowd/signals";
 import { HistoryChart } from "@/components/HistoryChart";
@@ -362,6 +363,32 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
 
           <JudgementCard place={place} crowd={crowd} signals={signals} lang={lang} />
           <InlineAd className="mt-6" />
+          {zones.length > 0 && avgWait !== null && (
+            <FaqBlock
+              className="mt-8"
+              title={t("자주 묻는 질문")}
+              items={[
+                {
+                  q: t("{name} 출국장 지금 얼마나 기다리나요?", { name: t(place.name) }),
+                  a: (() => {
+                    const fast = [...zones].filter((z) => z.waitMin !== undefined).sort((a, b) => a.waitMin! - b.waitMin!)[0];
+                    return t("{time} 기준 평균 대기 {avg}이에요. 가장 짧은 곳은 {zone}({min})이에요.", {
+                      time: `${String(now.hour | 0).padStart(2, "0")}:${String(Math.round((now.hour % 1) * 60)).padStart(2, "0")}`,
+                      avg: fmtMinutes(avgWait, t),
+                      zone: trZone(fast.label, t),
+                      min: fmtMinutes(fast.waitMin!, t),
+                    });
+                  })(),
+                },
+                {
+                  q: t("{name} 몇 시간 전에 가야 하나요?", { name: t(place.name) }),
+                  a: t("지금 평균 대기가 {avg}라서, 국제선은 출발 2시간 30분~3시간 전 도착을 권해요. 붐비는 시간대는 시간대 탭에서 확인하세요.", {
+                    avg: fmtMinutes(avgWait, t),
+                  }),
+                },
+              ]}
+            />
+          )}
         </div>
       </div>
     </main>
