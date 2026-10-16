@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CrowdView 요청 기록</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* 인쇄(A4 PDF)용 문서. 장마다 새 페이지, 개념 설명 → 이번 작업 → 할 일 → SA 관점 → 용어집 순 */
+:root {
+  --ink: #18212b;
+  --muted: #5d6b78;
+  --line: #dfe5ea;
+  --soft: #f4f7f9;
+  --accent: #1f5fbf;
+  --accent-soft: #e8f0fc;
+  --warn: #a35a00;
+  --warn-soft: #fff4e2;
+  --good: #1d7a46;
+  --good-soft: #e6f5ec;
+  --font: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  --mono: "JetBrains Mono", Consolas, monospace;
+}
+@page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; background: #fff; color: var(--ink); font-family: var(--font); font-size: 10.5pt; line-height: 1.72; word-break: keep-all; }
+main { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+h1, h2, h3 { line-height: 1.35; margin: 0; }
+h2 { font-size: 17pt; font-weight: 800; margin: 0 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--ink); }
+h2 .no { color: var(--accent); margin-right: 8px; }
+h3 { font-size: 12.5pt; font-weight: 700; margin: 22px 0 6px; }
+p { margin: 6px 0 10px; }
+section.chapter { break-before: page; }
+.cover { min-height: 245mm; display: flex; flex-direction: column; justify-content: space-between; padding-top: 40mm; }
+.cover .kicker { color: var(--accent); font-weight: 700; letter-spacing: .08em; font-size: 10pt; }
+.cover h1 { font-size: 30pt; font-weight: 800; margin-top: 10px; }
+.cover .sub { font-size: 13pt; color: var(--muted); margin-top: 10px; }
+.cover .meta { border-top: 1px solid var(--line); padding-top: 12px; color: var(--muted); font-size: 9.5pt; }
+.toc { margin-top: 28px; padding: 0; list-style: none; counter-reset: toc; }
+.toc li { padding: 6px 0; border-bottom: 1px dashed var(--line); font-size: 11pt; }
+.toc li b { color: var(--accent); display: inline-block; width: 28px; }
+table { width: 100%; border-collapse: collapse; margin: 10px 0 14px; font-size: 9.5pt; break-inside: avoid; }
+th, td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: left; vertical-align: top; }
+th { background: var(--soft); font-weight: 700; color: var(--muted); font-size: 9pt; }
+code, .mono { font-family: var(--mono); font-size: 8.8pt; background: var(--soft); padding: 1px 5px; border-radius: 4px; }
+pre { font-family: var(--mono); font-size: 8.6pt; background: #10161d; color: #e4ecf3; padding: 12px 14px; border-radius: 8px; white-space: pre-wrap; line-height: 1.55; break-inside: avoid; }
+.box { border-radius: 10px; padding: 12px 16px; margin: 12px 0; break-inside: avoid; }
+.box > b:first-child { display: block; margin-bottom: 2px; }
+.tip { background: var(--accent-soft); }
+.warn { background: var(--warn-soft); }
+.warn > b:first-child { color: var(--warn); }
+.good { background: var(--good-soft); }
+.good > b:first-child { color: var(--good); }
+.analogy { border-left: 4px solid var(--accent); background: var(--soft); padding: 10px 14px; margin: 10px 0; border-radius: 0 8px 8px 0; break-inside: avoid; }
+.analogy::before { content: "비유로 이해하기"; display: block; font-size: 8.5pt; font-weight: 700; color: var(--accent); margin-bottom: 2px; }
+.step { display: grid; grid-template-columns: 22px 1fr; gap: 10px; margin: 10px 0; break-inside: avoid; }
+.step .n { width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 9pt; font-weight: 700; display: grid; place-items: center; margin-top: 3px; }
+.who { display: inline-block; font-size: 8pt; font-weight: 700; padding: 0 7px; border-radius: 99px; margin-right: 6px; vertical-align: 1px; }
+.me { background: #ffe9d6; color: #94420b; }
+.cl { background: #e3ecff; color: #1d4aa8; }
+.done { background: var(--good-soft); color: var(--good); }
+.why { color: var(--muted); font-size: 9.5pt; margin: 2px 0 0; }
+.why::before { content: "왜? "; font-weight: 700; color: var(--accent); }
+figure { margin: 14px 0; break-inside: avoid; }
+figcaption { font-size: 9pt; color: var(--muted); text-align: center; margin-top: 4px; }
+svg text { font-family: var(--font); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.card { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; break-inside: avoid; }
+.card h4 { margin: 0 0 4px; font-size: 10.5pt; }
+.small { font-size: 9pt; color: var(--muted); }
+dl.gloss { display: grid; grid-template-columns: 150px 1fr; gap: 6px 14px; font-size: 9.8pt; }
+dl.gloss dt { font-weight: 700; }
+dl.gloss dd { margin: 0; color: #2c3946; }
+@media screen { body { background: #e9edf0; } main { background: #fff; padding: 32px 40px; margin: 24px auto; box-shadow: 0 2px 12px rgba(0,0,0,.08); } }
+@media screen and (max-width: 640px) { main { padding: 20px 16px; margin: 0; } .two { grid-template-columns: 1fr; } dl.gloss { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main>
+<section class="cover" style="min-height:auto;padding-top:20mm">
+  <div>
+    <p class="kicker">CROWDVIEW · 작업 기록</p>
+    <h1>지금까지 요청한 목록과 결과</h1>
+    <p class="sub">2026-10-07 ~ 2026-10-16 · 요청 → 처리 결과 · PR 번호 · 남은 일</p>
+  </div>
+  <p class="meta">상태 표시: <span class="who done">완료</span> 끝난 일 · <span class="who me">사용자</span> 직접 해야 하는 일 · <span class="who cl">대기</span> 조건이 갖춰지면 진행. 붙여넣었던 키 값은 이 문서에 적지 않았습니다.</p>
+</section>
+
+<h2 style="margin-top:20px"><span class="no">10/7~8</span>시작: 서비스 설계와 첫 배포</h2>
+<table><thead><tr><th style="width:44%">요청</th><th>결과</th></tr></thead><tbody>
+<tr><td>CrowdView 서비스 명세로 MVP 만들기</td><td><span class="who done">완료</span>Next.js 모바일 앱, 혼잡도 5단계, Redis 캐시</td></tr>
+<tr><td>카카오맵·네이버 지도 둘 다? 비용 때문에 네이버만</td><td><span class="who done">완료</span>네이버 지도만 사용, 사용자 수별 비용 시뮬레이션 문서</td></tr>
+<tr><td>Vercel 비용, 플러그인 설치, 임시 URL 발급</td><td><span class="who done">완료</span>GitHub 연결, 미리보기 배포</td></tr>
+<tr><td>네이버 지도 키 넣기, 모든 요금을 매일 받기 (디스코드·메일)</td><td><span class="who done">완료</span>매일 비용 리포트 (디스코드 + 이메일)</td></tr>
+</tbody></table>
+
+<h2><span class="no">10/11~12</span>정산 리포트 · 호스팅 결정 · 운영 설정</h2>
+<table><thead><tr><th style="width:44%">요청</th><th>결과</th></tr></thead><tbody>
+<tr><td>이전 대화 정리 + 할 일 목록</td><td><span class="who done">완료</span></td></tr>
+<tr><td>NCP 시크릿 키 넣음 → 정산 리포트, 콘솔 서비스 URL 재등록 여부</td><td><span class="who done">완료</span>NCP 사용량·청구 API 연동</td></tr>
+<tr><td>리포트를 날짜·시간 적힌 PDF로 매일 받기</td><td><span class="who done">완료</span>A4 PDF 첨부 (나눔고딕)</td></tr>
+<tr><td>서울시 키 등록, Vercel vs Cloudflare 결정</td><td><span class="who done">완료</span>앱은 Vercel, Cloudflare는 도메인·DNS만</td></tr>
+<tr><td>docs/SETUP.md 저장 + CDN 캐시 + 처음 하는 사람용 설명 PDF, SA 목표라 나중엔 직접 클라우드</td><td><span class="who done">완료</span>PR #4, setup-guide.pdf</td></tr>
+<tr><td>PR 머지, 내가 할 일 정리 / 사업자 등록 중이라 결제는 나중</td><td><span class="who done">완료</span> · 결제 <span class="who cl">대기</span></td></tr>
+</tbody></table>
+
+<h2><span class="no">10/13</span>실데이터 API 연결 · 예측 모델 · 공항</h2>
+<table><thead><tr><th style="width:44%">요청</th><th>결과</th></tr></thead><tbody>
+<tr><td>공공데이터포털에서 신청할 API 구체적으로</td><td><span class="who done">완료</span>신청 목록 안내</td></tr>
+<tr><td>서울시 키 등록, 공항 넣기</td><td><span class="who done">완료</span>PR #6·#7 인천 T1·T2 실데이터</td></tr>
+<tr><td>기상청·천문연구원 신청 방법</td><td><span class="who done">완료</span>안내 후 연결</td></tr>
+<tr><td>레이아웃보다 예측 모델 먼저 + 공항 탭(출국장·시간대 기록·주차)</td><td><span class="who done">완료</span>PR #8 날씨·공휴일·집중률 반영 모델, 공항 탭</td></tr>
+<tr><td>Upstash Redis 요금제 / crowdview vs crowd-view</td><td><span class="who done">완료</span>Free 선택, PR #9</td></tr>
+<tr><td>QStash 토큰·서명 키 넣음 → 10분 예약</td><td><span class="who done">완료</span>10분마다 수집기 호출</td></tr>
+</tbody></table>
+
+<h2><span class="no">10/14</span>레이아웃 · 사진 · 부산 데이터</h2>
+<table><thead><tr><th style="width:44%">요청</th><th>결과</th></tr></thead><tbody>
+<tr><td>UX/UI는 간편하고 예쁘게, 복잡한 구조 반대</td><td><span class="who done">완료</span>PR #11·#12 검색 + 4개 탭</td></tr>
+<tr><td>지도 URL 체크, 시각 디자인 정리</td><td><span class="who done">완료</span>PR #10·#12</td></tr>
+<tr><td>실제 사진(배너·썸네일), 덤프 데이터 끝자리 0 문제, 추정치 표시</td><td><span class="who done">완료</span>PR #13·#14 관광공사·위키미디어 사진, (추정)/(임의) 표시</td></tr>
+<tr><td>추천 순서대로 진행</td><td><span class="who done">완료</span>PR #15 운영시간·행사·에버랜드 대기시간</td></tr>
+<tr><td>해운대 부산시 데이터 조사</td><td><span class="who done">완료</span>부산 생활인구로 연결</td></tr>
+</tbody></table>
+
+<h2><span class="no">10/15</span>생활인구 · 주차 · 도메인 · 웹 레이아웃 · 축제 · 다국어</h2>
+<table><thead><tr><th style="width:44%">요청</th><th>결과</th></tr></thead><tbody>
+<tr><td>부산 생활인구(성별·시간·연령) 붙이기, 10/30분 Redis 수집 구조</td><td><span class="who done">완료</span>PR #16</td></tr>
+<tr><td>인천공항 주차면·주차정보·요금 기준, 공항 파트 탭, 날씨 판단 근거</td><td><span class="who done">완료</span>PR #17 (중기예보·에어코리아 포함)</td></tr>
+<tr><td>포트원용 정확한 URL → crowdview.app 구입·연결·HTTPS</td><td><span class="who done">완료</span>PR #18 · Vercel Pro <span class="who me">사용자</span> 미전환</td></tr>
+<tr><td>NCP 지도 URL 등록 확인 (도메인 등록 누락 후 재등록)</td><td><span class="who done">완료</span>지도 인증 통과</td></tr>
+<tr><td>너무 모바일 같음 → 웹사이트 형태 (모바일은 앱용으로 유지)</td><td><span class="who done">완료</span>PR #19</td></tr>
+<tr><td>웹 수정 10가지 (배경, 카드 호버, 크기 고정, 반응형, 그래프 선택·증감, 장소별 기준 등)</td><td><span class="who done">완료</span>PR #20</td></tr>
+<tr><td>마이페이지 키워드 박스·초기화·전체 선택, 카드 분리, 지도 색 막대, 양쪽 광고 칸, 주차 바로가기</td><td><span class="who done">완료</span>PR #21</td></tr>
+<tr><td>축제 실제 데이터 (어떻게 가져오는지)</td><td><span class="who done">완료</span>PR #22·#23 관광공사·서울시 일정 + 작년 방문객 예측</td></tr>
+<tr><td>서울 축제를 실시간 인구 지역으로 연결</td><td><span class="who done">완료</span>PR #24</td></tr>
+<tr><td>세계 각국 언어 선택 (직접 번역: 영·일·중 간체·번체)</td><td><span class="who done">완료</span>PR #25</td></tr>
+<tr><td>축제 이름·지역명도 번역 → Papago 켜는 법</td><td><span class="who done">완료</span>PR #26, Papago 별도 Application 생성 안내</td></tr>
+</tbody></table>
+
+<h2><span class="no">10/16</span>키 확인 · API 요금·한도 정리</h2>
+<table><thead><tr><th style="width:44%">요청</th><th>결과</th></tr></thead><tbody>
+<tr><td>Papago 키 .env.local 확인</td><td><span class="who done">완료</span>4개 언어 번역 정상, Vercel 등록, 운영 사이트 축제 이름 번역 확인</td></tr>
+<tr><td>지금까지 API + 앞으로 넣을 것 요금표 다시</td><td><span class="who done">완료</span>docs/api-costs.pdf</td></tr>
+<tr><td>공공데이터 한도 관리, Redis 10/30분 수집 체크</td><td><span class="who done">완료</span>PR #27 Redis 캐시 이전, 호출 수 집계, 90% 자동 정지, 리포트 2쪽</td></tr>
+<tr><td>작업 요약 프롬프트 + 요청 목록 PDF (새 채팅용)</td><td><span class="who done">완료</span>docs/HANDOFF.md, 이 문서</td></tr>
+</tbody></table>
+
+<section class="chapter">
+<h2><span class="no">남은 일</span>다음 채팅에서 이어갈 것</h2>
+<div class="step"><div class="n">1</div><div><span class="who me">사용자</span>NCP Papago 사용 한도·알람 설정, 1주 뒤 Upstash 사용량 확인</div></div>
+<div class="step"><div class="n">2</div><div><span class="who me">사용자</span>Vercel Pro 전환 + Spend Management → <span class="who cl">대기</span>Cron 10분 이전, QStash 해지</div></div>
+<div class="step"><div class="n">3</div><div><span class="who me">사용자</span>공공데이터 운영계정 전환, 서울시 활용사례 등록 (출시 전)</div></div>
+<div class="step"><div class="n">4</div><div><span class="who cl">대기</span>사업자 정보 → 약관·개인정보·환불·요금 페이지 → 포트원 + 토스페이먼츠 결제</div></div>
+<div class="step"><div class="n">5</div><div><span class="who cl">대기</span>Google Play 승인 → 앱 출시</div></div>
+<div class="step"><div class="n">6</div><div><span class="who me">사용자</span>해양수산부 해수욕장 혼잡도 문의 발송 · (선택) Resend 도메인 인증 · 에어코리아 경보 API</div></div>
+<div class="box tip"><b>새 채팅 시작할 때</b>docs/HANDOFF.md 의 내용을 첫 메시지로 붙여넣으면 지금 상태와 규칙을 그대로 이어받습니다.</div>
+</section>
+</main>
+</body>
+</html>
