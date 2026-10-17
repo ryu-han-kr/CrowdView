@@ -1,4 +1,4 @@
-// 소셜 로그인 (Better Auth): 카카오·구글. 비밀번호는 받지 않는다.
+// 소셜 로그인 (Better Auth): 카카오·네이버·구글. 비밀번호는 받지 않는다.
 // 회원·세션은 우리 Postgres(lib/db.ts)에 저장 → 외부 인증 서비스에 묶이지 않고 직접 운영 클라우드로 옮길 수 있다.
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
@@ -23,6 +23,12 @@ const providers = {
       }),
     },
   }),
+  ...(process.env.NAVER_CLIENT_ID && {
+    naver: {
+      clientId: process.env.NAVER_CLIENT_ID,
+      clientSecret: process.env.NAVER_CLIENT_SECRET ?? "",
+    },
+  }),
   ...(process.env.GOOGLE_CLIENT_ID && {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -38,7 +44,7 @@ export const auth = betterAuth({
   // DB가 없으면 메모리 대신 꺼 둔다 (authEnabled=false, 라우트가 404)
   database: pool ?? undefined,
   socialProviders: providers,
-  account: { accountLinking: { enabled: true, trustedProviders: ["kakao", "google"] } },
+  account: { accountLinking: { enabled: true, trustedProviders: ["kakao", "naver", "google"] } },
   // 마이페이지 '회원 탈퇴' (찜·알림·구독은 DB에서 함께 지워지고, 결제 기록은 법정 보관을 위해 user_id만 비운다)
   user: {
     deleteUser: {
@@ -67,4 +73,4 @@ export async function currentUser(reqHeaders?: Headers) {
 }
 
 /** 켜져 있는 로그인 수단 (버튼 표시용) */
-export const enabledProviders = Object.keys(providers) as ("kakao" | "google")[];
+export const enabledProviders = Object.keys(providers) as ("kakao" | "naver" | "google")[];

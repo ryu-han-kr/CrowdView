@@ -1,4 +1,5 @@
 import { MePanel } from "@/components/MePanel";
+import { MyPicks, MySettings, SavedPlans } from "@/components/MeSections";
 import { AccountCard } from "@/components/AccountCard";
 import { PlusPanel } from "@/components/PlusPanel";
 import { AlertsList } from "@/components/AlertsList";
@@ -18,8 +19,6 @@ import { PLUS } from "@/lib/business";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 export const revalidate = 60;
-
-
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const lang = (await params).lang;
@@ -41,19 +40,24 @@ export default async function MePage({ params }: { params: Promise<{ lang: strin
         <AccountCard enabled={authEnabled} plusSlot={<PlusPanel />} />
       </div>
 
-      <div className="mt-6">
-        <AlertsList enabled={authEnabled && pushEnabled} />
-      </div>
-
-      <div className="mt-6">
+      {/* 내 여행: 저장한 코스 → 담은 곳 → 즐겨찾기·키워드 → 알림 → 설정 */}
+      <div className="mt-8 space-y-8">
+        <SavedPlans />
+        <MyPicks />
         <MePanel places={PLACES} crowd={crowd} />
+        <div id="alerts" className="scroll-mt-24">
+          <AlertsList enabled={authEnabled && pushEnabled} />
+        </div>
+        <MySettings />
       </div>
 
       <Link href="/pricing" className="mt-10 mb-6 block rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-600 p-5 text-white">
         <p className="text-xs font-semibold opacity-80">{PLUS.name}</p>
         <p className="mt-1 text-lg font-bold">{t("광고 제거 · 혼잡 알림")}</p>
         <p className="mt-2 text-2xl font-extrabold">{t("월 {n}원", { n: PLUS.priceKrw.toLocaleString() })}</p>
-        <p className="mt-1 text-[11px] opacity-80">{t("혼잡도와 예측은 계속 무료예요")} · {t("요금 안내")} ›</p>
+        <p className="mt-1 text-[11px] opacity-80">
+          {t("혼잡도와 예측은 계속 무료예요")} · {t("요금 안내")} ›
+        </p>
       </Link>
 
       <p className="mb-6 text-center text-[11px] leading-relaxed text-gray-400">

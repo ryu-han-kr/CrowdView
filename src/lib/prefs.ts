@@ -59,3 +59,31 @@ export function usePicks() {
   const toggle = (p: Pick) => save(has(p.id) ? picks.filter((x) => x.id !== p.id) : [...picks, p]);
   return { picks, has, toggle, remove: (id: string) => save(picks.filter((x) => x.id !== id)), clear: () => save([]), replace: save };
 }
+
+/** 내 여행 계획: 추천 코스에서 저장한 코스 (공유 링크 /r/{id}는 30일 보관) */
+export interface SavedPlan {
+  /** 공유 id */
+  id: string;
+  /** 출발지 이름 */
+  start: string;
+  /** 출발 날짜 (YYYY-MM-DD, 한국 시각) */
+  day: string;
+  /** 들르는 곳 이름 (식사 제외) */
+  stops: string[];
+  savedAt: string;
+}
+
+export function usePlans() {
+  const [raw, set] = useStoredList("cv:plans");
+  const plans = raw as unknown as SavedPlan[];
+  const save = (next: SavedPlan[]) => set(next as unknown as string[]);
+  const has = (id: string) => plans.some((p) => p.id === id);
+  return {
+    plans,
+    has,
+    // 최근 것이 위로, 최대 30개
+    add: (p: SavedPlan) => save([p, ...plans.filter((x) => x.id !== p.id)].slice(0, 30)),
+    remove: (id: string) => save(plans.filter((x) => x.id !== id)),
+    replace: save,
+  };
+}

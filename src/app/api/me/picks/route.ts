@@ -14,7 +14,7 @@ function hrefOf(id: string): string | undefined {
   const place = PLACES.find((p) => p.id === id);
   if (place) return placeHref(place);
   if (id.startsWith("seoul-")) return SEOUL_AREAS.some((a) => a.code === id.slice(6)) ? `/seoul/${id.slice(6)}` : undefined;
-  if (id.startsWith("vs-")) return getGuidePlace(id) ? `/guide/${id}` : undefined;
+  if (id.startsWith("vs-") || id.startsWith("kt-")) return getGuidePlace(id) ? `/guide/${id}` : undefined;
   return undefined;
 }
 

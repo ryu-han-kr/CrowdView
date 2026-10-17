@@ -49,7 +49,7 @@ export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<stri
         )}
       </section>
 
-      <section>
+      <section id="keywords" className="scroll-mt-24">
         <h2 className="text-lg font-bold">{t("관심 키워드")}</h2>
         <p className="mt-0.5 text-xs text-gray-500">{t("고른 키워드로 지금 한산한 곳을 추천해 드려요.")}</p>
 

@@ -4,13 +4,13 @@ import Link from "@/i18n/link";
 import { useI18n } from "@/i18n/client";
 import { signIn, signOut, useSession } from "@/lib/auth-client";
 
-/** 카카오·구글 로그인 버튼 (켜진 수단만) */
+/** 카카오·네이버·구글 로그인 버튼 (켜진 수단만) */
 export function SocialLoginButtons({
   providers,
   callbackURL = "/me",
   raw = false,
 }: {
-  providers: ("kakao" | "google")[];
+  providers: ("kakao" | "naver" | "google")[];
   callbackURL?: string;
   /** callbackURL에 이미 언어 접두사가 붙어 있으면 true */
   raw?: boolean;
@@ -29,6 +29,17 @@ export function SocialLoginButtons({
             <path d="M12 3C6.5 3 2 6.6 2 11c0 2.8 1.9 5.3 4.7 6.7l-1 3.6c-.1.3.3.6.6.4l4.2-2.8c.5.1 1 .1 1.5.1 5.5 0 10-3.6 10-8S17.5 3 12 3Z" />
           </svg>
           {t("카카오로 시작하기")}
+        </button>
+      )}
+      {providers.includes("naver") && (
+        <button
+          onClick={() => signIn.social({ provider: "naver", callbackURL: lp(callbackURL) })}
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#03C75A] py-3.5 text-sm font-bold text-white"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden>
+            <path d="M16.3 12.8 7.4 0H0v24h7.7V11.2L16.6 24H24V0h-7.7z" />
+          </svg>
+          {t("네이버로 시작하기")}
         </button>
       )}
       {providers.includes("google") && (
