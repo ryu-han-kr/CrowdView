@@ -5,7 +5,9 @@ import { useMemo, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { compactNumber } from "@/lib/format";
 import { currentPosition, distanceKm, type LatLng } from "@/lib/geo";
+import { LEVELS, levelOf } from "@/lib/levels";
 import { SEOUL_GROUPS, type SeoulGroup } from "@/lib/seoul-live";
+import { FilterLayout, PickStar } from "./FilterLayout";
 import { LevelBadge } from "./Level";
 
 export interface SeoulAreaRow {
@@ -19,10 +21,11 @@ export interface SeoulAreaRow {
   max?: number;
 }
 
-/** 서울 실시간 지역 목록: 묶음 칩 + 붐비는/한산한 순 + 이름 검색 */
+/** 서울 실시간 지역 목록: 이름 검색 + 묶음·혼잡 단계 거르기(PC는 왼쪽 패널) + 붐비는/한산한/내 주변 순 */
 export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; names?: Record<string, string> }) {
   const { t, lang } = useI18n();
-  const [group, setGroup] = useState<SeoulGroup | "all">("all");
+  const [groups, setGroups] = useState<string[]>([]);
+  const [levels, setLevels] = useState<string[]>([]);
   const [sort, setSort] = useState<"busy" | "calm" | "near">("busy");
   const [me, setMe] = useState<LatLng | null>(null);
   const [geoError, setGeoError] = useState<string | null>(null);
@@ -40,44 +43,45 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
     const needle = q.trim().toLowerCase();
     const tr = (ko: string) => names[ko] ?? ko;
     return rows
-      .filter((r) => group === "all" || r.group === group)
+      .filter((r) => !groups.length || groups.includes(r.group))
+      .filter((r) => !levels.length || (r.score !== undefined && levels.includes(String(levelOf(r.score).key))))
       .filter((r) => !needle || r.name.toLowerCase().includes(needle) || tr(r.name).toLowerCase().includes(needle))
       .sort((a, b) =>
         sort === "near" && me
           ? distanceKm(me, a) - distanceKm(me, b)
           : (sort === "busy" ? 1 : -1) * ((b.score ?? -1) - (a.score ?? -1)) || a.name.localeCompare(b.name),
       );
-  }, [rows, names, group, sort, q, me]);
+  }, [rows, names, groups, levels, sort, q, me]);
 
   return (
-    <>
-      <label className="mt-4 flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-2.5">
-        <svg viewBox="0 0 24 24" className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2}>
-          <path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z" />
-        </svg>
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder={t("지역 이름 검색 (예: 성수, 한강)")}
-          className="min-w-0 flex-1 bg-transparent text-sm outline-none"
-        />
-      </label>
-      <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
-        {[{ id: "all" as const, label: "전체", emoji: "" }, ...SEOUL_GROUPS].map((g) => (
-          <button
-            key={g.id}
-            onClick={() => setGroup(g.id)}
-            className={`shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium ${
-              g.id === group ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"
-            }`}
-          >
-            {g.emoji && <span className="mr-1">{g.emoji}</span>}
-            {t(g.label)}
-            <span className="ml-1 text-xs opacity-60">{g.id === "all" ? rows.length : rows.filter((r) => r.group === g.id).length}</span>
-          </button>
-        ))}
-      </div>
-      <div className="mt-4 flex items-center justify-between">
+    <FilterLayout
+      query={q}
+      onQuery={setQ}
+      placeholder={t("지역 이름 검색 (예: 성수, 한강)")}
+      resultCount={list.length}
+      groups={[
+        {
+          id: "group",
+          title: t("종류"),
+          options: SEOUL_GROUPS.map((g) => ({ id: g.id, label: t(g.label), emoji: g.emoji, count: rows.filter((r) => r.group === g.id).length })),
+          selected: groups,
+          onChange: setGroups,
+        },
+        {
+          id: "level",
+          title: t("지금 혼잡도"),
+          options: LEVELS.map((l) => ({
+            id: String(l.key),
+            label: t(l.label),
+            count: rows.filter((r) => r.score !== undefined && levelOf(r.score).key === l.key).length,
+          })),
+          selected: levels,
+          onChange: setLevels,
+          mobile: false,
+        },
+      ]}
+    >
+      <div className="mt-4 flex items-center justify-between md:mt-0">
         <p className="text-sm text-gray-500">{t("{n}곳", { n: list.length })}</p>
         <div className="flex rounded-full bg-gray-100 p-0.5 text-xs font-semibold">
           {(["busy", "calm", "near"] as const).map((s) => (
@@ -92,10 +96,10 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
         </div>
       </div>
       {geoError && <p className="mt-2 text-xs font-semibold text-red-600">{geoError}</p>}
-      <ul className="mt-3 grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+      <ul className="mt-3 grid gap-2 lg:grid-cols-2">
         {list.map((r) => (
-          <li key={r.code}>
-            <Link href={`/seoul/${r.code}`} className="flex items-center gap-3 rounded-2xl border border-gray-100 px-4 py-3">
+          <li key={r.code} className="flex items-center rounded-2xl border border-gray-100 pr-2">
+            <Link href={`/seoul/${r.code}`} className="flex min-w-0 flex-1 items-center gap-3 py-3 pl-4">
               <span className="text-xl">{SEOUL_GROUPS.find((g) => g.id === r.group)?.emoji}</span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-semibold">{names[r.name] ?? r.name}</span>
@@ -108,10 +112,11 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
               </span>
               {r.score !== undefined && <LevelBadge score={r.score} />}
             </Link>
+            <PickStar pick={{ id: `seoul-${r.code}`, label: names[r.name] ?? r.name, href: `/seoul/${r.code}` }} />
           </li>
         ))}
       </ul>
       {list.length === 0 && <p className="mt-8 text-center text-sm text-gray-500">{t("찾는 지역이 없어요.")}</p>}
-    </>
+    </FilterLayout>
   );
 }

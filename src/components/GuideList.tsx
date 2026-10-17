@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { currentPosition, distanceKm, type LatLng } from "@/lib/geo";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
+import { FilterLayout, PickStar } from "./FilterLayout";
 
 type Row = [id: string, kind: string, name: string, lat: number | null, lng: number | null, gu: string | null];
 interface Live {
@@ -20,13 +21,14 @@ const KINDS = [
 ];
 const LEVEL_COLOR: Record<string, string> = { 여유: "#10b981", 보통: "#eab308", "약간 붐빔": "#f97316", 붐빔: "#ef4444" };
 
-/** Visit Seoul 다국어 명소·맛집·쇼핑·자연 + 가까운 서울 실시간 지역의 지금 혼잡도 */
+/** Visit Seoul 다국어 명소·맛집·쇼핑·자연 + 가까운 서울 실시간 지역의 지금 혼잡도. 검색 + 종류·구·혼잡 거르기(PC는 왼쪽 패널) */
 export function GuideList() {
   const { t, lang } = useI18n();
   const [rows, setRows] = useState<Row[] | null>(null);
   const [live, setLive] = useState<Record<string, string>>({});
-  const [kind, setKind] = useState("attraction");
-  const [gu, setGu] = useState("");
+  const [kinds, setKinds] = useState<string[]>(["attraction"]);
+  const [gus, setGus] = useState<string[]>([]);
+  const [levels, setLevels] = useState<string[]>([]);
   const [q, setQ] = useState("");
   const [me, setMe] = useState<LatLng | null>(null);
 
@@ -54,62 +56,74 @@ export function GuideList() {
     return m;
   }, [rows]);
 
-  const gus = useMemo(() => [...new Set((rows ?? []).filter((r) => r[1] === kind && r[5]).map((r) => r[5]!))].sort(), [rows, kind]);
+  const ofKind = useMemo(() => (rows ?? []).filter((r) => !kinds.length || kinds.includes(r[1])), [rows, kinds]);
+  const guOptions = useMemo(() => [...new Set(ofKind.filter((r) => r[5]).map((r) => r[5]!))].sort(), [ofKind]);
+  const levelOf = (r: Row) => {
+    const area = areaOf.get(r[0]);
+    return area ? live[area] : undefined;
+  };
   const list = useMemo(() => {
     const needle = q.trim().toLowerCase();
-    const out = (rows ?? []).filter((r) => r[1] === kind && (!gu || r[5] === gu) && (!needle || r[2].toLowerCase().includes(needle)));
+    const out = ofKind.filter(
+      (r) =>
+        (!gus.length || (r[5] && gus.includes(r[5]))) &&
+        (!levels.length || levels.includes(live[areaOf.get(r[0]) ?? ""] ?? "")) &&
+        (!needle || r[2].toLowerCase().includes(needle)),
+    );
     if (me) return out.filter((r) => r[3] !== null).sort((a, b) => distanceKm(me, { lat: a[3]!, lng: a[4]! }) - distanceKm(me, { lat: b[3]!, lng: b[4]! }));
     return out;
-  }, [rows, kind, gu, q, me]);
-
-  const chip = (on: boolean) => `shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium ${on ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`;
+  }, [ofKind, gus, levels, live, areaOf, q, me]);
 
   return (
-    <div>
-      <div className="no-scrollbar flex gap-2 overflow-x-auto">
-        {KINDS.map((k) => (
-          <button key={k.id} onClick={() => (setKind(k.id), setGu(""))} className={chip(kind === k.id)}>
-            {k.emoji} {t(k.label)}
-          </button>
-        ))}
-      </div>
-      <div className="mt-3 flex gap-2">
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder={t("이름으로 찾기")}
-          className="min-w-0 flex-1 rounded-2xl bg-gray-100 px-4 py-2.5 text-sm outline-none"
-        />
+    <FilterLayout
+      query={q}
+      onQuery={setQ}
+      placeholder={t("이름으로 찾기")}
+      resultCount={list.length}
+      extra={
         <button
           onClick={async () => setMe(me ? null : await currentPosition().catch(() => null))}
-          className={`shrink-0 rounded-2xl px-3 text-sm font-semibold ${me ? "bg-indigo-600 text-white" : "bg-indigo-50 text-indigo-700"}`}
+          className={`shrink-0 rounded-2xl px-3 py-2.5 md:w-full text-sm font-semibold ${me ? "bg-indigo-600 text-white" : "bg-indigo-50 text-indigo-700"}`}
         >
           📍 {t("내 주변")}
         </button>
-      </div>
-      <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
-        <button onClick={() => setGu("")} className={chip(!gu)}>
-          {t("전체")}
-        </button>
-        {gus.map((g) => (
-          <button key={g} onClick={() => setGu(g)} className={chip(gu === g)}>
-            {t(g)}
-          </button>
-        ))}
-      </div>
-
+      }
+      groups={[
+        {
+          id: "kind",
+          title: t("종류"),
+          options: KINDS.map((k) => ({ id: k.id, label: t(k.label), emoji: k.emoji, count: (rows ?? []).filter((r) => r[1] === k.id).length })),
+          selected: kinds,
+          onChange: (next) => (setKinds(next), setGus([])),
+        },
+        {
+          id: "gu",
+          title: t("지역(구)"),
+          options: guOptions.map((g) => ({ id: g, label: t(g), count: ofKind.filter((r) => r[5] === g).length })),
+          selected: gus,
+          onChange: setGus,
+        },
+        {
+          id: "level",
+          title: t("그 동네 지금 혼잡도"),
+          options: Object.keys(LEVEL_COLOR).map((l) => ({ id: l, label: t(l), count: ofKind.filter((r) => levelOf(r) === l).length })),
+          selected: levels,
+          onChange: setLevels,
+          mobile: false,
+        },
+      ]}
+    >
       {!rows ? (
         <p className="mt-6 text-sm text-gray-500">{t("불러오는 중…")}</p>
       ) : (
         <>
-          <p className="mt-4 text-sm text-gray-500">{t("{n}곳", { n: list.length })}</p>
-          <ul className="mt-2 grid gap-2 md:grid-cols-2 lg:grid-cols-3">
+          <p className="mt-4 text-sm text-gray-500 md:mt-0">{t("{n}곳", { n: list.length })}</p>
+          <ul className="mt-2 grid gap-2 lg:grid-cols-2">
             {list.slice(0, 120).map((r) => {
-              const area = areaOf.get(r[0]);
-              const level = area ? live[area] : undefined;
+              const level = levelOf(r);
               return (
-                <li key={r[0]}>
-                  <Link href={`/guide/${r[0]}`} className="flex h-full items-center gap-3 rounded-2xl border border-gray-100 px-4 py-3">
+                <li key={r[0]} className="flex items-center rounded-2xl border border-gray-100 pr-2">
+                  <Link href={`/guide/${r[0]}`} className="flex h-full min-w-0 flex-1 items-center gap-3 py-3 pl-4">
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-semibold">{r[2]}</span>
                       <span className="block text-xs text-gray-500">
@@ -127,6 +141,7 @@ export function GuideList() {
                       </span>
                     )}
                   </Link>
+                  <PickStar pick={{ id: r[0], label: r[2], href: `/guide/${r[0]}` }} />
                 </li>
               );
             })}
@@ -134,6 +149,6 @@ export function GuideList() {
           {list.length > 120 && <p className="mt-3 text-center text-xs text-gray-400">{t("이름이나 구로 더 좁혀 보세요")}</p>}
         </>
       )}
-    </div>
+    </FilterLayout>
   );
 }
