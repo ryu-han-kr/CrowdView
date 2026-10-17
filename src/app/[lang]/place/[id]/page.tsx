@@ -133,6 +133,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const eventPeak = eventForecast && [...eventForecast].sort((a, b) => b.score - a.score)[0];
   // 행사 장소인데 아직 열리기 전이면 '지금 혼잡도'는 행사 인원이 아니다 → 행사 전으로 표시
   const beforeEvent = place.category === "event" && dday !== null && dday > 0;
+  // 입장 마감(마감 1시간 전)이 1시간도 안 남았으면 '지금이 가장 한산'이라고 하지 않는다
+  const closingSoon = isOpen && place.hours[1] < 24 && kst().hour >= place.hours[1] - 2;
+  const noBestText = closingSoon ? t("오늘은 입장 마감이 가까워요. 다음 방문은 아래 이번 주 예측을 참고하세요.") : t("오늘은 지금이 가장 한산한 편이에요.");
 
   return (
     <main>
@@ -247,7 +250,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                     {t("오늘은 {hour}가 가장 한산해요", { hour: formatHour(best.hour, lang) })} <LevelBadge score={best.score} />
                   </>
                 ) : isOpen ? (
-                  t("오늘은 지금이 가장 한산한 편이에요.")
+                  noBestText
                 ) : (
                   t("오늘 운영이 끝났어요.")
                 )}
@@ -450,7 +453,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                       hour: formatHour(best.hour, lang),
                       level: t(levelOf(best.score).label),
                     })
-                  : t("오늘 남은 운영 시간 중에는 지금이 가장 한산한 편이에요."),
+                  : closingSoon
+                    ? t("오늘은 입장 마감이 가까워요. 다음 방문은 아래 이번 주 예측을 참고하세요.")
+                    : t("오늘 남은 운영 시간 중에는 지금이 가장 한산한 편이에요."),
               },
               {
                 q: t("이 혼잡도 정보는 어디서 나오나요?"),

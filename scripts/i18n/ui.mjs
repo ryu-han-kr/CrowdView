@@ -904,4 +904,5 @@ export default {
   "{h}시쯤 비 예보가 있어요 (강수확률 {pop}%). 실내 장소를 담거나 우산을 챙기세요.": ["Rain is forecast around {h}:00 ({pop}% chance). Save indoor places or bring an umbrella.", "{h}時頃に雨の予報があります (降水確率{pop}%)。屋内の場所を選ぶか傘をお持ちください。", "{h}点左右有雨 (降水概率{pop}%)。可收藏室内地点或带伞。", "{h}點左右有雨 (降雨機率{pop}%)。可收藏室內地點或帶傘。"],
   "이날 초미세먼지 ‘{grade}’ 예보예요. 야외 일정은 짧게 잡는 게 좋아요.": ["Fine dust is forecast as ‘{grade}’ that day. Keep outdoor time short.", "この日はPM2.5「{grade}」の予報です。屋外の予定は短めがおすすめです。", "当天细颗粒物预报为“{grade}”，户外行程宜短。", "當天細懸浮微粒預報為「{grade}」，戶外行程宜短。"],
   "그나마 덜 붐비는 곳": ["Least crowded right now", "比較的すいている場所", "相对人少的地方", "相對人少的地方"],
+  "오늘은 입장 마감이 가까워요. 다음 방문은 아래 이번 주 예측을 참고하세요.": ["Last entry is soon today. For your next visit, see this week's forecast below.", "本日は入場締め切りが近いです。次の訪問は下の今週の予測を参考にしてください。", "今天快到入场截止时间了。下次来访请参考下方本周预测。", "今天快到入場截止時間了。下次來訪請參考下方本週預測。"],
 };
