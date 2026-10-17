@@ -1,4 +1,5 @@
 import { PageTheme } from "@/components/PageTheme";
+import { WebVitals } from "@/components/WebVitals";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { notFound } from "next/navigation";
@@ -83,6 +84,7 @@ export default async function RootLayout({ children, params }: { children: React
           <NavProgress />
           <PageTheme />
           <ErrorReporter />
+          <WebVitals />
           <TopNav authEnabled={authEnabled} />
           {authEnabled && <FavoritesSync />}
           {authEnabled && <PicksSync />}
