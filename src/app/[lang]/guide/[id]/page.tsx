@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import { canOptimize } from "@/lib/img";
 import { StayLinks } from "@/components/StayLinks";
 import { notFound } from "next/navigation";
 import Link from "@/i18n/link";
@@ -15,8 +17,9 @@ import { jsonLd, pageMeta } from "@/lib/seo";
 // 가이드 글은 주 1회 바뀌고, 혼잡도는 10분마다 → 10분마다 다시 그림 (처음 열 때 만든다)
 export const revalidate = 600;
 export const dynamicParams = true;
+// 빈 배열이면 상위 [lang]의 dynamicParams=false 때문에 모든 주소가 404였다 → 한 곳이라도 미리 만들고 나머지는 처음 열 때 만든다
 export function generateStaticParams() {
-  return [];
+  return GUIDE.slice(0, 1).map((p) => ({ id: p.id }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string; id: string }> }): Promise<Metadata> {
@@ -47,7 +50,13 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
   const areaName = area ? ((await translateNames([area.name], lang)).get(area.name) ?? area.name) : undefined;
   const toilets = at ? nearest(TOILETS, at, (x) => ({ lat: x[1], lng: x[2] }), 3, 1) : [];
   const around = at
-    ? nearest(GUIDE.filter((g) => g.id !== p.id), at, (g) => (g.lat && g.lng ? { lat: g.lat, lng: g.lng } : undefined), 6, 1)
+    ? nearest(
+        GUIDE.filter((g) => g.id !== p.id),
+        at,
+        (g) => (g.lat && g.lng ? { lat: g.lat, lng: g.lng } : undefined),
+        6,
+        1,
+      )
     : [];
   const people = (min: number, max: number) => t("{min}~{max}명", { min: compactNumber(min, lang), max: compactNumber(max, lang) });
   const rows: [string, string | undefined][] = [
@@ -72,7 +81,8 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
             ...(at && { geo: { "@type": "GeoCoordinates", latitude: at.lat, longitude: at.lng } }),
             ...(text.tel && { telephone: text.tel }),
             ...(text.menu && { hasMenu: text.menu }),
-            sameAs: text.url,
+            ...(text.url && { sameAs: text.url }),
+            ...(p.imgL && { image: p.imgL }),
           }),
         }}
       />
@@ -85,6 +95,20 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
       </p>
       <h1 className="mt-1 text-2xl font-bold md:text-3xl">{text.n}</h1>
       {textLang !== lang && <p className="mt-1 text-xs text-gray-400">{t("이 장소는 선택한 언어 글이 없어 다른 언어로 보여드려요.")}</p>}
+      {p.imgL && (
+        <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-3xl bg-gray-100 md:aspect-[21/8]">
+          <Image
+            src={p.imgL}
+            alt={text.n}
+            fill
+            priority
+            sizes="(min-width: 768px) 1100px, 100vw"
+            unoptimized={!canOptimize(p.imgL)}
+            className="object-cover"
+          />
+          <span className="absolute right-3 bottom-2 rounded bg-black/40 px-1.5 py-0.5 text-[10px] text-white">{t("사진 한국관광공사")}</span>
+        </div>
+      )}
 
       <div className="mt-5 lg:grid lg:grid-cols-2 lg:gap-8">
         <div>
@@ -120,16 +144,20 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
                 {t("길찾기")}
               </a>
             )}
-            <a href={text.url} target="_blank" rel="noreferrer" className="rounded-full bg-gray-100 px-3 py-1.5 text-gray-700">
-              Visit Seoul ›
-            </a>
+            {text.url && (
+              <a href={text.url} target="_blank" rel="noreferrer" className="rounded-full bg-gray-100 px-3 py-1.5 text-gray-700">
+                Visit Seoul ›
+              </a>
+            )}
             {text.web && (
               <a href={text.web} target="_blank" rel="noreferrer" className="rounded-full bg-gray-100 px-3 py-1.5 text-gray-700">
                 {t("홈페이지")} ›
               </a>
             )}
           </div>
-          {at && !p.exact && <p className="mt-2 text-[11px] text-gray-400">{t("위치는 가까운 지하철역({station}) 기준이에요.", { station: p.station ?? "" })}</p>}
+          {at && !p.exact && (
+            <p className="mt-2 text-[11px] text-gray-400">{t("위치는 가까운 지하철역({station}) 기준이에요.", { station: p.station ?? "" })}</p>
+          )}
         </div>
 
         <div className="mt-8 space-y-8 lg:mt-0">
@@ -200,7 +228,9 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
           ...(text.sub ? [{ q: t("{name} 어떻게 가나요?", { name: text.n }), a: text.sub.split("\n")[0] }] : []),
         ]}
       />
-      <p className="mt-8 text-center text-[11px] text-gray-400">{t("정보: Visit Seoul (서울관광재단, 서울 열린데이터광장)")}</p>
+      <p className="mt-8 text-center text-[11px] text-gray-400">
+        {p.id.startsWith("kt-") ? t("정보: 한국관광공사") : t("정보: Visit Seoul (서울관광재단, 서울 열린데이터광장)")}
+      </p>
     </main>
   );
 }

@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "@/i18n/link";
+import Image from "next/image";
+import { canOptimize } from "@/lib/img";
 import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { currentPosition, distanceKm, type LatLng } from "@/lib/geo";
@@ -8,7 +10,7 @@ import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { FilterLayout, PickStar } from "./FilterLayout";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
 
-export type Row = [id: string, kind: string, name: string, lat: number | null, lng: number | null, gu: string | null];
+export type Row = [id: string, kind: string, name: string, lat: number | null, lng: number | null, gu: string | null, img?: string | null];
 interface Live {
   url: string;
   level: string;
@@ -168,7 +170,7 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
                     <button
                       key={String(c)}
                       onClick={() => setCalmFirst(c)}
-                      className={`rounded-full px-3 py-1 ${calmFirst === c ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+                      className={`min-h-8 rounded-full px-3 py-1.5 ${calmFirst === c ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
                     >
                       {c ? t("한산한 순") : t("기본순")}
                     </button>
@@ -199,33 +201,49 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
             />
           ) : (
             <>
-              <ul className="mt-2 grid gap-2 lg:grid-cols-2">
+              {/* 사진 카드 (관광공사 사진이 있는 곳 — 없으면 종류 그림). 글만 늘어선 목록이 데이터베이스 같다는 QA 반영 */}
+              <ul className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
                 {list.slice(0, 120).map((r) => {
                   const level = levelOf(r);
+                  const kind = KINDS.find((k) => k.id === r[1]);
                   return (
-                    <li key={r[0]} className="flex items-center rounded-2xl border border-gray-100 pr-2">
-                      <Link href={`/guide/${r[0]}`} className="flex h-full min-w-0 flex-1 items-center gap-3 py-3 pl-4">
-                        <span className="min-w-0 flex-1">
-                          <span className="block truncate text-sm font-semibold">{r[2]}</span>
-                          <span className="block text-xs text-gray-500">
-                            {r[5] ? t(r[5]) : ""}
-                            {me && r[3] !== null && ` · ${distanceKm(me, { lat: r[3], lng: r[4]! }).toFixed(1)}km`}
-                          </span>
-                        </span>
-                        {level && (
-                          <span
-                            className="shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold"
-                            style={{
-                              color: LEVEL_COLOR[level],
-                              background: `${LEVEL_COLOR[level]}1a`,
-                            }}
-                            title={t("이 동네 지금 혼잡도")}
-                          >
-                            {t(level)}
-                          </span>
-                        )}
+                    <li key={r[0]} className="relative">
+                      <Link href={`/guide/${r[0]}`} className="group block">
+                        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100">
+                          {r[6] ? (
+                            <Image
+                              src={r[6]}
+                              alt=""
+                              fill
+                              sizes="(min-width: 1280px) 20vw, (min-width: 768px) 28vw, 45vw"
+                              unoptimized={!canOptimize(r[6])}
+                              className="object-cover transition-transform duration-300 md:group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="flex h-full items-center justify-center bg-gradient-to-br from-indigo-50 to-sky-100 text-4xl">
+                              {kind?.emoji}
+                            </div>
+                          )}
+                          {level && (
+                            <span
+                              className="absolute top-2 left-2 rounded-full bg-white/95 px-2 py-0.5 text-[11px] font-bold shadow-sm"
+                              style={{ color: LEVEL_COLOR[level] }}
+                              title={t("이 동네 지금 혼잡도")}
+                            >
+                              ● {t(level)}
+                            </span>
+                          )}
+                        </div>
+                        <p className="mt-1.5 truncate text-sm font-semibold">{r[2]}</p>
+                        <p className="truncate text-xs text-gray-500">
+                          {kind && `${kind.emoji} ${t(kind.label)}`}
+                          {r[5] ? ` · ${t(r[5])}` : ""}
+                          {me && r[3] !== null && ` · ${distanceKm(me, { lat: r[3], lng: r[4]! }).toFixed(1)}km`}
+                        </p>
                       </Link>
-                      <PickStar pick={{ id: r[0], label: r[2], href: `/guide/${r[0]}` }} />
+                      <div className="absolute top-1 right-1 rounded-full bg-white/90">
+                        <PickStar pick={{ id: r[0], label: r[2], href: `/guide/${r[0]}` }} />
+                      </div>
                     </li>
                   );
                 })}

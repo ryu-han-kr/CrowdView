@@ -15,8 +15,9 @@ import { getDict, getT } from "@/i18n/server";
 import { SITE, pageMeta } from "@/lib/seo";
 import "../globals.css";
 
-// 언어별로 미리 만들고, 그 외 언어 주소는 404
-export const dynamicParams = false;
+// 언어별로 미리 만들고, 그 외 언어 주소는 아래 isLang 검사로 404.
+// dynamicParams=false를 두면 하위 페이지(가이드 상세처럼 처음 열 때 만드는 곳)까지 미리 만든 주소만 허용돼 404가 났다
+export const dynamicParams = true;
 export function generateStaticParams() {
   return LANGS.map((lang) => ({ lang }));
 }

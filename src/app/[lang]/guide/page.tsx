@@ -32,7 +32,7 @@ export default async function GuidePage({ params }: { params: Promise<{ lang: st
       <h1 className="text-2xl font-bold md:text-3xl">{t("서울 여행 가이드")}</h1>
       <p className="mt-1 mb-5 text-sm text-gray-500">{t("명소·맛집·쇼핑·자연 + 그 동네의 지금 혼잡도")}</p>
       <GuideList
-        initial={GUIDE.filter((p) => p.kind === "attraction").map((p) => [p.id, p.kind, guideText(p, lang).text.n, p.lat ?? null, p.lng ?? null, p.gu ?? null] as Row)}
+        initial={GUIDE.filter((p) => p.kind === "attraction").map((p) => [p.id, p.kind, guideText(p, lang).text.n, p.lat ?? null, p.lng ?? null, p.gu ?? null, p.img ?? null] as Row)}
         counts={Object.fromEntries(GUIDE_KINDS.map((k) => [k.id, GUIDE.filter((p) => p.kind === k.id).length]))}
       />
 
