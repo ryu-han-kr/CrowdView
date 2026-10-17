@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "@/i18n/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { usePicks, usePlans } from "@/lib/prefs";
 
@@ -101,6 +101,10 @@ export function MySettings() {
     <section>
       <h2 className="text-lg font-bold">⚙️ {t("설정")}</h2>
       <ul className="mt-2 divide-y divide-gray-100 rounded-2xl border border-gray-100 bg-white text-sm">
+        <li className="flex items-center justify-between gap-3 px-4 py-3">
+          <span>{t("화면 테마")}</span>
+          <ThemePicker />
+        </li>
         <li className="flex items-center justify-between px-4 py-3">
           <span>{t("혼잡 알림")}</span>
           <a href="#alerts" className="text-xs font-semibold text-indigo-600">
@@ -124,5 +128,40 @@ export function MySettings() {
         </li>
       </ul>
     </section>
+  );
+}
+
+/** 화면 테마: 자동(시스템) · 라이트 · 다크. html[data-theme]와 localStorage(cv:theme) */
+function ThemePicker() {
+  const { t } = useI18n();
+  const [theme, setTheme] = useState<"auto" | "light" | "dark">("auto");
+  useEffect(() => {
+    try {
+      const v = localStorage.getItem("cv:theme");
+      if (v === "light" || v === "dark") setTheme(v);
+    } catch {}
+  }, []);
+  const pick = (v: "auto" | "light" | "dark") => {
+    setTheme(v);
+    try {
+      if (v === "auto") localStorage.removeItem("cv:theme");
+      else localStorage.setItem("cv:theme", v);
+    } catch {}
+    if (v === "auto") delete document.documentElement.dataset.theme;
+    else document.documentElement.dataset.theme = v;
+  };
+  return (
+    <div className="flex rounded-full bg-gray-100 p-0.5 text-xs font-semibold" suppressHydrationWarning>
+      {(["auto", "light", "dark"] as const).map((v) => (
+        <button
+          key={v}
+          onClick={() => pick(v)}
+          aria-pressed={theme === v}
+          className={`min-h-8 rounded-full px-3 py-1.5 ${theme === v ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+        >
+          {v === "auto" ? t("자동") : v === "light" ? `☀️ ${t("라이트")}` : `🌙 ${t("다크")}`}
+        </button>
+      ))}
+    </div>
   );
 }
