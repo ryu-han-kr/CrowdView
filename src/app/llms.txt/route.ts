@@ -22,6 +22,8 @@ export async function GET() {
     `- [Airports](${SITE}/airport): Incheon T1/T2 departure hall wait times, arrivals, parking`,
     `- [Festivals](${SITE}/events): Korea festival calendar with expected crowds`,
     `- [Quiet route planner](${SITE}/route): plans a Seoul itinerary that avoids peak times`,
+    `- [Methodology & data sources](${SITE}/en/methodology): what is observed vs. estimated, how levels and forecasts are computed, limitations`,
+    `- [Forecast accuracy](${SITE}/en/accuracy): hourly comparison of forecasts with actual Seoul data (level match rate, mean error)`,
     `- [English site](${SITE}/en) · [日本語](${SITE}/ja) · [简体中文](${SITE}/zh-CN) · [繁體中文](${SITE}/zh-TW)`,
     "",
     "## Live data",

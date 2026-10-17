@@ -842,6 +842,8 @@ const dict: Dict = {
   "{name}의 지금 혼잡도는 ‘{level}’이에요 ({source}, {time} 기준).": "{name} is ‘{level}’ right now ({source}, as of {time}).",
   "오늘 남은 운영 시간 중에는 {hour}쯤이 가장 한산할 것으로 보여요.": "For the rest of today's opening hours, around {hour} looks quietest.",
   "{name}에는 지금 약 {range}이 있고, 서울시 공식 혼잡 단계는 ‘{level}’이에요 ({time} 기준, 서울시 실시간 도시데이터).": "About {range} are at {name} now, and the Seoul official level is ‘{level}’ (as of {time}, Seoul real-time city data).",
+  "데이터 출처·계산 방식": "Data sources & methodology",
+  "예측 정확도": "Forecast accuracy",
   "롯데월드 어드벤처": "Lotte World Adventure",
   "에버랜드": "Everland",
   "서울랜드": "Seoul Land",

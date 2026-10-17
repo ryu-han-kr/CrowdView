@@ -892,4 +892,7 @@ export default {
   "{name}의 지금 혼잡도는 ‘{level}’이에요 ({source}, {time} 기준).": ["{name} is ‘{level}’ right now ({source}, as of {time}).", "{name}の現在の混雑度は「{level}」です ({source}、{time}時点)。", "{name}目前的拥挤度为“{level}”({source}，{time}时)。", "{name}目前的擁擠度為「{level}」({source}，{time}時)。"],
   "오늘 남은 운영 시간 중에는 {hour}쯤이 가장 한산할 것으로 보여요.": ["For the rest of today's opening hours, around {hour} looks quietest.", "本日の残りの営業時間では{hour}頃が最も空いていそうです。", "今天剩余的营业时间中，{hour}左右预计人最少。", "今天剩餘的營業時間中，{hour}左右預計人最少。"],
   "{name}에는 지금 약 {range}이 있고, 서울시 공식 혼잡 단계는 ‘{level}’이에요 ({time} 기준, 서울시 실시간 도시데이터).": ["About {range} are at {name} now, and the Seoul official level is ‘{level}’ (as of {time}, Seoul real-time city data).", "{name}には現在約{range}がいて、ソウル市公式の混雑段階は「{level}」です ({time}時点、ソウル市リアルタイム都市データ)。", "{name}目前约有{range}，首尔市官方拥挤等级为“{level}”({time}时，首尔市实时城市数据)。", "{name}目前約有{range}，首爾市官方擁擠等級為「{level}」({time}時，首爾市即時城市資料)。"],
+  // ── 방법론·정확도 링크
+  "데이터 출처·계산 방식": ["Data sources & methodology", "データ出典・計算方法", "数据来源·计算方法", "資料來源·計算方法"],
+  "예측 정확도": ["Forecast accuracy", "予測精度", "预测准确度", "預測準確度"],
 };
