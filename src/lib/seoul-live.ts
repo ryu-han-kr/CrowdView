@@ -60,7 +60,7 @@ export const SEOUL_GROUPS: { id: SeoulGroup; label: string; emoji: string }[] = 
 export function seoulGroup(name: string): SeoulGroup {
   if (name.includes("관광특구")) return "tour";
   if (/경복궁|덕수궁|창덕궁|종묘|보신각|유적|국립중앙박물관|숭례문/.test(name)) return "heritage";
-  if (/공원|한강|숲|산$|노들섬|광장$|안양천|운동장|고척돔/.test(name)) return "park";
+  if (/공원|한강|숲|산$|노들섬|광장$|안양천|운동장|고척돔|폭포/.test(name)) return "park";
   if (/역(\(|$|·)|역\s|입구\(|사거리역|네거리역/.test(name) || name.endsWith("역")) return "station";
   return "street";
 }

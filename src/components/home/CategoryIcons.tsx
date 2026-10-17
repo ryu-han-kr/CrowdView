@@ -7,7 +7,7 @@ const ITEMS: { href: string; label: string; emoji: string; bg: string; badge?: s
   { href: "/airport", label: "공항", emoji: "✈️", bg: "from-sky-50 to-blue-100", badge: "실시간" },
   { href: "/?cat=themepark#places", label: "테마파크", emoji: "🎡", bg: "from-pink-50 to-rose-100" },
   { href: "/events", label: "축제", emoji: "🎆", bg: "from-violet-50 to-purple-100" },
-  { href: "/seoul", label: "서울 실시간", emoji: "📍", bg: "from-indigo-50 to-indigo-100", badge: "119곳" },
+  { href: "/seoul", label: "서울 실시간", emoji: "📍", bg: "from-indigo-50 to-indigo-100", badge: "121곳" },
   { href: "/explore", label: "지역 여행", emoji: "🗺️", bg: "from-emerald-50 to-teal-100", badge: "NEW" },
   { href: "/guide", label: "여행 가이드", emoji: "📖", bg: "from-amber-50 to-orange-100" },
   { href: "/route", label: "추천 코스", emoji: "🧭", bg: "from-blue-50 to-cyan-100" },

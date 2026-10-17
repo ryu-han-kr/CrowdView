@@ -21,7 +21,7 @@ export async function GET(req: Request) {
   const now = kst();
   const daily = Math.floor(now.hour) === 4 && (now.hour % 1) * 60 < 10;
   const expired = daily ? await expireEnded().catch(async (e) => (await opsAlert("구독 만료 정리 실패", e), 0)) : 0;
-  // 예측 정확도: 매시 정각 첫 수집 때 채점·새 예측 저장 (서울 119곳, Redis)
+  // 예측 정확도: 매시 정각 첫 수집 때 채점·새 예측 저장 (서울 121곳, Redis)
   const hourly = (now.hour % 1) * 60 < 10;
   const scored = hourly ? await trackAccuracy(await getAllSeoulLive()).catch(async (e) => (await opsAlert("예측 정확도 기록 실패", e), 0)) : 0;
   const notices = daily ? await sendRenewalNotices().catch(async (e) => (await opsAlert("자동결제 안내 실패", e), 0)) : 0;

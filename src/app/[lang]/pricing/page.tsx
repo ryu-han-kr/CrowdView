@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 // 무료 / Plus 비교 (✓ 제공, – 미제공)
 const ROWS: [label: string, free: boolean, plus: boolean][] = [
-  ["실시간 혼잡도 (공항·놀이공원·관광지·축제·서울 119곳)", true, true],
+  ["실시간 혼잡도 (공항·놀이공원·관광지·축제·서울 121곳)", true, true],
   ["시간대별·주간 혼잡 예측", true, true],
   ["축제 일정, 날씨·미세먼지, 공항 주차·입국 정보", true, true],
   ["찜한 장소 모아 보기", true, true],

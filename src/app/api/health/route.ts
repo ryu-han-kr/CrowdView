@@ -34,7 +34,7 @@ export async function GET() {
     s.places++;
     s.oldestMin = Math.max(s.oldestMin, c.ageMinutes);
   }
-  // 서울 119곳: 서울시 기준 시각과 지금의 차이
+  // 서울 121곳: 서울시 기준 시각과 지금의 차이
   const seoulTimes = Object.values(seoul).map((s) => s.time);
   const newest = seoulTimes.sort().at(-1);
   const now = kst();

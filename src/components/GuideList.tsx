@@ -59,7 +59,7 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
       .then((r) => r.json())
       .then(setRows)
       .catch(() => setRows([]));
-    // 서울 119곳 지금 단계 (CDN 5분 캐시)
+    // 서울 121곳 지금 단계 (CDN 5분 캐시)
     fetch("/api/public/crowd")
       .then((r) => r.json())
       .then((j: { seoul: Live[] }) => setLive(Object.fromEntries(j.seoul.map((s) => [s.url.split("/").pop()!, s.level]))))
