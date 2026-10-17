@@ -47,6 +47,10 @@ function NaverRoute({ points, onFail }: { points: RoutePoint[]; onFail: () => vo
         const path = points.map((p) => new maps.LatLng(p.lat, p.lng));
         overlays.push(new maps.Polyline({ map, path, strokeColor: "#6366f1", strokeWeight: 4, strokeStyle: "shortdash", strokeOpacity: 0.9 }));
         // 번호는 아래 목록과 같게 (식사도 한 칸)
+        // 아주 가까운 곳(약 60m 안, 예: 장소와 바로 옆 식당)은 핀이 겹쳐 가려져서 옆으로 조금 비켜 그린다
+        const shifted = points.map(
+          (p, i) => points.slice(0, i).filter((q) => Math.abs(q.lat - p.lat) < 0.0006 && Math.abs(q.lng - p.lng) < 0.0007).length,
+        );
         points.forEach((p, i) => {
           const label = i === 0 ? "S" : p.meal ? "🍽" : String(i);
           const size = i === 0 ? 26 : 32;
@@ -58,7 +62,7 @@ function NaverRoute({ points, onFail }: { points: RoutePoint[]; onFail: () => vo
               title,
               icon: {
                 content: `<div role="img" aria-label="${title.replace(/"/g, "&quot;")}" style="width:${size}px;height:${size}px;border-radius:9999px;background:${color(p)};color:#fff;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font:700 13px system-ui;box-shadow:0 2px 6px rgba(0,0,0,.3)">${label}</div>`,
-                anchor: new maps.Point(size / 2, size / 2),
+                anchor: new maps.Point(size / 2 - shifted[i] * 22, size / 2),
               },
             }),
           );

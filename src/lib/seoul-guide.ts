@@ -134,16 +134,16 @@ export const GUIDE: GuidePlace[] = [...cleaned, ...extra].sort((a, b) => Number(
  * 사진이 없는 곳(서울 실시간 지역 등)에 가이드 명소·자연·쇼핑의 관광공사 사진을 빌려 쓴다.
  * 이름이 겹치는 곳(1.5km 안, 예: 경복궁 지역 → 경복궁)이 먼저, 없으면 가장 가까운 곳(기본 600m 안). large면 큰 사진
  */
-// 후보: 가이드(사진 붙은 곳, 맛집 제외) + 관광공사 서울 관광지·문화시설·레포츠·쇼핑
+// 후보: 바깥 풍경 사진이 많은 곳만 — 가이드 명소·자연 + 관광공사 관광지·레포츠 (쇼핑·문화시설은 실내 사진이 많아 대표 사진으로 어색)
 const PHOTO_SPOTS: { name: string; lat: number; lng: number; img: string; imgL: string }[] = [
-  ...GUIDE.filter((g) => g.img && g.lat && g.lng && g.kind !== "food").map((g) => ({
+  ...GUIDE.filter((g) => g.img && g.lat && g.lng && (g.kind === "attraction" || g.kind === "nature")).map((g) => ({
     name: norm(g.t.ko?.n ?? ""),
     lat: g.lat!,
     lng: g.lng!,
     img: g.img!,
     imgL: g.imgL ?? g.img!,
   })),
-  ...TOUR.filter((r) => r[1] !== 39).map((r) => ({ name: norm(r[2]), lat: r[3], lng: r[4], img: r[5], imgL: r[6] })),
+  ...TOUR.filter((r) => r[1] === 12 || r[1] === 28).map((r) => ({ name: norm(r[2]), lat: r[3], lng: r[4], img: r[5], imgL: r[6] })),
   // 대표 명소(관광공사 대표 사진) — 경복궁처럼 서울 목록에서 빠진 곳
   ...LANDMARKS.map((l) => ({ name: norm(l.n.ko), lat: l.lat, lng: l.lng, img: l.img, imgL: l.img })),
 ];
@@ -155,7 +155,8 @@ export function photoNear(p: LatLng & { name?: string }, maxKm = 0.6, large = fa
   for (const s of PHOTO_SPOTS) {
     const km = distanceKm(p, s);
     // 이름이 겹치면 짧은(= 그 장소 자체에 가까운) 이름을 고른다 (경복궁 > 경복궁 돌담길)
-    if (key.length >= 2 && km < 1.5 && s.name.includes(key) && (!byName || s.name.length < byName.s.name.length)) byName = { s, km };
+    if (km < 1.5 && (s.name === key || (key.length >= 3 && s.name.includes(key))) && (!byName || s.name.length < byName.s.name.length))
+      byName = { s, km };
     if (km < maxKm && (!best || km < best.km)) best = { s, km };
   }
   const hit = (byName ?? best)?.s;
