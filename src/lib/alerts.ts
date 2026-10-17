@@ -1,4 +1,4 @@
-// Plus 혼잡 알림: 찜한 장소가 한산해지면(calm) / 붐비기 시작하면(busy) 웹 푸시.
+// Plus 혼잡 알림: 장소(우리 장소 id) 또는 서울 실시간 지역(seoul-<코드>)이 한산해지면(calm) / 붐비기 시작하면(busy) 웹 푸시.
 // 10분 수집기가 끝날 때 checkAlerts()를 부른다. 웹 푸시는 표준(VAPID)이라 어느 서버에서든 보낼 수 있다.
 import webpush from "web-push";
 import { getT } from "@/i18n/server";
@@ -7,6 +7,8 @@ import { kv } from "./cache";
 import { pool, sql } from "./db";
 import { levelOf } from "./levels";
 import { PLACES, placeHref } from "./places";
+import { SEOUL_AREAS } from "./seoul-areas";
+import { getAllSeoulLive } from "./seoul-live";
 import type { CrowdResult } from "./types";
 
 const PUBLIC = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
@@ -19,6 +21,16 @@ const CALM_BELOW = 40;
 const BUSY_FROM = 60;
 /** 같은 알림은 3시간에 한 번까지 */
 const COOLDOWN_MS = 3 * 3600_000;
+
+/** 알림을 걸 수 있는 곳: 우리 장소 또는 서울 실시간 지역. 없는 id면 undefined */
+export function alertTarget(id: string): { id: string; name: string; href: string } | undefined {
+  if (id.startsWith("seoul-")) {
+    const a = SEOUL_AREAS.find((x) => x.code === id.slice(6));
+    return a && { id, name: a.name, href: `/seoul/${a.code}` };
+  }
+  const p = PLACES.find((x) => x.id === id);
+  return p && { id, name: p.name, href: placeHref(p) };
+}
 
 export interface PushSub {
   endpoint: string;
@@ -59,11 +71,14 @@ export async function checkAlerts(crowd: Record<string, CrowdResult>): Promise<n
   // 알림이 남아 있으면 표시를 연장하고, 다 지워졌으면 표시를 내린다
   if (alerts.length) await markAlertsExist();
   else await kv.set(ANY_KEY, "", 1).catch(() => {});
+  // 서울 실시간 지역 알림이 있을 때만 서울시 데이터를 읽는다 (Redis 캐시)
+  const seoul = alerts.some((a) => a.place_id.startsWith("seoul-")) ? await getAllSeoulLive() : {};
   let sent = 0;
   for (const a of alerts) {
-    const c = crowd[a.place_id];
-    const place = PLACES.find((p) => p.id === a.place_id);
-    if (!c || !place || !c.open) continue;
+    const target = alertTarget(a.place_id);
+    const c = a.place_id.startsWith("seoul-") ? { open: true, score: seoul[a.place_id.slice(6)]?.score } : crowd[a.place_id];
+    if (!c || !target || !c.open || c.score === undefined) continue;
+    const place = target;
     const now = c.score;
     const prev = a.last_score;
     // 경계를 넘는 순간에만 (처음 등록 직후 이미 그 상태면 알리지 않고 기준만 저장)
@@ -71,7 +86,7 @@ export async function checkAlerts(crowd: Record<string, CrowdResult>): Promise<n
       prev !== null && (a.kind === "calm" ? prev >= CALM_BELOW && now < CALM_BELOW : prev < BUSY_FROM && now >= BUSY_FROM);
     const cooled = !a.last_sent_at || Date.now() - a.last_sent_at.getTime() > COOLDOWN_MS;
     if (crossed && cooled) {
-      sent += await notifyUser(a.user_id, place.id, place.name, a.kind, now, placeHref(place));
+      sent += await notifyUser(a.user_id, place.id, place.name, a.kind, now, place.href);
       await sql("update crowd_alert set last_score = $4, last_sent_at = now() where user_id = $1 and place_id = $2 and kind = $3", [
         a.user_id,
         a.place_id,

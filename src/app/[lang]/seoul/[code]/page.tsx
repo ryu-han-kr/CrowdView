@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { StayLinks } from "@/components/StayLinks";
+import { AlertButtons } from "@/components/AlertButtons";
+import { pushEnabled } from "@/lib/alerts";
+import { authEnabled } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import Link from "@/i18n/link";
 import { LevelBadge } from "@/components/Level";
@@ -190,6 +193,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
               </section>
             );
           })()}
+          <AlertButtons placeId={`seoul-${area.code}`} enabled={authEnabled && pushEnabled} />
           <StayLinks ko={area.name} en={enName} lang={lang} t={t} className="mt-4" />
           <a
             href={`https://map.naver.com/p/search/${encodeURIComponent(area.name)}`}
