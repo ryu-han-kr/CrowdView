@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>CrowdView 외부 AI 검토 종합 (2026-10-17)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+  @page { size: A4; margin: 14mm 13mm 16mm; }
+  :root { --ink:#111827; --sub:#4b5563; --line:#e5e7eb; --brand:#4f46e5; --soft:#eef2ff; }
+  * { box-sizing: border-box; }
+  body { font-family: "Pretendard Variable", Pretendard, system-ui, sans-serif; color: var(--ink); font-size: 10pt; line-height: 1.6; margin: 0; }
+  h1 { font-size: 24pt; margin: 0 0 3mm; letter-spacing: -0.02em; }
+  h2 { font-size: 14.5pt; margin: 0 0 3mm; padding-top: 1mm; border-top: 3px solid var(--brand); }
+  h3 { font-size: 11.2pt; margin: 4.5mm 0 1.5mm; }
+  p { margin: 1.2mm 0; }
+  ul, ol { margin: 1mm 0 1mm 5mm; padding: 0; } li { margin: 0.6mm 0; }
+  section { page-break-before: always; } section.first { page-break-before: auto; }
+  table { width: 100%; border-collapse: collapse; margin: 2mm 0; font-size: 8.7pt; }
+  tr { page-break-inside: avoid; }
+  th, td { border: 1px solid var(--line); padding: 1.2mm 1.6mm; vertical-align: top; text-align: left; }
+  th { background: #f8fafc; }
+  code { font-family: ui-monospace, Consolas, monospace; font-size: 8.2pt; background: #f3f4f6; padding: 0 1mm; border-radius: 1mm; }
+  .cover { background: linear-gradient(160deg, #eef2ff 0%, #f5f7ff 45%, #fff 80%); border-radius: 6mm; padding: 16mm 12mm; }
+  .tag { display: inline-block; font-size: 8pt; font-weight: 700; color: var(--brand); background: var(--soft); border-radius: 99px; padding: 0.5mm 2.5mm; margin-right: 1mm; }
+  .box { border: 1px solid var(--line); border-radius: 3mm; padding: 3mm 4mm; margin: 2.5mm 0; }
+  .note { background: #fffbeb; border-color: #fde68a; } .good { background: #ecfdf5; border-color: #a7f3d0; }
+  .y { color: #047857; font-weight: 700; } .n { color: #b91c1c; font-weight: 700; } .p { color: #c2410c; font-weight: 700; }
+  .small { font-size: 8.5pt; color: var(--sub); }
+  .p0 { color: #b91c1c; font-weight: 800; } .p1 { color: #c2410c; font-weight: 800; } .p2 { color: #4f46e5; font-weight: 800; }
+</style>
+</head>
+<body>
+
+<section class="first">
+  <div class="cover">
+    <span class="tag">외부 AI 검토 종합</span><span class="tag">2026-10-17</span>
+    <h1 style="margin-top:6mm">CrowdView 검토 보고서 3종 요약·정리</h1>
+    <p style="font-size:12pt;color:#374151">Gemini(일반) · Gemini(전문가 4개 분야) · ChatGPT(종합 진단·로드맵, <code>docs/handoff/CrowdView_종합진단_개선로드맵_2026-10-17.md</code>)를 모두 읽고, <b>실제 코드와 대조해 사실 여부를 확인</b>한 뒤 하나의 실행 계획으로 묶었습니다.</p>
+    <div class="box" style="background:#fff">
+      <b>한 줄 결론</b>
+      <p>세 보고서 모두 같은 방향을 가리킵니다 — <b>“기능을 더 넣기 전에, 이미 있는 데이터를 믿을 수 있게(실측·추정 구분, 운영 시간 반영) 만들고, 검색로봇이 읽을 수 있게(서버 렌더링·구조화) 하고, 운영을 안전하게(요청 제한·오류 감시) 하라.”</b> 그다음이 전환(코스 저장·공유·알림)과 수익화, 다국어·전국 확대입니다.</p>
+    </div>
+    <p class="small">참고: 네 번째로 받은 “GPT 전문가 견해”는 두 번째 “Gemini 전문가 버전”과 본문이 같아서 하나로 셌습니다.</p>
+    <h3>차례</h3>
+    <ol class="small">
+      <li>보고서별 핵심 요약</li>
+      <li>세 보고서가 공통으로 말한 것 (합의 지도)</li>
+      <li>코드로 확인한 사실 판정 — 맞는 지적 / 이미 된 것 / 동의하지 않는 것</li>
+      <li>최종 실행 계획 (PR 단위, 완료 기준)</li>
+      <li>사이트 주인이 할 일과 결정할 것</li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <h2>1. 보고서별 핵심 요약</h2>
+  <h3>① Gemini (일반 의견)</h3>
+  <ul>
+    <li><b>잘한 점</b>: Vercel을 쓰되 클라우드 이전을 고려한 구조, GitHub Actions 주간 정적 데이터, Redis 캐시 구조</li>
+    <li><b>UX</b>: 모바일 터치 영역 48px 이상 실기기 확인, <b>다크 모드</b></li>
+    <li><b>기능</b>: 기상 특보·강수·미세먼지를 코스 경고로, 공유 코스에 ‘좋아요/복사해서 내 코스로’, 담은 곳 혼잡 급증 웹 푸시</li>
+    <li><b>SEO</b>: 동적 OG(공유 미리보기), JSON-LD(TouristAttraction·Place·Event·BreadcrumbList), 데이터 갱신 시 사이트맵 자동 갱신·검색엔진 알림, hreflang</li>
+    <li><b>GEO</b>: 페이지 위쪽에 “현재 [장소]는 [보통], 추천 시간은 10시” 같은 단답형 사실 문장, 출처 명시, 구어체 질문형 FAQ·가이드 글, 커뮤니티·SNS에서 브랜드 언급 쌓기</li>
+    <li><b>로드맵</b>: 즉시 = DB·키 연동·검색엔진 등록 / 단기 = 상세 페이지 + JSON-LD, 이미지 최적화 / 중장기 = AI용 요약·FAQ 확장, 알림·예측 고도화</li>
+  </ul>
+  <h3>② Gemini (전문가 4개 분야)</h3>
+  <table>
+    <tr><th style="width:18%">분야</th><th>제안</th></tr>
+    <tr><td>네트워크/SA</td><td>API 응답에 <code>s-maxage=600, stale-while-revalidate</code>, 정적 데이터는 긴 캐시. Vercel Cron 종속 해제(수집 로직을 독립 워커로), 환경변수 로딩 단일화(Vault/Secrets Manager 호환)</td></tr>
+    <tr><td>백엔드</td><td>Neon 연결 풀(pooler URL·serverless 드라이버), Redis pipeline/Lua, Hash·GEO 자료구조, <b>레이트리밋(비회원 60·회원 120회/분)</b>, 외부 API 서킷 브레이커(마지막 정상값), 결제·코스 생성 멱등키</td></tr>
+    <tr><td>프론트엔드</td><td>TanStack Query, 지도 <b>마커 클러스터링</b>·화면 안 마커만, 지도 SDK 지연 로딩, 코드 분할</td></tr>
+    <tr><td>UI/UX·퍼블리셔</td><td>모바일 하단 탭(홈·지도·탐색·담은 곳·마이), 100dvh·safe-area, <b>색만으로 혼잡 단계 구분 금지</b>(글자·이모지 병기), ARIA·Lighthouse 접근성 90+</td></tr>
+  </table>
+  <h3>③ ChatGPT (종합 진단·로드맵, 가장 구체적)</h3>
+  <ul>
+    <li><b>포지셔닝</b>: “혼잡을 피해 이동하는 여행 도우미” — 전국 혼잡 포털·여행 종합 플랫폼보다 지금 가장 유리</li>
+    <li><b>운영 사이트에서 직접 찾은 문제</b>: 경복궁 단계 불일치(쾌적 vs 서울시 보통), ‘가장 한산한 시간’이 새벽 2시처럼 방문 불가 시간, 해운대 “예측 모델(샘플)”, 행사 전 축제의 현재 수치, 축제 혼잡이 시군구 전체 통계, /guide·/explore가 로봇에게 “불러오는 중…”, 마감된 체험 노출, 결제·약관·사업자 정보 미완</li>
+    <li><b>데이터 계약</b>: OFFICIAL_OBSERVED · OFFICIAL_FORECAST · MODEL_VALIDATED · RULE_BASED_ESTIMATE · HISTORICAL_AREA_PROXY · SAMPLE · UNAVAILABLE 로 품질 등급화, ‘실시간’은 실측에만</li>
+    <li><b>추천</b>: 후보 시간 = 운영시간 ∩ 입장 가능 ∩ 이용자 일정 ∩ 날씨, 불확실성 벌점</li>
+    <li><b>SEO/GEO</b>: 핵심 목록 서버 렌더링, 메타·canonical·OG·JSON-LD, <code>/methodology</code>·<code>/data-sources</code>·<code>/accuracy</code> 공개, 예측 백테스트(MAE·등급 일치율), IP 강제 언어 전환 지양, 1,856곳을 한꺼번에 얇은 페이지로 만들지 말 것</li>
+    <li><b>운영</b>: <code>/api/health</code>·데이터 신선도, 크론 락·재시도, 레이트리밋, 오류 추적, E2E·Lighthouse CI</li>
+    <li><b>수익</b>: 결제보다 “검색 유입 → 시간·대안 확인 → 코스 저장 → 알림” 흐름 검증 먼저. KPI: 코스 완성률, 공유율, D7 재방문, 알림 활성화</li>
+    <li><b>추가 기능 우선순위</b>: ①운영시간 반영 추천 ②데이터 신뢰도 배지 ③가까운 한산한 대안 3곳 ④날짜별 비교 ⑤코스 저장·카톡 공유 … ⑫AI 대화형 플래너는 가장 나중</li>
+  </ul>
+</section>
+
+<section>
+  <h2>2. 세 보고서가 공통으로 말한 것</h2>
+  <table>
+    <tr><th>주제</th><th>Gemini</th><th>Gemini 전문가</th><th>ChatGPT</th><th>판단</th></tr>
+    <tr><td>DB·로그인·결제 키 연동 마무리</td><td>●</td><td>●</td><td>●</td><td>사이트 주인 키 필요</td></tr>
+    <tr><td>API 레이트리밋</td><td></td><td>●</td><td>●</td><td class="n">바로 함</td></tr>
+    <tr><td>오류·신선도 감시 (/api/health)</td><td></td><td>●</td><td>●</td><td class="n">바로 함</td></tr>
+    <tr><td>실측·추정·예측 구분, 출처 표시</td><td>●</td><td></td><td>●●</td><td class="n">바로 함 (가장 중요)</td></tr>
+    <tr><td>운영시간 반영 추천</td><td></td><td></td><td>●●</td><td class="n">바로 함</td></tr>
+    <tr><td>서버 렌더링(로봇이 읽는 본문)</td><td></td><td></td><td>●</td><td class="n">바로 함</td></tr>
+    <tr><td>구조화 데이터·OG·사이트맵·hreflang</td><td>●</td><td></td><td>●</td><td>대부분 있음 → 보강</td></tr>
+    <tr><td>GEO 단답 사실 문장·방법론 공개</td><td>●</td><td></td><td>●</td><td class="n">바로 함</td></tr>
+    <tr><td>예측 정확도 측정·공개</td><td>●</td><td></td><td>●●</td><td class="n">바로 함</td></tr>
+    <tr><td>이미지 최적화·Core Web Vitals</td><td>●</td><td>●</td><td>●</td><td>함</td></tr>
+    <tr><td>지도 마커 클러스터링</td><td></td><td>●</td><td></td><td>함 (가벼운 방식)</td></tr>
+    <tr><td>색 + 글자 병기·접근성</td><td></td><td>●</td><td></td><td>대부분 있음 → 보강</td></tr>
+    <tr><td>다크 모드</td><td>●</td><td></td><td></td><td>나중 (디자인 전체 영향)</td></tr>
+    <tr><td>날씨·특보를 추천에 반영</td><td>●</td><td>●</td><td>●</td><td>함 (코스 경고부터)</td></tr>
+    <tr><td>공유 코스 복사·카톡 카드</td><td>●</td><td></td><td>●</td><td>함 (복사·캘린더), 카톡은 키 필요</td></tr>
+    <tr><td>가까운 한산한 대안</td><td></td><td></td><td>●</td><td class="n">바로 함</td></tr>
+    <tr><td>IP 강제 언어 전환 재검토</td><td></td><td></td><td>●</td><td>유지 + 보완 (아래 3장)</td></tr>
+    <tr><td>LLM 플래너는 나중</td><td></td><td></td><td>●</td><td>동의</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>3. 코드로 확인한 사실 판정</h2>
+  <h3>3-1. 맞는 지적 — 고칩니다</h3>
+  <table>
+    <tr><th style="width:30%">지적</th><th>코드 확인 결과</th><th style="width:22%">조치</th></tr>
+    <tr><td>경복궁 단계 불일치</td><td>장소 화면은 인원 기준 자체 점수, 서울 지역 화면은 서울시 공식 단계 → 같은 시각에 쾌적/보통이 다르게 나옴</td><td>서울시 데이터가 있는 곳은 <b>공식 단계를 기본 배지</b>로 통일, 자체 값은 “자체 추정”으로 따로</td></tr>
+    <tr><td>가장 한산한 시간이 방문 불가 시간</td><td>서울 지역 상세 FAQ가 12시간 예측 중 최솟값을 그대로 고름(새벽 포함). 장소 “언제 가면 좋을까요?”도 끝나기 직전 시각을 고를 수 있음</td><td>운영 시간(없으면 08~22시) 안, 마감 1시간 전까지에서만 고르기</td></tr>
+    <tr><td>“예측 모델 (샘플)” 표기</td><td>출처 라벨 문구가 <code>CrowdView 예측 모델 (샘플)</code></td><td>“CrowdView 추정 (요일·시간 패턴)”으로, 실측과 다른 배지</td></tr>
+    <tr><td>축제 혼잡 = 시군구 전체</td><td>맞음 (데이터랩 시군구 방문객 비율)</td><td>“지역 방문 증가 예상 (시군구 기준)”으로 이름 바꾸기, 행사 전에는 현재 수치 대신 “행사 전”</td></tr>
+    <tr><td>마감된 체험 노출</td><td>‘접수중’ 상태만 보고 마감일은 안 봄</td><td>마감일이 지난 건 빼기</td></tr>
+    <tr><td>/guide·/explore 로봇에게 빈 화면</td><td>가이드 목록과 “더 많은 명소”를 브라우저에서 받아 그림</td><td>첫 목록·총 건수·링크를 서버에서 그리기</td></tr>
+    <tr><td>레이트리밋 없음</td><td>맞음</td><td>Redis로 IP별 분당 제한</td></tr>
+    <tr><td>오류·신선도 감시 없음</td><td>서버 운영 알림만 있고 브라우저 오류·데이터 신선도 점검 없음</td><td><code>/api/health</code> + 브라우저 오류 수집 + 오래된 데이터 표시</td></tr>
+    <tr><td>예측 정확도 미측정</td><td>맞음</td><td>예측 기록 → 다음 날 실측과 비교 → <code>/accuracy</code> 공개</td></tr>
+    <tr><td>방법론 공개 페이지 없음</td><td>/llms.txt만 있음</td><td><code>/methodology</code> (출처·계산·한계)</td></tr>
+  </table>
+  <h3>3-2. 이미 되어 있는 것 (보고서는 원본 코드를 못 봄)</h3>
+  <table>
+    <tr><th style="width:30%">지적</th><th>현재 상태</th></tr>
+    <tr><td>hreflang·canonical</td><td>모든 페이지 <code>pageMeta()</code>가 5개 언어 + x-default 대체 주소와 canonical을 넣음, proxy가 Link 헤더도 붙임</td></tr>
+    <tr><td>robots·sitemap</td><td><code>robots.ts</code>(AI 검색로봇 허용, 개인·운영 페이지 차단), <code>sitemap.ts</code>(장소·서울 119·가이드 2,755·축제·지역 여행)</td></tr>
+    <tr><td>구조화 데이터</td><td>홈(WebSite·Organization), 장소·가이드·축제 상세에 JSON-LD(FAQ·Event 등) 있음 → TouristAttraction·BreadcrumbList 보강</td></tr>
+    <tr><td>공개 API CDN 캐시</td><td><code>/api/public/crowd</code>: <code>s-maxage=300, stale-while-revalidate=300</code>, 정적 데이터 <code>/data/*.json</code>은 force-static + CDN</td></tr>
+    <tr><td>서킷 브레이커·마지막 정상값</td><td><code>lib/cached.ts</code>가 원본 실패·한도 초과 시 Redis의 마지막 값 사용, 한도 90%에서 자동 정지</td></tr>
+    <tr><td>지도 SDK 지연 로딩</td><td>지도 화면·지도 보기를 켤 때만 불러옴</td></tr>
+    <tr><td>모바일 하단 탭·safe-area·dvh</td><td>하단 탭 4개(홈·지도·공항·마이), <code>env(safe-area-inset-bottom)</code>, <code>min-h-dvh</code> 사용</td></tr>
+    <tr><td>색만으로 구분</td><td>단계 배지에 글자(쾌적·보통…) + 막대 칸 수로 이중 표시. 지도 핀만 색 위주 → 보강</td></tr>
+    <tr><td>결제 멱등성</td><td>결제 ID를 서버가 만들고 웹훅은 같은 결제를 두 번 처리하지 않음(이미 paid면 건너뜀), 금액·상태는 포트원 재조회</td></tr>
+    <tr><td>로봇 언어 전환</td><td>검색·미리보기 로봇은 자동 언어 전환에서 제외, 모든 언어 주소에 직접 접근 가능</td></tr>
+  </table>
+  <h3>3-3. 동의하지 않거나 지금은 하지 않는 것</h3>
+  <table>
+    <tr><th style="width:30%">제안</th><th>이유</th></tr>
+    <tr><td>Neon serverless 드라이버로 교체</td><td>표준 <code>pg</code> + 함수당 작은 풀(max 5)로 충분하고 클라우드 이전에도 유리. 대신 <b>Neon의 pooler 주소(-pooler)</b>를 쓰도록 설정 안내</td></tr>
+    <tr><td>TanStack Query 도입</td><td>클라이언트 조회가 몇 개뿐이고 대부분 서버·CDN에서 처리. 라이브러리보다 서버 렌더링 비중을 늘리는 쪽이 효과적</td></tr>
+    <tr><td>Redis Hash·GEO로 장소 저장</td><td>장소 목록은 Redis가 아니라 정적 파일(CDN)에 있어 Redis 메모리 문제가 없음</td></tr>
+    <tr><td>IP 강제 언어 전환 폐지</td><td>사이트 주인의 요구(해외 접속 = 그 나라 언어). 로봇은 이미 제외되어 색인 문제는 없음. 보완: 처음 방문 때만, 언어 선택은 쿠키로 유지, 화면에 언어 바꾸기 항상 표시</td></tr>
+    <tr><td>1,856곳 상세 페이지 한꺼번에</td><td>ChatGPT 의견에 동의 — 얇은 페이지 대량 생성은 오히려 손해. 서울·공항·주요 축제 품질부터</td></tr>
+    <tr><td>다크 모드 지금</td><td>디자인 전체를 다시 칠해야 해서 사용자 데이터 확인 후</td></tr>
+    <tr><td>환경변수 Vault 모듈</td><td>지금 규모에선 과함. 환경변수 목록·켜짐 조건은 <code>.env.example</code>·설명서에 한 곳으로 정리돼 있음</td></tr>
+  </table>
+</section>
+
+<section>
+  <h2>4. 최종 실행 계획 (지금부터 순서대로 진행)</h2>
+  <table>
+    <tr><th>PR</th><th>우선</th><th>내용</th><th>완료 기준</th></tr>
+    <tr><td>A. 데이터 신뢰성</td><td class="p0">P0</td><td>서울시 데이터가 있는 장소는 공식 단계로 통일 · 출처 라벨(실측/공식 예보/자체 추정/지역 통계) · ‘샘플’ 표현 제거 · 오래된 데이터 “갱신 지연” · 추천 시간은 운영 시간 안에서만 · 축제는 “지역 방문 증가 예상”, 행사 전엔 현재 수치 숨김 · 마감 체험 제외</td><td>같은 장소 공식 단계 충돌 0, 운영 시간 밖 추천 0, ‘샘플’ 문구 0, 회귀 테스트</td></tr>
+    <tr><td>B. 검색로봇이 읽는 본문</td><td class="p0">P0</td><td>/guide 첫 목록·건수·링크와 /explore 더 많은 명소를 서버 렌더링 · 장소·서울 지역 상단에 단답 사실 문장 · TouristAttraction·BreadcrumbList JSON-LD</td><td>JavaScript 없이 받은 HTML에 목록·링크·사실 문장이 있음</td></tr>
+    <tr><td>C. 운영 안전</td><td class="p0">P0</td><td>레이트리밋(코스 계산·알림·회원 API) · <code>/api/health</code>(소스별 마지막 성공·신선도) · 브라우저 오류 수집 → 운영 알림</td><td>초과 요청 429, 헬스 체크가 오래된 소스를 표시, 브라우저 오류가 기록됨</td></tr>
+    <tr><td>D. 신뢰 공개</td><td class="p1">P1</td><td><code>/methodology</code>(출처·계산·한계) · 예측 기록 → 실측 비교 → <code>/accuracy</code>(등급 일치율·평균 오차)</td><td>매일 정확도 숫자가 쌓이고 공개 페이지에 표시</td></tr>
+    <tr><td>E. 결정 돕기·공유</td><td class="p1">P1</td><td>가까운 한산한 대안 3곳 · 공유 코스 “이 코스로 나도 짜기”(담은 곳으로 복사) · 캘린더(.ics) 내보내기 · 코스에 비·미세먼지 경고</td><td>상세 화면에 대안, 공유 → 복사 동작, .ics 다운로드</td></tr>
+    <tr><td>F. 성능·접근성</td><td class="p1">P1</td><td>관광공사·축제 사진 작은 썸네일 · 지도 핀에 단계 글자·aria · 핀 많을 때 묶기(클러스터) · 터치 영역 44px 이상</td><td>홈 이미지 용량 감소, 지도 핀 400개에서도 부드러움</td></tr>
+  </table>
+  <p class="small">작업마다 브랜치 → PR → CI(타입 검사·테스트) 통과 → 머지. 끝나면 서비스 설명서 PDF와 인수인계 문서를 갱신합니다.</p>
+</section>
+
+<section>
+  <h2>5. 사이트 주인이 할 일과 결정할 것</h2>
+  <h3>할 일 (세 보고서 공통 P0)</h3>
+  <ol>
+    <li><b>Neon 생성</b> (pooler 주소 사용) → <code>npm run db:migrate</code> → Vercel에 로그인·포트원·VAPID·<code>ADMIN_EMAILS</code>·<code>MAIL_FROM</code></li>
+    <li><b>검색엔진 등록</b>: Google Search Console, 네이버 서치어드바이저, Bing → 소유 확인 값을 환경변수로, <code>sitemap.xml</code> 제출</li>
+    <li><b>법적 정보</b>: 통신판매업 신고번호·주소·고객센터 → <code>src/lib/business.ts</code>, 개인정보처리방침 시행일 확정(지금 2026-11-01), 법률 검토</li>
+    <li><b>공공데이터 운영계정 전환</b>, 서울시 활용사례 등록</li>
+    <li><b>브랜드 언급 쌓기</b>(GEO): 커뮤니티·SNS에 유용한 정보 형태로 공유 (광고성 도배 금지)</li>
+  </ol>
+  <h3>결정할 것</h3>
+  <ul>
+    <li>포지셔닝 문구를 “혼잡을 피해 이동하는 여행 도우미”로 확정할지 (ChatGPT 추천)</li>
+    <li>Plus 혜택을 “맞춤 알림·여러 날짜 비교·코스 저장/편집·광고 제거”로 재구성할지, 결제 오픈을 전환 흐름 검증 뒤로 미룰지</li>
+    <li>해외 IP 자동 언어 전환 유지 여부 (현재 유지 + 보완 방향)</li>
+    <li>다크 모드 착수 시점</li>
+  </ul>
+  <div class="box good"><b>진행 방식</b>: 4장의 A→F를 묻지 않고 순서대로 진행하고, 끝나면 결과와 남은 일을 다시 PDF로 보고합니다.</div>
+</section>
+
+<section>
+  <h2>6. 진행 결과 (2026-10-17, PR #69~#76 머지·운영 반영)</h2>
+  <table>
+    <tr><th style="width:10%">PR</th><th style="width:22%">계획</th><th>한 일</th><th style="width:22%">확인</th></tr>
+    <tr><td>#69</td><td>A. 데이터 신뢰성</td><td>서울시 데이터 장소는 공식 단계로 점수화 · ‘예측 모델 (샘플)’ → ‘CrowdView 추정 (요일·시간·날씨 패턴)’ · 실측 없는 장소 제목 ‘혼잡 예측’ · ‘갱신 지연’ 표시 · 추천 시간은 운영 시작~마감 2시간 전(장소), 08~21시(서울 FAQ) · 축제 ‘지역 방문 증가 예상 (시군구 기준)’ + 축제장 인원 아님 안내 · 행사 전 ‘행사 전 · D-n’ · 마감 체험 제외</td><td>불꽃축제 ‘행사 전 · D-21’ 확인</td></tr>
+    <tr><td>#75</td><td>A 보강</td><td>장소가 서울 119곳 묶음 값을 그대로 사용 → 홈·장소·서울 실시간이 같은 관측 시각·같은 단계 (운영 확인 중 남은 불일치 발견해 수정), 서울시 호출 10분마다 6번 감소</td><td>6곳 모두 장소 = 서울 실시간 점수, 16:05 동일</td></tr>
+    <tr><td>#76</td><td>A 보강</td><td>입장 마감이 가까우면 “지금이 가장 한산” 대신 “오늘은 입장 마감이 가까워요” (운영 확인 중 발견)</td><td>경복궁 16시대 사례</td></tr>
+    <tr><td>#70</td><td>B. 로봇이 읽는 본문</td><td>/guide 첫 목록·링크·건수, /explore 첫 지역 관광공사 명소를 서버 렌더링 · 장소·서울 지역 상단 한 문장 요약(단계·출처·기준 시각·추천 시간) · BreadcrumbList, 서울 지역 Place JSON-LD</td><td>자바스크립트 없는 HTML에 링크 120개, ‘불러오는 중’ 0</td></tr>
+    <tr><td>#71</td><td>C. 운영 안전</td><td>IP별 분당 요청 제한(코스 20·알림 30·회원 60·운영 30·오류 10, 429) · <code>/api/health</code>(Redis·소스별 신선도·API 사용률, 문제 시 503) · 브라우저 오류 → 디스코드 · 실시간 40분 지연 알림</td><td>운영 health 200, 테스트 2개</td></tr>
+    <tr><td>#72</td><td>D. 신뢰 공개</td><td>매시간 서울 119곳 예측 저장 → 실제와 비교(5단계 일치율·평균 오차, 공식 1h·3h / 패턴 24h) · <code>/accuracy</code> · <code>/methodology</code> · 바닥글·sitemap·llms.txt</td><td>운영 200, 몇 시간 뒤부터 숫자 쌓임</td></tr>
+    <tr><td>#73</td><td>E. 결정 돕기·공유</td><td>지금 덜 붐비는 근처 대안 3곳 · 공유 코스 ‘이 코스 장소를 담아서 내 일정으로’ · 📅 캘린더(.ics) · 코스 날씨 경고(비·초미세먼지)</td><td>강남역 → 서리풀공원·가로수길, ‘10시쯤 비 예보 70%’</td></tr>
+    <tr><td>#74</td><td>F. 성능·접근성</td><td>사진 next/image AVIF/WebP(예: 97KB → 15KB) · 지도 핀 40개↑ 묶기 · 핀 이름·단계 글자 설명 · 버튼 누르는 영역 확대 · 한산한 곳이 없을 때 ‘그나마 덜 붐비는 곳’</td><td>홈 이미지 응답 avif 확인</td></tr>
+  </table>
+  <h3>아직 남은 것</h3>
+  <ul>
+    <li><b>사이트 주인 키 필요</b>: Neon·로그인·포트원·VAPID·메일 도메인 → 실결제·푸시 검증 / 검색엔진 등록 / 사업자·약관 정보</li>
+    <li><b>측정 후 판단</b>: 정확도 수치가 1~2주 쌓이면 패턴 예측 보정(상권분석 요일·시간 유동인구), 일치율 낮은 지역은 ‘예측 준비 중’ 처리</li>
+    <li><b>다음 개발 후보</b>: 외국어 콘텐츠(관광공사 외국어 TourAPI 신청 후), 핵심 명소 상세(/spot) 선별 공개, 화면 흐름 E2E 테스트(Playwright), 다크 모드, 공유 OG 이미지</li>
+  </ul>
+</section>
+
+</body>
+</html>
