@@ -20,6 +20,11 @@ export async function GET(req: Request) {
   const daily = Math.floor(now.hour) === 4 && (now.hour % 1) * 60 < 10;
   const expired = daily ? await expireEnded().catch(async (e) => (await opsAlert("구독 만료 정리 실패", e), 0)) : 0;
   const notices = daily ? await sendRenewalNotices().catch(async (e) => (await opsAlert("자동결제 안내 실패", e), 0)) : 0;
+  // 실시간 원본 중 40분 넘게 안 바뀐 곳이 있으면 그 원본이 멈춘 것 (화면엔 '갱신 지연'으로 보인다)
+  const staleLive = Object.entries(await getAllCrowd())
+    .filter(([, c]) => c.source !== "model" && c.ageMinutes > 40)
+    .map(([id, c]) => `${id}(${c.source} ${c.ageMinutes}분)`);
+  if (staleLive.length) await opsAlert(`실시간 데이터 갱신 지연 ${staleLive.length}곳`, staleLive.join(", "));
   // 실시간 원본이 하나도 안 들어오면(전부 예측값) 원본 API·키 장애일 가능성이 크다
   if (refreshed.length && refreshed.every((r) => r.source === "model")) await opsAlert(`실시간 수집 전체 실패 (${refreshed.length}곳 모두 예측값)`);
   return NextResponse.json({ refreshed, alerts, expired, notices });

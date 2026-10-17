@@ -5,6 +5,7 @@ import { currentUser } from "@/lib/auth";
 import { pool, sql } from "@/lib/db";
 import { getGuidePlace } from "@/lib/seoul-guide";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
+import { rateLimit } from "@/lib/ratelimit";
 
 const MAX = 50;
 
@@ -15,6 +16,8 @@ function hrefOf(id: string): string | undefined {
 }
 
 export async function GET(req: Request) {
+  const limited = await rateLimit(req, "me");
+  if (limited) return limited;
   const user = await currentUser(req.headers);
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const rows = await sql<{ pick_id: string; label: string }>("select pick_id, label from pick where user_id = $1 order by position, created_at", [user.id]);
@@ -22,6 +25,8 @@ export async function GET(req: Request) {
 }
 
 export async function PUT(req: Request) {
+  const limited = await rateLimit(req, "me");
+  if (limited) return limited;
   const user = await currentUser(req.headers);
   if (!user || !pool) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const body = (await req.json().catch(() => ({}))) as { picks?: unknown };
