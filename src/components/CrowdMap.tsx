@@ -89,7 +89,7 @@ function NaverCrowdMap({
           const marker = new maps.Marker({
             map,
             position,
-            title: t(p.name),
+            title: c.open ? `${t(p.name)} · ${t(levelOf(c.score).label)}` : t(p.name),
             icon: {
               content: `<div style="width:34px;height:34px;border-radius:9999px;background:#fff;border:3px solid ${color};display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer">${p.emoji}</div>`,
               anchor: new maps.Point(17, 17),

@@ -903,4 +903,5 @@ export default {
   캘린더: ["Calendar", "カレンダー", "日历", "行事曆"],
   "{h}시쯤 비 예보가 있어요 (강수확률 {pop}%). 실내 장소를 담거나 우산을 챙기세요.": ["Rain is forecast around {h}:00 ({pop}% chance). Save indoor places or bring an umbrella.", "{h}時頃に雨の予報があります (降水確率{pop}%)。屋内の場所を選ぶか傘をお持ちください。", "{h}点左右有雨 (降水概率{pop}%)。可收藏室内地点或带伞。", "{h}點左右有雨 (降雨機率{pop}%)。可收藏室內地點或帶傘。"],
   "이날 초미세먼지 ‘{grade}’ 예보예요. 야외 일정은 짧게 잡는 게 좋아요.": ["Fine dust is forecast as ‘{grade}’ that day. Keep outdoor time short.", "この日はPM2.5「{grade}」の予報です。屋外の予定は短めがおすすめです。", "当天细颗粒物预报为“{grade}”，户外行程宜短。", "當天細懸浮微粒預報為「{grade}」，戶外行程宜短。"],
+  "그나마 덜 붐비는 곳": ["Least crowded right now", "比較的すいている場所", "相对人少的地方", "相對人少的地方"],
 };

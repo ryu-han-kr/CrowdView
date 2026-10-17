@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "@/i18n/link";
+import Image from "next/image";
 import { useRef, useState } from "react";
+import { canOptimize } from "@/lib/img";
 import { useI18n } from "@/i18n/client";
 import { LevelBadge } from "../Level";
 
@@ -31,8 +33,14 @@ export function PhotoCard({ item, rank, className = "" }: { item: PhotoCardItem;
     <>
       <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100">
         {item.img ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.img} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-300 md:group-hover:scale-105" />
+          <Image
+            src={item.img}
+            alt=""
+            fill
+            sizes="(min-width: 768px) 20vw, 45vw"
+            unoptimized={!canOptimize(item.img)}
+            className="object-cover transition-transform duration-300 md:group-hover:scale-105"
+          />
         ) : (
           <div className="flex h-full items-center justify-center bg-gradient-to-br from-indigo-100 to-sky-100 text-5xl">{item.emoji ?? "📍"}</div>
         )}
