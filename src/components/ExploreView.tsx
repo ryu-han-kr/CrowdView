@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
-import { MoreSpots, spotCard, useSpots } from "./MoreSpots";
+import { MoreSpots, spotCard, useSpots, type SpotRow } from "./MoreSpots";
 import { StickyBar } from "./StickyBar";
 
 export interface ExploreRegion {
@@ -15,7 +15,18 @@ export interface ExploreRegion {
 }
 
 /** 지역 여행: 지역 칩 → 그 지역 대표 명소(종류 칩) + 축제. ?region= 으로 바로 연다 */
-export function ExploreView({ regions, kinds }: { regions: ExploreRegion[]; kinds: { id: string; label: string; emoji: string }[] }) {
+export function ExploreView({
+  regions,
+  kinds,
+  initialSpots,
+  spotCounts,
+}: {
+  regions: ExploreRegion[];
+  kinds: { id: string; label: string; emoji: string }[];
+  /** 첫 지역의 관광공사 명소 (서버 렌더링용) */
+  initialSpots?: SpotRow[];
+  spotCounts?: Record<string, number>;
+}) {
   const { t, lang } = useI18n();
   const spots = useSpots();
   const [region, setRegion] = useState(regions[0]?.id);
@@ -145,7 +156,7 @@ export function ExploreView({ regions, kinds }: { regions: ExploreRegion[]; kind
             )}
           </section>
 
-          <MoreSpots region={cur.id} />
+          <MoreSpots region={cur.id} initial={initialSpots} counts={spotCounts} />
         </>
       )}
     </div>

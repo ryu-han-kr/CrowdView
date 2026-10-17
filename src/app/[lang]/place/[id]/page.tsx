@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { StayLinks } from "@/components/StayLinks";
 import type { Metadata } from "next";
-import { jsonLd, pageMeta, SITE } from "@/lib/seo";
+import { breadcrumbLd, jsonLd, kstClock, pageMeta, SITE } from "@/lib/seo";
 import { HourlyChart } from "@/components/HourlyChart";
 import { LevelBadge } from "@/components/Level";
 import { PlaceHero } from "@/components/PlaceHero";
@@ -150,6 +150,18 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           }),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd(
+            breadcrumbLd(lang, [
+              { name: "CrowdView", path: "/" },
+              { name: t(CATEGORY_LABEL[place.category]), path: `/?cat=${place.category}` },
+              { name: t(place.name), path: placeHref(place) },
+            ]),
+          ),
+        }}
+      />
       <PlaceHero place={place} />
 
       {/* 모바일: 한 줄로 쌓기 / PC: 왼쪽(지금·언제 갈까) 고정 + 오른쪽(그래프·정보) */}
@@ -163,6 +175,20 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             <FavoriteButton placeId={place.id} className="hidden shrink-0 md:inline-flex" />
           </div>
           <p className="mt-2 text-sm leading-relaxed text-gray-600">{t(place.description)}</p>
+          {/* 한 문장 요약: 사람과 AI 검색이 바로 인용할 수 있게 (단계·출처·기준 시각) */}
+          <p className="mt-2 text-[13px] leading-relaxed text-gray-800">
+            {beforeEvent
+              ? t("{name}은(는) {date}에 열려요. 아직 행사 전이라 지금 혼잡도 대신 행사 당일 예측을 보여드려요.", { name: t(place.name), date: place.eventDate! })
+              : !isOpen
+                ? t("{name}은(는) 지금 운영 시간이 아니에요.", { name: t(place.name) })
+                : t("{name}의 지금 혼잡도는 ‘{level}’이에요 ({source}, {time} 기준).", {
+                    name: t(place.name),
+                    level: t(level.label),
+                    source: t(SOURCE_LABEL[crowd.source]),
+                    time: kstClock(crowd.updatedAt),
+                  })}
+            {!beforeEvent && best && ` ${t("오늘 남은 운영 시간 중에는 {hour}쯤이 가장 한산할 것으로 보여요.", { hour: formatHour(best.hour, lang) })}`}
+          </p>
 
           {/* 현재 혼잡도 */}
           {/* 지금 혼잡도 */}

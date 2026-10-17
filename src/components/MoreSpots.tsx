@@ -9,7 +9,7 @@ import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
 
 /** [contentid, 종류, 지역, 이름, 위도, 경도, 작은 사진, 시군구] */
-type SpotRow = [string, "attraction" | "culture" | "leisure", string, string, number, number, string, string];
+export type SpotRow = [string, "attraction" | "culture" | "leisure", string, string, number, number, string, string];
 
 const SPOT_KINDS = [
   { id: "attraction", label: "관광지", emoji: "🏞️" },
@@ -67,9 +67,11 @@ export function spotCard(s: SpotRow, lang: string, t: (k: string) => string, sco
   };
 }
 
-export function MoreSpots({ region }: { region: string }) {
+/** initial: 서버가 미리 그려 주는 첫 지역의 명소 (검색로봇·자바스크립트 없이도 보이게), counts: 지역별 건수 */
+export function MoreSpots({ region, initial, counts }: { region: string; initial?: SpotRow[]; counts?: Record<string, number> }) {
   const { t, lang } = useI18n();
-  const rows = useSpots();
+  const loaded = useSpots();
+  const rows = loaded ?? (initial?.length && initial[0][2] === region ? initial : null);
   const live = useSeoulLevels(region === "서울");
   const [kind, setKind] = useState<string>("all");
   const [shown, setShown] = useState(PAGE);
@@ -91,14 +93,14 @@ export function MoreSpots({ region }: { region: string }) {
     const level = best && live[best.code];
     return level ? LEVEL_SCORE[level] : undefined;
   };
-  if (rows && !inRegion.length) return null;
+  if (rows && !inRegion.length && !counts?.[region]) return null;
   const chip = (on: boolean) => `shrink-0 rounded-full px-3.5 py-1.5 text-sm font-semibold ${on ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`;
 
   return (
     <section className="mt-10">
       <h2 className="text-lg font-bold md:text-xl">
         {t("{region} 더 많은 명소", { region: t(region) })}
-        <span className="ml-2 text-sm font-normal text-gray-500">{t("한국관광공사 등록 {n}곳", { n: inRegion.length })}</span>
+        <span className="ml-2 text-sm font-normal text-gray-500">{t("한국관광공사 등록 {n}곳", { n: counts?.[region] ?? inRegion.length })}</span>
       </h2>
       {lang !== "ko" && <p className="mt-0.5 text-xs text-gray-500">{t("이 목록의 이름은 한국어로 보여요. 누르면 지도에서 위치를 볼 수 있어요.")}</p>}
       <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">

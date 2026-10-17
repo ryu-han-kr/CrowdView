@@ -59,3 +59,15 @@ export function pageMeta({
 
 /** <script type="application/ld+json"> 에 넣을 문자열 (</script> 끊김 방지) */
 export const jsonLd = (data: object) => JSON.stringify(data).replace(/</g, "\\u003c");
+
+/** 경로 구조화 데이터 (예: 홈 > 서울 실시간 > 경복궁). path는 언어 접두사 없는 주소 */
+export function breadcrumbLd(lang: Lang, items: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((it, i) => ({ "@type": "ListItem", position: i + 1, name: it.name, item: `${SITE}${localePath(lang, it.path)}` })),
+  };
+}
+
+/** 한국 시각 HH:MM (사실 문장의 기준 시각) */
+export const kstClock = (iso: string) => new Date(new Date(iso).getTime() + 9 * 3600_000).toISOString().slice(11, 16);
