@@ -74,3 +74,18 @@ test("예측 함수가 있으면 hourly에 없는 시간에 쓰고 '예측'으�
   assert.equal(p.stops[0].score, 12);
   assert.equal(p.stops[0].predicted, true);
 });
+
+test("다시 짜기: 이미 들른 곳(exclude)은 다시 넣지 않는다", () => {
+  const p = planRoute(ALL, req(), { exclude: ["a", "b"] });
+  assert.ok(p.stops.length > 0);
+  assert.ok(!p.stops.some((s) => s.id === "a" || s.id === "b"));
+});
+
+test("이유 설명: 가장 한산한 시간 도착(calm)과 개장 대기(waitMin)를 표시한다", () => {
+  const calm = cand("calm", 37.57, 126.98, { hourly: { 9: 10, 10: 60, 11: 70, 12: 70, 13: 70, 14: 70, 15: 70, 16: 70, 17: 70, 18: 70, 19: 70, 20: 70, 21: 70 } });
+  const p1 = planRoute([calm], req());
+  assert.equal(p1.stops[0].calm, true);
+  const shop = cand("shop", 37.57, 126.985, { hours: [10, 20] });
+  const p2 = planRoute([shop], req({ startMin: 9 * 60 }));
+  assert.ok((p2.stops[0].waitMin ?? 0) > 0);
+});

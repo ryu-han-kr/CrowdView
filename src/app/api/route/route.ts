@@ -1,6 +1,8 @@
 // 추천 루트 만들기. POST {start:{lat,lng,name}, day, hour, durationMin, interests, transport, picks}
 // day: 오늘부터 며칠 뒤(0~6), hour: 출발 시(없으면 지금). 예전 형식 offsetMin(지금부터 분)도 받는다
-// 결제가 켜져 있으면 Plus가 아닌 회원은 앞의 2곳만 보여준다 (미리보기). 결제 전에는 베타로 전부 공개
+// 다시 짜기: startMin(오늘 0시부터 분) + exclude(이미 들른 곳)를 보내면 그 시각·위치부터 남은 시간으로 짠다.
+// 결제가 켜져 있으면 Plus가 아닌 회원은 앞의 2곳만 보여준다 (미리보기). 결제 전에는 베타로 전부 공개.
+// 결과는 공유 링크(/r/{id})용으로 30일 저장한다 (lib/route-share)
 import { NextResponse } from "next/server";
 import { currentUser } from "@/lib/auth";
 import type { Transport } from "@/lib/geo";
@@ -13,6 +15,7 @@ import { kst } from "@/lib/time";
 import { isLang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { translateNames } from "@/lib/name-translate";
+import { saveSharedRoute } from "@/lib/route-share";
 
 const PREVIEW_STOPS = 2;
 let memo: { at: number; data: Candidate[] } | undefined;
@@ -35,6 +38,9 @@ export async function POST(req: Request) {
     lang?: string;
     /** ☆로 담은 곳 id (seoul-<코드> | vs-<코드>) */
     picks?: string[];
+    /** 다시 짜기: 출발 시각(오늘 0시부터 분)과 빼고 짤 장소 */
+    startMin?: number;
+    exclude?: string[];
   };
   const lat = Number(body.start?.lat);
   const lng = Number(body.start?.lng);
@@ -45,14 +51,17 @@ export async function POST(req: Request) {
   if (!interests.length && !pickIds.length) return NextResponse.json({ error: "관심사를 하나 이상 골라 주세요" }, { status: 400 });
   const transport: Transport = body.transport === "walk" ? "walk" : "transit";
   // 출발: 오늘~6일 뒤. 서울시 12시간 예측 밖은 지하철 승하차 모양·장소 예측 모델로 (lib/forecast). 일정은 2~8시간
-  const durationMin = Math.min(480, Math.max(120, Math.round(Number(body.durationMin) || 240)));
+  const replan = Number.isFinite(Number(body.startMin)) && body.startMin !== undefined;
+  // 다시 짤 때는 남은 시간이 짧을 수 있어 1시간부터
+  const durationMin = Math.min(480, Math.max(replan ? 60 : 120, Math.round(Number(body.durationMin) || 240)));
   const now = kst();
   const nowMin = Math.ceil((Math.floor(now.hour * 60) + 5) / 10) * 10;
   const day = Math.min(6, Math.max(0, Math.round(Number(body.day) || 0)));
   const hourNum = Number(body.hour);
   const hour = body.hour === null || body.hour === undefined || !Number.isFinite(hourNum) ? null : Math.min(23, Math.max(0, Math.round(hourNum)));
-  const startMin =
-    body.day === undefined && body.offsetMin !== undefined
+  const startMin = replan
+    ? Math.min(7 * 1440, Math.max(nowMin, Math.round(Number(body.startMin))))
+    : body.day === undefined && body.offsetMin !== undefined
       ? Math.ceil((Math.floor(now.hour * 60) + Math.min(360, Math.max(0, Math.round(Number(body.offsetMin) || 0))) + 5) / 10) * 10
       : day === 0
         ? Math.max(nowMin, hour === null ? 0 : hour * 60)
@@ -62,7 +71,12 @@ export async function POST(req: Request) {
   const plan = planRoute(
     all,
     { start: { lat, lng, name: String(body.start?.name ?? "출발") }, startMin, durationMin, interests, transport },
-    { travel: transitTravel, meals: MEAL_SPOTS, must: await getPickCandidates(pickIds, all) },
+    {
+      travel: transitTravel,
+      meals: MEAL_SPOTS,
+      must: await getPickCandidates(pickIds, all),
+      exclude: (Array.isArray(body.exclude) ? body.exclude : []).filter((x): x is string => typeof x === "string").slice(0, 30),
+    },
   );
 
   let locked = 0;
@@ -83,5 +97,7 @@ export async function POST(req: Request) {
     const guide = isGuide(s.id) ? getGuidePlace(s.id) : undefined;
     return { ...s, name: guide ? guideText(guide, lang).text.n : (names.get(s.name) ?? t(s.name)) };
   });
-  return NextResponse.json({ plan, startMin, locked, beta: !portoneEnabled });
+  const start = { lat, lng, name: String(body.start?.name ?? "출발").slice(0, 60) };
+  const shareId = plan.stops.length ? await saveSharedRoute({ plan, start, startMin, lang, locked }).catch(() => undefined) : undefined;
+  return NextResponse.json({ plan, startMin, locked, beta: !portoneEnabled, shareId });
 }

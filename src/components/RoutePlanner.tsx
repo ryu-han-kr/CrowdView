@@ -45,7 +45,10 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
   const [transport, setTransport] = useState<Transport>("transit");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<{ plan: RoutePlan; locked: number; beta: boolean } | null>(null);
+  const [result, setResult] = useState<RouteResponse | null>(null);
+  // 다시 짜기: 처음 정한 일정이 끝나는 시각(오늘 0시부터 분)과 어디서 다시 짰는지
+  const [endAbs, setEndAbs] = useState(0);
+  const [replanned, setReplanned] = useState<string | null>(null);
   // 서울 실시간·여행 가이드에서 ☆로 담은 곳 (켜 두면 코스에 꼭 넣는다)
   const { picks, remove: removePick } = usePicks();
   const [usePicked, setUsePicked] = useState(true);
@@ -68,25 +71,53 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
     }
   };
 
-  const plan = async () => {
-    if (!start) return setError(t("출발지를 먼저 정해 주세요"));
-    if (!interests.length && !sendPicks.length) return setError(t("관심사를 하나 이상 골라 주세요"));
+  const request = async (body: Record<string, unknown>): Promise<RouteResponse | null> => {
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/route", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ start, day, hour, durationMin: duration, interests, transport, lang, picks: sendPicks }),
-      });
+      const res = await fetch("/api/route", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? `HTTP ${res.status}`);
-      setResult(json);
+      return json as RouteResponse;
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
+      return null;
     } finally {
       setBusy(false);
     }
+  };
+
+  const plan = async () => {
+    if (!start) return setError(t("출발지를 먼저 정해 주세요"));
+    if (!interests.length && !sendPicks.length) return setError(t("관심사를 하나 이상 골라 주세요"));
+    const json = await request({ start, day, hour, durationMin: duration, interests, transport, lang, picks: sendPicks });
+    if (!json) return;
+    setResult(json);
+    setEndAbs(json.startMin + duration);
+    setReplanned(null);
+  };
+
+  /** i번째 장소를 떠나는 시각·위치부터, 들른 곳은 빼고 남은 시간으로 다시 짠다 (붐비거나 계획이 바뀌었을 때) */
+  const replanFrom = async (i: number) => {
+    if (!result) return;
+    const stop = result.plan.stops[i];
+    const visited = result.plan.stops.slice(0, i + 1).map((s) => s.id);
+    const left = endAbs - stop.leave;
+    if (left < 60) return setError(t("남은 시간이 1시간보다 짧아 다시 짤 수 없어요"));
+    const json = await request({
+      start: { lat: stop.lat, lng: stop.lng, name: stop.name },
+      startMin: stop.leave,
+      durationMin: left,
+      interests,
+      transport,
+      lang,
+      picks: sendPicks.filter((id) => !visited.includes(id)),
+      exclude: visited,
+    });
+    if (!json) return;
+    setStart({ lat: stop.lat, lng: stop.lng, name: stop.name });
+    setResult(json);
+    setReplanned(stop.name);
   };
 
   const chip = (on: boolean) =>
@@ -226,7 +257,12 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
       </section>
 
       <section className="mt-8 lg:mt-0">
-        {result ? <RouteResult start={start!} {...result} /> : <Intro />}
+        {replanned && result && (
+          <p className="mb-3 rounded-2xl bg-indigo-50 px-4 py-2.5 text-xs font-semibold text-indigo-800">
+            ↻ {t("{name}에서 다시 짠 코스예요", { name: replanned })}
+          </p>
+        )}
+        {result ? <RouteResult start={start!} {...result} onReplan={busy ? undefined : replanFrom} /> : <Intro />}
       </section>
     </div>
   );
@@ -246,23 +282,55 @@ function Intro() {
   );
 }
 
-function RouteResult({
+export interface RouteResponse {
+  plan: RoutePlan;
+  startMin: number;
+  locked: number;
+  beta: boolean;
+  shareId?: string;
+}
+
+/** 코스 결과 (코스 추천 화면과 공유 페이지 /r/{id} 에서 함께 쓴다) */
+export function RouteResult({
   start,
   plan,
   locked,
   beta,
+  shareId,
+  onReplan,
+  createdOn,
 }: {
   start: LatLng & { name: string };
   plan: RoutePlan;
   locked: number;
   beta: boolean;
+  shareId?: string;
+  /** i번째 장소부터 다시 짜기 (공유 페이지에서는 없음) */
+  onReplan?: (i: number) => void;
+  /** 코스를 만든 날 (공유 페이지: '내일'을 그날 기준으로) */
+  createdOn?: string;
 }) {
-  const { t, lang } = useI18n();
+  const { t, lang, lp } = useI18n();
+  const [shared, setShared] = useState(false);
+  const share = async () => {
+    if (!shareId) return;
+    const url = `${window.location.origin}${lp(`/r/${shareId}`)}`;
+    try {
+      if (navigator.share) await navigator.share({ title: t("한산한 코스"), url });
+      else {
+        await navigator.clipboard.writeText(url);
+        setShared(true);
+        setTimeout(() => setShared(false), 2500);
+      }
+    } catch {}
+  };
+  const base = createdOn ? Date.parse(`${createdOn}T00:00:00Z`) : Date.now() + 9 * 3600_000;
+  // 공유 페이지는 나중에 열어 볼 수 있어서 '내일' 대신 늘 날짜로
   const dayLabel = (m: number) => {
     const d = Math.floor(m / 1440);
-    if (d === 0) return "";
-    const date = new Date(Date.now() + 9 * 3600_000 + d * 86_400_000);
-    return `${d === 1 ? t("내일") : new Intl.DateTimeFormat(lang, { month: "numeric", day: "numeric", weekday: "short", timeZone: "UTC" }).format(date)} `;
+    const date = new Intl.DateTimeFormat(lang, { month: "numeric", day: "numeric", weekday: "short", timeZone: "UTC" }).format(new Date(base + d * 86_400_000));
+    if (createdOn) return `${date} `;
+    return d === 0 ? "" : `${d === 1 ? t("내일") : date} `;
   };
   if (!plan.stops.length)
     return <p className="rounded-2xl bg-gray-50 p-5 text-sm text-gray-600">{t("조건에 맞는 곳을 찾지 못했어요. 관심사를 늘리거나 대중교통·일정을 바꿔 보세요.")}</p>;
@@ -280,7 +348,14 @@ function RouteResult({
             {saved > 5 && <> · {t("가장 붐빌 때보다 {n}점 한산", { n: saved })}</>}
           </p>
         </div>
-        {beta && <span className="shrink-0 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">{t("베타 무료")}</span>}
+        <span className="flex shrink-0 items-center gap-2">
+          {beta && <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">{t("베타 무료")}</span>}
+          {shareId && (
+            <button onClick={share} className="rounded-full bg-gray-900 px-3 py-1.5 text-xs font-bold text-white">
+              {shared ? `✓ ${t("링크를 복사했어요")}` : `🔗 ${t("공유")}`}
+            </button>
+          )}
+        </span>
       </div>
 
       <RouteSketch points={points} />
@@ -317,11 +392,19 @@ function RouteResult({
                     {s.picked && <span className="mr-1 text-amber-400">★</span>}
                     {s.name}
                   </span>
-                  {!s.meal && s.peak && s.peak.score - s.score >= 15 && (
-                    <span className="block text-[11px] text-emerald-700">
-                      {t("{h}시({level})를 피해서 가요", { h: s.peak.hour, level: t(levelOf(s.peak.score).label) })}
-                    </span>
+                  {/* 왜 이 시간에 가는지 */}
+                  {!s.meal && s.calm ? (
+                    <span className="block text-[11px] text-emerald-700">{t("하루 중 가장 한산한 시간에 도착해요")}</span>
+                  ) : (
+                    !s.meal &&
+                    s.peak &&
+                    s.peak.score - s.score >= 15 && (
+                      <span className="block text-[11px] text-emerald-700">
+                        {t("{h}시({level})를 피해서 가요", { h: s.peak.hour, level: t(levelOf(s.peak.score).label) })}
+                      </span>
+                    )
                   )}
+                  {s.waitMin && <span className="block text-[11px] text-amber-700">{t("{time} 개장까지 {n}분 기다려요", { time: clock(s.arrive), n: s.waitMin })}</span>}
                 </span>
                 {!s.meal && (
                   <span className="flex shrink-0 flex-col items-end gap-0.5">
@@ -330,6 +413,11 @@ function RouteResult({
                   </span>
                 )}
               </Link>
+              {onReplan && i < plan.stops.length - 1 && (
+                <button onClick={() => onReplan(i)} className="mt-1 ml-auto block px-2 text-[11px] font-semibold text-indigo-600">
+                  ↻ {t("여기서부터 다시 짜기")}
+                </button>
+              )}
             </li>
           );
         })}

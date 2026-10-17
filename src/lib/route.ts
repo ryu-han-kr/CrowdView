@@ -75,6 +75,10 @@ export interface RouteStop {
   picked?: boolean;
   /** 실시간·12시간 예측이 아니라 평소 패턴으로 본 예측 점수 */
   predicted?: boolean;
+  /** 그날(9~21시) 가장 한산한 시간대에 도착하면 true (이유 설명용) */
+  calm?: boolean;
+  /** 문 열 때까지 기다린 시간 (분) */
+  waitMin?: number;
   /** 오늘 이 장소가 가장 붐비는 시각과 점수 (피했다는 설명용) */
   peak?: { hour: number; score: number };
   basis: Candidate["basis"];
@@ -120,6 +124,17 @@ function scoreAt(c: Candidate, minute: number): { score: number; predicted: bool
 }
 
 /** 그날 가장 붐비는 시각 (피했다는 설명용) */
+/** 그날 9~21시 중 가장 한산한 시 */
+function calmestHour(c: Candidate, minute: number): number | undefined {
+  const day = Math.floor(minute / 1440) * 24;
+  let best: { hour: number; score: number } | undefined;
+  for (let h = day + 9; h <= day + 21; h++) {
+    const v = c.hourly[h] ?? c.predict?.(h);
+    if (v !== undefined && (!best || v < best.score)) best = { hour: h, score: v };
+  }
+  return best?.hour;
+}
+
 function peakOfDay(c: Candidate, minute: number): { hour: number; score: number } | undefined {
   const day = Math.floor(minute / 1440) * 24;
   let best: { hour: number; score: number } | undefined;
@@ -247,6 +262,8 @@ function makePlanner(req: RouteRequest, travel: TravelFn, spots: MealSpot[], mus
       ...(l.lines && { lines: l.lines }),
       score,
       peak: peakOfDay(c, arrive),
+      ...(calmestHour(c, arrive) === Math.floor(arrive / 60) && { calm: true }),
+      ...(wait > 0 && { waitMin: wait }),
       basis: c.basis,
       ...(mustIds.has(c.id) && { picked: true }),
       ...(predicted && { predicted: true }),
@@ -291,16 +308,21 @@ function permutations<T>(items: T[]): T[][] {
  * travel: 구간 이동시간 (서버는 지하철 노선망, 없으면 직선거리 어림)
  * meals: 식사 장소 후보 (없으면 식사를 넣지 않는다)
  * must: 이용자가 담은 곳. 관심사·거리와 상관없이 먼저 넣고, 남는 시간에 다른 곳을 고른다
+ * exclude: 빼고 짤 장소 id (다시 짜기: 이미 들른 곳)
  */
 export function planRoute(
   all: Candidate[],
   req: RouteRequest,
-  opts: { travel?: TravelFn; meals?: MealSpot[]; must?: Candidate[] } = {},
+  opts: { travel?: TravelFn; meals?: MealSpot[]; must?: Candidate[]; exclude?: string[] } = {},
 ): RoutePlan {
   const radiusKm = req.transport === "walk" ? 3.5 : 15;
   const must = (opts.must ?? []).slice(0, MAX_STOPS);
   const mustIds = new Set(must.map((c) => c.id));
-  const pool = all.filter((c) => !mustIds.has(c.id) && req.interests.includes(c.interest) && distanceKm(req.start, c) <= radiusKm);
+  // exclude: 다시 짤 때 이미 들른 곳
+  const skip = new Set(opts.exclude ?? []);
+  const pool = all.filter(
+    (c) => !mustIds.has(c.id) && !skip.has(c.id) && req.interests.includes(c.interest) && distanceKm(req.start, c) <= radiusKm,
+  );
   const spots = (opts.meals ?? []).filter((m) => distanceKm(req.start, m) <= radiusKm + MEAL_KM);
   const planner = makePlanner(req, opts.travel ?? travelMinutes, spots, mustIds);
 
