@@ -4,6 +4,7 @@
 // 사용: node scripts/seoul-data/sync.mjs   (SEOUL_OPENAPI_KEY: .env.local 또는 환경변수)
 import fs from "node:fs";
 import path from "node:path";
+import { buildSubway } from "./subway.mjs";
 
 if (!process.env.SEOUL_OPENAPI_KEY && fs.existsSync(".env.local")) {
   for (const line of fs.readFileSync(".env.local", "utf8").split(/\r?\n/)) {
@@ -122,6 +123,13 @@ function stationOf(subwayInfo) {
     }
   }
   return undefined;
+}
+
+// ── 지하철 노선망 (추천 코스 이동시간): 1~8호선은 실제 역간 시간, 나머지 노선은 역 좌표로 어림
+{
+  const { data, missing } = buildSubway(stationRows, await fetchAll("StationDstncReqreTimeHm"));
+  if (missing.length) console.warn(`  좌표를 못 찾은 역: ${missing.join(", ")}`);
+  write("subway.json", data);
 }
 
 // ── 공중화장실 4,455곳 (서울시 공중화장실 위치정보)
