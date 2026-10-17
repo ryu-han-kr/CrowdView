@@ -852,6 +852,7 @@ const dict: Dict = {
   "{h}시쯤 비 예보가 있어요 (강수확률 {pop}%). 실내 장소를 담거나 우산을 챙기세요.": "Rain is forecast around {h}:00 ({pop}% chance). Save indoor places or bring an umbrella.",
   "이날 초미세먼지 ‘{grade}’ 예보예요. 야외 일정은 짧게 잡는 게 좋아요.": "Fine dust is forecast as ‘{grade}’ that day. Keep outdoor time short.",
   "그나마 덜 붐비는 곳": "Least crowded right now",
+  "오늘은 입장 마감이 가까워요. 다음 방문은 아래 이번 주 예측을 참고하세요.": "Last entry is soon today. For your next visit, see this week's forecast below.",
   "롯데월드 어드벤처": "Lotte World Adventure",
   "에버랜드": "Everland",
   "서울랜드": "Seoul Land",
