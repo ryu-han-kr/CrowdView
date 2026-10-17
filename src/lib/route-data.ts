@@ -22,6 +22,17 @@ const GROUP_INTEREST: Partial<Record<SeoulGroup, Interest>> = { heritage: "histo
 const DEFAULT_HOURS: Record<Interest, [number, number]> = { history: [9, 18], nature: [6, 22], shopping: [10, 23], fun: [10, 22] };
 const GROUP_STAY: Partial<Record<SeoulGroup, number>> = { heritage: 80, park: 60, street: 60, tour: 70 };
 
+/** 사진이 없는 곳(서울 실시간 지역)은 600m 안 가이드 명소·자연의 관광공사 사진을 빌려 쓴다 */
+const PHOTO_SPOTS = GUIDE.filter((g) => g.img && g.lat && g.lng && (g.kind === "attraction" || g.kind === "nature"));
+function photoNear(p: LatLng): string | undefined {
+  let best: { img: string; km: number } | undefined;
+  for (const g of PHOTO_SPOTS) {
+    const km = distanceKm(p, { lat: g.lat!, lng: g.lng! });
+    if (km < 0.6 && (!best || km < best.km)) best = { img: g.img!, km };
+  }
+  return best?.img;
+}
+
 /** "YYYY-MM-DD HH:MM" → 오늘 0시부터 센 시 (내일 9시 = 33) */
 const absHour = (time: string) => daysUntil(time.slice(0, 10)) * 24 + Number(time.slice(11, 13));
 
@@ -34,7 +45,19 @@ function seoulCandidate(a: (typeof SEOUL_AREAS)[number], live: Omit<SeoulLive, "
   for (const f of live.forecast) hourly[absHour(f.time)] = f.score;
   const shape = shapeNear(a);
   const predict = shape && makePredictor(shape, hourly, kst().day);
-  return { id: `seoul-${a.code}`, name: a.name, href: `/seoul/${a.code}`, lat: a.lat, lng: a.lng, hourly, ...(predict && { predict }), now: live.score, basis: "seoul" };
+  const img = photoNear(a);
+  return {
+    id: `seoul-${a.code}`,
+    name: a.name,
+    href: `/seoul/${a.code}`,
+    lat: a.lat,
+    lng: a.lng,
+    hourly,
+    ...(predict && { predict }),
+    now: live.score,
+    basis: "seoul",
+    ...(img && { img }),
+  };
 }
 
 /** 우리 장소의 다른 날 예측 (lib/crowd/model, 날짜마다 한 번 계산) */
@@ -82,6 +105,7 @@ export async function getPickCandidates(ids: string[], all: Candidate[]): Promis
       href: `/guide/${g.id}`,
       lat: g.lat,
       lng: g.lng,
+      img: g.img ?? photoNear({ lat: g.lat, lng: g.lng }),
       interest,
       stay: g.kind === "food" ? 60 : 70,
       hours: g.kind === "food" ? [11, 21] : DEFAULT_HOURS[interest],
@@ -112,6 +136,7 @@ export async function getRouteCandidates(): Promise<Candidate[]> {
       now: c.score,
       hours: p.hours,
       basis: "place",
+      img: p.image,
     });
   }
 
@@ -170,4 +195,5 @@ export const MEAL_SPOTS: MealSpot[] = GUIDE.filter(
   href: `/guide/${p.id}`,
   lat: p.lat!,
   lng: p.lng!,
+  ...(p.img && { img: p.img }),
 }));

@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "@/i18n/link";
-import { useState } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { canOptimize } from "@/lib/img";
+import { RouteMap } from "./map/RouteMap";
 import { useI18n } from "@/i18n/client";
 import { currentPosition, kakaoDirections, type LatLng, type Transport } from "@/lib/geo";
 import { levelOf } from "@/lib/levels";
@@ -26,6 +29,8 @@ function lineName(t: ReturnType<typeof useI18n>["t"], line: string) {
 const kstDay = (n: number) => new Date(Date.now() + 9 * 3600_000 + n * 86_400_000).getUTCDay();
 const kstHour = () => new Date(Date.now() + 9 * 3600_000).getUTCHours();
 const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+const STATE_KEY = "route:planner";
 
 const clock = (m: number) => `${String(Math.floor(m / 60) % 24).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
 
@@ -53,6 +58,37 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
   const { picks, remove: removePick } = usePicks();
   const [usePicked, setUsePicked] = useState(true);
   const sendPicks = usePicked ? picks.map((p) => p.id) : [];
+
+  // 결과 장소를 눌렀다가 뒤로 오면 화면이 처음으로 돌아가던 문제: 고른 조건과 결과를 이 탭(sessionStorage)에 두고 다시 채운다
+  const restored = useRef(false);
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(STATE_KEY);
+      const s = raw ? JSON.parse(raw) : null;
+      // 3시간이 지난 결과는 혼잡 예측이 낡아서 버린다
+      if (s && Date.now() - (s.at ?? 0) < 3 * 3600_000) {
+        if (s.start) setStart(s.start);
+        setDay(s.day ?? 0);
+        setHour(s.hour ?? null);
+        setDuration(s.duration ?? 240);
+        if (Array.isArray(s.interests)) setInterests(s.interests);
+        if (s.transport) setTransport(s.transport);
+        if (s.result) setResult(s.result);
+        setEndAbs(s.endAbs ?? 0);
+        setReplanned(s.replanned ?? null);
+      }
+    } catch {}
+    restored.current = true;
+  }, []);
+  useEffect(() => {
+    if (!restored.current) return;
+    try {
+      sessionStorage.setItem(
+        STATE_KEY,
+        JSON.stringify({ at: Date.now(), start, day, hour, duration, interests, transport, result, endAbs, replanned }),
+      );
+    } catch {}
+  }, [start, day, hour, duration, interests, transport, result, endAbs, replanned]);
 
   const locate = async () => {
     setLocating(true);
@@ -246,11 +282,7 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
           </div>
         </div>
 
-        <button
-          onClick={plan}
-          disabled={busy}
-          className="w-full rounded-2xl bg-indigo-600 py-3.5 text-sm font-bold text-white shadow-sm"
-        >
+        <button onClick={plan} disabled={busy} className="w-full rounded-2xl bg-indigo-600 py-3.5 text-sm font-bold text-white shadow-sm">
           {busy ? t("코스를 짜는 중…") : t("한산한 코스 만들기")}
         </button>
         {error && <p className="text-sm font-semibold text-red-600">{error}</p>}
@@ -332,7 +364,11 @@ export function RouteResult({
   /** 캘린더 파일(.ics): 장소마다 일정 하나 (한국 시각 → UTC) */
   const downloadIcs = () => {
     const day0 = Date.parse(`${new Date(base).toISOString().slice(0, 10)}T00:00:00Z`) - 9 * 3600_000;
-    const stamp = (min: number) => new Date(day0 + min * 60_000).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    const stamp = (min: number) =>
+      new Date(day0 + min * 60_000)
+        .toISOString()
+        .replace(/[-:]/g, "")
+        .replace(/\.\d{3}/, "");
     // iCalendar 글자 규칙: 쉼표·세미콜론·역슬래시 앞에 역슬래시
     const esc = (s: string) => s.replace(/[\\,;]/g, (c) => `\\${c}`);
     const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//CrowdView//Route//KO", "CALSCALE:GREGORIAN"];
@@ -360,20 +396,27 @@ export function RouteResult({
   // 공유 페이지는 나중에 열어 볼 수 있어서 '내일' 대신 늘 날짜로
   const dayLabel = (m: number) => {
     const d = Math.floor(m / 1440);
-    const date = new Intl.DateTimeFormat(lang, { month: "numeric", day: "numeric", weekday: "short", timeZone: "UTC" }).format(new Date(base + d * 86_400_000));
+    const date = new Intl.DateTimeFormat(lang, { month: "numeric", day: "numeric", weekday: "short", timeZone: "UTC" }).format(
+      new Date(base + d * 86_400_000),
+    );
     if (createdOn) return `${date} `;
     return d === 0 ? "" : `${d === 1 ? t("내일") : date} `;
   };
   if (!plan.stops.length)
-    return <p className="rounded-2xl bg-gray-50 p-5 text-sm text-gray-600">{t("조건에 맞는 곳을 찾지 못했어요. 관심사를 늘리거나 대중교통·일정을 바꿔 보세요.")}</p>;
+    return (
+      <p className="rounded-2xl bg-gray-50 p-5 text-sm text-gray-600">
+        {t("조건에 맞는 곳을 찾지 못했어요. 관심사를 늘리거나 대중교통·일정을 바꿔 보세요.")}
+      </p>
+    );
   const saved = plan.peakAvgScore - plan.avgScore;
-  const points = [start, ...plan.stops];
+  const points = [start, ...plan.stops.map((s) => ({ lat: s.lat, lng: s.lng, name: s.name, score: s.meal ? undefined : s.score, meal: !!s.meal }))];
   return (
     <div>
       <div className="flex items-end justify-between gap-3">
         <div>
           <p className="text-lg font-bold">
-            {t("{n}곳 코스", { n: plan.stops.length + locked })} · {dayLabel(plan.stops[0].arrive)}{clock(plan.stops[0].arrive - plan.stops[0].travelMin)}~{clock(plan.endMin)}
+            {t("{n}곳 코스", { n: plan.stops.length + locked })} · {dayLabel(plan.stops[0].arrive)}
+            {clock(plan.stops[0].arrive - plan.stops[0].travelMin)}~{clock(plan.endMin)}
           </p>
           <p className="text-sm text-gray-600">
             {t("평균 예상 혼잡")} <b style={{ color: levelOf(plan.avgScore).color }}>{t(levelOf(plan.avgScore).label)}</b>
@@ -400,7 +443,7 @@ export function RouteResult({
           ))}
         </ul>
       )}
-      <RouteSketch points={points} />
+      <RouteMap points={points} />
 
       <ol className="mt-4 space-y-2">
         {plan.stops.map((s, i) => {
@@ -418,12 +461,20 @@ export function RouteResult({
               </a>
               <Link
                 href={s.href}
-                className={`flex items-center gap-3 rounded-2xl border px-4 py-3 ${s.meal ? "border-amber-100 bg-amber-50/60" : "border-gray-100"}`}
+                className={`flex items-center gap-3 rounded-2xl border p-2.5 pr-4 ${s.meal ? "border-amber-100 bg-amber-50/60" : "border-gray-100 bg-white"}`}
               >
-                <span
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white ${s.meal ? "bg-amber-500" : "bg-indigo-600"}`}
-                >
-                  {s.meal ? "🍽️" : i + 1}
+                {/* 사진(있으면) 위에 순서 번호 */}
+                <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-indigo-50 to-sky-100">
+                  {s.img ? (
+                    <Image src={s.img} alt="" fill sizes="64px" unoptimized={!canOptimize(s.img)} className="object-cover" />
+                  ) : (
+                    <span className="flex h-full items-center justify-center text-2xl">{s.meal ? "🍽️" : "📍"}</span>
+                  )}
+                  <span
+                    className={`absolute top-1 left-1 flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white shadow ${s.meal ? "bg-amber-500" : "bg-indigo-600"}`}
+                  >
+                    {s.meal ? "🍽️" : i + 1}
+                  </span>
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-xs font-semibold text-gray-500">
@@ -446,7 +497,11 @@ export function RouteResult({
                       </span>
                     )
                   )}
-                  {s.waitMin && <span className="block text-[11px] text-amber-700">{t("{time} 개장까지 {n}분 기다려요", { time: clock(s.arrive), n: s.waitMin })}</span>}
+                  {s.waitMin && (
+                    <span className="block text-[11px] text-amber-700">
+                      {t("{time} 개장까지 {n}분 기다려요", { time: clock(s.arrive), n: s.waitMin })}
+                    </span>
+                  )}
                 </span>
                 {!s.meal && (
                   <span className="flex shrink-0 flex-col items-end gap-0.5">
@@ -477,44 +532,11 @@ export function RouteResult({
         </Link>
       )}
       <p className="mt-4 text-[11px] leading-relaxed text-gray-400">
-        {t("예상 혼잡은 서울시 실시간 도시데이터와 CrowdView 예측이에요. 이동시간은 서울시 지하철 역간 소요시간과 걷는 거리로 어림한 값이라 실제와 다를 수 있어요. 식사는 서울 여행 가이드 맛집 중 가까운 곳이에요.")}
+        {t(
+          "예상 혼잡은 서울시 실시간 도시데이터와 CrowdView 예측이에요. 이동시간은 서울시 지하철 역간 소요시간과 걷는 거리로 어림한 값이라 실제와 다를 수 있어요. 식사는 서울 여행 가이드 맛집 중 가까운 곳이에요.",
+        )}
         {plan.stops.some((s) => s.predicted) && ` ${t("‘패턴 예측’은 서울시 12시간 예측 밖이라 가까운 역의 요일·시간대 승하차로 어림한 값이에요.")}`}
       </p>
     </div>
-  );
-}
-
-/** 출발지와 들르는 곳을 위치대로 찍은 간단한 경로 그림 */
-function RouteSketch({ points }: { points: (LatLng & { name: string })[] }) {
-  const W = 320;
-  const H = 180;
-  const pad = 24;
-  const lats = points.map((p) => p.lat);
-  const lngs = points.map((p) => p.lng);
-  const [minLat, maxLat, minLng, maxLng] = [Math.min(...lats), Math.max(...lats), Math.min(...lngs), Math.max(...lngs)];
-  const span = Math.max(maxLat - minLat, (maxLng - minLng) * 0.8, 0.005);
-  const x = (lng: number) => pad + ((lng - minLng) * 0.8 * (W - 2 * pad)) / span;
-  const y = (lat: number) => H - pad - ((lat - minLat) * (H - 2 * pad)) / span;
-  return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="mt-4 w-full rounded-3xl bg-sky-50" role="img" aria-label="route">
-      <polyline
-        points={points.map((p) => `${x(p.lng)},${y(p.lat)}`).join(" ")}
-        fill="none"
-        stroke="#6366f1"
-        strokeWidth={2.5}
-        strokeDasharray="6 4"
-        strokeLinecap="round"
-      />
-      {points.map((p, i) => (
-        <g key={i}>
-          <circle cx={x(p.lng)} cy={y(p.lat)} r={i === 0 ? 7 : 11} fill={i === 0 ? "#111827" : "#4f46e5"} stroke="white" strokeWidth={2} />
-          {i > 0 && (
-            <text x={x(p.lng)} y={y(p.lat) + 4} textAnchor="middle" fontSize={11} fontWeight={700} fill="white">
-              {i}
-            </text>
-          )}
-        </g>
-      ))}
-    </svg>
   );
 }

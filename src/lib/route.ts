@@ -28,6 +28,8 @@ export interface Candidate extends LatLng {
   hours?: [number, number];
   /** 데이터 출처 (화면 표시) */
   basis: "seoul" | "place";
+  /** 사진 (화면 표시) */
+  img?: string;
 }
 
 /** 식사 장소 후보 (서울 여행 가이드 맛집) */
@@ -35,6 +37,7 @@ export interface MealSpot extends LatLng {
   id: string;
   name: string;
   href: string;
+  img?: string;
 }
 
 /** 한 구간 이동 */
@@ -82,6 +85,7 @@ export interface RouteStop {
   /** 오늘 이 장소가 가장 붐비는 시각과 점수 (피했다는 설명용) */
   peak?: { hour: number; score: number };
   basis: Candidate["basis"];
+  img?: string;
 }
 
 export interface RoutePlan {
@@ -227,6 +231,7 @@ function makePlanner(req: RouteRequest, travel: TravelFn, spots: MealSpot[], mus
       score: 0,
       meal: m.kind,
       basis: "place",
+      ...(spot.img && { img: spot.img }),
     };
     return { pos: spot, t: leave, stops: [...s.stops, stop], cost: s.cost + l.minutes * TRAVEL_W, meals: s.meals.slice(1) };
   }
@@ -265,6 +270,7 @@ function makePlanner(req: RouteRequest, travel: TravelFn, spots: MealSpot[], mus
       ...(calmestHour(c, arrive) === Math.floor(arrive / 60) && { calm: true }),
       ...(wait > 0 && { waitMin: wait }),
       basis: c.basis,
+      ...(c.img && { img: c.img }),
       ...(mustIds.has(c.id) && { picked: true }),
       ...(predicted && { predicted: true }),
     };
@@ -320,9 +326,7 @@ export function planRoute(
   const mustIds = new Set(must.map((c) => c.id));
   // exclude: 다시 짤 때 이미 들른 곳
   const skip = new Set(opts.exclude ?? []);
-  const pool = all.filter(
-    (c) => !mustIds.has(c.id) && !skip.has(c.id) && req.interests.includes(c.interest) && distanceKm(req.start, c) <= radiusKm,
-  );
+  const pool = all.filter((c) => !mustIds.has(c.id) && !skip.has(c.id) && req.interests.includes(c.interest) && distanceKm(req.start, c) <= radiusKm);
   const spots = (opts.meals ?? []).filter((m) => distanceKm(req.start, m) <= radiusKm + MEAL_KM);
   const planner = makePlanner(req, opts.travel ?? travelMinutes, spots, mustIds);
 
@@ -339,8 +343,7 @@ export function planRoute(
       for (const c of from) {
         if (chosen.includes(c) || chosen.some((x) => distanceKm(x, c) < MIN_GAP_KM && !(mustIds.has(x.id) && mustIds.has(c.id)))) continue;
         // 관심사가 여러 개면 같은 종류만 이어지지 않게 (직전과 같은 관심사면 약간 손해)
-        const repeat =
-          repeatPenalty && chosen.length > 0 && chosen[chosen.length - 1].interest === c.interest && req.interests.length > 1 ? 8 : 0;
+        const repeat = repeatPenalty && chosen.length > 0 && chosen[chosen.length - 1].interest === c.interest && req.interests.length > 1 ? 8 : 0;
         const next = planner.visit(state, c);
         if (!next) continue;
         const cost = next.cost - state.cost + repeat;
