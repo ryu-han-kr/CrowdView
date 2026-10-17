@@ -4,6 +4,7 @@
 // 사용: node scripts/seoul-data/sync.mjs   (SEOUL_OPENAPI_KEY: .env.local 또는 환경변수)
 import fs from "node:fs";
 import path from "node:path";
+import { buildStationProfile } from "./station-profile.mjs";
 import { buildSubway } from "./subway.mjs";
 
 if (!process.env.SEOUL_OPENAPI_KEY && fs.existsSync(".env.local")) {
@@ -20,11 +21,11 @@ if (!KEY) {
 const OUT = path.join("src", "data", "seoul");
 fs.mkdirSync(OUT, { recursive: true });
 
-/** 서비스 전체를 1000건씩 받는다 */
-async function fetchAll(service) {
+/** 서비스 전체를 1000건씩 받는다. param: 날짜처럼 주소 끝에 붙는 값 (예: 202609) */
+async function fetchAll(service, param = "") {
   const rows = [];
   for (let start = 1; ; start += 1000) {
-    const url = `http://openapi.seoul.go.kr:8088/${KEY}/json/${service}/${start}/${start + 999}/`;
+    const url = `http://openapi.seoul.go.kr:8088/${KEY}/json/${service}/${start}/${start + 999}/${param}`;
     let json;
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
@@ -130,6 +131,13 @@ function stationOf(subwayInfo) {
   const { data, missing } = buildSubway(stationRows, await fetchAll("StationDstncReqreTimeHm"));
   if (missing.length) console.warn(`  좌표를 못 찾은 역: ${missing.join(", ")}`);
   write("subway.json", data);
+}
+
+// ── 역별 혼잡 모양 (코스 추천의 내일·주말 예측)
+{
+  const profile = await buildStationProfile(fetchAll, normStation);
+  console.log(`  역별 혼잡 모양 ${Object.keys(profile.s).length}역 (${profile.month} 시간대 · 최근 ${profile.days}일 요일)`);
+  write("station-profile.json", profile);
 }
 
 // ── 공중화장실 4,455곳 (서울시 공중화장실 위치정보)

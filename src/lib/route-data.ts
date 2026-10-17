@@ -1,6 +1,8 @@
 // 추천 루트 후보 장소: 우리 장소(오늘 시간대별 예측) + 서울시 실시간 지역(서울시 12시간 예측).
 // 역 주변(인구밀집 지역)은 목적지가 아니라서 뺀다. 식사 장소는 서울 여행 가이드 맛집(정확한 좌표가 있는 곳)
+import { forecastForDate } from "./crowd/model";
 import { getAllCrowd } from "./crowd/service";
+import { makePredictor, shapeNear } from "./forecast";
 import { distanceKm, travelMinutes, type LatLng, type Transport } from "./geo";
 import { PLACES, placeHref } from "./places";
 import type { Candidate, Interest, Leg, MealSpot } from "./route";
@@ -8,7 +10,8 @@ import { GUIDE, getGuidePlace } from "./seoul-guide";
 import { SEOUL_AREAS } from "./seoul-areas";
 import { getAllSeoulLive, seoulGroup, type SeoulGroup, type SeoulLive } from "./seoul-live";
 import { subwayTrip } from "./subway";
-import type { Category } from "./types";
+import { addDays, daysUntil, kst } from "./time";
+import type { Category, Place } from "./types";
 
 const PLACE_INTEREST: Partial<Record<Category, Interest>> = { landmark: "history", street: "shopping", themepark: "fun", beach: "nature" };
 const PLACE_OVERRIDE: Record<string, Interest> = { namsan: "nature" };
@@ -19,11 +22,30 @@ const GROUP_INTEREST: Partial<Record<SeoulGroup, Interest>> = { heritage: "histo
 const DEFAULT_HOURS: Record<Interest, [number, number]> = { history: [9, 18], nature: [6, 22], shopping: [10, 23], fun: [10, 22] };
 const GROUP_STAY: Partial<Record<SeoulGroup, number>> = { heritage: 80, park: 60, street: 60, tour: 70 };
 
-/** 서울시 실시간 지역의 지금 + 12시간 예측 → 후보 (관심사·머무는 시간은 부르는 쪽이 정한다) */
+/** "YYYY-MM-DD HH:MM" → 오늘 0시부터 센 시 (내일 9시 = 33) */
+const absHour = (time: string) => daysUntil(time.slice(0, 10)) * 24 + Number(time.slice(11, 13));
+
+/**
+ * 서울시 실시간 지역의 지금 + 12시간 예측 → 후보 (관심사·머무는 시간은 부르는 쪽이 정한다).
+ * 그 뒤(내일·주말)는 가까운 지하철역의 요일·시간대 승하차 모양을 지금 점수에 맞춰 예측한다 (lib/forecast)
+ */
 function seoulCandidate(a: (typeof SEOUL_AREAS)[number], live: Omit<SeoulLive, "distance">): Omit<Candidate, "interest" | "stay"> {
-  const hourly: Record<number, number> = { [Number(live.time.slice(11, 13))]: live.score };
-  for (const f of live.forecast) hourly[Number(f.time.slice(11, 13))] = f.score;
-  return { id: `seoul-${a.code}`, name: a.name, href: `/seoul/${a.code}`, lat: a.lat, lng: a.lng, hourly, now: live.score, basis: "seoul" };
+  const hourly: Record<number, number> = { [absHour(live.time)]: live.score };
+  for (const f of live.forecast) hourly[absHour(f.time)] = f.score;
+  const shape = shapeNear(a);
+  const predict = shape && makePredictor(shape, hourly, kst().day);
+  return { id: `seoul-${a.code}`, name: a.name, href: `/seoul/${a.code}`, lat: a.lat, lng: a.lng, hourly, ...(predict && { predict }), now: live.score, basis: "seoul" };
+}
+
+/** 우리 장소의 다른 날 예측 (lib/crowd/model, 날짜마다 한 번 계산) */
+function placePredictor(p: Place): (absHour: number) => number | undefined {
+  const today = kst().date;
+  const memo = new Map<number, Record<number, number>>();
+  return (h) => {
+    const day = Math.floor(h / 24);
+    if (!memo.has(day)) memo.set(day, Object.fromEntries(forecastForDate(p, addDays(today, day)).map((x) => [x.hour, x.score])));
+    return memo.get(day)![h % 24];
+  };
 }
 
 const KIND_INTEREST: Record<string, Interest> = { attraction: "history", nature: "nature", shopping: "shopping", food: "shopping" };
@@ -84,7 +106,9 @@ export async function getRouteCandidates(): Promise<Candidate[]> {
       lng: p.lng,
       interest,
       stay: PLACE_STAY[p.category] ?? 60,
-      hourly: Object.fromEntries(c.hourly.map((h) => [h.hour % 24, h.score])),
+      // 오늘 시간대별 (실측·예측), 다른 날은 장소 예측 모델
+      hourly: Object.fromEntries(c.hourly.map((h) => [h.hour, h.score])),
+      predict: placePredictor(p) as (absHour: number) => number,
       now: c.score,
       hours: p.hours,
       basis: "place",

@@ -836,4 +836,10 @@ export default {
   "담은 곳을 먼저 넣고, 남는 시간은 관심사에 맞는 한산한 곳으로 채워요 (최대 6곳)": ["Saved places go in first; leftover time is filled with quiet spots matching your interests (up to 6 stops)", "保存した場所を先に入れ、残りの時間は興味に合う空いている場所で埋めます (最大6か所)", "先加入收藏的地方，剩余时间用符合兴趣的人少地点补上 (最多6处)", "先加入收藏的地方，剩餘時間用符合興趣的人少地點補上 (最多6處)"],
   "시간·운영 시간이 맞지 않아 못 넣은 곳: {names}. 일정을 늘리거나 출발 시각을 바꿔 보세요.": ["Couldn't fit (time or opening hours): {names}. Try a longer plan or another start time.", "時間・営業時間が合わず入れられなかった場所: {names}。日程を延ばすか出発時刻を変えてみてください。", "因时间或营业时间不合而未加入: {names}。请延长行程或更改出发时间。", "因時間或營業時間不合而未加入: {names}。請延長行程或更改出發時間。"],
   "관심사를 하나 이상 골라 주세요": ["Pick at least one interest", "興味を1つ以上選んでください", "请至少选择一个兴趣", "請至少選擇一個興趣"],
+  // ── 코스 추천: 내일·주말 출발
+  "출발 날짜": ["Date", "出発日", "出发日期", "出發日期"],
+  "{h}시": ["{h}:00", "{h}時", "{h}点", "{h}點"],
+  "12시간 뒤부터는 지하철 승하차로 본 요일·시간대 패턴으로 예측해요": ["Beyond 12 hours, crowds are estimated from subway ridership patterns by weekday and hour", "12時間以降は地下鉄の乗降から見た曜日・時間帯のパターンで予測します", "12小时以后按地铁上下车人数的星期·时段规律预测", "12小時以後依地鐵上下車人數的星期·時段規律預測"],
+  "패턴 예측": ["pattern est.", "パターン予測", "规律预测", "規律預測"],
+  "‘패턴 예측’은 서울시 12시간 예측 밖이라 가까운 역의 요일·시간대 승하차로 어림한 값이에요.": ["‘Pattern est.’ is beyond Seoul's 12-hour forecast, estimated from nearby stations' ridership by weekday and hour.", "「パターン予測」はソウル市の12時間予測の範囲外のため、近くの駅の曜日・時間帯別乗降から見積もった値です。", "“规律预测”超出首尔市12小时预测范围，是根据附近车站按星期·时段的上下车人数估算的。", "「規律預測」超出首爾市12小時預測範圍，是依附近車站按星期·時段的上下車人數估算的。"],
 };

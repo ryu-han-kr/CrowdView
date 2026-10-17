@@ -22,15 +22,24 @@ function lineName(t: ReturnType<typeof useI18n>["t"], line: string) {
   return n ? t("{n}호선", { n }) : t(line);
 }
 
+/** 한국 시간 기준 오늘부터 n일 뒤의 요일 (0=일) */
+const kstDay = (n: number) => new Date(Date.now() + 9 * 3600_000 + n * 86_400_000).getUTCDay();
+const kstHour = () => new Date(Date.now() + 9 * 3600_000).getUTCHours();
+const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
 const clock = (m: number) => `${String(Math.floor(m / 60) % 24).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
 
 /** 추천 코스 만들기: 출발지(내 위치·주요 장소) · 출발 시각 · 일정 길이 · 관심사 · 이동 수단 → 혼잡을 피하는 순서 */
 export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record<string, string> }) {
   const { t, lang } = useI18n();
   const tr = (ko: string) => names[ko] ?? t(ko);
+  const weekdayName = (dow: number) =>
+    new Intl.DateTimeFormat(lang, { weekday: "short", timeZone: "UTC" }).format(new Date(Date.UTC(2026, 0, 4 + dow)));
   const [start, setStart] = useState<(LatLng & { name: string }) | null>(null);
   const [locating, setLocating] = useState(false);
-  const [offset, setOffset] = useState(0);
+  // 출발 날짜(오늘부터 며칠 뒤)와 시각(null = 지금)
+  const [day, setDay] = useState(0);
+  const [hour, setHour] = useState<number | null>(null);
   const [duration, setDuration] = useState(240);
   const [interests, setInterests] = useState<Interest[]>(["history", "shopping", "nature"]);
   const [transport, setTransport] = useState<Transport>("transit");
@@ -68,7 +77,7 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
       const res = await fetch("/api/route", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ start, offsetMin: offset, durationMin: duration, interests, transport, lang, picks: sendPicks }),
+        body: JSON.stringify({ start, day, hour, durationMin: duration, interests, transport, lang, picks: sendPicks }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? `HTTP ${res.status}`);
@@ -125,14 +134,39 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
         </div>
 
         <div>
-          <p className="text-sm font-bold">{t("출발 시각")}</p>
+          <p className="text-sm font-bold">{t("출발 날짜")}</p>
           <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
-            {[0, 60, 120, 180, 240, 360].map((m) => (
-              <button key={m} onClick={() => setOffset(m)} className={chip(offset === m)}>
-                {m === 0 ? t("지금") : t("{n}시간 뒤", { n: m / 60 })}
+            {[0, 1, 2, 3, 4, 5, 6].map((d) => (
+              <button
+                key={d}
+                onClick={() => {
+                  setDay(d);
+                  if (d > 0 && hour === null) setHour(10);
+                  if (d === 0 && hour !== null && hour <= kstHour()) setHour(null);
+                }}
+                className={chip(day === d)}
+              >
+                {d === 0 ? t("오늘") : d === 1 ? t("내일") : weekdayName(kstDay(d))}
+                {d > 1 && [0, 6].includes(kstDay(d)) && <span className="ml-1 text-[10px] text-rose-400">●</span>}
               </button>
             ))}
           </div>
+          <p className="mt-3 text-sm font-bold">{t("출발 시각")}</p>
+          <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
+            {day === 0 && (
+              <button onClick={() => setHour(null)} className={chip(hour === null)}>
+                {t("지금")}
+              </button>
+            )}
+            {HOURS.filter((h) => day > 0 || h > kstHour()).map((h) => (
+              <button key={h} onClick={() => setHour(h)} className={chip(hour === h)}>
+                {t("{h}시", { h })}
+              </button>
+            ))}
+          </div>
+          {(day > 0 || (hour !== null && hour - kstHour() > 10)) && (
+            <p className="mt-2 text-[11px] text-gray-500">{t("12시간 뒤부터는 지하철 승하차로 본 요일·시간대 패턴으로 예측해요")}</p>
+          )}
         </div>
 
         <div>
@@ -223,7 +257,13 @@ function RouteResult({
   locked: number;
   beta: boolean;
 }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const dayLabel = (m: number) => {
+    const d = Math.floor(m / 1440);
+    if (d === 0) return "";
+    const date = new Date(Date.now() + 9 * 3600_000 + d * 86_400_000);
+    return `${d === 1 ? t("내일") : new Intl.DateTimeFormat(lang, { month: "numeric", day: "numeric", weekday: "short", timeZone: "UTC" }).format(date)} `;
+  };
   if (!plan.stops.length)
     return <p className="rounded-2xl bg-gray-50 p-5 text-sm text-gray-600">{t("조건에 맞는 곳을 찾지 못했어요. 관심사를 늘리거나 대중교통·일정을 바꿔 보세요.")}</p>;
   const saved = plan.peakAvgScore - plan.avgScore;
@@ -233,7 +273,7 @@ function RouteResult({
       <div className="flex items-end justify-between gap-3">
         <div>
           <p className="text-lg font-bold">
-            {t("{n}곳 코스", { n: plan.stops.length + locked })} · {clock(plan.stops[0].arrive - plan.stops[0].travelMin)}~{clock(plan.endMin)}
+            {t("{n}곳 코스", { n: plan.stops.length + locked })} · {dayLabel(plan.stops[0].arrive)}{clock(plan.stops[0].arrive - plan.stops[0].travelMin)}~{clock(plan.endMin)}
           </p>
           <p className="text-sm text-gray-600">
             {t("평균 예상 혼잡")} <b style={{ color: levelOf(plan.avgScore).color }}>{t(levelOf(plan.avgScore).label)}</b>
@@ -283,7 +323,12 @@ function RouteResult({
                     </span>
                   )}
                 </span>
-                {!s.meal && <LevelBadge score={s.score} />}
+                {!s.meal && (
+                  <span className="flex shrink-0 flex-col items-end gap-0.5">
+                    <LevelBadge score={s.score} />
+                    {s.predicted && <span className="text-[10px] text-gray-400">{t("패턴 예측")}</span>}
+                  </span>
+                )}
               </Link>
             </li>
           );
@@ -303,6 +348,7 @@ function RouteResult({
       )}
       <p className="mt-4 text-[11px] leading-relaxed text-gray-400">
         {t("예상 혼잡은 서울시 실시간 도시데이터와 CrowdView 예측이에요. 이동시간은 서울시 지하철 역간 소요시간과 걷는 거리로 어림한 값이라 실제와 다를 수 있어요. 식사는 서울 여행 가이드 맛집 중 가까운 곳이에요.")}
+        {plan.stops.some((s) => s.predicted) && ` ${t("‘패턴 예측’은 서울시 12시간 예측 밖이라 가까운 역의 요일·시간대 승하차로 어림한 값이에요.")}`}
       </p>
     </div>
   );

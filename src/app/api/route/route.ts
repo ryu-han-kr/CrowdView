@@ -1,4 +1,5 @@
-// 추천 루트 만들기. POST {start:{lat,lng,name}, offsetMin, durationMin, interests, transport}
+// 추천 루트 만들기. POST {start:{lat,lng,name}, day, hour, durationMin, interests, transport, picks}
+// day: 오늘부터 며칠 뒤(0~6), hour: 출발 시(없으면 지금). 예전 형식 offsetMin(지금부터 분)도 받는다
 // 결제가 켜져 있으면 Plus가 아닌 회원은 앞의 2곳만 보여준다 (미리보기). 결제 전에는 베타로 전부 공개
 import { NextResponse } from "next/server";
 import { currentUser } from "@/lib/auth";
@@ -26,6 +27,8 @@ export async function POST(req: Request) {
   const body = (await req.json().catch(() => ({}))) as {
     start?: { lat?: number; lng?: number; name?: string };
     offsetMin?: number;
+    day?: number;
+    hour?: number | null;
     durationMin?: number;
     interests?: string[];
     transport?: string;
@@ -41,11 +44,19 @@ export async function POST(req: Request) {
   const pickIds = (Array.isArray(body.picks) ? body.picks : []).filter((x): x is string => typeof x === "string" && /^(seoul-|vs-)[\w-]{1,40}$/.test(x)).slice(0, 6);
   if (!interests.length && !pickIds.length) return NextResponse.json({ error: "관심사를 하나 이상 골라 주세요" }, { status: 400 });
   const transport: Transport = body.transport === "walk" ? "walk" : "transit";
-  // 서울시 예측이 12시간까지라 출발은 6시간 안, 일정은 2~8시간
-  const offset = Math.min(360, Math.max(0, Math.round(Number(body.offsetMin) || 0)));
+  // 출발: 오늘~6일 뒤. 서울시 12시간 예측 밖은 지하철 승하차 모양·장소 예측 모델로 (lib/forecast). 일정은 2~8시간
   const durationMin = Math.min(480, Math.max(120, Math.round(Number(body.durationMin) || 240)));
   const now = kst();
-  const startMin = Math.ceil((Math.floor(now.hour * 60) + offset + 5) / 10) * 10;
+  const nowMin = Math.ceil((Math.floor(now.hour * 60) + 5) / 10) * 10;
+  const day = Math.min(6, Math.max(0, Math.round(Number(body.day) || 0)));
+  const hourNum = Number(body.hour);
+  const hour = body.hour === null || body.hour === undefined || !Number.isFinite(hourNum) ? null : Math.min(23, Math.max(0, Math.round(hourNum)));
+  const startMin =
+    body.day === undefined && body.offsetMin !== undefined
+      ? Math.ceil((Math.floor(now.hour * 60) + Math.min(360, Math.max(0, Math.round(Number(body.offsetMin) || 0))) + 5) / 10) * 10
+      : day === 0
+        ? Math.max(nowMin, hour === null ? 0 : hour * 60)
+        : day * 1440 + (hour ?? 9) * 60;
 
   const all = await candidates();
   const plan = planRoute(
