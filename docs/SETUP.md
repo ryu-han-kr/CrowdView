@@ -82,6 +82,23 @@
 
 ---
 
+## 검색엔진 등록 (무료, 지금 해도 됨)
+
+> 검색엔진 등록은 **무료**입니다. 돈이 드는 건 검색 결과 위쪽의 **광고**(네이버 검색광고, 구글 Ads)이고, 일반 검색 결과에 나오게 하는 등록·색인은 비용이 없습니다. 광고는 하지 않아도 됩니다.
+
+1. **Google Search Console** (search.google.com/search-console)
+   - 속성 추가 → "URL 접두어" `https://crowdview.app` → 확인 방법 "HTML 태그" → `content="..."` 값을 Vercel 환경변수 `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`에 넣고 다시 배포 → 확인
+   - (또는 "도메인" 속성 → Cloudflare DNS에 TXT 레코드 추가)
+   - Sitemaps → `https://crowdview.app/sitemap.xml` 제출
+2. **네이버 서치어드바이저** (searchadvisor.naver.com)
+   - 웹마스터 도구 → 사이트 등록 `https://crowdview.app` → "HTML 태그" → content 값을 `NEXT_PUBLIC_NAVER_SITE_VERIFICATION`에 넣고 배포 → 소유 확인
+   - 요청 → 사이트맵 제출 `https://crowdview.app/sitemap.xml`
+3. **Bing Webmaster Tools** (bing.com/webmasters) — ChatGPT 검색 등 AI 검색이 Bing 색인을 참고합니다
+   - Google Search Console에서 가져오기(가장 쉬움) 또는 "HTML 메타 태그" content 값을 `NEXT_PUBLIC_BING_SITE_VERIFICATION`에
+   - 사이트맵 제출
+4. **IndexNow** (자동): 매주 월요일 05:00 GitHub Actions `indexnow.yml`이 사이트맵 주소를 Bing·네이버 등에 알립니다. 키 파일은 `public/{키}.txt`. 처음 한 번은 Actions → indexnow → Run workflow로 바로 실행해도 됩니다.
+5. 1~2주 뒤 각 도구에서 색인된 페이지 수와 검색어별 노출·클릭을 확인합니다.
+
 ## 역할 분담
 
 | 서비스 | 역할 |

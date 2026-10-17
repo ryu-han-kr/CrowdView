@@ -37,9 +37,11 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     alternates: undefined,
     verification: {
       google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-      other: process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION
-        ? { "naver-site-verification": process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION }
-        : undefined,
+      // 네이버 서치어드바이저 · Bing 웹마스터 도구 소유 확인 (값이 있을 때만 meta 태그)
+      other: {
+        ...(process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION && { "naver-site-verification": process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION }),
+        ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION && { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }),
+      },
     },
     formatDetection: { telephone: false },
     icons: { icon: "/icon-192.png", apple: "/icon.png" },
