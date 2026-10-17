@@ -16,6 +16,8 @@ export function SiteFooter({ lang, className = "" }: { lang: Lang; className?: s
           {t("개인정보처리방침")}
         </Link>
         <Link href="/refund">{t("환불정책")}</Link>
+        <Link href="/methodology">{t("데이터 출처·계산 방식")}</Link>
+        <Link href="/accuracy">{t("예측 정확도")}</Link>
       </nav>
       <p className="mt-3">
         {B.serviceName} · {t("상호")} {B.company} · {t("대표")} {B.ceo} · {t("사업자등록번호")} {B.bizNo}

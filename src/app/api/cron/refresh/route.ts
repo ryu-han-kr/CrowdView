@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { checkAlerts } from "@/lib/alerts";
 import { getAllCrowd, refreshAll } from "@/lib/crowd/service";
+import { trackAccuracy } from "@/lib/accuracy";
 import { opsAlert } from "@/lib/ops";
+import { getAllSeoulLive } from "@/lib/seoul-live";
 import { expireEnded, sendRenewalNotices } from "@/lib/plus";
 import { kst } from "@/lib/time";
 
@@ -19,6 +21,9 @@ export async function GET(req: Request) {
   const now = kst();
   const daily = Math.floor(now.hour) === 4 && (now.hour % 1) * 60 < 10;
   const expired = daily ? await expireEnded().catch(async (e) => (await opsAlert("구독 만료 정리 실패", e), 0)) : 0;
+  // 예측 정확도: 매시 정각 첫 수집 때 채점·새 예측 저장 (서울 119곳, Redis)
+  const hourly = (now.hour % 1) * 60 < 10;
+  const scored = hourly ? await trackAccuracy(await getAllSeoulLive()).catch(async (e) => (await opsAlert("예측 정확도 기록 실패", e), 0)) : 0;
   const notices = daily ? await sendRenewalNotices().catch(async (e) => (await opsAlert("자동결제 안내 실패", e), 0)) : 0;
   // 실시간 원본 중 40분 넘게 안 바뀐 곳이 있으면 그 원본이 멈춘 것 (화면엔 '갱신 지연'으로 보인다)
   const staleLive = Object.entries(await getAllCrowd())
@@ -27,7 +32,7 @@ export async function GET(req: Request) {
   if (staleLive.length) await opsAlert(`실시간 데이터 갱신 지연 ${staleLive.length}곳`, staleLive.join(", "));
   // 실시간 원본이 하나도 안 들어오면(전부 예측값) 원본 API·키 장애일 가능성이 크다
   if (refreshed.length && refreshed.every((r) => r.source === "model")) await opsAlert(`실시간 수집 전체 실패 (${refreshed.length}곳 모두 예측값)`);
-  return NextResponse.json({ refreshed, alerts, expired, notices });
+  return NextResponse.json({ refreshed, alerts, expired, notices, scored });
 }
 
 export const POST = GET;
