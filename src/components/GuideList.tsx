@@ -45,6 +45,8 @@ export function GuideList() {
   const [q, setQ] = useState("");
   const [me, setMe] = useState<LatLng | null>(null);
   const [view, setView] = useState<"list" | "map">("list");
+  // 한산한 순: 그 동네(1km 안 서울 실시간 지역) 지금 단계가 낮은 곳부터. 맛집이면 '지금 덜 붐비는 맛집'
+  const [calmFirst, setCalmFirst] = useState(false);
 
   useEffect(() => {
     fetch(`/data/guide-${lang}.json`)
@@ -89,8 +91,13 @@ export function GuideList() {
     );
     if (me)
       return out.filter((r) => r[3] !== null).sort((a, b) => distanceKm(me, { lat: a[3]!, lng: a[4]! }) - distanceKm(me, { lat: b[3]!, lng: b[4]! }));
+    if (calmFirst) {
+      // 단계를 모르는 곳은 뒤로
+      const rank = (r: Row) => LEVEL_SCORE[live[areaOf.get(r[0]) ?? ""] ?? ""] ?? 999;
+      return [...out].sort((a, b) => rank(a) - rank(b));
+    }
     return out;
-  }, [ofKind, gus, levels, live, areaOf, q, me]);
+  }, [ofKind, gus, levels, live, areaOf, q, me, calmFirst]);
 
   return (
     <FilterLayout
@@ -150,7 +157,22 @@ export function GuideList() {
         <>
           <div className="mt-4 flex items-center justify-between md:mt-0">
             <p className="text-sm text-gray-500">{t("{n}곳", { n: list.length })}</p>
-            <ViewToggle view={view} onChange={setView} />
+            <div className="flex items-center gap-2">
+              {view === "list" && !me && (
+                <div className="flex rounded-full bg-gray-100 p-0.5 text-xs font-semibold">
+                  {[false, true].map((c) => (
+                    <button
+                      key={String(c)}
+                      onClick={() => setCalmFirst(c)}
+                      className={`rounded-full px-3 py-1 ${calmFirst === c ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+                    >
+                      {c ? t("한산한 순") : t("기본순")}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <ViewToggle view={view} onChange={setView} />
+            </div>
           </div>
           {view === "map" ? (
             <SpotMap
