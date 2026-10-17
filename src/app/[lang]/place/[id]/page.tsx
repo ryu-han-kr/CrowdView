@@ -127,6 +127,10 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     related.flatMap((r) => [r.name, r.region]),
     lang,
   );
+  // 운영 시간·휴무 안내(관광공사 한국어 글)도 외국어 화면에서는 번역 (Papago 캐시). 번역기는 줄 단위라 줄바꿈을 ' / '로 펴서 보낸다
+  const flat = (x?: string) => x?.replace(/\s*\n+\s*/g, " / ").trim();
+  const infoTr = await translateNames([flat(place.info?.hoursText), flat(place.info?.restText)], lang);
+  const trInfo = (x?: string) => (x ? (infoTr.get(flat(x)!) ?? x) : x);
   // 함께 가면 좋은 곳: 이름으로 좌표를 찾아 거리 + 그 근처(1km 안 서울 실시간 지역) 지금 혼잡
   const seoulNow = await getAllSeoulLive().catch(() => ({}) as Awaited<ReturnType<typeof getAllSeoulLive>>);
   // 연관 목록에 이 장소 자신이 다른 표기로 섞여 온다 (예: 롯데월드어드벤쳐) → 띄어쓰기·쳐/처 같은 표기 차이를 무시하고 뺀다
@@ -520,13 +524,15 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   <span className={isOpen ? "text-emerald-600" : "text-gray-400"}>{isOpen ? `· ${t("운영 중")}` : `· ${t("운영 종료")}`}</span>
                   {!place.info?.hoursVerified && <DataTag kind="임의" />}
                 </p>
-                {place.info?.hoursText && <p className="mt-1 text-xs leading-relaxed whitespace-pre-line text-gray-500">{place.info.hoursText}</p>}
+                {place.info?.hoursText && (
+                  <p className="mt-1 text-xs leading-relaxed whitespace-pre-line text-gray-500">{trInfo(place.info.hoursText)}</p>
+                )}
               </div>
             </div>
             {place.info?.restText && (
               <div className="flex gap-3">
                 <span className="w-14 shrink-0 text-gray-400">{t("휴무")}</span>
-                <span className="text-xs leading-relaxed text-gray-600">{place.info.restText}</span>
+                <span className="text-xs leading-relaxed text-gray-600">{trInfo(place.info.restText)}</span>
               </div>
             )}
             {place.info?.infocenter && (
