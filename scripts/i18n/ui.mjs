@@ -925,4 +925,11 @@ export default {
   "{km}km": ["{km} km", "{km}km", "{km}公里", "{km}公里"],
   "더보기": ["More", "もっと見る", "更多", "更多"],
   "정보: 한국관광공사": ["Source: Korea Tourism Organization", "情報: 韓国観光公社", "信息：韩国观光公社", "資訊：韓國觀光公社"],
+  "접기": ["Less", "閉じる", "收起", "收起"],
+  "가장 붐빌 때 {hour}": ["busiest around {hour}", "最も混むのは{hour}", "最拥挤 {hour}", "最擁擠 {hour}"],
+  "이번 주 가장 한산": ["Quietest this week", "今週いちばん空いている", "本周最清闲", "本週最清閒"],
+  "앞으로 30일": ["Next 30 days", "今後30日", "未来30天", "未來30天"],
+  "월별 (12개월)": ["By month (12 months)", "月別(12か月)", "按月(12个月)", "按月(12個月)"],
+  "요일·공휴일·계절 패턴으로 본 CrowdView 추정이에요 (가장 붐빌 때 기준).": ["CrowdView estimate from weekday, holiday and seasonal patterns (busiest time of day).", "曜日・祝日・季節のパターンによるCrowdViewの推定です(最も混む時間帯基準)。", "基于星期、节假日和季节规律的CrowdView估算(以一天中最拥挤时为准)。", "基於星期、假日與季節規律的CrowdView估算(以一天中最擁擠時為準)。"],
+  "지금 이후 시간대별 예상": ["Forecast for the coming hours", "これからの時間帯別予測", "接下来各时段预测", "接下來各時段預測"],
 };

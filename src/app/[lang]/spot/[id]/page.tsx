@@ -220,7 +220,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
           >
             🗺️ {t("지도에서 보기")}
           </a>
-          <StayLinks ko={l.n.ko} en={l.n.en} lang={lang} t={t} />
+          <StayLinks ko={l.n.ko} en={l.n.en} lang={lang} t={t} at={l} />
 
           {others.length > 0 && (
             <section className="rounded-3xl border border-gray-100 bg-white p-4">
