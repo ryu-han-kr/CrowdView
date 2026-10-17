@@ -129,6 +129,8 @@ export interface CrowdSnapshot {
   paxHour?: boolean;
   /** 서울시 실시간 인구처럼 범위로만 주는 인원 [최소, 최대] */
   headcountRange?: [number, number];
+  /** 원천의 관측 시각 (서울시 'YYYY-MM-DD HH:mm', KST). 화면의 '○시 기준'은 이 값 */
+  observedAt?: string;
   updatedAt: string;
 }
 
