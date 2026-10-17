@@ -5,6 +5,7 @@ import { AdRail } from "@/components/AdRail";
 import { BottomNav, TopNav } from "@/components/BottomNav";
 import { NavProgress } from "@/components/NavProgress";
 import { FavoritesSync } from "@/components/FavoritesSync";
+import { PicksSync } from "@/components/PicksSync";
 import { authEnabled } from "@/lib/auth";
 import { SiteFooter } from "@/components/SiteFooter";
 import { I18nProvider } from "@/i18n/client";
@@ -76,6 +77,7 @@ export default async function RootLayout({ children, params }: { children: React
           <NavProgress />
           <TopNav authEnabled={authEnabled} />
           {authEnabled && <FavoritesSync />}
+          {authEnabled && <PicksSync />}
           {/* 모바일: 가운데 448px 앱 화면 그대로 / 태블릿·PC: 넓은 웹 화면 */}
           {/* 태블릿·PC: 화면 위쪽 은은한 파랑 그라데이션 (아래로 갈수록 흰색) */}
           <div aria-hidden className="page-glow pointer-events-none absolute inset-x-0 top-0 -z-10 hidden h-[640px] md:block" />

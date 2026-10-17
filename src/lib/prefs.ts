@@ -57,5 +57,5 @@ export function usePicks() {
   const save = (next: Pick[]) => set(next as unknown as string[]);
   const has = (id: string) => picks.some((p) => p.id === id);
   const toggle = (p: Pick) => save(has(p.id) ? picks.filter((x) => x.id !== p.id) : [...picks, p]);
-  return { picks, has, toggle, remove: (id: string) => save(picks.filter((x) => x.id !== id)), clear: () => save([]) };
+  return { picks, has, toggle, remove: (id: string) => save(picks.filter((x) => x.id !== id)), clear: () => save([]), replace: save };
 }
