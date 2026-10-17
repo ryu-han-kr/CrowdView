@@ -26,10 +26,14 @@ export async function GET(req: Request) {
   const scored = hourly ? await trackAccuracy(await getAllSeoulLive()).catch(async (e) => (await opsAlert("예측 정확도 기록 실패", e), 0)) : 0;
   const notices = daily ? await sendRenewalNotices().catch(async (e) => (await opsAlert("자동결제 안내 실패", e), 0)) : 0;
   // 실시간 원본 중 40분 넘게 안 바뀐 곳이 있으면 그 원본이 멈춘 것 (화면엔 '갱신 지연'으로 보인다)
-  const staleLive = Object.entries(await getAllCrowd())
-    .filter(([, c]) => c.source !== "model" && c.ageMinutes > 40)
-    .map(([id, c]) => `${id}(${c.source} ${c.ageMinutes}분)`);
-  if (staleLive.length) await opsAlert(`실시간 데이터 갱신 지연 ${staleLive.length}곳`, staleLive.join(", "));
+  // 문을 닫은 곳(밤 공항 등)은 원본이 비는 게 정상이라 뺀다. 같은 곳들이 계속 밀리면 3시간에 한 번만 알린다
+  const staleEntries = Object.entries(await getAllCrowd()).filter(([, c]) => c.source !== "model" && c.open && c.ageMinutes > 40);
+  if (staleEntries.length)
+    await opsAlert(
+      `실시간 데이터 갱신 지연 ${staleEntries.length}곳`,
+      staleEntries.map(([id, c]) => `${id}(${c.source} ${c.ageMinutes}분)`).join(", "),
+      { key: `stale:${staleEntries.map(([id]) => id).sort().join(",")}`, cooldownS: 3 * 3600 },
+    );
   // 실시간 원본이 하나도 안 들어오면(전부 예측값) 원본 API·키 장애일 가능성이 크다
   if (refreshed.length && refreshed.every((r) => r.source === "model")) await opsAlert(`실시간 수집 전체 실패 (${refreshed.length}곳 모두 예측값)`);
   return NextResponse.json({ refreshed, alerts, expired, notices, scored });
