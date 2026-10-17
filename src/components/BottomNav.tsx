@@ -12,6 +12,7 @@ export const TABS = [
   { href: "/map", label: "지도", icon: "M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 0v14m6-12v14" },
   { href: "/airport", label: "공항", icon: "M10.5 3.5a1.5 1.5 0 0 1 3 0V9l7 4v2l-7-2v4.5l2 1.5v1.5l-3.5-1-3.5 1V19l2-1.5V13l-7 2v-2l7-4z" },
   // 서울 실시간은 PC 상단 메뉴에만 (모바일 하단 탭은 그대로, 홈의 카드로 들어간다)
+  { href: "/explore", label: "지역 여행", icon: "M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 0v14m6-12v14", desktopOnly: true },
   { href: "/guide", label: "여행 가이드", icon: "M4 19.5V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-1.5Zm0 0A2 2 0 0 1 6 17h12M9 7h6", desktopOnly: true },
   { href: "/route", label: "추천 코스", icon: "M6 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm12-10a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM6 15V9a4 4 0 0 1 4-4h2m2 14h-2a4 4 0 0 1-4-4m10-6v6a4 4 0 0 1-4 4", desktopOnly: true },
   { href: "/seoul", label: "서울 실시간", icon: "M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", desktopOnly: true },
@@ -32,11 +33,11 @@ export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
   const { t } = useI18n();
   return (
     <header className="sticky top-0 z-40 hidden border-b border-gray-100 bg-white md:block">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-8 px-6">
-        <Link href="/" className="text-lg font-extrabold tracking-tight">
+      <div className="mx-auto flex h-16 max-w-6xl items-center gap-4 px-6 lg:gap-8">
+        <Link href="/" className="shrink-0 text-lg font-extrabold tracking-tight">
           <span className="text-indigo-600">Crowd</span>View
         </Link>
-        <nav className="flex gap-1">
+        <nav className="no-scrollbar flex min-w-0 gap-0.5 overflow-x-auto">
           {/* 공항은 홈의 파트 탭으로 들어간다 (상단 메뉴에서는 뺌) */}
           {TABS.filter((tab) => tab.href !== "/airport").map((tab) => {
             const active = isTabActive(tab.href, pathname);
@@ -45,11 +46,11 @@ export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
                 key={tab.href}
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
-                className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-2 text-sm font-semibold whitespace-nowrap transition-colors ${
                   active ? "bg-indigo-50 text-indigo-600" : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                 }`}
               >
-                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinejoin="round" strokeLinecap="round">
+                <svg viewBox="0 0 24 24" className="hidden h-5 w-5 xl:block" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinejoin="round" strokeLinecap="round">
                   <path d={tab.icon} />
                 </svg>
                 {t(tab.label)}
@@ -57,7 +58,8 @@ export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
             );
           })}
         </nav>
-        <p className="ml-auto text-xs text-gray-400">{t("실시간 혼잡도 · AI 예측")}</p>
+        <span className="ml-auto" aria-hidden />
+        <p className="hidden text-xs whitespace-nowrap text-gray-400 xl:block">{t("실시간 혼잡도 · AI 예측")}</p>
         <LangSwitcher />
         <NavAuth enabled={authEnabled} />
       </div>

@@ -31,6 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/seoul", "hourly", 0.9),
     entry("/route", "daily", 0.8),
     entry("/guide", "weekly", 0.8),
+    entry("/explore", "daily", 0.8),
     entry("/near", "weekly", 0.7),
     ...GUIDE.map((p) => entry(`/guide/${p.id}`, "weekly", 0.5)),
     entry("/events", "daily", 0.9),

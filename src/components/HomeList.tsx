@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { useFavorites } from "@/lib/prefs";
 import { CATEGORY_LABEL, type Category, type CrowdResult, type Place } from "@/lib/types";
@@ -37,6 +37,20 @@ export function HomeList({
   const { favorites } = useFavorites();
   const { t } = useI18n();
 
+  // 홈 아이콘 메뉴의 '테마파크' 같은 링크: /?cat=themepark#places → 그 파트를 골라 목록으로
+  useEffect(() => {
+    const read = () => {
+      const cat = new URLSearchParams(window.location.search).get("cat") as Category | null;
+      if (cat && CATEGORIES.includes(cat)) {
+        setFilter(cat);
+        document.getElementById("places")?.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+    read();
+    window.addEventListener("popstate", read);
+    return () => window.removeEventListener("popstate", read);
+  }, []);
+
   const q = query.trim().toLowerCase();
   const list = places
     .filter((p) => (filter === "all" ? true : filter === "fav" ? favorites.includes(p.id) : p.category === filter))
@@ -63,7 +77,7 @@ export function HomeList({
 
   return (
     <>
-      <div className="sticky top-0 z-20 -mx-5 bg-white/95 px-5 pt-3 pb-2 backdrop-blur md:top-16 md:mx-0 md:bg-white md:px-0">
+      <div id="places" className="sticky top-0 z-20 -mx-5 scroll-mt-16 bg-white/95 px-5 pt-3 pb-2 backdrop-blur md:top-16 md:mx-0 md:bg-white md:px-0">
         <label className="flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-3">
           <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2}>
             <circle cx="11" cy="11" r="7" />

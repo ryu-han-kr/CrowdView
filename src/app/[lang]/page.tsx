@@ -7,20 +7,28 @@ import { DataTag } from "@/components/DataTag";
 import { HomeList } from "@/components/HomeList";
 import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
+import { CategoryIcons } from "@/components/home/CategoryIcons";
+import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
+import { PhotoRail, type PhotoCardItem } from "@/components/home/PhotoRail";
+import { PlusPromo } from "@/components/home/PlusPromo";
+import { PLUS } from "@/lib/business";
 import { getAllCrowd } from "@/lib/crowd/service";
-import { festivalHref, getFestivals, isLongRunning } from "@/lib/festivals";
+import { festivalHref, getFestivalCrowd, getFestivals, isLongRunning } from "@/lib/festivals";
+import { LANDMARKS, REGIONS, dailyPick } from "@/lib/korea";
+import { festivalCard, landmarkCard } from "@/lib/korea-cards";
 import { translateNames } from "@/lib/name-translate";
 import { getLivePlaces } from "@/lib/place-info";
 import { placeHref } from "@/lib/places";
 import { isEstimated } from "@/lib/format";
-import { daysUntil, kst } from "@/lib/time";
+import { getAllSeoulLive } from "@/lib/seoul-live";
+import { addDays, daysUntil, kst } from "@/lib/time";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { fmtAge, trRegion } from "@/i18n/patterns";
+import { SEOUL_AREAS } from "@/lib/seoul-areas";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
-import { SEOUL_AREAS } from "@/lib/seoul-areas";
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
@@ -34,24 +42,123 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   });
 }
 
+/**
+ * 홈: 큰 포토 배너 → 아이콘 메뉴 → (언어에 따라 순서가 다름) → 전체 장소 혼잡도.
+ * 한국어(국내 접속)는 혼잡도를 먼저, 외국어(해외 접속은 자동으로 그 나라 언어)는 여행 안내를 먼저 보여준다
+ */
 export default async function HomePage({ params }: { params: Promise<{ lang: string }> }) {
   const lang = (await params).lang as Lang;
   const t = getT(lang);
-  const [crowd, places] = await Promise.all([getAllCrowd(), getLivePlaces()]);
+  const today = kst().date;
+  const [crowd, places, seoul, allFestivals] = await Promise.all([getAllCrowd(), getLivePlaces(), getAllSeoulLive(), getFestivals(30)]);
   const live = Object.values(crowd).filter((c) => c.source !== "model");
   const newest = live.length ? Math.min(...live.map((c) => c.ageMinutes)) : null;
 
-  const calm = places.filter((p) => crowd[p.id].open && p.category !== "event" && crowd[p.id].score < 40)
+  const calm = places
+    .filter((p) => crowd[p.id].open && p.category !== "event" && crowd[p.id].score < 40)
     .sort((a, b) => crowd[a.id].score - crowd[b.id].score)
     .slice(0, 3);
 
-  // 다가오는 축제: 한국관광공사·서울시 실제 일정 (진행 중 먼저)
-  const festivals = (await getFestivals(30)).filter((f) => !isLongRunning(f)).slice(0, 4);
-  const names = await translateNames(festivals.flatMap((f) => [f.title, f.region]), lang);
-  const today = kst().date;
+  // 축제: 2주 안에 열리는(진행 중 포함) 사진 있는 축제 → 작년 방문객으로 본 붐빔 비율이 큰 순 TOP 5
+  const soon = allFestivals.filter((f) => !isLongRunning(f) && f.image && f.start <= addDays(today, 14)).slice(0, 12);
+  const ratios = new Map(await Promise.all(soon.map(async (f) => [f.id, (await getFestivalCrowd(f).catch(() => undefined))?.ratio ?? 0] as const)));
+  const topFestivals = [...soon].sort((a, b) => (ratios.get(b.id) ?? 0) - (ratios.get(a.id) ?? 0)).slice(0, 5);
+  const names = await translateNames([...soon, ...allFestivals.slice(0, 4)].flatMap((f) => [f.title, f.region]), lang);
+  const festivalCards = topFestivals.map((f) => festivalCard(f, t, today, names, ratios.get(f.id)));
+
+  // 랜드마크: 오늘의 추천 + 지역별 칩
+  const lm = (l: (typeof LANDMARKS)[number]) => landmarkCard(l, lang, t, crowd, seoul);
+  const landmarkChips = [
+    { id: "pick", label: t("오늘의 추천"), items: dailyPick(LANDMARKS, today, 10).map(lm) },
+    ...REGIONS.map((r) => ({ id: r.id, label: t(r.id), items: LANDMARKS.filter((l) => l.region === r.id).map(lm) })).filter((c) => c.items.length >= 2),
+  ];
+
+  // 지금 한산한 명소 (사진 있는 우리 장소)
+  const calmCards: PhotoCardItem[] = places
+    .filter((p) => p.image && crowd[p.id].open && p.category !== "airport" && p.category !== "event")
+    .sort((a, b) => crowd[a.id].score - crowd[b.id].score)
+    .slice(0, 10)
+    .map((p) => ({ id: p.id, href: placeHref(p), img: p.image, title: t(p.name), sub: t(p.region), score: crowd[p.id].score }));
+
+  // 큰 배너: 진행 중 축제 · 오늘의 여행지 · Plus · 공항 · 서울 실시간 · 코스 추천
+  const [pick1, pick2] = dailyPick(LANDMARKS, `${today}-hero`, 2);
+  const hotFestival = topFestivals.find((f) => f.start <= today) ?? topFestivals[0];
+  const travelSlides: HeroSlide[] = ([
+    pick1 && {
+      id: "pick",
+      href: `/explore?region=${encodeURIComponent(pick1.region)}`,
+      img: pick1.img,
+      tag: t("오늘의 여행지"),
+      title: pick1.n[lang] ?? pick1.n.ko,
+      sub: t("{region}의 명소·축제와 지금 혼잡도를 한 번에", { region: t(pick1.region) }),
+    },
+    hotFestival && {
+      id: "festival",
+      href: festivalHref(hotFestival),
+      img: hotFestival.image!,
+      tag: hotFestival.start <= today ? t("진행 중 축제") : `D-${daysUntil(hotFestival.start)}`,
+      title: names.get(hotFestival.title) ?? hotFestival.title,
+      sub: `${hotFestival.start.replaceAll("-", ".")} ~ ${hotFestival.end.slice(5).replace("-", ".")} · ${names.get(hotFestival.region) ?? trRegion(hotFestival.region, t)}`,
+    },
+  ] as (HeroSlide | undefined)[]).filter((s): s is HeroSlide => !!s);
+  const crowdSlides: HeroSlide[] = [
+    { id: "airport", href: "/airport", img: "/places/icn-t1.jpg", tag: t("실시간"), title: t("인천공항 출국장, 지금 몇 분 기다릴까?"), sub: t("출국장별 대기 인원과 시간대별 예측") },
+    {
+      id: "seoul",
+      href: "/seoul",
+      img: "/places/gyeongbokgung.jpg",
+      tag: t("실시간"),
+      title: t("서울 실시간 인구 {n}곳", { n: SEOUL_AREAS.length }),
+      sub: t("강남역·성수·홍대·한강공원… 지금 몇 명이 있을까?"),
+    },
+  ];
+  const plusSlide: HeroSlide | undefined = pick2 && {
+    id: "plus",
+    href: "/pricing",
+    img: pick2.img,
+    tag: "Plus",
+    title: t("붐비기 전에 알려 드려요"),
+    sub: t("광고 제거 · 혼잡 알림 · 맞춤 코스 추천 — 월 {n}원", { n: PLUS.priceKrw.toLocaleString() }),
+  };
+  const routeSlide: HeroSlide = { id: "route", href: "/route", img: "/places/namsan.jpg", tag: t("추천 코스"), title: t("붐비는 시간을 피해 도는 코스"), sub: t("지하철 이동시간과 식사 시간까지 맞춰 드려요") };
+  const ko = lang === "ko";
+  const slides = (ko ? [...crowdSlides, ...travelSlides, routeSlide, plusSlide] : [...travelSlides, routeSlide, ...crowdSlides, plusSlide]).filter(
+    (s): s is HeroSlide => !!s,
+  );
+
+  const calmBox = calm.length > 0 && (
+    <section className="mt-4 rounded-3xl bg-emerald-50 p-4 md:mt-6">
+      <h2 className="font-bold text-emerald-900">🌿 {t("지금 가면 쾌적해요")}</h2>
+      <ul className="mt-3 space-y-2 md:grid md:grid-cols-3 md:gap-3 md:space-y-0">
+        {calm.map((p) => (
+          <li key={p.id}>
+            <Link href={placeHref(p)} className="flex items-center gap-3 rounded-2xl bg-white p-2.5 active:opacity-70">
+              <PlaceThumb place={p} size={40} />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-semibold">{t(p.name)}</span>
+                <span className="block text-xs text-gray-500">{t(p.region)}</span>
+              </span>
+              <span className="flex flex-col items-end">
+                <LevelBadge score={crowd[p.id].score} />
+                {isEstimated(crowd[p.id]) && <DataTag className="mt-0.5" />}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+  const festivalRail = (
+    <PhotoRail title={t("지금 뜨는 축제 TOP 5")} subtitle={t("작년 같은 기간 방문객으로 본 예상 붐빔 순")} moreHref="/events" items={festivalCards} ranked />
+  );
+  const landmarkRail = (
+    <PhotoRail title={t("지역별 대표 명소")} subtitle={t("사진을 누르면 지금 혼잡도와 길찾기")} moreHref="/explore" items={[]} chips={landmarkChips} />
+  );
+  const calmRail = <PhotoRail title={t("지금 한산한 명소")} subtitle={t("실시간·예측 혼잡도 기준")} moreHref="/map" items={calmCards} />;
+  const plusPromo = <PlusPromo t={t} price={PLUS.priceKrw.toLocaleString()} />;
 
   return (
-    <main className="px-5 pt-6 pb-4 md:px-0 md:pt-10">
+    <main className="px-5 pt-5 pb-4 md:px-0 md:pt-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -64,142 +171,54 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           }),
         }}
       />
-      {/* 모바일: 글자 헤더 그대로 / 태블릿·PC: 파란 배너 (가운데 정렬) */}
-      <header className="relative flex items-end justify-between gap-3 md:flex-col md:items-center md:overflow-hidden md:rounded-3xl md:bg-gradient-to-br md:from-indigo-600 md:via-blue-600 md:to-sky-500 md:px-8 md:py-12 md:text-center md:text-white">
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between gap-3 md:justify-center">
-            <p className="text-xs font-semibold tracking-wide text-indigo-500 md:text-white/80">CrowdView</p>
-            <div className="md:hidden">
-              <LangSwitcher compact />
-            </div>
+      <header className="mb-4 flex items-end justify-between gap-3 md:mb-5">
+        <div className="min-w-0">
+          <div className="flex items-center gap-3">
+            <p className="text-xs font-semibold tracking-wide text-indigo-500 md:hidden">CrowdView</p>
           </div>
-          <h1 className="mt-1 text-2xl font-bold md:text-4xl">{t("지금 어디가 한산할까?")}</h1>
-          <p className="mt-2 hidden text-gray-500 md:block md:text-white/85">{t("공항·놀이공원·명소·축제의 실시간 혼잡도와 AI 예측을 한눈에")}</p>
-          <ul className="mt-5 hidden items-center justify-center gap-4 text-sm font-medium text-white/90 md:flex">
-            {[
-              ["📡", t("공공데이터 실시간")],
-              ["📈", t("시간대별 혼잡 예측")],
-              ["🌏", t("5개 언어")],
-            ].map(([icon, label], i) => (
-              <li key={label} className="flex items-center gap-1.5">
-                {i > 0 && <span className="mr-2.5 h-3 w-px bg-white/40" />}
-                <span>{icon}</span>
-                {label}
-              </li>
-            ))}
-          </ul>
+          <h1 className="mt-0.5 text-xl font-bold md:text-2xl">{ko ? t("지금 어디가 한산할까?") : t("한산할 때 즐기는 한국 여행")}</h1>
+          <p className="mt-0.5 hidden text-sm text-gray-500 md:block">
+            {ko ? t("공항·놀이공원·명소·축제의 실시간 혼잡도와 AI 예측을 한눈에") : t("명소·축제 안내와 실시간 혼잡도를 한 곳에서")}
+          </p>
         </div>
-        {newest !== null && (
-          <span className="flex items-center gap-1.5 text-xs text-gray-500 md:absolute md:top-4 md:right-5 md:rounded-full md:bg-white/15 md:px-2.5 md:py-1 md:text-white">
-            <span className="relative flex h-2 w-2">
-              <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-emerald-400" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+        <div className="flex shrink-0 flex-col items-end gap-1">
+          <div className="md:hidden">
+            <LangSwitcher compact />
+          </div>
+          {newest !== null && (
+            <span className="flex items-center gap-1.5 text-xs text-gray-500">
+              <span className="relative flex h-2 w-2">
+                <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-emerald-400" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
+              {t("{age} 갱신", { age: fmtAge(newest, t) })}
             </span>
-            {t("{age} 갱신", { age: fmtAge(newest, t) })}
-          </span>
-        )}
+          )}
+        </div>
       </header>
 
-      <HomeList places={places} crowd={crowd}>
-        <div className="md:mt-6 md:grid md:grid-cols-2 md:items-start md:gap-6">
-        {calm.length > 0 && (
-          <section className="mt-4 rounded-3xl bg-emerald-50 p-4">
-            <h2 className="font-bold text-emerald-900">🌿 {t("지금 가면 쾌적해요")}</h2>
-            <ul className="mt-3 space-y-2">
-              {calm.map((p) => (
-                <li key={p.id}>
-                  <Link href={placeHref(p)} className="flex items-center gap-3 rounded-2xl bg-white p-2.5 active:opacity-70">
-                    <PlaceThumb place={p} size={40} />
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-semibold">{t(p.name)}</span>
-                      <span className="block text-xs text-gray-500">{t(p.region)}</span>
-                    </span>
-                    <span className="flex flex-col items-end">
-                      <LevelBadge score={crowd[p.id].score} />
-                      {isEstimated(crowd[p.id]) && <DataTag className="mt-0.5" />}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+      <HeroCarousel slides={slides} />
+      <CategoryIcons t={t} lang={lang} />
 
-        {festivals.length > 0 && (
-          <section className="mt-6 md:mt-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-bold">🎆 {t("다가오는 축제")}</h2>
-              <Link href="/events" className="text-sm text-gray-500">
-                {t("전체 보기")} ›
-              </Link>
-            </div>
-            <ul className="mt-3 grid grid-cols-2 gap-2">
-              {festivals.map((f) => (
-                <li key={f.id}>
-                  <Link href={festivalHref(f)} className="block overflow-hidden rounded-2xl border border-gray-100 active:bg-gray-50">
-                    <div className="relative h-20 bg-gray-100">
-                      {f.image ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={f.image} alt="" loading="lazy" className="h-full w-full object-cover" />
-                      ) : (
-                        <div className="flex h-full items-center justify-center text-3xl">🎪</div>
-                      )}
-                      <span className="absolute top-1.5 right-1.5 rounded-full bg-gray-900/85 px-2 py-0.5 text-[11px] font-bold text-white">
-                        {f.start <= today ? t("진행 중") : `D-${daysUntil(f.start)}`}
-                      </span>
-                    </div>
-                    <div className="p-2.5">
-                      <p className="truncate text-sm font-semibold">{names.get(f.title) ?? f.title}</p>
-                      <p className="truncate text-xs text-gray-500">
-                        {f.start.slice(5).replace("-", "/")} · {names.get(f.region) ?? trRegion(f.region, t)}
-                      </p>
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-        </div>
-        <div className="mt-6 grid grid-cols-2 gap-2">
-          <Link href="/near?tab=toilet" className="flex items-center gap-2 rounded-3xl bg-sky-50 px-4 py-3.5">
-            <span className="text-2xl">🚻</span>
-            <span className="min-w-0">
-              <span className="block text-sm font-bold">{t("내 주변 찾기")}</span>
-              <span className="block truncate text-xs text-gray-500">{t("화장실·와이파이·맛집")}</span>
-            </span>
-          </Link>
-          <Link href="/guide" className="flex items-center gap-2 rounded-3xl bg-amber-50 px-4 py-3.5">
-            <span className="text-2xl">🗺️</span>
-            <span className="min-w-0">
-              <span className="block text-sm font-bold">{t("서울 여행 가이드")}</span>
-              <span className="block truncate text-xs text-gray-500">{t("명소·맛집 + 지금 혼잡도")}</span>
-            </span>
-          </Link>
-        </div>
-        <Link
-          href="/route"
-          className="mt-3 flex items-center gap-3 rounded-3xl bg-gradient-to-r from-violet-50 to-indigo-50 px-4 py-3.5"
-        >
-          <span className="text-2xl">🧭</span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-sm font-bold">{t("한산한 코스 추천")}</span>
-            <span className="block truncate text-xs text-gray-500">{t("내 위치에서 출발해 붐비는 시간을 피해 도는 순서")}</span>
-          </span>
-          <span className="text-sm font-semibold text-indigo-600">{t("보기")} ›</span>
-        </Link>
-        <Link
-          href="/seoul"
-          className="mt-3 flex items-center gap-3 rounded-3xl bg-gradient-to-r from-indigo-50 to-sky-50 px-4 py-3.5"
-        >
-          <span className="text-2xl">📍</span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-sm font-bold">{t("서울 실시간 인구 {n}곳", { n: SEOUL_AREAS.length })}</span>
-            <span className="block truncate text-xs text-gray-500">{t("강남역·성수·홍대·한강공원… 지금 몇 명이 있을까?")}</span>
-          </span>
-          <span className="text-sm font-semibold text-indigo-600">{t("보기")} ›</span>
-        </Link>
-      </HomeList>
+      {ko ? (
+        <HomeList places={places} crowd={crowd}>
+          {calmBox}
+          {festivalRail}
+          {plusPromo}
+          {landmarkRail}
+        </HomeList>
+      ) : (
+        <>
+          {landmarkRail}
+          {festivalRail}
+          {calmRail}
+          {plusPromo}
+          <h2 className="mt-12 text-lg font-bold md:text-xl">{t("실시간 혼잡도")}</h2>
+          <HomeList places={places} crowd={crowd}>
+            {calmBox}
+          </HomeList>
+        </>
+      )}
     </main>
   );
 }
