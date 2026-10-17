@@ -177,12 +177,15 @@ function NaverSpots({ spots, onSelect, onFail }: { spots: MapSpot[]; onSelect: (
       const lat = g.reduce((a, x) => a + x.lat, 0) / g.length;
       const lng = g.reduce((a, x) => a + x.lng, 0) / g.length;
       const size = g.length >= 50 ? 46 : g.length >= 10 ? 40 : 34;
+      // 원 색 = 묶인 곳들의 평균 혼잡 단계 색 (위 범례와 같은 색). 단계를 아는 곳이 없으면 남색
+      const scored = g.filter((x) => x.score !== undefined);
+      const fill = scored.length ? pinColor(scored.reduce((a, x) => a + x.score!, 0) / scored.length) : "rgba(79,70,229,.88)";
       const marker = new maps.Marker({
         map,
         position: new maps.LatLng(lat, lng),
         title: t("{n}곳", { n: g.length }),
         icon: {
-          content: `<div role="img" aria-label="${t("{n}곳", { n: g.length })}" style="width:${size}px;height:${size}px;border-radius:9999px;background:rgba(79,70,229,.88);color:#fff;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font:700 13px system-ui;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer">${g.length}</div>`,
+          content: `<div role="img" aria-label="${t("{n}곳", { n: g.length })}" style="width:${size}px;height:${size}px;border-radius:9999px;background:${fill};color:#fff;border:3px solid #fff;text-shadow:0 1px 2px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font:700 13px system-ui;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer">${g.length}</div>`,
           anchor: new maps.Point(size / 2, size / 2),
         },
       });

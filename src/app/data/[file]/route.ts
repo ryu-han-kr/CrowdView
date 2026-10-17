@@ -17,9 +17,9 @@ const FILES: Record<string, () => unknown> = {
   "culture.json": () => CULTURE.map((c) => [c.n, c.lat, c.lng, c.k, c.a]),
   // 체험 예약: [이름, 위도, 경도, 분류, 장소, 링크, 접수 마감]
   "reservations.json": () => RESERVATIONS.filter((r) => r.lat && r.lng).map((r) => [r.n, r.lat, r.lng, r.cat, r.place, r.url, r.rcptEnd]),
-  // 언어별 가이드 목록: [id, 종류, 이름, 위도, 경도, 구]
+  // 언어별 가이드 목록: [id, 종류, 이름, 위도, 경도, 구, 사진]
   ...Object.fromEntries(
-    LANGS.map((l) => [`guide-${l}.json`, () => GUIDE.map((p) => [p.id, p.kind, guideText(p, l as Lang).text.n, p.lat ?? null, p.lng ?? null, p.gu ?? null])]),
+    LANGS.map((l) => [`guide-${l}.json`, () => GUIDE.map((p) => [p.id, p.kind, guideText(p, l as Lang).text.n, p.lat ?? null, p.lng ?? null, p.gu ?? null, p.img ?? null])]),
   ),
 };
 

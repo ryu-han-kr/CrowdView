@@ -924,4 +924,5 @@ export default {
   "{region}의 다른 명소": ["More in {region}", "{region}のほかの名所", "{region}的其他景点", "{region}的其他景點"],
   "{km}km": ["{km} km", "{km}km", "{km}公里", "{km}公里"],
   "더보기": ["More", "もっと見る", "更多", "更多"],
+  "정보: 한국관광공사": ["Source: Korea Tourism Organization", "情報: 韓国観光公社", "信息：韩国观光公社", "資訊：韓國觀光公社"],
 };

@@ -867,6 +867,7 @@ const dict: Dict = {
   "지도에서 보기": "View on map",
   "{region}의 다른 명소": "More in {region}",
   "{km}km": "{km} km",
+  "정보: 한국관광공사": "Source: Korea Tourism Organization",
   "롯데월드 어드벤처": "Lotte World Adventure",
   "에버랜드": "Everland",
   "서울랜드": "Seoul Land",
