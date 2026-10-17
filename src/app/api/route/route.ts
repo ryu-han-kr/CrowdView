@@ -6,7 +6,8 @@ import type { Transport } from "@/lib/geo";
 import { isPlus } from "@/lib/plus";
 import { portoneEnabled } from "@/lib/portone";
 import { INTERESTS, planRoute, type Candidate, type Interest } from "@/lib/route";
-import { getRouteCandidates } from "@/lib/route-data";
+import { MEAL_SPOTS, getRouteCandidates, transitTravel } from "@/lib/route-data";
+import { getGuidePlace, guideText } from "@/lib/seoul-guide";
 import { kst } from "@/lib/time";
 import { isLang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
@@ -49,7 +50,7 @@ export async function POST(req: Request) {
     durationMin,
     interests,
     transport,
-  });
+  }, { travel: transitTravel, meals: MEAL_SPOTS });
 
   let locked = 0;
   if (portoneEnabled) {
@@ -59,10 +60,13 @@ export async function POST(req: Request) {
       plan.stops = plan.stops.slice(0, PREVIEW_STOPS);
     }
   }
-  // 장소 이름: 사전에 있으면 사전, 서울 지역 이름은 Papago (Redis 90일 캐시)
+  // 장소 이름: 사전에 있으면 사전, 서울 지역 이름은 Papago (Redis 90일 캐시). 맛집은 가이드에 언어별 이름이 있다
   const lang = isLang(body.lang) ? body.lang : "ko";
   const t = getT(lang);
-  const names = await translateNames(plan.stops.map((s) => s.name), lang);
-  plan.stops = plan.stops.map((s) => ({ ...s, name: names.get(s.name) ?? t(s.name) }));
+  const names = await translateNames(plan.stops.filter((s) => !s.meal).map((s) => s.name), lang);
+  plan.stops = plan.stops.map((s) => {
+    const guide = s.meal ? getGuidePlace(s.id) : undefined;
+    return { ...s, name: guide ? guideText(guide, lang).text.n : (names.get(s.name) ?? t(s.name)) };
+  });
   return NextResponse.json({ plan, startMin, locked, beta: !portoneEnabled });
 }

@@ -15,6 +15,12 @@ interface Hub {
   lng: number;
 }
 
+/** 노선 이름 ("2호선" → "Line 2" 등) */
+function lineName(t: ReturnType<typeof useI18n>["t"], line: string) {
+  const n = line.match(/^(\d)호선$/)?.[1];
+  return n ? t("{n}호선", { n }) : t(line);
+}
+
 const clock = (m: number) => `${String(Math.floor(m / 60) % 24).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
 
 /** 추천 코스 만들기: 출발지(내 위치·주요 장소) · 출발 시각 · 일정 길이 · 관심사 · 이동 수단 → 혼잡을 피하는 순서 */
@@ -226,22 +232,31 @@ function RouteResult({
                 rel="noreferrer"
                 className="ml-4 flex items-center gap-2 border-l-2 border-dashed border-gray-200 py-1.5 pl-5 text-xs text-gray-500"
               >
-                {s.walk ? "🚶" : "🚇"} {t("{n}분", { n: s.travelMin })} · {s.travelKm}km · <span className="text-indigo-600">{t("길찾기")} ›</span>
+                {s.walk ? "🚶" : "🚇"} {s.lines?.length ? <>{s.lines.map((l) => lineName(t, l)).join(" → ")} · </> : null}
+                {t("{n}분", { n: s.travelMin })} · {s.travelKm}km · <span className="text-indigo-600">{t("길찾기")} ›</span>
               </a>
-              <Link href={s.href} className="flex items-center gap-3 rounded-2xl border border-gray-100 px-4 py-3">
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-sm font-bold text-white">{i + 1}</span>
+              <Link
+                href={s.href}
+                className={`flex items-center gap-3 rounded-2xl border px-4 py-3 ${s.meal ? "border-amber-100 bg-amber-50/60" : "border-gray-100"}`}
+              >
+                <span
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white ${s.meal ? "bg-amber-500" : "bg-indigo-600"}`}
+                >
+                  {s.meal ? "🍽️" : i + 1}
+                </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-xs font-semibold text-gray-500">
                     {clock(s.arrive)}~{clock(s.leave)}
+                    {s.meal && <> · {t(s.meal === "lunch" ? "점심" : "저녁")}</>}
                   </span>
                   <span className="block truncate text-sm font-bold">{s.name}</span>
-                  {s.peak && s.peak.score - s.score >= 15 && (
+                  {!s.meal && s.peak && s.peak.score - s.score >= 15 && (
                     <span className="block text-[11px] text-emerald-700">
                       {t("{h}시({level})를 피해서 가요", { h: s.peak.hour, level: t(levelOf(s.peak.score).label) })}
                     </span>
                   )}
                 </span>
-                <LevelBadge score={s.score} />
+                {!s.meal && <LevelBadge score={s.score} />}
               </Link>
             </li>
           );
@@ -255,7 +270,7 @@ function RouteResult({
         </Link>
       )}
       <p className="mt-4 text-[11px] leading-relaxed text-gray-400">
-        {t("예상 혼잡은 서울시 실시간 도시데이터와 CrowdView 예측이에요. 이동시간은 직선거리로 어림한 값이라 실제와 다를 수 있어요.")}
+        {t("예상 혼잡은 서울시 실시간 도시데이터와 CrowdView 예측이에요. 이동시간은 서울시 지하철 역간 소요시간과 걷는 거리로 어림한 값이라 실제와 다를 수 있어요. 식사는 서울 여행 가이드 맛집 중 가까운 곳이에요.")}
       </p>
     </div>
   );
