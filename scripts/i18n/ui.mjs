@@ -846,4 +846,7 @@ export default {
   "{region} 명소·축제 지도": ["Map of sights & festivals in {region}", "{region}の名所・祭りマップ", "{region}景点·节庆地图", "{region}景點·節慶地圖"],
   목록: ["List", "リスト", "列表", "列表"],
   "앞쪽 {n}곳만 보여요": ["Showing the first {n}", "先頭の{n}か所のみ表示", "仅显示前{n}处", "僅顯示前{n}處"],
+  // ── 자동결제 안내 푸시
+  "{date}에 Plus가 자동 결제돼요": ["Plus renews automatically on {date}", "{date}にPlusが自動更新されます", "Plus将于{date}自动续费", "Plus將於{date}自動續費"],
+  "월 {price}원 · 원하지 않으면 결제일 전에 마이페이지에서 해지하세요": ["₩{price}/month · Cancel in My page before then if you don't want it", "月{price}ウォン · 不要ならお支払い日までにマイページで解約してください", "每月{price}韩元 · 如不需要请在扣款日前于我的页面取消", "每月{price}韓元 · 如不需要請在扣款日前於我的頁面取消"],
 };

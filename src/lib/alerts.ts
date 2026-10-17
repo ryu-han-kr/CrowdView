@@ -85,20 +85,28 @@ export async function checkAlerts(crowd: Record<string, CrowdResult>): Promise<n
   return sent;
 }
 
-async function notifyUser(userId: string, placeId: string, placeName: string, kind: "calm" | "busy", score: number, href: string) {
+function notifyUser(userId: string, placeId: string, placeName: string, kind: "calm" | "busy", score: number, href: string) {
+  return pushToUser(userId, (t, lang) => ({
+    title: kind === "calm" ? t("{name} 지금 한산해요", { name: t(placeName) }) : t("{name} 붐비기 시작했어요", { name: t(placeName) }),
+    body: t("지금 {level} · 눌러서 자세히 보기", { level: t(levelOf(score).label) }),
+    url: localePath(lang, href),
+    tag: `${placeId}-${kind}`,
+  }));
+}
+
+/** 회원의 모든 브라우저로 웹 푸시. 문구는 브라우저마다 그 언어로 만든다. 보낸 수를 돌려준다 */
+export async function pushToUser(
+  userId: string,
+  build: (t: ReturnType<typeof getT>, lang: Lang) => { title: string; body: string; url: string; tag: string },
+): Promise<number> {
+  if (!pushEnabled) return 0;
   const subs = await sql<{ endpoint: string; p256dh: string; auth: string; lang: Lang }>(
     "select endpoint, p256dh, auth, lang from push_subscription where user_id = $1",
     [userId],
   );
   let n = 0;
   for (const s of subs) {
-    const t = getT(s.lang);
-    const payload = JSON.stringify({
-      title: kind === "calm" ? t("{name} 지금 한산해요", { name: t(placeName) }) : t("{name} 붐비기 시작했어요", { name: t(placeName) }),
-      body: t("지금 {level} · 눌러서 자세히 보기", { level: t(levelOf(score).label) }),
-      url: localePath(s.lang, href),
-      tag: `${placeId}-${kind}`,
-    });
+    const payload = JSON.stringify(build(getT(s.lang), s.lang));
     try {
       await webpush.sendNotification({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, payload, { TTL: 1800 });
       n++;
