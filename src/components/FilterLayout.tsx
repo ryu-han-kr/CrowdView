@@ -227,7 +227,7 @@ export function PickStar({ pick }: { pick: Pick }) {
       onClick={() => toggle(pick)}
       aria-pressed={on}
       aria-label={on ? t("담기 취소") : t("담기")}
-      className={`shrink-0 rounded-full px-2 text-lg leading-none ${on ? "text-amber-400" : "text-gray-300 hover:text-amber-300"}`}
+      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg leading-none ${on ? "text-amber-400" : "text-gray-300 hover:text-amber-300"}`}
     >
       {on ? "★" : "☆"}
     </button>

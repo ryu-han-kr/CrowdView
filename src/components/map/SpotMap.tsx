@@ -25,6 +25,8 @@ export interface MapSpot {
 }
 
 const MAX_PINS = 400;
+/** 이보다 많으면 핀을 묶는다 */
+const CLUSTER_FROM = 40;
 const pinColor = (s?: number) => (s === undefined ? "#94a3b8" : levelOf(s).color);
 
 /** 목록 ↔ 지도 전환 버튼 */
@@ -37,7 +39,7 @@ export function ViewToggle({ view, onChange }: { view: "list" | "map"; onChange:
           key={v}
           onClick={() => onChange(v)}
           aria-pressed={view === v}
-          className={`rounded-full px-3 py-1 ${view === v ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+          className={`min-h-8 rounded-full px-3 py-1.5 ${view === v ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
         >
           {v === "list" ? `☰ ${t("목록")}` : `🗺️ ${t("지도")}`}
         </button>
@@ -140,35 +142,85 @@ function NaverSpots({ spots, onSelect, onFail }: { spots: MapSpot[]; onSelect: (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 핀은 목록이 바뀔 때마다 다시 찍고, 모두 보이게 맞춘다
-  useEffect(() => {
+  // 핀 그리기: 40곳이 넘으면 확대 수준에 맞춰 가까운 핀을 숫자 원으로 묶는다 (지도를 움직일 때마다 다시)
+  const { t } = useI18n();
+  const draw = () => {
     const map = mapRef.current;
     const maps = window.naver?.maps;
     if (!map || !maps) return;
     for (const m of markersRef.current) m.setMap(null);
-    markersRef.current = spots.map((s) => {
+    const zoom = map.getZoom();
+    // 화면에서 약 60px 크기의 칸 (경도 기준 근사)
+    const cell = spots.length > CLUSTER_FROM && zoom < 16 ? (60 * 360) / (256 * 2 ** zoom) : 0;
+    const groups = new Map<string, MapSpot[]>();
+    for (const sp of spots) {
+      const key = cell ? `${Math.floor(sp.lat / cell)}:${Math.floor(sp.lng / cell)}` : sp.id;
+      groups.set(key, [...(groups.get(key) ?? []), sp]);
+    }
+    markersRef.current = [...groups.values()].map((g) => {
+      if (g.length === 1) {
+        const sp = g[0];
+        const label = `${sp.name}${sp.score !== undefined ? ` · ${t(levelOf(sp.score).label)}` : ""}`;
+        const marker = new maps.Marker({
+          map,
+          position: new maps.LatLng(sp.lat, sp.lng),
+          title: label,
+          icon: {
+            content: `<div role="img" aria-label="${label.replace(/"/g, "&quot;")}" style="width:28px;height:28px;border-radius:9999px;background:#fff;border:3px solid ${pinColor(sp.score)};display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer">${sp.emoji ?? ""}</div>`,
+            anchor: new maps.Point(14, 14),
+          },
+        });
+        maps.Event.addListener(marker, "click", () => onSelect(sp.id));
+        return marker;
+      }
+      // 묶음: 가운데에 숫자 원, 누르면 그쪽으로 두 단계 확대
+      const lat = g.reduce((a, x) => a + x.lat, 0) / g.length;
+      const lng = g.reduce((a, x) => a + x.lng, 0) / g.length;
+      const size = g.length >= 50 ? 46 : g.length >= 10 ? 40 : 34;
       const marker = new maps.Marker({
         map,
-        position: new maps.LatLng(s.lat, s.lng),
-        title: s.name,
+        position: new maps.LatLng(lat, lng),
+        title: t("{n}곳", { n: g.length }),
         icon: {
-          content: `<div style="width:28px;height:28px;border-radius:9999px;background:#fff;border:3px solid ${pinColor(s.score)};display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer">${s.emoji ?? ""}</div>`,
-          anchor: new maps.Point(14, 14),
+          content: `<div role="img" aria-label="${t("{n}곳", { n: g.length })}" style="width:${size}px;height:${size}px;border-radius:9999px;background:rgba(79,70,229,.88);color:#fff;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font:700 13px system-ui;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer">${g.length}</div>`,
+          anchor: new maps.Point(size / 2, size / 2),
         },
       });
-      maps.Event.addListener(marker, "click", () => onSelect(s.id));
+      maps.Event.addListener(marker, "click", () => {
+        map.setCenter(new maps.LatLng(lat, lng));
+        map.setZoom(Math.min(zoom + 2, 17));
+      });
       return marker;
     });
+  };
+  const drawRef = useRef(draw);
+  drawRef.current = draw;
+
+  // 목록이 바뀌면 모두 보이게 맞추고 다시 그린다
+  useEffect(() => {
+    const map = mapRef.current;
+    const maps = window.naver?.maps;
+    if (!map || !maps) return;
     if (spots.length === 1) {
       map.setCenter(new maps.LatLng(spots[0].lat, spots[0].lng));
       map.setZoom(15);
     } else if (spots.length > 1) {
       const bounds = new maps.LatLngBounds(new maps.LatLng(spots[0].lat, spots[0].lng), new maps.LatLng(spots[0].lat, spots[0].lng));
-      for (const s of spots) bounds.extend(new maps.LatLng(s.lat, s.lng));
+      for (const sp of spots) bounds.extend(new maps.LatLng(sp.lat, sp.lng));
       map.fitBounds(bounds, { top: 40, right: 40, bottom: 90, left: 40 });
     }
+    draw();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spots, ready]);
+
+  // 확대 수준이 바뀌면 묶음을 다시 계산
+  useEffect(() => {
+    const map = mapRef.current;
+    const maps = window.naver?.maps;
+    if (!map || !maps) return;
+    const listener = maps.Event.addListener(map, "zoom_changed", () => drawRef.current());
+    return () => maps.Event.removeListener(listener);
+  }, [ready]);
 
   return <div ref={el} className="h-[60dvh] min-h-[380px] w-full" />;
 }

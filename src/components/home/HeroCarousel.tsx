@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "@/i18n/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { canOptimize } from "@/lib/img";
 import { useI18n } from "@/i18n/client";
 
 export interface HeroSlide {
@@ -81,8 +83,15 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             }`}
             style={{ width: `${w}%` }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={s.img} alt="" loading={i < 2 ? "eager" : "lazy"} className="absolute inset-0 h-full w-full object-cover" />
+            <Image
+              src={s.img}
+              alt=""
+              fill
+              sizes="(min-width: 768px) 82vw, 100vw"
+              priority={i === 0}
+              unoptimized={!canOptimize(s.img)}
+              className="object-cover"
+            />
             <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 to-transparent" />
             <div className="absolute inset-y-0 left-0 flex max-w-[85%] flex-col justify-end p-5 pb-9 text-white md:max-w-[60%] md:justify-center md:p-10">
               {s.tag && <span className="mb-2 w-fit rounded-md bg-white px-2 py-0.5 text-[11px] font-bold text-gray-900 md:text-xs">{s.tag}</span>}

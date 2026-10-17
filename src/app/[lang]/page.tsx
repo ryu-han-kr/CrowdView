@@ -124,7 +124,9 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const landmarkRail = (
     <PhotoRail title={t("지역별 대표 명소")} subtitle={t("사진을 누르면 지금 혼잡도와 길찾기")} moreHref="/explore" items={[]} chips={landmarkChips} />
   );
-  const calmRail = <PhotoRail title={t("지금 한산한 명소")} subtitle={t("실시간·예측 혼잡도 기준")} moreHref="/map" items={calmCards} />;
+  // 지금 보통 이하인 곳이 하나도 없으면 '한산한'이라고 부르지 않는다 (주말 오후 등)
+  const anyCalm = calmCards.some((c) => (c.score ?? 100) < 60);
+  const calmRail = <PhotoRail title={anyCalm ? t("지금 한산한 명소") : t("그나마 덜 붐비는 곳")} subtitle={t("실시간·예측 혼잡도 기준")} moreHref="/map" items={calmCards} />;
   const plusPromo = <PlusPromo t={t} price={PLUS.priceKrw.toLocaleString()} />;
 
   return (
