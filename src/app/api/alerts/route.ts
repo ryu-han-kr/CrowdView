@@ -5,10 +5,13 @@ import { alertTarget, markAlertsExist, pushEnabled, savePushSubscription, type P
 import { sql } from "@/lib/db";
 import { isPlus, markPlusUsed } from "@/lib/plus";
 import { errorJson, requireUser, unauthorized } from "@/lib/plus-http";
+import { rateLimit } from "@/lib/ratelimit";
 
 const KINDS = ["calm", "busy"] as const;
 
 export async function GET(req: Request) {
+  const limited = await rateLimit(req, "alerts");
+  if (limited) return limited;
   const user = await requireUser(req);
   if (!user) return unauthorized();
   const rows = await sql<{ place_id: string; kind: string }>("select place_id, kind from crowd_alert where user_id = $1 order by created_at desc", [user.id]);
@@ -21,6 +24,8 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  const limited = await rateLimit(req, "alerts");
+  if (limited) return limited;
   if (!pushEnabled) return NextResponse.json({ error: "알림 준비 중이에요" }, { status: 503 });
   const user = await requireUser(req);
   if (!user) return unauthorized();
@@ -37,6 +42,8 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
+  const limited = await rateLimit(req, "alerts");
+  if (limited) return limited;
   const user = await requireUser(req);
   if (!user) return unauthorized();
   const body = (await req.json().catch(() => ({}))) as { placeId?: string; kind?: string; all?: boolean };

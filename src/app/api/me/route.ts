@@ -2,8 +2,11 @@
 import { NextResponse } from "next/server";
 import { getPlus } from "@/lib/plus";
 import { requireUser, unauthorized, withPlusCookie } from "@/lib/plus-http";
+import { rateLimit } from "@/lib/ratelimit";
 
 export async function GET(req: Request) {
+  const limited = await rateLimit(req, "me");
+  if (limited) return limited;
   const user = await requireUser(req);
   if (!user) return unauthorized();
   const plus = await getPlus(user.id);

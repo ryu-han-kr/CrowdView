@@ -3,8 +3,11 @@ import { NextResponse } from "next/server";
 import { currentAdmin } from "@/lib/admin";
 import { opsAlert } from "@/lib/ops";
 import { adminCancel } from "@/lib/plus";
+import { rateLimit } from "@/lib/ratelimit";
 
 export async function POST(req: Request) {
+  const limited = await rateLimit(req, "admin");
+  if (limited) return limited;
   const admin = await currentAdmin(req.headers);
   if (!admin) return NextResponse.json({ error: "not found" }, { status: 404 });
   const { userId } = (await req.json().catch(() => ({}))) as { userId?: string };

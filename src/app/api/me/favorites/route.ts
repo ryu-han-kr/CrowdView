@@ -3,10 +3,13 @@ import { NextResponse } from "next/server";
 import { currentUser } from "@/lib/auth";
 import { pool, sql } from "@/lib/db";
 import { PLACES } from "@/lib/places";
+import { rateLimit } from "@/lib/ratelimit";
 
 const KNOWN = new Set(PLACES.map((p) => p.id));
 
 export async function GET(req: Request) {
+  const limited = await rateLimit(req, "me");
+  if (limited) return limited;
   const user = await currentUser(req.headers);
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const rows = await sql<{ place_id: string }>("select place_id from favorite where user_id = $1 order by created_at", [user.id]);
@@ -14,6 +17,8 @@ export async function GET(req: Request) {
 }
 
 export async function PUT(req: Request) {
+  const limited = await rateLimit(req, "me");
+  if (limited) return limited;
   const user = await currentUser(req.headers);
   if (!user || !pool) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const body = (await req.json().catch(() => ({}))) as { ids?: unknown };

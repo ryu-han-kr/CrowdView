@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { AdRail } from "@/components/AdRail";
 import { BottomNav, TopNav } from "@/components/BottomNav";
 import { NavProgress } from "@/components/NavProgress";
+import { ErrorReporter } from "@/components/ErrorReporter";
 import { FavoritesSync } from "@/components/FavoritesSync";
 import { PicksSync } from "@/components/PicksSync";
 import { authEnabled } from "@/lib/auth";
@@ -75,6 +76,7 @@ export default async function RootLayout({ children, params }: { children: React
         )}
         <I18nProvider lang={lang} dict={getDict(lang)}>
           <NavProgress />
+          <ErrorReporter />
           <TopNav authEnabled={authEnabled} />
           {authEnabled && <FavoritesSync />}
           {authEnabled && <PicksSync />}

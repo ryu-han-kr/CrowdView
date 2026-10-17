@@ -16,6 +16,7 @@ import { isLang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { translateNames } from "@/lib/name-translate";
 import { saveSharedRoute } from "@/lib/route-share";
+import { rateLimit } from "@/lib/ratelimit";
 
 const PREVIEW_STOPS = 2;
 let memo: { at: number; data: Candidate[] } | undefined;
@@ -27,6 +28,8 @@ async function candidates() {
 }
 
 export async function POST(req: Request) {
+  const limited = await rateLimit(req, "route");
+  if (limited) return limited;
   const body = (await req.json().catch(() => ({}))) as {
     start?: { lat?: number; lng?: number; name?: string };
     offsetMin?: number;
