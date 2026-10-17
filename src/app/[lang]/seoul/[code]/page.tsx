@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { StayLinks } from "@/components/StayLinks";
 import { notFound } from "next/navigation";
 import Link from "@/i18n/link";
 import { LevelBadge } from "@/components/Level";
@@ -49,6 +50,8 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
   ]);
   const BUSY: Record<string, string> = { 한산한: "#10b981", 보통: "#eab308", 분주한: "#f97316", 바쁜: "#ef4444" };
   const name = names.get(area.name) ?? area.name;
+  // 숙소 검색어 (해외 사이트용 영어 이름, Papago 캐시)
+  const enName = lang === "en" ? name : ((await translateNames([area.name], "en")).get(area.name) ?? area.name);
   const group = SEOUL_GROUPS.find((g) => g.id === seoulGroup(area.name))!;
   const level = live && levelOf(live.score);
   const people = (min: number, max: number) => t("{min}~{max}명", { min: compactNumber(min, lang), max: compactNumber(max, lang) });
@@ -187,6 +190,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
               </section>
             );
           })()}
+          <StayLinks ko={area.name} en={enName} lang={lang} t={t} className="mt-4" />
           <a
             href={`https://map.naver.com/p/search/${encodeURIComponent(area.name)}`}
             target="_blank"

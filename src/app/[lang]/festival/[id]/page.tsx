@@ -1,4 +1,5 @@
 import Link from "@/i18n/link";
+import { StayLinks } from "@/components/StayLinks";
 import type { Metadata } from "next";
 import { jsonLd, pageMeta, SITE } from "@/lib/seo";
 import { getSktCongestion } from "@/lib/skt";
@@ -55,6 +56,8 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
   // 축제 이름·장소·지역명 번역 (Papago, Redis 캐시). 못 하면 원문
   const names = await translateNames([f.title, f.place, f.region, crowd?.signguName, live?.area, area?.name], lang);
   const tr = (ko: string) => names.get(ko) ?? ko;
+  // 숙소 검색어: 축제 지역(시군구). 해외 사이트용 영어 이름 (Papago 캐시)
+  const enRegion = (await translateNames([f.region], "en")).get(f.region) ?? f.region;
   const translated = names.has(f.title);
   const today = kst().date;
   const dday = daysUntil(f.start);
@@ -262,6 +265,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
               <LevelBadge score={crowd.score} /> {t("은 평소 대비 방문객 증가율로 정한 단계예요.")}
             </p>
           )}
+          <StayLinks ko={f.region} en={enRegion} lang={lang} t={t} className="mt-6" />
         </div>
       </div>
     </main>

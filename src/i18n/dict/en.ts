@@ -786,6 +786,8 @@ const dict: Dict = {
   "종류": "Type",
   "지역(구)": "District",
   "그 동네 지금 혼잡도": "Crowds nearby now",
+  "근처 숙소 찾기": "Find stays nearby",
+  "‘{name}’ 근처 숙소를 각 예약 사이트에서 바로 검색해요. 가격·예약은 그 사이트에서 확인하세요.": "Search stays near ‘{name}’ on each booking site. Check prices and book on that site.",
   "롯데월드 어드벤처": "Lotte World Adventure",
   "에버랜드": "Everland",
   "서울랜드": "Seoul Land",

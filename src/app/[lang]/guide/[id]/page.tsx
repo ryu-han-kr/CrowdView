@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { StayLinks } from "@/components/StayLinks";
 import { notFound } from "next/navigation";
 import Link from "@/i18n/link";
 import { FaqBlock } from "@/components/FaqBlock";
@@ -132,6 +133,7 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
         </div>
 
         <div className="mt-8 space-y-8 lg:mt-0">
+          {p.kind !== "food" && <StayLinks ko={guideText(p, "ko").text.n} en={guideText(p, "en").text.n} lang={lang} t={t} />}
           {toilets.length > 0 && (
             <section>
               <div className="flex items-center justify-between">

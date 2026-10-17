@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { StayLinks } from "@/components/StayLinks";
 import type { Metadata } from "next";
 import { jsonLd, pageMeta, SITE } from "@/lib/seo";
 import { HourlyChart } from "@/components/HourlyChart";
@@ -355,6 +356,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           {signals.localPop && <VisitorProfile pop={signals.localPop} lang={lang} />}
 
           <JudgementCard place={place} crowd={crowd} signals={signals} lang={lang} />
+          <StayLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} className="mt-6" />
           <InlineAd className="mt-6" />
 
           {/* 함께 가면 좋은 곳 (관광공사 연관 관광지: 내비 이동 데이터) */}
