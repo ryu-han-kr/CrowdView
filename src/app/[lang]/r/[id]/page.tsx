@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "@/i18n/link";
 import { RouteResult } from "@/components/RoutePlanner";
+import { CopyRouteButton } from "@/components/CopyRouteButton";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { getSharedRoute } from "@/lib/route-share";
@@ -33,6 +34,7 @@ export default async function SharedRoutePage({ params }: { params: Promise<{ la
       <p className="mt-1 text-sm text-gray-500">{t("{name}에서 출발 · 혼잡 예측은 코스를 만든 때 기준이에요", { name: r.start.name })}</p>
       <div className="mt-6 max-w-2xl">
         <RouteResult start={r.start} plan={r.plan} locked={r.locked} beta={false} createdOn={r.createdOn} />
+        <CopyRouteButton stops={r.plan.stops.filter((s) => !s.meal).map((s) => ({ id: s.id, label: s.name, href: s.href }))} />
         <Link href="/route" className="mt-6 block rounded-2xl bg-indigo-600 py-3.5 text-center text-sm font-bold text-white">
           🧭 {t("나도 한산한 코스 짜기")}
         </Link>

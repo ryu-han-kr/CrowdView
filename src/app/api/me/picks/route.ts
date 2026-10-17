@@ -5,11 +5,14 @@ import { currentUser } from "@/lib/auth";
 import { pool, sql } from "@/lib/db";
 import { getGuidePlace } from "@/lib/seoul-guide";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
+import { PLACES, placeHref } from "@/lib/places";
 import { rateLimit } from "@/lib/ratelimit";
 
 const MAX = 50;
 
 function hrefOf(id: string): string | undefined {
+  const place = PLACES.find((p) => p.id === id);
+  if (place) return placeHref(place);
   if (id.startsWith("seoul-")) return SEOUL_AREAS.some((a) => a.code === id.slice(6)) ? `/seoul/${id.slice(6)}` : undefined;
   if (id.startsWith("vs-")) return getGuidePlace(id) ? `/guide/${id}` : undefined;
   return undefined;
