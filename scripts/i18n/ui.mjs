@@ -932,4 +932,9 @@ export default {
   "월별 (12개월)": ["By month (12 months)", "月別(12か月)", "按月(12个月)", "按月(12個月)"],
   "요일·공휴일·계절 패턴으로 본 CrowdView 추정이에요 (가장 붐빌 때 기준).": ["CrowdView estimate from weekday, holiday and seasonal patterns (busiest time of day).", "曜日・祝日・季節のパターンによるCrowdViewの推定です(最も混む時間帯基準)。", "基于星期、节假日和季节规律的CrowdView估算(以一天中最拥挤时为准)。", "基於星期、假日與季節規律的CrowdView估算(以一天中最擁擠時為準)。"],
   "지금 이후 시간대별 예상": ["Forecast for the coming hours", "これからの時間帯別予測", "接下来各时段预测", "接下來各時段預測"],
+  "전국": ["Nationwide", "全国", "全国", "全國"],
+  "지금": ["Now", "今", "现在", "現在"],
+  "서울시 실시간": ["Seoul live", "ソウル市リアルタイム", "首尔实时", "首爾即時"],
+  "테마와 지역을 골라 보세요. 핀 색은 지금 혼잡 단계(축제는 예상), 회색은 혼잡 자료가 없는 곳이에요.": ["Pick a theme and region. Pin colors show the current crowd level (forecast for festivals); gray means no crowd data.", "テーマと地域を選んでください。ピンの色は今の混雑段階(祭りは予測)、灰色は混雑データがない場所です。", "请选择主题和地区。图钉颜色表示当前拥挤等级(节庆为预测),灰色表示没有拥挤数据。", "請選擇主題和地區。圖釘顏色表示目前擁擠等級(節慶為預測),灰色表示沒有擁擠資料。"],
+  "실시간 장소": ["Live places", "リアルタイムの場所", "实时地点", "即時地點"],
 };

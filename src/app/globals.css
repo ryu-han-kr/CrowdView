@@ -96,9 +96,83 @@ body {
 }
 
 /* 페이지 위쪽 은은한 파랑·보라 그라데이션 (참고: 야놀자 '요즘놀거리') */
+/* 페이지 위쪽 은은한 그라데이션. 페이지마다 색만 조금 다르고(PageTheme이 body[data-page]를 바꾼다),
+   색은 0.8초 동안 천천히 바뀌어 페이지를 넘겨도 튀지 않는다 */
+@property --glow-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(199, 210, 254, 0.55);
+}
+@property --glow-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgba(186, 230, 253, 0.45);
+}
+@property --glow-c {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #eef2ff;
+}
 .page-glow {
   background:
-    radial-gradient(60% 70% at 85% 0%, rgba(199, 210, 254, 0.55), transparent 70%),
-    radial-gradient(50% 60% at 10% 10%, rgba(186, 230, 253, 0.45), transparent 70%),
-    linear-gradient(to bottom, #eef2ff 0%, #f5f7ff 45%, rgba(255, 255, 255, 0) 100%);
+    radial-gradient(60% 70% at 85% 0%, var(--glow-a), transparent 70%),
+    radial-gradient(50% 60% at 10% 10%, var(--glow-b), transparent 70%),
+    linear-gradient(to bottom, var(--glow-c) 0%, color-mix(in srgb, var(--glow-c) 45%, white) 45%, rgba(255, 255, 255, 0) 100%);
+  transition:
+    --glow-a 0.8s ease,
+    --glow-b 0.8s ease,
+    --glow-c 0.8s ease;
+}
+/* 지도: 하늘·민트 */
+body[data-page="map"] {
+  --glow-a: rgba(186, 230, 253, 0.6);
+  --glow-b: rgba(167, 243, 208, 0.4);
+  --glow-c: #ecfeff;
+}
+/* 지역 여행·명소: 연두·하늘 */
+body[data-page="explore"] {
+  --glow-a: rgba(187, 247, 208, 0.5);
+  --glow-b: rgba(186, 230, 253, 0.45);
+  --glow-c: #f0fdf4;
+}
+/* 여행 가이드: 살구·연노랑 */
+body[data-page="guide"] {
+  --glow-a: rgba(254, 215, 170, 0.45);
+  --glow-b: rgba(253, 230, 138, 0.35);
+  --glow-c: #fff7ed;
+}
+/* 추천 코스: 연보라 */
+body[data-page="route"] {
+  --glow-a: rgba(221, 214, 254, 0.6);
+  --glow-b: rgba(199, 210, 254, 0.45);
+  --glow-c: #f5f3ff;
+}
+/* 서울 실시간: 청록 */
+body[data-page="seoul"] {
+  --glow-a: rgba(153, 246, 228, 0.45);
+  --glow-b: rgba(186, 230, 253, 0.5);
+  --glow-c: #f0fdfa;
+}
+/* 마이·요금: 분홍빛 보라 */
+body[data-page="me"] {
+  --glow-a: rgba(251, 207, 232, 0.45);
+  --glow-b: rgba(221, 214, 254, 0.45);
+  --glow-c: #fdf4ff;
+}
+
+/* 페이지 큰 제목: 모든 화면에서 같은 크기·굵기·자간 (Tailwind 크기 클래스보다 우선) */
+main h1 {
+  font-size: 1.625rem;
+  line-height: 1.25;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: #0b1220;
+}
+@media (min-width: 768px) {
+  main h1 {
+    font-size: 2.125rem;
+  }
+}
+main h2 {
+  letter-spacing: -0.025em;
 }
