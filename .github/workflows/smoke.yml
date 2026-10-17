@@ -1,0 +1,19 @@
+# 운영 사이트 점검: Vercel 운영 배포가 끝날 때마다 + 매일 09:00 KST. 실패하면 GitHub가 메일로 알린다
+name: smoke
+
+on:
+  deployment_status:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    if: github.event_name != 'deployment_status' || (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/smoke.mjs https://crowdview.app

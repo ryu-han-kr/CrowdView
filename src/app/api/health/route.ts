@@ -1,6 +1,7 @@
 // 상태 점검: 데이터 신선도(소스별 가장 오래된 실시간 값), Redis, 오늘 API 사용률.
 // 외부 감시 도구(UptimeRobot 등)가 1~5분마다 부르게 하면 된다. 문제가 있으면 503
 import { NextResponse } from "next/server";
+import { getVitals } from "@/lib/vitals";
 import { getApiUsage } from "@/lib/api-quota";
 import { kv, kvBackend } from "@/lib/cache";
 import { getAllCrowd } from "@/lib/crowd/service";
@@ -20,10 +21,12 @@ export async function GET() {
     .set("health:ping", String(started), 60)
     .then(() => true)
     .catch(() => false);
-  const [crowd, seoul, usage] = await Promise.all([
+  const [crowd, seoul, usage, vitals] = await Promise.all([
     getAllCrowd().catch(() => ({}) as Awaited<ReturnType<typeof getAllCrowd>>),
     getAllSeoulLive().catch(() => ({}) as Awaited<ReturnType<typeof getAllSeoulLive>>),
     getApiUsage().catch(() => []),
+    // 실사용 화면 속도: 최근 7일 '좋음' 비율 (상태 판단에는 넣지 않는다)
+    getVitals(7).catch(() => ({})),
   ]);
 
   // 소스별: 실시간 장소 수, 가장 오래된 값(분)
@@ -38,7 +41,9 @@ export async function GET() {
   const seoulTimes = Object.values(seoul).map((s) => s.time);
   const newest = seoulTimes.sort().at(-1);
   const now = kst();
-  const seoulAgeMin = newest ? Math.round((Date.parse(`${now.date}T00:00:00Z`) + now.hour * 3600_000 - Date.parse(`${newest.replace(" ", "T")}:00Z`)) / 60_000) : null;
+  const seoulAgeMin = newest
+    ? Math.round((Date.parse(`${now.date}T00:00:00Z`) + now.hour * 3600_000 - Date.parse(`${newest.replace(" ", "T")}:00Z`)) / 60_000)
+    : null;
 
   const stale = Object.entries(bySource)
     .filter(([, s]) => s.oldestMin > STALE_MIN)
@@ -56,6 +61,7 @@ export async function GET() {
       seoulLive: { areas: seoulTimes.length, newest, ageMin: seoulAgeMin },
       stale,
       quotaHot,
+      vitals,
       ms: Date.now() - started,
     },
     { status: ok ? 200 : 503, headers: { "cache-control": "no-store" } },
