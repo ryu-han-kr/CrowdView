@@ -14,6 +14,9 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      # 단계의 if 는 secrets를 직접 못 읽어서 job env로 넘긴다
+      DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,11 +28,16 @@ jobs:
           # 새로 생긴 주소만 좌표로 바꾼다 (geocode.json 캐시, 실행당 최대 3,000건)
           NEXT_PUBLIC_NAVER_MAP_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID }}
           NAVER_MAP_CLIENT_SECRET: ${{ secrets.NAVER_MAP_CLIENT_SECRET }}
+      # 지역별 대표 명소 사진·좌표 (한국관광공사 TourAPI). Secrets에 DATA_GO_KR_KEY가 없으면 건너뛴다
+      - run: node scripts/korea-data/landmarks.mjs
+        if: ${{ env.DATA_GO_KR_KEY != '' }}
       - uses: peter-evans/create-pull-request@v7
         with:
           branch: chore/seoul-data
           title: "chore: 서울시 정적 데이터 주간 갱신"
           commit-message: "chore: weekly Seoul open data sync"
           body: "화장실·와이파이·문화공간·Visit Seoul·체험 예약·지하철 노선망 데이터를 다시 받았어요 (scripts/seoul-data/sync.mjs). 변경분 확인 후 머지하세요."
-          add-paths: src/data/seoul/*.json
+          add-paths: |
+            src/data/seoul/*.json
+            src/data/korea/*.json
           delete-branch: true
