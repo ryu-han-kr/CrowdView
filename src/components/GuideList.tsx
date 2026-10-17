@@ -8,7 +8,7 @@ import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { FilterLayout, PickStar } from "./FilterLayout";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
 
-type Row = [id: string, kind: string, name: string, lat: number | null, lng: number | null, gu: string | null];
+export type Row = [id: string, kind: string, name: string, lat: number | null, lng: number | null, gu: string | null];
 interface Live {
   url: string;
   level: string;
@@ -35,9 +35,13 @@ const LEVEL_SCORE: Record<string, number> = {
 };
 
 /** Visit Seoul 다국어 명소·맛집·쇼핑·자연 + 가까운 서울 실시간 지역의 지금 혼잡도. 검색 + 종류·구·혼잡 거르기(PC는 왼쪽 패널) */
-export function GuideList() {
+/**
+ * initial: 서버가 미리 그려 주는 첫 목록(명소)과 종류별 건수 — 검색로봇·자바스크립트 없이도 목록과 링크가 보이게.
+ * 브라우저에서는 전체 목록(/data/guide-{lang}.json)을 받아 바꿔 끼운다
+ */
+export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Record<string, number> }) {
   const { t, lang } = useI18n();
-  const [rows, setRows] = useState<Row[] | null>(null);
+  const [rows, setRows] = useState<Row[] | null>(initial ?? null);
   const [live, setLive] = useState<Record<string, string>>({});
   const [kinds, setKinds] = useState<string[]>(["attraction"]);
   const [gus, setGus] = useState<string[]>([]);
@@ -121,7 +125,7 @@ export function GuideList() {
             id: k.id,
             label: t(k.label),
             emoji: k.emoji,
-            count: (rows ?? []).filter((r) => r[1] === k.id).length,
+            count: counts?.[k.id] ?? (rows ?? []).filter((r) => r[1] === k.id).length,
           })),
           selected: kinds,
           onChange: (next) => (setKinds(next), setGus([])),

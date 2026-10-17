@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { ExploreView, type ExploreRegion } from "@/components/ExploreView";
+import type { SpotRow } from "@/components/MoreSpots";
+import spots from "@/data/korea/spots.json";
 import { InlineAd } from "@/components/AdUnit";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
@@ -44,7 +46,12 @@ export default async function ExplorePage({ params }: { params: Promise<{ lang: 
     <main className="px-5 pt-6 pb-8 md:px-0 md:pt-10">
       <h1 className="text-2xl font-bold md:text-3xl">{t("지역 여행")}</h1>
       <p className="mt-1 text-sm text-gray-500">{t("지역별 대표 명소와 축제, 그리고 지금 혼잡도. 혼잡도는 근처 실시간 데이터가 있는 곳만 보여요")}</p>
-      <ExploreView regions={regions} kinds={LANDMARK_KINDS} />
+      <ExploreView
+        regions={regions}
+        kinds={LANDMARK_KINDS}
+        initialSpots={(spots as SpotRow[]).filter((s) => s[2] === regions[0]?.id)}
+        spotCounts={Object.fromEntries(REGIONS.map((r) => [r.id, (spots as SpotRow[]).filter((s) => s[2] === r.id).length]))}
+      />
       <InlineAd className="mt-8" />
       <p className="mt-6 text-center text-[11px] text-gray-400">{t("사진·위치: 한국관광공사 TourAPI · 축제: 한국관광공사·서울시 · 혼잡도: 서울시 실시간 도시데이터·CrowdView 예측")}</p>
     </main>

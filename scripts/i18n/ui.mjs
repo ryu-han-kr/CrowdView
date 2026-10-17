@@ -886,4 +886,10 @@ export default {
   "서울시 공식 혼잡 단계": ["Seoul official crowd level", "ソウル市公式混雑段階", "首尔市官方拥挤等级", "首爾市官方擁擠等級"],
   "지금 서울시 공식 단계: ‘{level}’": ["Seoul official level now: ‘{level}’", "現在のソウル市公式段階: 「{level}」", "当前首尔市官方等级: “{level}”", "目前首爾市官方等級: 「{level}」"],
   "CrowdView 추정 (요일·시간·날씨 패턴)": ["CrowdView estimate (day, time & weather patterns)", "CrowdView推定 (曜日・時間・天気パターン)", "CrowdView估算 (星期·时段·天气规律)", "CrowdView估算 (星期·時段·天氣規律)"],
+  // ── 한 문장 요약 (SEO·GEO)
+  "{name}은(는) {date}에 열려요. 아직 행사 전이라 지금 혼잡도 대신 행사 당일 예측을 보여드려요.": ["{name} takes place on {date}. It hasn't started yet, so we show the event-day forecast instead of current crowds.", "{name}は{date}に開催されます。まだ開催前のため、今の混雑度ではなく当日の予測を表示します。", "{name}将于{date}举行。尚未开始，因此显示活动当天的预测而非当前拥挤度。", "{name}將於{date}舉行。尚未開始，因此顯示活動當天的預測而非目前擁擠度。"],
+  "{name}은(는) 지금 운영 시간이 아니에요.": ["{name} is closed right now.", "{name}は現在営業時間外です。", "{name}现在不在营业时间。", "{name}現在不在營業時間。"],
+  "{name}의 지금 혼잡도는 ‘{level}’이에요 ({source}, {time} 기준).": ["{name} is ‘{level}’ right now ({source}, as of {time}).", "{name}の現在の混雑度は「{level}」です ({source}、{time}時点)。", "{name}目前的拥挤度为“{level}”({source}，{time}时)。", "{name}目前的擁擠度為「{level}」({source}，{time}時)。"],
+  "오늘 남은 운영 시간 중에는 {hour}쯤이 가장 한산할 것으로 보여요.": ["For the rest of today's opening hours, around {hour} looks quietest.", "本日の残りの営業時間では{hour}頃が最も空いていそうです。", "今天剩余的营业时间中，{hour}左右预计人最少。", "今天剩餘的營業時間中，{hour}左右預計人最少。"],
+  "{name}에는 지금 약 {range}이 있고, 서울시 공식 혼잡 단계는 ‘{level}’이에요 ({time} 기준, 서울시 실시간 도시데이터).": ["About {range} are at {name} now, and the Seoul official level is ‘{level}’ (as of {time}, Seoul real-time city data).", "{name}には現在約{range}がいて、ソウル市公式の混雑段階は「{level}」です ({time}時点、ソウル市リアルタイム都市データ)。", "{name}目前约有{range}，首尔市官方拥挤等级为“{level}”({time}时，首尔市实时城市数据)。", "{name}目前約有{range}，首爾市官方擁擠等級為「{level}」({time}時，首爾市即時城市資料)。"],
 };

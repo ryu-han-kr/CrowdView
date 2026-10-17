@@ -9,7 +9,8 @@ import { LevelBadge } from "@/components/Level";
 import { FaqBlock } from "@/components/FaqBlock";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
-import { pageMeta } from "@/lib/seo";
+import { breadcrumbLd, jsonLd, pageMeta, SITE } from "@/lib/seo";
+import { localePath } from "@/i18n/config";
 import { compactNumber } from "@/lib/format";
 import { levelOf } from "@/lib/levels";
 import { translateNames } from "@/lib/name-translate";
@@ -69,6 +70,37 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
         {group.emoji} {t(group.label)} · {t("서울")}
       </p>
       <h1 className="mt-1 text-2xl font-bold md:text-3xl">{name}</h1>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: jsonLd([
+            {
+              "@context": "https://schema.org",
+              "@type": "Place",
+              name,
+              url: `${SITE}${localePath(lang, `/seoul/${area.code}`)}`,
+              geo: { "@type": "GeoCoordinates", latitude: area.lat, longitude: area.lng },
+              address: { "@type": "PostalAddress", addressLocality: "Seoul", addressCountry: "KR" },
+            },
+            breadcrumbLd(lang, [
+              { name: "CrowdView", path: "/" },
+              { name: t("서울 실시간 인구"), path: "/seoul" },
+              { name, path: `/seoul/${area.code}` },
+            ]),
+          ]),
+        }}
+      />
+      {/* 한 문장 요약: 공식 단계·인원·기준 시각 (사람과 AI 검색이 바로 인용할 수 있게) */}
+      {live && (
+        <p className="mt-2 text-[13px] leading-relaxed text-gray-800">
+          {t("{name}에는 지금 약 {range}이 있고, 서울시 공식 혼잡 단계는 ‘{level}’이에요 ({time} 기준, 서울시 실시간 도시데이터).", {
+            name,
+            range: people(live.min, live.max),
+            level: t(live.level),
+            time: live.time.slice(11, 16),
+          })}
+        </p>
+      )}
 
       <div className="mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
         <div>
