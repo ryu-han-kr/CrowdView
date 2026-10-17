@@ -62,7 +62,7 @@ export default async function RootLayout({ children, params }: { children: React
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
       </head>
-      <body className="font-sans antialiased">
+      <body className="relative isolate bg-white font-sans antialiased">
         {/* 구글 애드센스 (발행자 ID가 있을 때만). EEA·영국 이용자 동의 화면은 애드센스 콘솔 '개인 정보 보호 및 메시지'에서 켠다 */}
         {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && (
           <Script
@@ -77,7 +77,11 @@ export default async function RootLayout({ children, params }: { children: React
           <TopNav authEnabled={authEnabled} />
           {authEnabled && <FavoritesSync />}
           {/* 모바일: 가운데 448px 앱 화면 그대로 / 태블릿·PC: 넓은 웹 화면 */}
-          <div className="mx-auto min-h-dvh max-w-md bg-white pb-[calc(4.5rem+env(safe-area-inset-bottom))] shadow-sm md:max-w-6xl md:px-6 md:pb-16 md:shadow-none">
+          {/* 태블릿·PC: 화면 위쪽 은은한 파랑 그라데이션 (아래로 갈수록 흰색) */}
+          <div aria-hidden className="page-glow pointer-events-none absolute inset-x-0 top-0 -z-10 hidden h-[640px] md:block" />
+          <div className="relative isolate mx-auto min-h-dvh max-w-md bg-white pb-[calc(4.5rem+env(safe-area-inset-bottom))] shadow-sm md:max-w-6xl md:bg-transparent md:px-6 md:pb-16 md:shadow-none">
+            {/* 모바일: 앱 화면 안쪽 위에 같은 그라데이션 */}
+            <div aria-hidden className="page-glow pointer-events-none absolute inset-x-0 top-0 -z-10 h-[420px] md:hidden" />
             {children}
             {/* 태블릿·PC는 모든 페이지 아래에, 모바일은 마이 탭 아래에 (앱 화면 유지) */}
             <SiteFooter lang={lang} className="mt-10 hidden md:block" />

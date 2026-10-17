@@ -55,21 +55,21 @@ export function SpotMap({ spots, className = "" }: { spots: MapSpot[]; className
   const counts = LEVELS.map((l) => shown.filter((s) => s.score !== undefined && levelOf(s.score).key === l.key).length);
 
   return (
-    <div className={`relative overflow-hidden rounded-3xl bg-slate-100 ${className}`}>
-      {failed ? (
-        <SketchMap spots={shown} onSelect={setSelected} />
-      ) : (
-        <NaverSpots spots={shown} onSelect={setSelected} onFail={() => setFailed(true)} />
-      )}
-      <MapLegend counts={counts} />
-      {spots.length > MAX_PINS && (
-        <p className="absolute top-3 left-3 z-10 rounded-full bg-white/95 px-2.5 py-1 text-[11px] text-gray-600 shadow">
-          {t("앞쪽 {n}곳만 보여요", { n: MAX_PINS })}
-        </p>
-      )}
-      {sel && (
-        <SpotCard spot={sel} onClose={() => setSelected(null)} />
-      )}
+    <div className={className}>
+      <MapLegend counts={counts} className="mb-2" />
+      <div className="relative overflow-hidden rounded-3xl bg-slate-100">
+        {failed ? (
+          <SketchMap spots={shown} onSelect={setSelected} />
+        ) : (
+          <NaverSpots spots={shown} onSelect={setSelected} onFail={() => setFailed(true)} />
+        )}
+        {spots.length > MAX_PINS && (
+          <p className="absolute top-3 left-3 z-10 rounded-full bg-white/95 px-2.5 py-1 text-[11px] text-gray-600 shadow">
+            {t("앞쪽 {n}곳만 보여요", { n: MAX_PINS })}
+          </p>
+        )}
+        {sel && <SpotCard spot={sel} onClose={() => setSelected(null)} />}
+      </div>
     </div>
   );
 }
@@ -165,7 +165,7 @@ function NaverSpots({ spots, onSelect, onFail }: { spots: MapSpot[]; onSelect: (
     } else if (spots.length > 1) {
       const bounds = new maps.LatLngBounds(new maps.LatLng(spots[0].lat, spots[0].lng), new maps.LatLng(spots[0].lat, spots[0].lng));
       for (const s of spots) bounds.extend(new maps.LatLng(s.lat, s.lng));
-      map.fitBounds(bounds, { top: 60, right: 90, bottom: 90, left: 30 });
+      map.fitBounds(bounds, { top: 40, right: 40, bottom: 90, left: 40 });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spots, ready]);

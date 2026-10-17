@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
+import { StickyBar } from "./StickyBar";
 
 export interface ExploreRegion {
   id: string;
@@ -35,11 +36,12 @@ export function ExploreView({ regions, kinds }: { regions: ExploreRegion[]; kind
 
   const cur = regions.find((r) => r.id === region);
   const landmarks = (cur?.landmarks ?? []).filter((l) => kind === "all" || l.kind === kind);
-  const chip = (on: boolean) => `shrink-0 rounded-full px-3.5 py-1.5 text-sm font-semibold ${on ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`;
+  const chip = (on: boolean) =>
+    `shrink-0 rounded-full px-3.5 py-1.5 text-sm font-semibold ${on ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`;
 
   return (
     <div>
-      <div className="sticky top-0 z-20 -mx-5 bg-white/95 px-5 py-3 backdrop-blur md:top-16 md:mx-0 md:px-0">
+      <StickyBar className="-mx-5 px-5 py-3 md:mx-0 md:px-0">
         <div className="no-scrollbar flex gap-2 overflow-x-auto">
           {regions.map((r) => (
             <button key={r.id} onClick={() => choose(r.id)} className={chip(r.id === region)}>
@@ -48,7 +50,7 @@ export function ExploreView({ regions, kinds }: { regions: ExploreRegion[]; kind
             </button>
           ))}
         </div>
-      </div>
+      </StickyBar>
 
       {cur && view === "map" && (
         <section className="mt-4">
@@ -58,12 +60,20 @@ export function ExploreView({ regions, kinds }: { regions: ExploreRegion[]; kind
           </div>
           <SpotMap
             className="mt-3"
-            spots={[
-              ...landmarks.map((l) => ({ ...l, emoji: "📍" })),
-              ...cur.festivals.map((f) => ({ ...f, emoji: "🎪" })),
-            ]
+            spots={[...landmarks.map((l) => ({ ...l, emoji: "📍" })), ...cur.festivals.map((f) => ({ ...f, emoji: "🎪" }))]
               .filter((x): x is typeof x & { lat: number; lng: number } => x.lat !== undefined && x.lng !== undefined)
-              .map((x) => ({ id: x.id, name: x.title, lat: x.lat, lng: x.lng, href: x.href, external: x.external, score: x.score, emoji: x.emoji, sub: x.sub, img: x.img }))}
+              .map((x) => ({
+                id: x.id,
+                name: x.title,
+                lat: x.lat,
+                lng: x.lng,
+                href: x.href,
+                external: x.external,
+                score: x.score,
+                emoji: x.emoji,
+                sub: x.sub,
+                img: x.img,
+              }))}
           />
         </section>
       )}
@@ -102,7 +112,9 @@ export function ExploreView({ regions, kinds }: { regions: ExploreRegion[]; kind
                 ))}
               </ul>
             ) : (
-              <p className="mt-4 rounded-2xl bg-gray-50 p-6 text-center text-sm text-gray-500">{t("아직 고른 명소가 없어요. 축제를 확인해 보세요.")}</p>
+              <p className="mt-4 rounded-2xl bg-gray-50 p-6 text-center text-sm text-gray-500">
+                {t("아직 고른 명소가 없어요. 축제를 확인해 보세요.")}
+              </p>
             )}
           </section>
 

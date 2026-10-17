@@ -94,3 +94,11 @@ body {
   transform-origin: left;
   animation: nav-progress 2.5s cubic-bezier(0.1, 0.6, 0.3, 1) forwards;
 }
+
+/* 페이지 위쪽 은은한 파랑·보라 그라데이션 (참고: 야놀자 '요즘놀거리') */
+.page-glow {
+  background:
+    radial-gradient(60% 70% at 85% 0%, rgba(199, 210, 254, 0.55), transparent 70%),
+    radial-gradient(50% 60% at 10% 10%, rgba(186, 230, 253, 0.45), transparent 70%),
+    linear-gradient(to bottom, #eef2ff 0%, #f5f7ff 45%, rgba(255, 255, 255, 0) 100%);
+}

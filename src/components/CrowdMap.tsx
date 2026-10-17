@@ -8,7 +8,6 @@ import { LEVELS, levelOf } from "@/lib/levels";
 import type { CrowdResult, Place } from "@/lib/types";
 import { KEY_ID, loadSdk } from "@/lib/naver-map";
 import { HeatMap, MapPlaceCard } from "./HeatMap";
-import { MapLegend } from "./map/MapLegend";
 
 const REGIONS = {
   all: { label: "전국", lat: 36.0, lng: 127.6, zoom: 7 },
@@ -29,7 +28,6 @@ export function CrowdMap({ places, crowd }: { places: Place[]; crowd: Record<str
   return (
     <div className="relative">
       {failed ? <HeatMap places={places} crowd={crowd} /> : <NaverCrowdMap places={places} crowd={crowd} onFail={() => setFailed(true)} />}
-      <MapLegend counts={LEVELS.map((l) => places.filter((p) => crowd[p.id]?.open && levelOf(crowd[p.id].score).key === l.key).length)} />
     </div>
   );
 }

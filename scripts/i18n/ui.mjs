@@ -461,7 +461,7 @@ export default {
 
   // ── 지도
   "혼잡도 지도": ["Crowd map", "混雑度マップ", "拥挤度地图", "擁擠度地圖"],
-  "원이 크고 붉을수록 붐벼요. 오른쪽 위 색깔표로 단계를 확인하고, 핀을 누르면 자세히 볼 수 있어요.": ["Bigger, redder circles mean more crowded. Check levels in the color key at top right and tap a pin for details.", "円が大きく赤いほど混雑。右上の色見本で段階を確認し、ピンを押すと詳細が見られます。", "圆圈越大越红越拥挤。可在右上角色标查看等级，点按图钉查看详情。", "圓圈越大越紅越擁擠。可在右上角色標查看等級，點按圖釘查看詳情。"],
+  "원이 크고 붉을수록 붐벼요. 색깔표로 단계를 확인하고, 핀을 누르면 자세히 볼 수 있어요.": ["Bigger, redder circles mean more crowded. Check levels in the color key and tap a pin for details.", "円が大きく赤いほど混雑。色見本で段階を確認し、ピンを押すと詳細が見られます。", "圆圈越大越红越拥挤。可通过色标查看等级，点按图钉查看详情。", "圓圈越大越紅越擁擠。可透過色標查看等級，點按圖釘查看詳情。"],
 
   // ── 마이페이지
   마이페이지: ["My page", "マイページ", "我的页面", "我的頁面"],

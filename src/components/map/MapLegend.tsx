@@ -3,16 +3,17 @@
 import { useI18n } from "@/i18n/client";
 import { LEVELS } from "@/lib/levels";
 
-/** 지도 오른쪽 위에 붙는 작은 혼잡도 기준표 (색 · 단계 · 곳 수) */
-export function MapLegend({ counts }: { counts?: number[] }) {
+/** 지도 위에 가로로 놓는 혼잡도 기준표: 단계마다 색 막대 · 이름 · 곳 수 */
+export function MapLegend({ counts, className = "" }: { counts?: number[]; className?: string }) {
   const { t } = useI18n();
   return (
-    <ul className="pointer-events-none absolute top-3 right-3 z-10 space-y-0.5 rounded-xl bg-white/95 px-2 py-1.5 text-[10px] leading-tight shadow-md backdrop-blur">
-      {[...LEVELS].reverse().map((l) => (
-        <li key={l.key} className="flex items-center gap-1.5">
-          <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: l.color }} />
-          <span className="font-semibold text-gray-700">{t(l.label)}</span>
-          {counts && <span className="ml-auto pl-1.5 text-gray-400">{counts[l.key - 1]}</span>}
+    <ul className={`flex overflow-hidden rounded-xl border border-gray-100 bg-white text-center text-[11px] leading-tight ${className}`}>
+      {LEVELS.map((l) => (
+        <li key={l.key} className="min-w-0 flex-1 border-t-[3px] px-1.5 py-1" style={{ borderTopColor: l.color }}>
+          <b className="block truncate" style={{ color: l.color }}>
+            {t(l.label)}
+          </b>
+          {counts && <span className="text-gray-500">{t("{n}곳", { n: counts[l.key - 1] })}</span>}
         </li>
       ))}
     </ul>
