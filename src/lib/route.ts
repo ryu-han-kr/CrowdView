@@ -19,8 +19,10 @@ export interface Candidate extends LatLng {
   interest: Interest;
   /** 머무는 시간 (분) */
   stay: number;
-  /** 시(0~23) → 예상 혼잡 점수. 예측이 없는 시간은 now로 */
+  /** 오늘 0시부터 센 시(내일 9시 = 33) → 실시간·예측 점수 */
   hourly: Record<number, number>;
+  /** hourly에 없는 시간대의 예측 (내일·주말: 지하철 승하차 모양 등). 없으면 now */
+  predict?: (absHour: number) => number;
   now?: number;
   /** 운영 시간 [시작, 끝] (시, 소수 가능). 없으면 늘 열림 */
   hours?: [number, number];
@@ -47,7 +49,7 @@ export type TravelFn = (a: LatLng, b: LatLng, mode: Transport) => Leg;
 
 export interface RouteRequest {
   start: LatLng & { name: string };
-  /** 출발 시각 (자정부터 분, KST) */
+  /** 출발 시각 (오늘 자정부터 분, KST. 내일 9시 = 1980) */
   startMin: number;
   durationMin: number;
   interests: Interest[];
@@ -71,6 +73,8 @@ export interface RouteStop {
   meal?: "lunch" | "dinner";
   /** 이용자가 ☆로 담은 곳 */
   picked?: boolean;
+  /** 실시간·12시간 예측이 아니라 평소 패턴으로 본 예측 점수 */
+  predicted?: boolean;
   /** 오늘 이 장소가 가장 붐비는 시각과 점수 (피했다는 설명용) */
   peak?: { hour: number; score: number };
   basis: Candidate["basis"];
@@ -105,15 +109,30 @@ const MEALS = [
 ];
 type Meal = (typeof MEALS)[number];
 
-function scoreAt(c: Candidate, minute: number): number {
-  const h = Math.floor(minute / 60) % 24;
-  return c.hourly[h] ?? c.now ?? 50;
+function scoreAt(c: Candidate, minute: number): { score: number; predicted: boolean } {
+  const h = Math.floor(minute / 60);
+  const known = c.hourly[h];
+  if (known !== undefined) return { score: known, predicted: false };
+  const p = c.predict?.(h);
+  return p !== undefined ? { score: p, predicted: true } : { score: c.now ?? 50, predicted: false };
+}
+
+/** 그날 가장 붐비는 시각 (피했다는 설명용) */
+function peakOfDay(c: Candidate, minute: number): { hour: number; score: number } | undefined {
+  const day = Math.floor(minute / 1440) * 24;
+  let best: { hour: number; score: number } | undefined;
+  for (let h = day + 7; h < day + 23; h++) {
+    const known = c.hourly[h] ?? c.predict?.(h);
+    if (known !== undefined && (!best || known > best.score)) best = { hour: h % 24, score: known };
+  }
+  return best;
 }
 
 function isOpen(c: Candidate, arrive: number, leave: number): boolean {
   if (!c.hours) return true;
   const [o, cl] = c.hours;
-  return arrive >= o * 60 && leave <= cl * 60;
+  const day = Math.floor(arrive / 1440) * 1440;
+  return arrive >= day + o * 60 && leave <= day + cl * 60;
 }
 
 interface State {
@@ -128,6 +147,8 @@ interface State {
 /** 코스 하나를 따라가며 이동·식사·방문을 쌓는다. 욕심쟁이 고르기와 순서 비교가 같은 규칙을 쓴다 */
 function makePlanner(req: RouteRequest, travel: TravelFn, spots: MealSpot[], mustIds: Set<string>) {
   const end = req.startMin + req.durationMin;
+  const dayBase = Math.floor(req.startMin / 1440) * 1440;
+  const meals = MEALS.map((m) => ({ ...m, from: m.from + dayBase, to: m.to + dayBase }));
   const legMemo = new Map<string, Leg>();
   const leg = (a: LatLng, b: LatLng) => {
     const key = `${a.lat},${a.lng}>${b.lat},${b.lng}`;
@@ -158,8 +179,8 @@ function makePlanner(req: RouteRequest, travel: TravelFn, spots: MealSpot[], mus
     t: req.startMin,
     stops: [],
     cost: 0,
-    // 일정 안에 식사 시간이 들어오는 끼니만
-    meals: spots.length ? MEALS.filter((m) => req.startMin <= m.to && end >= m.from + m.stay) : [],
+    // 일정 안에 식사 시간이 들어오는 끼니만 (출발하는 날 기준)
+    meals: spots.length ? meals.filter((m) => req.startMin <= m.to && end >= m.from + m.stay) : [],
   });
 
   /** 먹을 때가 됐으면 근처 맛집에 들른다. 아니면 그대로 돌려준다. nextLeave: 다음 장소를 지금 가면 떠나는 시각 */
@@ -205,8 +226,7 @@ function makePlanner(req: RouteRequest, travel: TravelFn, spots: MealSpot[], mus
     const arrive = s.t + l.minutes;
     const leave = arrive + c.stay;
     if (leave > end || !isOpen(c, arrive, leave)) return null;
-    const score = scoreAt(c, arrive);
-    const peakEntry = Object.entries(c.hourly).sort((a, b) => b[1] - a[1])[0];
+    const { score, predicted } = scoreAt(c, arrive);
     const stop: RouteStop = {
       id: c.id,
       name: c.name,
@@ -220,9 +240,10 @@ function makePlanner(req: RouteRequest, travel: TravelFn, spots: MealSpot[], mus
       walk: l.walk,
       ...(l.lines && { lines: l.lines }),
       score,
-      peak: peakEntry ? { hour: Number(peakEntry[0]), score: peakEntry[1] } : undefined,
+      peak: peakOfDay(c, arrive),
       basis: c.basis,
       ...(mustIds.has(c.id) && { picked: true }),
+      ...(predicted && { predicted: true }),
     };
     const after: State = { ...s, pos: c, t: leave, stops: [...s.stops, stop], cost: s.cost + score * CROWD_W + l.minutes * TRAVEL_W };
     // 여기 있는 동안 식사 시간이 지나 버리면 바로 벌점 (욕심쟁이 고르기가 미리 알 수 있게)
