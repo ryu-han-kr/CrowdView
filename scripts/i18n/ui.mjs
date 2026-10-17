@@ -849,4 +849,16 @@ export default {
   // ── 자동결제 안내 푸시
   "{date}에 Plus가 자동 결제돼요": ["Plus renews automatically on {date}", "{date}にPlusが自動更新されます", "Plus将于{date}自动续费", "Plus將於{date}自動續費"],
   "월 {price}원 · 원하지 않으면 결제일 전에 마이페이지에서 해지하세요": ["₩{price}/month · Cancel in My page before then if you don't want it", "月{price}ウォン · 不要ならお支払い日までにマイページで解約してください", "每月{price}韩元 · 如不需要请在扣款日前于我的页面取消", "每月{price}韓元 · 如不需要請在扣款日前於我的頁面取消"],
+  // ── 코스 공유·이유·다시 짜기
+  "한산한 코스": ["Quiet route", "空いているコース", "人少路线", "人少路線"],
+  "공유된 코스": ["Shared route", "共有されたコース", "分享的路线", "分享的路線"],
+  "{name}에서 출발 · 혼잡 예측은 코스를 만든 때 기준이에요": ["Starts at {name} · Crowd forecasts are from when the route was made", "{name}出発 · 混雑予測はコース作成時点のものです", "从{name}出发 · 拥挤预测以路线生成时为准", "從{name}出發 · 擁擠預測以路線產生時為準"],
+  "나도 한산한 코스 짜기": ["Plan my own quiet route", "自分も空いているコースを作る", "我也来规划人少路线", "我也來規劃人少路線"],
+  "남은 시간이 1시간보다 짧아 다시 짤 수 없어요": ["Less than an hour left, so the route can't be re-planned", "残り時間が1時間未満のため作り直せません", "剩余时间不足1小时，无法重新规划", "剩餘時間不足1小時，無法重新規劃"],
+  "{name}에서 다시 짠 코스예요": ["Re-planned from {name}", "{name}から作り直したコースです", "从{name}重新规划的路线", "從{name}重新規劃的路線"],
+  "링크를 복사했어요": ["Link copied", "リンクをコピーしました", "已复制链接", "已複製連結"],
+  공유: ["Share", "共有", "分享", "分享"],
+  "하루 중 가장 한산한 시간에 도착해요": ["You arrive at the quietest time of the day", "1日で最も空いている時間に着きます", "在一天中人最少的时候到达", "在一天中人最少的時候抵達"],
+  "{time} 개장까지 {n}분 기다려요": ["Wait {n} min until it opens at {time}", "{time}の開場まで{n}分待ちます", "等待{n}分钟，{time}开门", "等待{n}分鐘，{time}開門"],
+  "여기서부터 다시 짜기": ["Re-plan from here", "ここから作り直す", "从这里重新规划", "從這裡重新規劃"],
 };
