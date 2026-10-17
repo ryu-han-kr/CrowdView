@@ -443,7 +443,7 @@ const dict: Dict = {
   "홈으로": "Go home",
   "뒤로": "Back",
   "혼잡도 지도": "Crowd map",
-  "원이 크고 붉을수록 붐벼요. 오른쪽 위 색깔표로 단계를 확인하고, 핀을 누르면 자세히 볼 수 있어요.": "Bigger, redder circles mean more crowded. Check levels in the color key at top right and tap a pin for details.",
+  "원이 크고 붉을수록 붐벼요. 색깔표로 단계를 확인하고, 핀을 누르면 자세히 볼 수 있어요.": "Bigger, redder circles mean more crowded. Check levels in the color key and tap a pin for details.",
   "마이페이지": "My page",
   "즐겨찾기": "Favorites",
   "즐겨찾기 해제": "Remove from favorites",

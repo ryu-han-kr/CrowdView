@@ -11,7 +11,7 @@ import { FaqBlock } from "@/components/FaqBlock";
 import { WeatherCard } from "@/components/WeatherCard";
 import { getSignals } from "@/lib/crowd/signals";
 import { HistoryChart } from "@/components/HistoryChart";
-import { ICONS, IconTabPanels } from "@/components/IconTabs";
+import { ChipTabPanels } from "@/components/IconTabs";
 import { LevelBadge } from "@/components/Level";
 import { PlaceThumb } from "@/components/PlaceRow";
 import { getAirportPaxDays, getArrivals, getParking, getParkingFees, getParkingZones } from "@/lib/airport";
@@ -154,12 +154,12 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
         <div>
           {/* 파트별 탭: 출국장(구간) · 시간대 · 기록 · 주차 */}
           <div className="mt-6 lg:mt-0">
-            <IconTabPanels
+            <ChipTabPanels
               tabs={[
                 {
                   id: "zones",
                   label: crowd.source === "incheon-airport" ? t("출국장") : t("보안검색"),
-                  icon: ICONS.gate,
+                  emoji: "🛂",
                   content:
                     zones.length > 0 ? (
                       <ul className="divide-y divide-gray-100 rounded-2xl border border-gray-100">
@@ -196,7 +196,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                       {
                         id: "arrivals",
                         label: t("입국"),
-                        icon: ICONS.arrival,
+                        emoji: "🛬",
                         content:
                           arrivals.flights.length > 0 ? (
                             <>
@@ -235,7 +235,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                 {
                   id: "hourly",
                   label: t("시간대"),
-                  icon: ICONS.clock,
+                  emoji: "🕒",
                   content: (
                     <>
                       <p className="mb-4 text-xs text-gray-500">
@@ -253,7 +253,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                 {
                   id: "history",
                   label: t("기록"),
-                  icon: ICONS.history,
+                  emoji: "📈",
                   content: (
                     <div className="pt-4">
                       <HistoryChart days={history} zoneLabels={zoneLabels} now={Date.now()} />
@@ -263,7 +263,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                 {
                   id: "parking",
                   label: t("주차"),
-                  icon: ICONS.parking,
+                  emoji: "🅿️",
                   content: (
                     <>
                       {parking.length > 0 ? (
