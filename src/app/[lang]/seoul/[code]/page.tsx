@@ -18,7 +18,9 @@ import { translateNames } from "@/lib/name-translate";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { SEOUL_GROUPS, getSeoulAreaExtra, getSeoulAreaLive, seoulGroup } from "@/lib/seoul-live";
 import { getSktCongestion } from "@/lib/skt";
-import { GUIDE, GUIDE_KINDS, TOILETS, guideText, nearest } from "@/lib/seoul-guide";
+import { GUIDE, GUIDE_KINDS, TOILETS, guideText, nearest, photoNear } from "@/lib/seoul-guide";
+import Image from "next/image";
+import { canOptimize } from "@/lib/img";
 
 export const revalidate = 600;
 
@@ -59,6 +61,8 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
   const enName = lang === "en" ? name : ((await translateNames([area.name], "en")).get(area.name) ?? area.name);
   const group = SEOUL_GROUPS.find((g) => g.id === seoulGroup(area.name))!;
   const level = live && levelOf(live.score);
+  // 이 지역 사진: 800m 안 가이드 명소의 관광공사 사진 (서울시 데이터에는 사진이 없다)
+  const heroImg = photoNear(area, 0.8, true);
   const people = (min: number, max: number) => t("{min}~{max}명", { min: compactNumber(min, lang), max: compactNumber(max, lang) });
   const maxAge = live?.profile ? Math.max(...live.profile.ages, 1) : 1;
 
@@ -71,6 +75,20 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
         {group.emoji} {t(group.label)} · {t("서울")}
       </p>
       <h1 className="mt-1 text-2xl font-bold md:text-3xl">{name}</h1>
+      {heroImg && (
+        <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-3xl bg-gray-100 md:aspect-[21/8]">
+          <Image
+            src={heroImg}
+            alt={name}
+            fill
+            priority
+            sizes="(min-width: 768px) 1100px, 100vw"
+            unoptimized={!canOptimize(heroImg)}
+            className="object-cover"
+          />
+          <span className="absolute right-3 bottom-2 rounded bg-black/40 px-1.5 py-0.5 text-[10px] text-white">{t("주변 사진 · 한국관광공사")}</span>
+        </div>
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

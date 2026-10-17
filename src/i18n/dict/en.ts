@@ -878,6 +878,7 @@ const dict: Dict = {
   "서울시 실시간": "Seoul live",
   "테마와 지역을 골라 보세요. 핀 색은 지금 혼잡 단계(축제는 예상), 회색은 혼잡 자료가 없는 곳이에요.": "Pick a theme and region. Pin colors show the current crowd level (forecast for festivals); gray means no crowd data.",
   "실시간 장소": "Live places",
+  "주변 사진 · 한국관광공사": "Nearby photo · Korea Tourism Organization",
   "롯데월드 어드벤처": "Lotte World Adventure",
   "에버랜드": "Everland",
   "서울랜드": "Seoul Land",
