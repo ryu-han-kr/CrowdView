@@ -3,7 +3,6 @@
 import { APIS, beforeCall } from "../api-quota";
 import type { CrowdSnapshot, Place } from "../types";
 import { fetchAirport } from "./airport";
-import { scoreFromValue } from "../levels";
 import { SEOUL_LEVEL_SCORE } from "../seoul-live";
 import { modelSnapshot } from "./model";
 import { fetchThemePark } from "./themeparks";
@@ -29,9 +28,9 @@ async function fetchSeoulCitydata(place: Place, key: string, s: Signals): Promis
   if (!row || SEOUL_LEVEL_SCORE[row.AREA_CONGEST_LVL] === undefined) throw new Error("seoul citydata: unexpected payload");
   const headcountRange: [number, number] = [Number(row.AREA_PPLTN_MIN), Number(row.AREA_PPLTN_MAX)];
   const headcount = Math.round((headcountRange[0] + headcountRange[1]) / 2);
-  // 장소별 인원 기준이 있으면 실제 인원으로 단계를 매기고, 서울시 공식 단계는 참고로 남긴다
-  const steps = place.criteria?.unit === "명" ? place.criteria.steps : undefined;
-  const toScore = (people: number, level: string) => (steps ? scoreFromValue(people, steps) : SEOUL_LEVEL_SCORE[level]);
+  // 단계는 서울시 공식 단계를 그대로 쓴다 (홈·목록·서울 실시간·장소 상세가 같은 시각에 같은 단계를 보이도록).
+  // 장소별 인원 기준으로 다시 매기면 같은 곳이 화면마다 다른 단계로 보인다 (외부 검토 2026-10-17)
+  const toScore = (_people: number, level: string) => SEOUL_LEVEL_SCORE[level];
   const score = toScore(headcount, row.AREA_CONGEST_LVL);
 
   // 시간대 곡선은 모델 곡선을 쓰고, 서울시 예측값이 있으면 덮어쓴다
