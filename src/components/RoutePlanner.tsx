@@ -50,6 +50,7 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
   const [transport, setTransport] = useState<Transport>("transit");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [result, setResult] = useState<RouteResponse | null>(null);
   // 다시 짜기: 처음 정한 일정이 끝나는 시각(오늘 0시부터 분)과 어디서 다시 짰는지
   const [endAbs, setEndAbs] = useState(0);
@@ -126,8 +127,19 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
   const plan = async () => {
     if (!start) return setError(t("출발지를 먼저 정해 주세요"));
     if (!interests.length && !sendPicks.length) return setError(t("관심사를 하나 이상 골라 주세요"));
-    const json = await request({ start, day, hour, durationMin: duration, interests, transport, lang, picks: sendPicks });
+    setNotice(null);
+    let json = await request({ start, day, hour, durationMin: duration, interests, transport, lang, picks: sendPicks });
     if (!json) return;
+    // 밤늦게 '오늘·지금'으로 짜면 문 연 곳이 없다 → 내일 오전 9시 출발로 다시 짜고 알려 준다
+    if (!json.plan.stops.length && day === 0 && hour === null) {
+      const next = await request({ start, day: 1, hour: 9, durationMin: duration, interests, transport, lang, picks: sendPicks });
+      if (next?.plan.stops.length) {
+        json = next;
+        setDay(1);
+        setHour(9);
+        setNotice(t("지금은 대부분 문을 닫아 내일 오전 9시 출발로 짰어요."));
+      }
+    }
     setResult(json);
     setEndAbs(json.startMin + duration);
     setReplanned(null);
@@ -286,6 +298,7 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
           {busy ? t("코스를 짜는 중…") : t("한산한 코스 만들기")}
         </button>
         {error && <p className="text-sm font-semibold text-red-600">{error}</p>}
+        {notice && <p className="rounded-2xl bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-900">🌙 {notice}</p>}
       </section>
 
       <section className="mt-8 lg:mt-0">

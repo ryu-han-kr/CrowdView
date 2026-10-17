@@ -144,19 +144,13 @@ export function WeekForecast({ week, month, year, calmestDate }: { week: DayBar[
               </div>
             </div>
           ) : (
-            <ul className="mt-3 flex h-36 items-end gap-1.5">
-              {year.map((m) => {
-                const l = levelOf(m.avg);
-                return (
-                  <li key={m.label} className="flex h-full flex-1 flex-col items-center justify-end" title={`${m.label} · ${t(l.label)}`}>
-                    <span className="block w-full rounded-md" style={{ height: `${Math.max(6, m.avg)}%`, background: l.color }} />
-                    <span className="mt-1 text-[10px] text-gray-500">{m.label}</span>
-                  </li>
-                );
-              })}
-            </ul>
+            <YearView year={year} />
           )}
-          <p className="mt-3 text-[11px] text-gray-400">{t("요일·공휴일·계절 패턴으로 본 CrowdView 추정이에요 (가장 붐빌 때 기준).")}</p>
+          <p className="mt-3 text-[11px] text-gray-400">
+            {more === "month"
+              ? t("요일·공휴일·계절 패턴으로 본 CrowdView 추정이에요 (가장 붐빌 때 기준).")
+              : t("운영 시간 평균 혼잡으로 본 CrowdView 추정이에요 (요일·공휴일·계절 패턴).")}
+          </p>
         </div>
       )}
     </div>
@@ -187,5 +181,37 @@ export function UpcomingHours({ hours, bestHour }: { hours: { hour: number; labe
         );
       })}
     </ul>
+  );
+}
+
+/** 12개월: 운영 시간 평균 혼잡. 달마다 차이가 작아 가장 한산한 달·붐비는 달을 글로도 알려 준다 */
+function YearView({ year }: { year: YearBar[] }) {
+  const { t } = useI18n();
+  if (!year.length) return null;
+  const min = Math.min(...year.map((m) => m.avg));
+  const max = Math.max(...year.map((m) => m.avg));
+  const calm = year.find((m) => m.avg === min)!;
+  const busy = year.find((m) => m.avg === max)!;
+  // 차이가 보이도록 가장 낮은 달을 30%, 가장 높은 달을 100% 높이로
+  const h = (v: number) => (max === min ? 70 : 30 + ((v - min) / (max - min)) * 70);
+  return (
+    <div className="mt-3">
+      <ul className="flex h-36 items-end gap-1.5">
+        {year.map((m) => {
+          const l = levelOf(m.avg);
+          return (
+            <li key={m.label} className="flex h-full flex-1 flex-col items-center justify-end" title={`${m.label} · ${t(l.label)}`}>
+              <span className="mb-0.5 text-[9px] text-gray-400">{m.avg}</span>
+              <span
+                className={`block w-full rounded-md ${m === calm ? "ring-2 ring-emerald-500 ring-offset-1" : ""}`}
+                style={{ height: `${h(m.avg)}%`, background: l.color }}
+              />
+              <span className="mt-1 text-[10px] text-gray-500">{m.label}</span>
+            </li>
+          );
+        })}
+      </ul>
+      <p className="mt-2 text-sm">{t("가장 한산한 달은 {calm}, 가장 붐비는 달은 {busy}이에요.", { calm: calm.label, busy: busy.label })}</p>
+    </div>
   );
 }
