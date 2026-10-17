@@ -1,6 +1,8 @@
 // 운영 사이트 점검(스모크 테스트): 주요 화면이 열리고 핵심 내용이 보이는지, 코스 추천·상태 점검 API가 동작하는지.
 // 사용: node scripts/smoke.mjs [기본 주소=https://crowdview.app]   (배포 후·매일 GitHub Actions smoke.yml)
 const BASE = (process.argv[2] ?? "https://crowdview.app").replace(/\/$/, "");
+// 해외 서버(GitHub Actions)에서는 접속 나라에 따라 영어로 옮겨지므로 한국어로 고정 (언어 선택 쿠키)
+const HEADERS = { cookie: "cv-lang=ko", "accept-language": "ko" };
 const strip = (h) =>
   h
     .replace(/<script[\s\S]*?<\/script>/g, " ")
@@ -35,7 +37,7 @@ const fail = (msg) => {
 for (const [path, must] of PAGES) {
   const t0 = Date.now();
   try {
-    const res = await fetch(BASE + path, { redirect: "follow", signal: AbortSignal.timeout(30_000) });
+    const res = await fetch(BASE + path, { redirect: "follow", headers: HEADERS, signal: AbortSignal.timeout(30_000) });
     const raw = await res.text();
     const text = path.endsWith(".xml") || path.endsWith(".txt") ? raw : strip(raw);
     const missing = must.filter((m) => !text.includes(m));
@@ -50,7 +52,7 @@ for (const [path, must] of PAGES) {
 // 가이드 상세 (예전 404 회귀 확인): 목록 데이터의 첫 장소
 try {
   const rows = await (await fetch(`${BASE}/data/guide-ko.json`)).json();
-  const res = await fetch(`${BASE}/guide/${rows[0][0]}`);
+  const res = await fetch(`${BASE}/guide/${rows[0][0]}`, { headers: HEADERS });
   res.status === 200 ? console.log(`✓ /guide/${rows[0][0]}`) : fail(`/guide/${rows[0][0]} ${res.status}`);
 } catch (e) {
   fail(`guide detail ${e.message}`);
