@@ -78,7 +78,12 @@ async function fetchKac(place: Place, code: AirportCode, s?: Signals): Promise<C
   // 처리시간이 가장 최근인 행
   const latest = items.sort((a, b) => String(b.PRC_HR ?? "").localeCompare(String(a.PRC_HR ?? "")))[0];
   const score = latest && KAC_LEVEL_SCORE[String(Number(latest.CGDR_ALL_LVL))];
-  if (score === undefined) throw new Error(`kac ${code}: no congestion row`);
+  if (score === undefined) {
+    // 밤(23~06시)에는 국내선 운항이 끝나 혼잡도 행이 비는 게 정상 → 운영 종료로 (갱신 실패로 보지 않는다)
+    const h = kst().hour;
+    if (h >= 23 || h < 6) return { ...modelSnapshot(place, new Date(), s), open: false };
+    throw new Error(`kac ${code}: no congestion row`);
+  }
   const zones: Zone[] = KAC_SEGMENTS.flatMap((seg) => {
     const z = KAC_LEVEL_SCORE[String(Number(latest[seg.field]))];
     return z === undefined ? [] : [{ id: seg.id, label: seg.label, score: z }];
