@@ -802,6 +802,8 @@ const dict: Dict = {
   "{region} 명소·축제 지도": "Map of sights & festivals in {region}",
   "목록": "List",
   "앞쪽 {n}곳만 보여요": "Showing the first {n}",
+  "{date}에 Plus가 자동 결제돼요": "Plus renews automatically on {date}",
+  "월 {price}원 · 원하지 않으면 결제일 전에 마이페이지에서 해지하세요": "₩{price}/month · Cancel in My page before then if you don't want it",
   "롯데월드 어드벤처": "Lotte World Adventure",
   "에버랜드": "Everland",
   "서울랜드": "Seoul Land",

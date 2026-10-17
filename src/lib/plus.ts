@@ -1,7 +1,10 @@
 // CrowdView Plus 구독: 첫 결제 → 다음 달 같은 날 결제 예약 → 웹훅으로 연장 → 해지·환불·만료.
 // 돈이 오가는 판단(결제 성공 여부, 금액)은 항상 포트원에서 다시 조회한 값으로만 한다.
+import { pushToUser } from "./alerts";
 import { PLUS } from "./business";
 import { pool, sql } from "./db";
+import { isDeliverable, mailEnabled, sendMail } from "./mail";
+import { opsAlert } from "./ops";
 import {
   cancelPayment,
   cancelSchedules,
@@ -143,6 +146,7 @@ export async function onScheduledFailed(paymentId: string, reason?: string): Pro
     [s.user_id, new Date(s.current_period_end.getTime() - 86_400_000)],
   );
   await sql("update plus_subscription set status = 'past_due', updated_at = now() where user_id = $1", [s.user_id]);
+  await opsAlert(`Plus 자동결제 실패 (${n}/${MAX_RETRIES})`, { userId: s.user_id, paymentId, reason });
   if (n < MAX_RETRIES) await scheduleNext(s.user_id, s.billing_key, new Date(Date.now() + RETRY_HOURS * 3600_000));
 }
 
@@ -197,3 +201,127 @@ export async function expireEnded(): Promise<number> {
   for (const r of rows) await expire(r.user_id);
   return rows.length;
 }
+
+// ── 자동결제 7일 전 안내 (정기결제 사전 고지). 매일 새벽 수집기에서 부른다
+
+/** 7일(±1일) 뒤 자동결제 예정인 회원에게 메일(받을 수 있는 주소면)과 웹 푸시로 알린다. 보낸 회원 수를 돌려준다 */
+export async function sendRenewalNotices(): Promise<number> {
+  if (!pool) return 0;
+  const due = await sql<{ user_id: string; email: string | null; current_period_end: Date }>(
+    `select s.user_id, u.email, s.current_period_end
+     from plus_subscription s join "user" u on u.id = s.user_id
+     where s.status = 'active' and s.next_payment_id is not null
+       and s.current_period_end between now() + interval '6 days' and now() + interval '8 days'
+       and s.renewal_notice_for is distinct from s.current_period_end`,
+  );
+  let sent = 0;
+  for (const d of due) {
+    const date = d.current_period_end.toISOString().slice(0, 10);
+    const price = PLUS.priceKrw.toLocaleString();
+    let mailed = false;
+    if (mailEnabled && isDeliverable(d.email)) {
+      try {
+        await sendMail({ to: d.email!, subject: `[CrowdView] ${date}에 Plus 이용료 ${price}원이 자동 결제돼요`, text: renewalText(date, price) });
+        mailed = true;
+      } catch (e) {
+        await opsAlert("자동결제 안내 메일 실패", { userId: d.user_id, error: String(e) });
+      }
+    }
+    const pushed = await pushToUser(d.user_id, (t, lang) => ({
+      title: t("{date}에 Plus가 자동 결제돼요", { date }),
+      body: t("월 {price}원 · 원하지 않으면 결제일 전에 마이페이지에서 해지하세요", { price }),
+      url: lang === "ko" ? "/me" : `/${lang}/me`,
+      tag: `renewal-${date}`,
+    })).catch(() => 0);
+    if (mailed || pushed) {
+      sent++;
+      await sql("update plus_subscription set renewal_notice_for = current_period_end where user_id = $1", [d.user_id]);
+    } else {
+      await opsAlert("자동결제 안내를 보낼 방법이 없어요 (메일·푸시 없음)", { userId: d.user_id, date });
+    }
+  }
+  return sent;
+}
+
+export function renewalText(date: string, price: string): string {
+  return [
+    "안녕하세요, CrowdView입니다.",
+    "",
+    `${date}에 ${PLUS.name} 다음 달 이용료 ${price}원(부가세 포함)이 등록하신 카드로 자동 결제될 예정이에요.`,
+    "계속 이용하시면 따로 하실 일은 없어요. 원하지 않으시면 결제일 전에 마이페이지에서 해지해 주세요.",
+    "해지해도 이미 낸 기간이 끝날 때까지 Plus를 쓸 수 있어요.",
+    "",
+    "마이페이지: https://crowdview.app/me",
+    "",
+    `Your ${PLUS.name} (KRW ${price}) renews automatically on ${date}. You can cancel anytime before then: https://crowdview.app/en/me`,
+  ].join("\n");
+}
+
+// ── 운영 도구 (/admin): 구독자 목록·결제 내역·수동 환불·해지
+
+export interface AdminSubscriber {
+  user_id: string;
+  email: string | null;
+  name: string | null;
+  status: PlusState["status"];
+  current_period_end: Date;
+  canceled_at: Date | null;
+  last_paid_at: Date | null;
+  last_amount: number | null;
+  failed: number;
+}
+
+export async function listSubscribers(): Promise<AdminSubscriber[]> {
+  if (!pool) return [];
+  return sql<AdminSubscriber>(
+    `select s.user_id, u.email, u.name, s.status, s.current_period_end, s.canceled_at,
+            p.paid_at as last_paid_at, p.amount as last_amount,
+            (select count(*)::int from payment f where f.user_id = s.user_id and f.status = 'failed' and f.created_at > now() - interval '30 days') as failed
+     from plus_subscription s
+     join "user" u on u.id = s.user_id
+     left join lateral (select paid_at, amount from payment where user_id = s.user_id and status = 'paid' order by paid_at desc limit 1) p on true
+     order by s.updated_at desc limit 500`,
+  );
+}
+
+export interface AdminPayment {
+  id: string;
+  user_id: string | null;
+  email: string | null;
+  amount: number;
+  cancelled_amount: number;
+  status: string;
+  paid_at: Date | null;
+  created_at: Date;
+}
+
+export async function recentPayments(limit = 100): Promise<AdminPayment[]> {
+  if (!pool) return [];
+  return sql<AdminPayment>(
+    `select p.id, p.user_id, u.email, p.amount, p.cancelled_amount, p.status, p.paid_at, p.created_at
+     from payment p left join "user" u on u.id = p.user_id order by p.created_at desc limit $1`,
+    [limit],
+  );
+}
+
+/** 운영자 환불: 가장 최근 결제를 전액(또는 amount원만) 취소. 전액이면 구독도 바로 끝낸다 */
+export async function adminRefund(userId: string, reason: string, amount?: number): Promise<void> {
+  const [last] = await sql<{ id: string; amount: number; cancelled_amount: number }>(
+    "select id, amount, cancelled_amount from payment where user_id = $1 and status in ('paid', 'partial_cancelled') order by paid_at desc limit 1",
+    [userId],
+  );
+  if (!last) throw new Error("환불할 결제가 없어요");
+  const left = last.amount - last.cancelled_amount;
+  const refund = amount === undefined ? left : Math.min(Math.max(1, Math.round(amount)), left);
+  // 처음 취소하는 전액이면 금액을 빼고 보낸다 (포트원: 금액 없으면 전액)
+  await cancelPayment(last.id, reason || "운영자 환불", refund === last.amount ? undefined : refund);
+  const full = refund === left;
+  await sql("update payment set status = $2, cancelled_amount = cancelled_amount + $3 where id = $1", [last.id, full ? "cancelled" : "partial_cancelled", refund]);
+  if (full) {
+    await cancel(userId);
+    await expire(userId);
+  }
+}
+
+/** 운영자 해지: 다음 결제 예약만 취소 (이미 낸 기간은 이용) */
+export const adminCancel = (userId: string) => cancel(userId);
