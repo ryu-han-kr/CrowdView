@@ -228,7 +228,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
           })()}
           <AlertButtons placeId={`seoul-${area.code}`} enabled={authEnabled && pushEnabled} />
           <CalmAlternatives lat={area.lat} lng={area.lng} score={live?.score} selfId={`seoul-${area.code}`} lang={lang} />
-          <StayLinks ko={area.name} en={enName} lang={lang} t={t} className="mt-4" />
+          <StayLinks ko={area.name} en={enName} lang={lang} t={t} at={area} className="mt-4" />
           <a
             href={`https://map.naver.com/p/search/${encodeURIComponent(area.name)}`}
             target="_blank"

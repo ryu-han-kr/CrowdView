@@ -1,11 +1,13 @@
 import { notFound, redirect } from "next/navigation";
 import { StayLinks } from "@/components/StayLinks";
 import type { Metadata } from "next";
+import placeImages from "@/data/korea/place-images.json";
 import { breadcrumbLd, jsonLd, kstClock, pageMeta, SITE } from "@/lib/seo";
 import { HourlyChart } from "@/components/HourlyChart";
 import { LevelBadge } from "@/components/Level";
 import { PlaceHero } from "@/components/PlaceHero";
 import { forecastForDate, forecastReasons, weekForecast } from "@/lib/crowd/model";
+import { UpcomingHours, WeekForecast } from "@/components/PlaceForecast";
 import { getHistory, type HistoryPoint } from "@/lib/crowd/history";
 import { getSignals } from "@/lib/crowd/signals";
 import { getCrowd } from "@/lib/crowd/service";
@@ -34,8 +36,16 @@ import { authEnabled } from "@/lib/auth";
 import { headcountInfo, isEstimated } from "@/lib/format";
 import { translateNames } from "@/lib/name-translate";
 import { getRelatedPlaces } from "@/lib/related-places";
+import { locateByName } from "@/lib/related-geo";
+import { distanceKm } from "@/lib/geo";
+import { SEOUL_AREAS } from "@/lib/seoul-areas";
+import { getAllSeoulLive } from "@/lib/seoul-live";
+import Link from "@/i18n/link";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
+// 관광공사 사진 여러 장 (scripts/korea-data/place-images.mjs)
+const PLACE_IMAGES = placeImages as Record<string, string[]>;
+
 export const revalidate = 60;
 
 const SOURCE_LABEL: Record<CrowdResult["source"], string> = {
@@ -95,7 +105,10 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     lang,
     path: placeHref(place),
     // 실측 데이터가 없는 곳은 제목에도 '예측'이라고 쓴다
-    title: (place.seoulArea || place.themeparksId || place.airport ? t("{name} 실시간 혼잡도", { name: t(place.name) }) : t("{name} 혼잡 예측·방문 추천 시간", { name: t(place.name) })),
+    title:
+      place.seoulArea || place.themeparksId || place.airport
+        ? t("{name} 실시간 혼잡도", { name: t(place.name) })
+        : t("{name} 혼잡 예측·방문 추천 시간", { name: t(place.name) }),
     description: t("{name} 지금 혼잡도와 오늘 시간대별 예측, 언제 가면 한산한지 알려드려요", { name: t(place.name) }),
     image: place.image,
   });
@@ -110,7 +123,21 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   if (!place || !crowd) notFound();
   if (place.category === "airport") redirect(localePath(lang, placeHref(place)));
   const [signals, [today], related] = await Promise.all([getSignals(place), getHistory(id, 1), getRelatedPlaces(place)]);
-  const relatedNames = await translateNames(related.flatMap((r) => [r.name, r.region]), lang);
+  const relatedNames = await translateNames(
+    related.flatMap((r) => [r.name, r.region]),
+    lang,
+  );
+  // 함께 가면 좋은 곳: 이름으로 좌표를 찾아 거리 + 그 근처(1km 안 서울 실시간 지역) 지금 혼잡
+  const seoulNow = await getAllSeoulLive().catch(() => ({}) as Awaited<ReturnType<typeof getAllSeoulLive>>);
+  const relatedInfo = related.map((r) => {
+    const at = locateByName(r.name, place);
+    const area =
+      at &&
+      SEOUL_AREAS.map((a) => ({ a, km: distanceKm(a, at) }))
+        .filter((x) => x.km <= 1 && seoulNow[x.a.code])
+        .sort((x, y) => x.km - y.km)[0];
+    return { ...r, km: at?.km, href: at?.href, score: area ? seoulNow[area.a.code].score : undefined };
+  });
   // 오늘 지난 시간은 10분마다 쌓은 실측 기록으로 채운다 (시간마다 마지막 기록)
   const hourly = withRecordedHours(crowd.hourly, today.points, crowd.source !== "model" && place.criteria?.unit === "명");
   const week = weekForecast(place, signals);
@@ -128,6 +155,25 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
         color: "#6b7280",
       };
   const best = bestUpcoming(crowd.hourly, ...place.hours);
+  // 지금부터 입장 가능한 마지막 시간(마감 2시간 전)까지 시간마다 예상 (QA: '이 시간 이후로' 보이게)
+  const lastHour = place.hours[1] >= 24 ? 23 : place.hours[1] - 2;
+  const upcoming = hourly
+    .filter((p) => p.hour >= Math.floor(now.hour) && p.hour >= place.hours[0] && p.hour <= lastHour)
+    .map((p) => ({ hour: p.hour, label: formatHour(p.hour, lang), score: p.score }));
+  // 더보기: 앞으로 30일 달력 · 12개월 월평균 (가장 붐빌 때 기준, 추정)
+  const long = weekForecast(place, signals, 365);
+  const monthCells = long.slice(0, 30).map((d) => ({
+    date: d.date,
+    day: Number(d.date.slice(8, 10)),
+    dow: new Date(`${d.date}T00:00:00Z`).getUTCDay(),
+    peakScore: d.peakScore,
+  }));
+  const byMonth = new Map<string, number[]>();
+  for (const d of long) byMonth.set(d.date.slice(0, 7), [...(byMonth.get(d.date.slice(0, 7)) ?? []), d.peakScore]);
+  const yearBars = [...byMonth.entries()].slice(0, 12).map(([ym, xs]) => ({
+    label: new Intl.DateTimeFormat(lang, { month: "short", timeZone: "UTC" }).format(new Date(`${ym}-15T00:00:00Z`)),
+    avg: Math.round(xs.reduce((a, b) => a + b, 0) / xs.length),
+  }));
   const dday = place.eventDate ? daysUntil(place.eventDate) : null;
   const eventForecast = place.eventDate && dday !== null && dday > 0 ? forecastForDate(place, place.eventDate) : null;
   const eventPeak = eventForecast && [...eventForecast].sort((a, b) => b.score - a.score)[0];
@@ -135,7 +181,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const beforeEvent = place.category === "event" && dday !== null && dday > 0;
   // 입장 마감(마감 1시간 전)이 1시간도 안 남았으면 '지금이 가장 한산'이라고 하지 않는다
   const closingSoon = isOpen && place.hours[1] < 24 && kst().hour >= place.hours[1] - 2;
-  const noBestText = closingSoon ? t("오늘은 입장 마감이 가까워요. 다음 방문은 아래 이번 주 예측을 참고하세요.") : t("오늘은 지금이 가장 한산한 편이에요.");
+  const noBestText = closingSoon
+    ? t("오늘은 입장 마감이 가까워요. 다음 방문은 아래 이번 주 예측을 참고하세요.")
+    : t("오늘은 지금이 가장 한산한 편이에요.");
 
   return (
     <main>
@@ -166,7 +214,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           ),
         }}
       />
-      <PlaceHero place={place} />
+      <PlaceHero place={place} gallery={PLACE_IMAGES[place.id] ?? []} />
 
       {/* 모바일: 한 줄로 쌓기 / PC: 왼쪽(지금·언제 갈까) 고정 + 오른쪽(그래프·정보) */}
       <div className="relative -mt-6 px-5 md:mt-8 md:px-0 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-10">
@@ -182,7 +230,10 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           {/* 한 문장 요약: 사람과 AI 검색이 바로 인용할 수 있게 (단계·출처·기준 시각) */}
           <p className="mt-2 text-[13px] leading-relaxed text-gray-800">
             {beforeEvent
-              ? t("{name}은(는) {date}에 열려요. 아직 행사 전이라 지금 혼잡도 대신 행사 당일 예측을 보여드려요.", { name: t(place.name), date: place.eventDate! })
+              ? t("{name}은(는) {date}에 열려요. 아직 행사 전이라 지금 혼잡도 대신 행사 당일 예측을 보여드려요.", {
+                  name: t(place.name),
+                  date: place.eventDate!,
+                })
               : !isOpen
                 ? t("{name}은(는) 지금 운영 시간이 아니에요.", { name: t(place.name) })
                 : t("{name}의 지금 혼잡도는 ‘{level}’이에요 ({source}, {time} 기준).", {
@@ -191,7 +242,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                     source: t(SOURCE_LABEL[crowd.source]),
                     time: crowd.observedAt ? crowd.observedAt.slice(11, 16) : kstClock(crowd.updatedAt),
                   })}
-            {!beforeEvent && best && ` ${t("오늘 남은 운영 시간 중에는 {hour}쯤이 가장 한산할 것으로 보여요.", { hour: formatHour(best.hour, lang) })}`}
+            {!beforeEvent &&
+              best &&
+              ` ${t("오늘 남은 운영 시간 중에는 {hour}쯤이 가장 한산할 것으로 보여요.", { hour: formatHour(best.hour, lang) })}`}
           </p>
 
           {/* 현재 혼잡도 */}
@@ -216,9 +269,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                       ) : (
                         (headcountInfo(crowd, { t, lang })?.text ?? t(level.desc))
                       )}
-                      {crowd.avgWaitMin === undefined && headcountInfo(crowd)?.kind && (
-                        <DataTag kind={headcountInfo(crowd)!.kind} />
-                      )}
+                      {crowd.avgWaitMin === undefined && headcountInfo(crowd)?.kind && <DataTag kind={headcountInfo(crowd)!.kind} />}
                       {crowd.trend === "up" && <span className="text-red-500"> · {t("늘어나는 중")}</span>}
                       {crowd.trend === "down" && <span className="text-emerald-600"> · {t("줄어드는 중")}</span>}
                     </>
@@ -240,28 +291,20 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             <CalmAlternatives lat={place.lat} lng={place.lng} score={isOpen ? crowd.score : undefined} selfId={place.id} lang={lang} />
           )}
 
-        {/* 언제 가면 좋을까 */}
+          {/* 앞으로 시간대별 (지금 이후, 입장 가능한 시간까지) */}
           <section className="mt-4 rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">
-            <p className="text-xs font-semibold text-indigo-500">✨ {t("언제 가면 좋을까요?")}</p>
-            <ul className="mt-2 space-y-1.5 text-sm">
-              <li>
-                {best ? (
-                  <>
-                    {t("오늘은 {hour}가 가장 한산해요", { hour: formatHour(best.hour, lang) })} <LevelBadge score={best.score} />
-                  </>
-                ) : isOpen ? (
-                  noBestText
-                ) : (
-                  t("오늘 운영이 끝났어요.")
-                )}
-              </li>
-              <li>
-                {calmest.peakScore >= 60
-                  ? t("이번 주는 {day}이 그나마 덜 붐벼요", { day: dayName(calmest.date, t, lang) })
-                  : t("이번 주는 {day}이 가장 한산해요", { day: dayName(calmest.date, t, lang) })}{" "}
-                <LevelBadge score={calmest.peakScore} />
-              </li>
-            </ul>
+            <p className="text-xs font-semibold text-indigo-500">✨ {t("지금 이후 시간대별 예상")}</p>
+            {isOpen && upcoming.length > 0 ? (
+              <UpcomingHours hours={upcoming} bestHour={best?.hour} />
+            ) : (
+              <p className="mt-2 text-sm text-gray-700">{isOpen ? noBestText : t("오늘 운영이 끝났어요.")}</p>
+            )}
+            <p className="mt-2 text-sm">
+              {calmest.peakScore >= 60
+                ? t("이번 주는 {day}이 그나마 덜 붐벼요", { day: dayName(calmest.date, t, lang) })
+                : t("이번 주는 {day}이 가장 한산해요", { day: dayName(calmest.date, t, lang) })}{" "}
+              <LevelBadge score={calmest.peakScore} />
+            </p>
             {todayReasons.length > 0 && (
               <div className="mt-2.5 flex flex-wrap gap-1.5">
                 {todayReasons.map((r) => (
@@ -347,57 +390,27 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             </div>
           </section>
 
-          {/* 이번 주 */}
+          {/* 이번 주 (막대를 누르면 그날) + 더보기: 30일·12개월 */}
           <section className="mt-8">
-            <h2 className="text-lg font-bold">
-              {t("이번 주")}
-              <DataTag />
-            </h2>
-            <p className="mt-0.5 text-xs text-gray-500">{t("하루 중 가장 붐빌 때 기준 · 공휴일·날씨·관광공사 예측 반영")}</p>
-            <ul className="mt-4 grid grid-cols-7 gap-1.5">
-              {week.map((d) => {
-                const lv = levelOf(d.peakScore);
-                const isCalmest = d.date === calmest.date;
-                return (
-                  <li key={d.date} className="flex flex-col items-center">
-                    <div className="flex h-20 w-full items-end rounded-lg bg-gray-50">
-                      <div
-                        className={`w-full rounded-lg ${isCalmest ? "ring-2 ring-emerald-500 ring-offset-1" : ""}`}
-                        style={{
-                          height: `${Math.max(8, d.peakScore)}%`,
-                          background: lv.color,
-                        }}
-                        title={`${d.date} · ${t(lv.label)} · ${t("피크")} ${formatHour(d.peakHour, lang)}`}
-                      />
-                    </div>
-                    <span className={`mt-1.5 text-xs ${isCalmest ? "font-bold text-emerald-600" : "font-medium"}`}>
-                      {shortDay(d.date, t, lang)}
-                    </span>
-                    <span className="text-[10px] leading-tight" style={{ color: lv.color }}>
-                      {t(lv.label)}
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-            {week.some((d) => d.reasons.length > 0) && (
-              <ul className="mt-4 space-y-1 rounded-2xl bg-gray-50 p-3 text-xs text-gray-600">
-                {week
-                  .filter((d) => d.reasons.length > 0)
-                  .map((d) => (
-                    <li key={d.date}>
-                      <b className="mr-1.5 text-gray-900">{dayName(d.date, t, lang)}</b>
-                      {d.reasons.map((r) => trReason(r, t)).join(" · ")}
-                    </li>
-                  ))}
-              </ul>
-            )}
+            <WeekForecast
+              week={week.map((d) => ({
+                date: d.date,
+                short: shortDay(d.date, t, lang),
+                long: `${Number(d.date.slice(5, 7))}/${Number(d.date.slice(8, 10))} (${weekday(d.date, lang, "short")})`,
+                peakScore: d.peakScore,
+                peakLabel: formatHour(d.peakHour, lang),
+                reasons: d.reasons.map((r) => trReason(r, t)),
+              }))}
+              month={monthCells}
+              year={yearBars}
+              calmestDate={calmest.date}
+            />
           </section>
 
           {signals.localPop && <VisitorProfile pop={signals.localPop} lang={lang} />}
 
           <JudgementCard place={place} crowd={crowd} signals={signals} lang={lang} />
-          <StayLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} className="mt-6" />
+          <StayLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} at={place} className="mt-6" />
           <InlineAd className="mt-6" />
 
           {/* 함께 가면 좋은 곳 (관광공사 연관 관광지: 내비 이동 데이터) */}
@@ -406,21 +419,39 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               <h2 className="text-lg font-bold">{t("함께 가면 좋은 곳")}</h2>
               <p className="mt-0.5 text-xs text-gray-500">{t("이곳에 온 사람들이 같은 날 많이 들른 곳이에요. 붐빌 때 대신 가 보세요.")}</p>
               <ul className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-3">
-                {related.map((r) => (
-                  <li key={r.name}>
-                    <a
-                      href={`https://map.naver.com/p/search/${encodeURIComponent(`${r.name} ${r.region}`)}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block h-full rounded-2xl border border-gray-100 px-3 py-2.5"
-                    >
-                      <span className="block truncate text-sm font-semibold">{relatedNames.get(r.name) ?? r.name}</span>
+                {relatedInfo.map((r) => {
+                  const body = (
+                    <>
+                      <span className="flex items-center justify-between gap-2">
+                        <span className="min-w-0 truncate text-sm font-semibold">{relatedNames.get(r.name) ?? r.name}</span>
+                        {r.score !== undefined && <LevelBadge score={r.score} />}
+                      </span>
                       <span className="block truncate text-[11px] text-gray-500">
                         {t(r.category.split(" > ")[0])} · {relatedNames.get(r.region) ?? r.region}
+                        {r.km !== undefined && <b className="text-gray-700"> · {t("여기서 {km}km", { km: r.km.toFixed(1) })}</b>}
                       </span>
-                    </a>
-                  </li>
-                ))}
+                    </>
+                  );
+                  const cls = "block h-full rounded-2xl border border-gray-100 bg-white px-3 py-2.5";
+                  return (
+                    <li key={r.name}>
+                      {r.href ? (
+                        <Link href={r.href} className={cls}>
+                          {body}
+                        </Link>
+                      ) : (
+                        <a
+                          href={`https://map.naver.com/p/search/${encodeURIComponent(`${r.name} ${r.region}`)}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={cls}
+                        >
+                          {body}
+                        </a>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
               <p className="mt-2 text-[11px] text-gray-400">{t("한국관광공사 관광지별 연관 관광지 (티맵 이동 데이터)")}</p>
             </section>
@@ -474,16 +505,10 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   {place.info?.closedToday
                     ? t("오늘 휴무")
                     : t("오늘 {from} ~ {to}", { from: formatClock(place.hours[0]), to: formatClock(place.hours[1]) })}{" "}
-                  <span className={isOpen ? "text-emerald-600" : "text-gray-400"}>
-                    {isOpen ? `· ${t("운영 중")}` : `· ${t("운영 종료")}`}
-                  </span>
+                  <span className={isOpen ? "text-emerald-600" : "text-gray-400"}>{isOpen ? `· ${t("운영 중")}` : `· ${t("운영 종료")}`}</span>
                   {!place.info?.hoursVerified && <DataTag kind="임의" />}
                 </p>
-                {place.info?.hoursText && (
-                  <p className="mt-1 text-xs leading-relaxed whitespace-pre-line text-gray-500">
-                    {place.info.hoursText}
-                  </p>
-                )}
+                {place.info?.hoursText && <p className="mt-1 text-xs leading-relaxed whitespace-pre-line text-gray-500">{place.info.hoursText}</p>}
               </div>
             </div>
             {place.info?.restText && (
