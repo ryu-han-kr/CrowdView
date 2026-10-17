@@ -48,8 +48,21 @@ export function ViewToggle({ view, onChange }: { view: "list" | "map"; onChange:
   );
 }
 
-export function SpotMap({ spots, className = "" }: { spots: MapSpot[]; className?: string }) {
-  const shown = useMemo(() => spots.slice(0, MAX_PINS), [spots]);
+/** max: 한 번에 그릴 최대 핀 (기본 400, 묶음이 있어 더 늘려도 된다) · legend=false면 위 범례를 숨긴다 (부르는 쪽이 따로 그릴 때) */
+export function SpotMap({
+  spots,
+  className = "",
+  max = MAX_PINS,
+  legend = true,
+  heightClass,
+}: {
+  spots: MapSpot[];
+  className?: string;
+  max?: number;
+  legend?: boolean;
+  heightClass?: string;
+}) {
+  const shown = useMemo(() => spots.slice(0, max), [spots, max]);
   const [failed, setFailed] = useState(!KEY_ID);
   const [selected, setSelected] = useState<string | null>(null);
   const { t } = useI18n();
@@ -58,16 +71,16 @@ export function SpotMap({ spots, className = "" }: { spots: MapSpot[]; className
 
   return (
     <div className={className}>
-      <MapLegend counts={counts} className="mb-2" />
+      {legend && <MapLegend counts={counts} className="mb-2" />}
       <div className="relative overflow-hidden rounded-3xl bg-slate-100">
         {failed ? (
           <SketchMap spots={shown} onSelect={setSelected} />
         ) : (
-          <NaverSpots spots={shown} onSelect={setSelected} onFail={() => setFailed(true)} />
+          <NaverSpots spots={shown} onSelect={setSelected} onFail={() => setFailed(true)} heightClass={heightClass} />
         )}
-        {spots.length > MAX_PINS && (
+        {spots.length > max && (
           <p className="absolute top-3 left-3 z-10 rounded-full bg-white/95 px-2.5 py-1 text-[11px] text-gray-600 shadow">
-            {t("앞쪽 {n}곳만 보여요", { n: MAX_PINS })}
+            {t("앞쪽 {n}곳만 보여요", { n: max })}
           </p>
         )}
         {sel && <SpotCard spot={sel} onClose={() => setSelected(null)} />}
@@ -111,7 +124,17 @@ function SpotCard({ spot, onClose }: { spot: MapSpot; onClose: () => void }) {
   );
 }
 
-function NaverSpots({ spots, onSelect, onFail }: { spots: MapSpot[]; onSelect: (id: string | null) => void; onFail: () => void }) {
+function NaverSpots({
+  spots,
+  onSelect,
+  onFail,
+  heightClass = "h-[60dvh] min-h-[380px]",
+}: {
+  spots: MapSpot[];
+  onSelect: (id: string | null) => void;
+  onFail: () => void;
+  heightClass?: string;
+}) {
   const el = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
@@ -225,7 +248,7 @@ function NaverSpots({ spots, onSelect, onFail }: { spots: MapSpot[]; onSelect: (
     return () => maps.Event.removeListener(listener);
   }, [ready]);
 
-  return <div ref={el} className="h-[60dvh] min-h-[380px] w-full" />;
+  return <div ref={el} className={`${heightClass} w-full`} />;
 }
 
 /** 지도 키가 없을 때: 위치를 비율대로 찍은 간단한 그림 */
