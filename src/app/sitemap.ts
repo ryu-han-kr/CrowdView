@@ -4,6 +4,7 @@ import { PLACES, placeHref } from "@/lib/places";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { SITE, languageAlternates } from "@/lib/seo";
 import { GUIDE, GUIDE_SYNCED_AT } from "@/lib/seoul-guide";
+import { LANDMARKS } from "@/lib/korea";
 
 // 축제 목록이 6시간마다 바뀌어 하루 몇 번만 다시 만든다
 export const revalidate = 21600;
@@ -12,6 +13,8 @@ export const revalidate = 21600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const synced = new Date(GUIDE_SYNCED_AT);
+  // 명소 상세 자료(관광공사)를 마지막으로 받은 날
+  const landmarksSynced = new Date("2026-10-17T19:00:00+09:00");
   const entry = (
     path: string,
     changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"],
@@ -45,6 +48,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/map", "hourly", 0.7),
     ...PLACES.map((p) => entry(placeHref(p), "hourly", 0.8)),
     ...SEOUL_AREAS.map((a) => entry(`/seoul/${a.code}`, "hourly", 0.7)),
+    // 명소 상세는 소개 글이 한국어뿐이라 한국어 주소만 (외국어 화면은 noindex)
+    ...LANDMARKS.map((l) => ({ ...entry(`/spot/${l.id}`, "weekly", 0.6, landmarksSynced), alternates: undefined })),
     ...festivalPaths.map((p) => entry(p, "daily", 0.6)),
     entry("/pricing", "monthly", 0.4),
     entry("/terms", "yearly", 0.2),

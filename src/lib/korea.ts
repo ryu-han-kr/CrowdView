@@ -52,25 +52,24 @@ export const REGIONS: { id: string; prefixes: string[] }[] = [
   { id: "세종", prefixes: ["세종"] },
 ];
 
-export const inRegion = (region: string, regionId: string) =>
-  !!REGIONS.find((r) => r.id === regionId)?.prefixes.includes(region.split(" ")[0]);
+export const inRegion = (region: string, regionId: string) => !!REGIONS.find((r) => r.id === regionId)?.prefixes.includes(region.split(" ")[0]);
 
 /**
- * 랜드마크를 누르면 갈 곳과 혼잡도 출처: 우리 장소(1.5km 안) → 서울 실시간 지역(0.8km 안) → 지도.
- * 지도는 한국어면 카카오맵, 외국어면 구글 지도
+ * 랜드마크를 누르면 갈 곳과 혼잡도 출처: 우리 장소(1.5km 안) → 서울 실시간 지역(0.8km 안) → 명소 상세(/spot/{id})
  */
 export function landmarkLink(l: Landmark, lang: Lang): { href: string; external: boolean; placeId?: string; seoulCode?: string } {
   const place = PLACES.find((p) => p.category !== "airport" && distanceKm(p, l) < 1.5);
   if (place) return { href: placeHref(place), external: false, placeId: place.id };
   const area = l.region === "서울" ? SEOUL_AREAS.find((a) => distanceKm(a, l) < 0.8) : undefined;
   if (area) return { href: `/seoul/${area.code}`, external: false, seoulCode: area.code };
-  return {
-    href:
-      lang === "ko"
-        ? `https://map.kakao.com/link/map/${encodeURIComponent(l.n.ko)},${l.lat},${l.lng}`
-        : `https://www.google.com/maps/search/?api=1&query=${l.lat},${l.lng}`,
-    external: true,
-  };
+  return { href: `/spot/${l.id}`, external: false };
+}
+
+/** 지도 앱 링크: 한국어면 카카오맵, 외국어면 구글 지도 */
+export function landmarkMapHref(l: Landmark, lang: Lang): string {
+  return lang === "ko"
+    ? `https://map.kakao.com/link/map/${encodeURIComponent(l.n.ko)},${l.lat},${l.lng}`
+    : `https://www.google.com/maps/search/?api=1&query=${l.lat},${l.lng}`;
 }
 
 /** 날짜마다 바뀌는 추천 순서 (같은 날에는 같은 순서라 캐시와 맞다) */
