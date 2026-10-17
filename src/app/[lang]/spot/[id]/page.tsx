@@ -58,6 +58,9 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
   const info = LANDMARK_INFO[id];
   const name = l.n[lang] ?? l.n.ko;
   const kind = LANDMARK_KINDS.find((k) => k.id === l.kind)!;
+  const paras = (info?.overview ?? "").split("\n").filter((x) => x.trim());
+  const intro = paras.slice(0, 1).join("\n");
+  const rest = paras.slice(1).join("\n");
 
   // 지금 혼잡도: 1.5km 안 우리 장소 → 0.8km 안 서울 실시간 지역
   const [crowd, seoul] = await Promise.all([
@@ -137,9 +140,18 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
             <section>
               <h2 className="text-lg font-bold">{t("소개")}</h2>
               {lang !== "ko" && <p className="mt-1 text-xs text-gray-500">{t("소개 글은 한국관광공사의 한국어 자료예요.")}</p>}
+              {/* 긴 소개는 첫 단락만 보이고 나머지는 펼쳐 보기 (글만 길게 늘어서지 않게) */}
               <p lang="ko" className="mt-2 text-[15px] leading-7 whitespace-pre-line text-gray-700">
-                {info.overview}
+                {intro}
               </p>
+              {rest && (
+                <details className="group mt-1">
+                  <summary className="cursor-pointer list-none text-sm font-semibold text-indigo-600 group-open:hidden">{t("더보기")}</summary>
+                  <p lang="ko" className="mt-1 text-[15px] leading-7 whitespace-pre-line text-gray-700">
+                    {rest}
+                  </p>
+                </details>
+              )}
             </section>
           )}
 

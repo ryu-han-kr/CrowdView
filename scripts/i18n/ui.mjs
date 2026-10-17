@@ -923,4 +923,5 @@ export default {
   "지도에서 보기": ["View on map", "地図で見る", "在地图上查看", "在地圖上查看"],
   "{region}의 다른 명소": ["More in {region}", "{region}のほかの名所", "{region}的其他景点", "{region}的其他景點"],
   "{km}km": ["{km} km", "{km}km", "{km}公里", "{km}公里"],
+  "더보기": ["More", "もっと見る", "更多", "更多"],
 };
