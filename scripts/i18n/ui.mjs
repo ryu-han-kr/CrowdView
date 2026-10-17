@@ -937,4 +937,5 @@ export default {
   "서울시 실시간": ["Seoul live", "ソウル市リアルタイム", "首尔实时", "首爾即時"],
   "테마와 지역을 골라 보세요. 핀 색은 지금 혼잡 단계(축제는 예상), 회색은 혼잡 자료가 없는 곳이에요.": ["Pick a theme and region. Pin colors show the current crowd level (forecast for festivals); gray means no crowd data.", "テーマと地域を選んでください。ピンの色は今の混雑段階(祭りは予測)、灰色は混雑データがない場所です。", "请选择主题和地区。图钉颜色表示当前拥挤等级(节庆为预测),灰色表示没有拥挤数据。", "請選擇主題和地區。圖釘顏色表示目前擁擠等級(節慶為預測),灰色表示沒有擁擠資料。"],
   "실시간 장소": ["Live places", "リアルタイムの場所", "实时地点", "即時地點"],
+  "주변 사진 · 한국관광공사": ["Nearby photo · Korea Tourism Organization", "周辺の写真・韓国観光公社", "周边照片 · 韩国观光公社", "周邊照片 · 韓國觀光公社"],
 };

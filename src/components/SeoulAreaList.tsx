@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "@/i18n/link";
+import Image from "next/image";
+import { canOptimize } from "@/lib/img";
 import { useMemo, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { compactNumber } from "@/lib/format";
@@ -20,6 +22,8 @@ export interface SeoulAreaRow {
   score?: number;
   min?: number;
   max?: number;
+  /** 근처 관광공사 사진 */
+  img?: string;
 }
 
 /** 서울 실시간 지역 목록: 이름 검색 + 묶음·혼잡 단계 거르기(PC는 왼쪽 패널) + 붐비는/한산한/내 주변 순 */
@@ -97,7 +101,7 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
               <button
                 key={s}
                 onClick={() => (s === "near" && !me ? useNearby() : setSort(s))}
-                className={`rounded-full px-3 py-1 ${sort === s ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+                className={`min-h-8 rounded-full px-3 py-1.5 ${sort === s ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
               >
                 {s === "busy" ? t("붐비는 순") : s === "calm" ? t("한산한 순") : `📍 ${t("내 주변")}`}
               </button>
@@ -127,14 +131,34 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
           }))}
         />
       ) : (
-        <ul className="mt-3 grid gap-2 lg:grid-cols-2">
-          {list.map((r) => (
-            <li key={r.code} className="flex items-center rounded-2xl border border-gray-100 pr-2">
-              <Link href={`/seoul/${r.code}`} className="flex min-w-0 flex-1 items-center gap-3 py-3 pl-4">
-                <span className="text-xl">{SEOUL_GROUPS.find((g) => g.id === r.group)?.emoji}</span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold">{names[r.name] ?? r.name}</span>
-                  <span className="block text-xs text-gray-500">
+        <ul className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+          {list.map((r) => {
+            const g = SEOUL_GROUPS.find((x) => x.id === r.group);
+            return (
+              <li key={r.code} className="relative">
+                <Link href={`/seoul/${r.code}`} className="group block">
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100">
+                    {r.img ? (
+                      <Image
+                        src={r.img}
+                        alt=""
+                        fill
+                        sizes="(min-width: 1280px) 20vw, (min-width: 768px) 28vw, 45vw"
+                        unoptimized={!canOptimize(r.img)}
+                        className="object-cover transition-transform duration-300 md:group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center bg-gradient-to-br from-teal-50 to-sky-100 text-4xl">{g?.emoji}</div>
+                    )}
+                    {r.score !== undefined && (
+                      <span className="absolute top-2 left-2 rounded-full bg-white/95 shadow-sm">
+                        <LevelBadge score={r.score} />
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-1.5 truncate text-sm font-semibold">{names[r.name] ?? r.name}</p>
+                  <p className="truncate text-xs text-gray-500">
+                    {g && `${g.emoji} `}
                     {r.min !== undefined
                       ? t("{min}~{max}명", {
                           min: compactNumber(r.min, lang),
@@ -142,19 +166,20 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
                         })
                       : t("정보 없음")}
                     {me && sort === "near" && ` · ${distanceKm(me, r).toFixed(1)}km`}
-                  </span>
-                </span>
-                {r.score !== undefined && <LevelBadge score={r.score} />}
-              </Link>
-              <PickStar
-                pick={{
-                  id: `seoul-${r.code}`,
-                  label: names[r.name] ?? r.name,
-                  href: `/seoul/${r.code}`,
-                }}
-              />
-            </li>
-          ))}
+                  </p>
+                </Link>
+                <div className="absolute top-1 right-1 rounded-full bg-white/90">
+                  <PickStar
+                    pick={{
+                      id: `seoul-${r.code}`,
+                      label: names[r.name] ?? r.name,
+                      href: `/seoul/${r.code}`,
+                    }}
+                  />
+                </div>
+              </li>
+            );
+          })}
         </ul>
       )}
       {list.length === 0 && <p className="mt-8 text-center text-sm text-gray-500">{t("찾는 지역이 없어요.")}</p>}

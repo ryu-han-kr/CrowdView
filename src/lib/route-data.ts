@@ -6,7 +6,7 @@ import { makePredictor, shapeNear } from "./forecast";
 import { distanceKm, travelMinutes, type LatLng, type Transport } from "./geo";
 import { PLACES, placeHref } from "./places";
 import type { Candidate, Interest, Leg, MealSpot } from "./route";
-import { GUIDE, getGuidePlace } from "./seoul-guide";
+import { GUIDE, getGuidePlace, photoNear } from "./seoul-guide";
 import { SEOUL_AREAS } from "./seoul-areas";
 import { getAllSeoulLive, seoulGroup, type SeoulGroup, type SeoulLive } from "./seoul-live";
 import { subwayTrip } from "./subway";
@@ -21,17 +21,6 @@ const GROUP_INTEREST: Partial<Record<SeoulGroup, Interest>> = { heritage: "histo
 // 운영 시간 정보가 없는 곳의 기본 방문 가능 시간 (밤늦게 공원·고궁으로 보내지 않게)
 const DEFAULT_HOURS: Record<Interest, [number, number]> = { history: [9, 18], nature: [6, 22], shopping: [10, 23], fun: [10, 22] };
 const GROUP_STAY: Partial<Record<SeoulGroup, number>> = { heritage: 80, park: 60, street: 60, tour: 70 };
-
-/** 사진이 없는 곳(서울 실시간 지역)은 600m 안 가이드 명소·자연의 관광공사 사진을 빌려 쓴다 */
-const PHOTO_SPOTS = GUIDE.filter((g) => g.img && g.lat && g.lng && (g.kind === "attraction" || g.kind === "nature"));
-function photoNear(p: LatLng): string | undefined {
-  let best: { img: string; km: number } | undefined;
-  for (const g of PHOTO_SPOTS) {
-    const km = distanceKm(p, { lat: g.lat!, lng: g.lng! });
-    if (km < 0.6 && (!best || km < best.km)) best = { img: g.img!, km };
-  }
-  return best?.img;
-}
 
 /** "YYYY-MM-DD HH:MM" → 오늘 0시부터 센 시 (내일 9시 = 33) */
 const absHour = (time: string) => daysUntil(time.slice(0, 10)) * 24 + Number(time.slice(11, 13));

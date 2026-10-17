@@ -8,6 +8,7 @@ import meta from "@/data/seoul/meta.json";
 import reservations from "@/data/seoul/reservations.json";
 import toilets from "@/data/seoul/toilets.json";
 import { distanceKm, type LatLng } from "./geo";
+import { LANDMARKS } from "./korea";
 import { SEOUL_AREAS, type SeoulArea } from "./seoul-areas";
 
 export type GuideKind = "attraction" | "food" | "shopping" | "nature";
@@ -129,6 +130,38 @@ const extra: GuidePlace[] = TOUR.filter((r) => (r[1] === 12 || r[1] === 14) && !
 
 /** 사진 있는 곳을 앞으로 (기본 순서에서 사진 카드가 먼저 보이게) */
 export const GUIDE: GuidePlace[] = [...cleaned, ...extra].sort((a, b) => Number(!!b.img) - Number(!!a.img));
+/**
+ * 사진이 없는 곳(서울 실시간 지역 등)에 가이드 명소·자연·쇼핑의 관광공사 사진을 빌려 쓴다.
+ * 이름이 겹치는 곳(1.5km 안, 예: 경복궁 지역 → 경복궁)이 먼저, 없으면 가장 가까운 곳(기본 600m 안). large면 큰 사진
+ */
+// 후보: 가이드(사진 붙은 곳, 맛집 제외) + 관광공사 서울 관광지·문화시설·레포츠·쇼핑
+const PHOTO_SPOTS: { name: string; lat: number; lng: number; img: string; imgL: string }[] = [
+  ...GUIDE.filter((g) => g.img && g.lat && g.lng && g.kind !== "food").map((g) => ({
+    name: norm(g.t.ko?.n ?? ""),
+    lat: g.lat!,
+    lng: g.lng!,
+    img: g.img!,
+    imgL: g.imgL ?? g.img!,
+  })),
+  ...TOUR.filter((r) => r[1] !== 39).map((r) => ({ name: norm(r[2]), lat: r[3], lng: r[4], img: r[5], imgL: r[6] })),
+  // 대표 명소(관광공사 대표 사진) — 경복궁처럼 서울 목록에서 빠진 곳
+  ...LANDMARKS.map((l) => ({ name: norm(l.n.ko), lat: l.lat, lng: l.lng, img: l.img, imgL: l.img })),
+];
+export function photoNear(p: LatLng & { name?: string }, maxKm = 0.6, large = false): string | undefined {
+  const key = p.name ? norm(p.name.replace(/관광특구|역$|일대|거리$|공원$/g, "")) : "";
+  type Hit = { s: (typeof PHOTO_SPOTS)[number]; km: number };
+  let byName: Hit | undefined;
+  let best: Hit | undefined;
+  for (const s of PHOTO_SPOTS) {
+    const km = distanceKm(p, s);
+    // 이름이 겹치면 짧은(= 그 장소 자체에 가까운) 이름을 고른다 (경복궁 > 경복궁 돌담길)
+    if (key.length >= 2 && km < 1.5 && s.name.includes(key) && (!byName || s.name.length < byName.s.name.length)) byName = { s, km };
+    if (km < maxKm && (!best || km < best.km)) best = { s, km };
+  }
+  const hit = (byName ?? best)?.s;
+  return hit && (large ? hit.imgL : hit.img);
+}
+
 export const GUIDE_SYNCED_AT = (meta as { syncedAt: string }).syncedAt;
 
 /** 그 언어 글이 없으면 영어 → 한국어 → 아무거나 */
