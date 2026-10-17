@@ -186,7 +186,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                     name: t(place.name),
                     level: t(level.label),
                     source: t(SOURCE_LABEL[crowd.source]),
-                    time: kstClock(crowd.updatedAt),
+                    time: crowd.observedAt ? crowd.observedAt.slice(11, 16) : kstClock(crowd.updatedAt),
                   })}
             {!beforeEvent && best && ` ${t("오늘 남은 운영 시간 중에는 {hour}쯤이 가장 한산할 것으로 보여요.", { hour: formatHour(best.hour, lang) })}`}
           </p>
