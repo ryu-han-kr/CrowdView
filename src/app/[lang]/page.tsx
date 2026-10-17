@@ -3,10 +3,7 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import { getT as getMetaT } from "@/i18n/server";
 import { jsonLd, SITE } from "@/lib/seo";
-import { DataTag } from "@/components/DataTag";
 import { HomeList } from "@/components/HomeList";
-import { LevelBadge } from "@/components/Level";
-import { PlaceThumb } from "@/components/PlaceRow";
 import { CategoryIcons } from "@/components/home/CategoryIcons";
 import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
 import { PhotoRail, type PhotoCardItem } from "@/components/home/PhotoRail";
@@ -19,7 +16,6 @@ import { festivalCard, landmarkCard } from "@/lib/korea-cards";
 import { translateNames } from "@/lib/name-translate";
 import { getLivePlaces } from "@/lib/place-info";
 import { placeHref } from "@/lib/places";
-import { isEstimated } from "@/lib/format";
 import { getAllSeoulLive } from "@/lib/seoul-live";
 import { addDays, daysUntil, kst } from "@/lib/time";
 import { LangSwitcher } from "@/components/LangSwitcher";
@@ -54,10 +50,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const live = Object.values(crowd).filter((c) => c.source !== "model");
   const newest = live.length ? Math.min(...live.map((c) => c.ageMinutes)) : null;
 
-  const calm = places
-    .filter((p) => crowd[p.id].open && p.category !== "event" && crowd[p.id].score < 40)
-    .sort((a, b) => crowd[a.id].score - crowd[b.id].score)
-    .slice(0, 3);
 
   // 축제: 2주 안에 열리는(진행 중 포함) 사진 있는 축제 → 작년 방문객으로 본 붐빔 비율이 큰 순 TOP 5
   const soon = allFestivals.filter((f) => !isLongRunning(f) && f.image && f.start <= addDays(today, 14)).slice(0, 12);
@@ -126,28 +118,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     (s): s is HeroSlide => !!s,
   );
 
-  const calmBox = calm.length > 0 && (
-    <section className="mt-4 rounded-3xl bg-emerald-50 p-4 md:mt-6">
-      <h2 className="font-bold text-emerald-900">🌿 {t("지금 가면 쾌적해요")}</h2>
-      <ul className="mt-3 space-y-2 md:grid md:grid-cols-3 md:gap-3 md:space-y-0">
-        {calm.map((p) => (
-          <li key={p.id}>
-            <Link href={placeHref(p)} className="flex items-center gap-3 rounded-2xl bg-white p-2.5 active:opacity-70">
-              <PlaceThumb place={p} size={40} />
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-sm font-semibold">{t(p.name)}</span>
-                <span className="block text-xs text-gray-500">{t(p.region)}</span>
-              </span>
-              <span className="flex flex-col items-end">
-                <LevelBadge score={crowd[p.id].score} />
-                {isEstimated(crowd[p.id]) && <DataTag className="mt-0.5" />}
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
   const festivalRail = (
     <PhotoRail title={t("지금 뜨는 축제 TOP 5")} subtitle={t("작년 같은 기간 방문객으로 본 예상 붐빔 순")} moreHref="/events" items={festivalCards} ranked />
   );
@@ -202,7 +172,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
       {ko ? (
         <HomeList places={places} crowd={crowd}>
-          {calmBox}
+          {calmRail}
           {festivalRail}
           {plusPromo}
           {landmarkRail}
@@ -213,10 +183,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {festivalRail}
           {calmRail}
           {plusPromo}
-          <h2 className="mt-12 text-lg font-bold md:text-xl">{t("실시간 혼잡도")}</h2>
-          <HomeList places={places} crowd={crowd}>
-            {calmBox}
-          </HomeList>
+          <HomeList places={places} crowd={crowd} />
         </>
       )}
     </main>

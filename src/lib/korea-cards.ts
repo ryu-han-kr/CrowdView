@@ -26,6 +26,8 @@ export function landmarkCard(l: Landmark, lang: Lang, t: T, crowd: Crowd, seoul:
     title: l.n[lang] ?? l.n.ko,
     sub: `${t(l.region)} · ${kind.emoji} ${t(kind.label)}`,
     score,
+    lat: l.lat,
+    lng: l.lng,
   };
 }
 
@@ -40,5 +42,7 @@ export function festivalCard(f: Festival, t: T, today: string, names: Map<string
     sub: `${f.start.slice(5).replace("-", "/")}~${f.end.slice(5).replace("-", "/")} · ${names.get(f.region) ?? trRegion(f.region, t)}`,
     badge: f.start <= today ? t("진행 중") : `D-${daysUntil(f.start)}`,
     note: ratio && ratio >= 1.2 ? t("평소보다 {n}배 붐빔 예상", { n: ratio.toFixed(1) }) : undefined,
+    lat: f.lat,
+    lng: f.lng,
   };
 }

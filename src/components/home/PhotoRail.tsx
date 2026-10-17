@@ -20,6 +20,9 @@ export interface PhotoCardItem {
   score?: number;
   /** 사진 위 혼잡 표시 대신 쓸 글 (예: 예상 붐빔 2.1배) */
   note?: string;
+  /** 지도로 보기용 위치 */
+  lat?: number;
+  lng?: number;
 }
 
 /** 세로로 긴 사진 카드 */

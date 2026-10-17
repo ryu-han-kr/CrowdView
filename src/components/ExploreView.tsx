@@ -4,6 +4,7 @@ import Link from "@/i18n/link";
 import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
+import { SpotMap, ViewToggle } from "./map/SpotMap";
 
 export interface ExploreRegion {
   id: string;
@@ -16,6 +17,7 @@ export function ExploreView({ regions, kinds }: { regions: ExploreRegion[]; kind
   const { t } = useI18n();
   const [region, setRegion] = useState(regions[0]?.id);
   const [kind, setKind] = useState<string>("all");
+  const [view, setView] = useState<"list" | "map">("list");
 
   useEffect(() => {
     const r = new URLSearchParams(window.location.search).get("region");
@@ -48,16 +50,36 @@ export function ExploreView({ regions, kinds }: { regions: ExploreRegion[]; kind
         </div>
       </div>
 
-      {cur && (
+      {cur && view === "map" && (
+        <section className="mt-4">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-bold md:text-xl">{t("{region} 명소·축제 지도", { region: t(cur.id) })}</h2>
+            <ViewToggle view={view} onChange={setView} />
+          </div>
+          <SpotMap
+            className="mt-3"
+            spots={[
+              ...landmarks.map((l) => ({ ...l, emoji: "📍" })),
+              ...cur.festivals.map((f) => ({ ...f, emoji: "🎪" })),
+            ]
+              .filter((x): x is typeof x & { lat: number; lng: number } => x.lat !== undefined && x.lng !== undefined)
+              .map((x) => ({ id: x.id, name: x.title, lat: x.lat, lng: x.lng, href: x.href, external: x.external, score: x.score, emoji: x.emoji, sub: x.sub, img: x.img }))}
+          />
+        </section>
+      )}
+      {cur && view === "list" && (
         <>
           <section className="mt-4">
             <div className="flex items-end justify-between gap-3">
               <h2 className="text-lg font-bold md:text-xl">{t("{region} 대표 명소", { region: t(cur.id) })}</h2>
-              {cur.id === "서울" && (
-                <Link href="/guide" className="shrink-0 text-sm text-indigo-600">
-                  {t("서울 여행 가이드")} ›
-                </Link>
-              )}
+              <div className="flex shrink-0 items-center gap-3">
+                {cur.id === "서울" && (
+                  <Link href="/guide" className="hidden text-sm text-indigo-600 sm:block">
+                    {t("서울 여행 가이드")} ›
+                  </Link>
+                )}
+                <ViewToggle view={view} onChange={setView} />
+              </div>
             </div>
             <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
               <button onClick={() => setKind("all")} className={chip(kind === "all")}>
