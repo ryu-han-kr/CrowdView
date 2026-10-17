@@ -958,4 +958,7 @@ export default {
   "자동": ["Auto", "自動", "自动", "自動"],
   "라이트": ["Light", "ライト", "浅色", "淺色"],
   "다크": ["Dark", "ダーク", "深色", "深色"],
+  "지금은 대부분 문을 닫아 내일 오전 9시 출발로 짰어요.": ["Most places are closed now, so we planned it for tomorrow at 9 AM.", "今はほとんど閉まっているので、明日午前9時出発で作りました。", "现在大多已关门,已改为明天上午9点出发规划。", "現在大多已關門,已改為明天上午9點出發規劃。"],
+  "가장 한산한 달은 {calm}, 가장 붐비는 달은 {busy}이에요.": ["Quietest month: {calm}; busiest: {busy}.", "いちばん空いている月は{calm}、混む月は{busy}です。", "最清闲的月份是{calm},最拥挤的是{busy}。", "最清閒的月份是{calm},最擁擠的是{busy}。"],
+  "운영 시간 평균 혼잡으로 본 CrowdView 추정이에요 (요일·공휴일·계절 패턴).": ["CrowdView estimate of the average crowd during opening hours (weekday, holiday and seasonal patterns).", "営業時間中の平均混雑によるCrowdViewの推定です(曜日・祝日・季節パターン)。", "按营业时间平均拥挤度的CrowdView估算(星期·节假日·季节规律)。", "按營業時間平均擁擠度的CrowdView估算(星期·假日·季節規律)。"],
 };

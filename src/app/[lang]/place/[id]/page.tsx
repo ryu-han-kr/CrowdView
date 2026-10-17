@@ -129,15 +129,18 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   );
   // 함께 가면 좋은 곳: 이름으로 좌표를 찾아 거리 + 그 근처(1km 안 서울 실시간 지역) 지금 혼잡
   const seoulNow = await getAllSeoulLive().catch(() => ({}) as Awaited<ReturnType<typeof getAllSeoulLive>>);
-  const relatedInfo = related.map((r) => {
-    const at = locateByName(r.name, place);
-    const area =
-      at &&
-      SEOUL_AREAS.map((a) => ({ a, km: distanceKm(a, at) }))
-        .filter((x) => x.km <= 1 && seoulNow[x.a.code])
-        .sort((x, y) => x.km - y.km)[0];
-    return { ...r, km: at?.km, href: at?.href, score: area ? seoulNow[area.a.code].score : undefined };
-  });
+  const selfName = place.name.replace(/\s/g, "");
+  const relatedInfo = related
+    .filter((r) => r.name.replace(/\s/g, "") !== selfName && !selfName.includes(r.name.replace(/\s/g, "")))
+    .map((r) => {
+      const at = locateByName(r.name, place);
+      const area =
+        at &&
+        SEOUL_AREAS.map((a) => ({ a, km: distanceKm(a, at) }))
+          .filter((x) => x.km <= 1 && seoulNow[x.a.code])
+          .sort((x, y) => x.km - y.km)[0];
+      return { ...r, km: at?.km, href: at?.href, score: area ? seoulNow[area.a.code].score : undefined };
+    });
   // 오늘 지난 시간은 10분마다 쌓은 실측 기록으로 채운다 (시간마다 마지막 기록)
   const hourly = withRecordedHours(crowd.hourly, today.points, crowd.source !== "model" && place.criteria?.unit === "명");
   const week = weekForecast(place, signals);
@@ -168,8 +171,15 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     dow: new Date(`${d.date}T00:00:00Z`).getUTCDay(),
     peakScore: d.peakScore,
   }));
+  // 12개월: 가장 붐빌 때는 달마다 비슷하게 꽉 차서, 운영 시간 평균 혼잡으로 비교한다 (사흘에 하루씩 표본)
   const byMonth = new Map<string, number[]>();
-  for (const d of long) byMonth.set(d.date.slice(0, 7), [...(byMonth.get(d.date.slice(0, 7)) ?? []), d.peakScore]);
+  for (const [i, d] of long.entries()) {
+    if (i % 3) continue;
+    const open = forecastForDate(place, d.date).filter((p) => p.hour >= place.hours[0] && p.hour < Math.min(24, place.hours[1]));
+    if (!open.length) continue;
+    const mean = open.reduce((a, p) => a + p.score, 0) / open.length;
+    byMonth.set(d.date.slice(0, 7), [...(byMonth.get(d.date.slice(0, 7)) ?? []), mean]);
+  }
   const yearBars = [...byMonth.entries()].slice(0, 12).map(([ym, xs]) => ({
     label: new Intl.DateTimeFormat(lang, { month: "short", timeZone: "UTC" }).format(new Date(`${ym}-15T00:00:00Z`)),
     avg: Math.round(xs.reduce((a, b) => a + b, 0) / xs.length),
