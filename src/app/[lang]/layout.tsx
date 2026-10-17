@@ -1,3 +1,4 @@
+import { PageTheme } from "@/components/PageTheme";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { notFound } from "next/navigation";
@@ -79,6 +80,7 @@ export default async function RootLayout({ children, params }: { children: React
         )}
         <I18nProvider lang={lang} dict={getDict(lang)}>
           <NavProgress />
+          <PageTheme />
           <ErrorReporter />
           <TopNav authEnabled={authEnabled} />
           {authEnabled && <FavoritesSync />}
