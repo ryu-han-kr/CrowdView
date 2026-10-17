@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { currentPosition, kakaoDirections, type LatLng, type Transport } from "@/lib/geo";
 import { levelOf } from "@/lib/levels";
+import { usePicks } from "@/lib/prefs";
 import { INTERESTS, type Interest, type RoutePlan } from "@/lib/route";
 import { LevelBadge } from "./Level";
 
@@ -36,6 +37,10 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<{ plan: RoutePlan; locked: number; beta: boolean } | null>(null);
+  // 서울 실시간·여행 가이드에서 ☆로 담은 곳 (켜 두면 코스에 꼭 넣는다)
+  const { picks, remove: removePick } = usePicks();
+  const [usePicked, setUsePicked] = useState(true);
+  const sendPicks = usePicked ? picks.map((p) => p.id) : [];
 
   const locate = async () => {
     setLocating(true);
@@ -56,13 +61,14 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
 
   const plan = async () => {
     if (!start) return setError(t("출발지를 먼저 정해 주세요"));
+    if (!interests.length && !sendPicks.length) return setError(t("관심사를 하나 이상 골라 주세요"));
     setBusy(true);
     setError(null);
     try {
       const res = await fetch("/api/route", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ start, offsetMin: offset, durationMin: duration, interests, transport, lang }),
+        body: JSON.stringify({ start, offsetMin: offset, durationMin: duration, interests, transport, lang, picks: sendPicks }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? `HTTP ${res.status}`);
@@ -80,6 +86,24 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
   return (
     <div className="lg:grid lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-10">
       <section className="space-y-5">
+        {picks.length > 0 && (
+          <div className="rounded-2xl border border-amber-100 bg-amber-50/70 p-4">
+            <label className="flex items-center justify-between gap-3">
+              <span className="text-sm font-bold">⭐ {t("담은 곳 {n}곳을 코스에 넣기", { n: picks.length })}</span>
+              <input type="checkbox" checked={usePicked} onChange={(e) => setUsePicked(e.target.checked)} className="h-5 w-5 accent-indigo-600" />
+            </label>
+            <ul className="mt-2 flex flex-wrap gap-1.5">
+              {picks.map((p) => (
+                <li key={p.id}>
+                  <button onClick={() => removePick(p.id)} className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-gray-700 shadow-sm">
+                    {p.label} ✕
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-[11px] text-gray-500">{t("담은 곳을 먼저 넣고, 남는 시간은 관심사에 맞는 한산한 곳으로 채워요 (최대 6곳)")}</p>
+          </div>
+        )}
         <div>
           <p className="text-sm font-bold">{t("출발지")}</p>
           <button
@@ -249,7 +273,10 @@ function RouteResult({
                     {clock(s.arrive)}~{clock(s.leave)}
                     {s.meal && <> · {t(s.meal === "lunch" ? "점심" : "저녁")}</>}
                   </span>
-                  <span className="block truncate text-sm font-bold">{s.name}</span>
+                  <span className="block truncate text-sm font-bold">
+                    {s.picked && <span className="mr-1 text-amber-400">★</span>}
+                    {s.name}
+                  </span>
                   {!s.meal && s.peak && s.peak.score - s.score >= 15 && (
                     <span className="block text-[11px] text-emerald-700">
                       {t("{h}시({level})를 피해서 가요", { h: s.peak.hour, level: t(levelOf(s.peak.score).label) })}
@@ -263,6 +290,11 @@ function RouteResult({
         })}
       </ol>
 
+      {plan.missedPicks && plan.missedPicks.length > 0 && (
+        <p className="mt-3 rounded-2xl bg-amber-50 px-4 py-3 text-xs text-amber-900">
+          {t("시간·운영 시간이 맞지 않아 못 넣은 곳: {names}. 일정을 늘리거나 출발 시각을 바꿔 보세요.", { names: plan.missedPicks.join(", ") })}
+        </p>
+      )}
       {locked > 0 && (
         <Link href="/pricing" className="mt-3 block rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-4 text-white">
           <p className="text-sm font-bold">🔒 {t("나머지 {n}곳은 Plus에서 볼 수 있어요", { n: locked })}</p>

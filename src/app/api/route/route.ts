@@ -6,7 +6,7 @@ import type { Transport } from "@/lib/geo";
 import { isPlus } from "@/lib/plus";
 import { portoneEnabled } from "@/lib/portone";
 import { INTERESTS, planRoute, type Candidate, type Interest } from "@/lib/route";
-import { MEAL_SPOTS, getRouteCandidates, transitTravel } from "@/lib/route-data";
+import { MEAL_SPOTS, getPickCandidates, getRouteCandidates, transitTravel } from "@/lib/route-data";
 import { getGuidePlace, guideText } from "@/lib/seoul-guide";
 import { kst } from "@/lib/time";
 import { isLang } from "@/i18n/config";
@@ -30,13 +30,16 @@ export async function POST(req: Request) {
     interests?: string[];
     transport?: string;
     lang?: string;
+    /** ☆로 담은 곳 id (seoul-<코드> | vs-<코드>) */
+    picks?: string[];
   };
   const lat = Number(body.start?.lat);
   const lng = Number(body.start?.lng);
   // 대한민국 범위 밖 좌표는 받지 않는다
   if (!(lat > 33 && lat < 39 && lng > 124 && lng < 132)) return NextResponse.json({ error: "출발지가 한국 밖이에요" }, { status: 400 });
   const interests = (body.interests ?? []).filter((i): i is Interest => INTERESTS.some((x) => x.id === i));
-  if (!interests.length) return NextResponse.json({ error: "관심사를 하나 이상 골라 주세요" }, { status: 400 });
+  const pickIds = (Array.isArray(body.picks) ? body.picks : []).filter((x): x is string => typeof x === "string" && /^(seoul-|vs-)[\w-]{1,40}$/.test(x)).slice(0, 6);
+  if (!interests.length && !pickIds.length) return NextResponse.json({ error: "관심사를 하나 이상 골라 주세요" }, { status: 400 });
   const transport: Transport = body.transport === "walk" ? "walk" : "transit";
   // 서울시 예측이 12시간까지라 출발은 6시간 안, 일정은 2~8시간
   const offset = Math.min(360, Math.max(0, Math.round(Number(body.offsetMin) || 0)));
@@ -44,13 +47,12 @@ export async function POST(req: Request) {
   const now = kst();
   const startMin = Math.ceil((Math.floor(now.hour * 60) + offset + 5) / 10) * 10;
 
-  const plan = planRoute(await candidates(), {
-    start: { lat, lng, name: String(body.start?.name ?? "출발") },
-    startMin,
-    durationMin,
-    interests,
-    transport,
-  }, { travel: transitTravel, meals: MEAL_SPOTS });
+  const all = await candidates();
+  const plan = planRoute(
+    all,
+    { start: { lat, lng, name: String(body.start?.name ?? "출발") }, startMin, durationMin, interests, transport },
+    { travel: transitTravel, meals: MEAL_SPOTS, must: await getPickCandidates(pickIds, all) },
+  );
 
   let locked = 0;
   if (portoneEnabled) {
@@ -63,9 +65,11 @@ export async function POST(req: Request) {
   // 장소 이름: 사전에 있으면 사전, 서울 지역 이름은 Papago (Redis 90일 캐시). 맛집은 가이드에 언어별 이름이 있다
   const lang = isLang(body.lang) ? body.lang : "ko";
   const t = getT(lang);
-  const names = await translateNames(plan.stops.filter((s) => !s.meal).map((s) => s.name), lang);
+  const isGuide = (id: string) => id.startsWith("vs-");
+  const names = await translateNames([...plan.stops.filter((s) => !isGuide(s.id)).map((s) => s.name), ...(plan.missedPicks ?? [])], lang);
+  if (plan.missedPicks) plan.missedPicks = plan.missedPicks.map((n) => names.get(n) ?? t(n));
   plan.stops = plan.stops.map((s) => {
-    const guide = s.meal ? getGuidePlace(s.id) : undefined;
+    const guide = isGuide(s.id) ? getGuidePlace(s.id) : undefined;
     return { ...s, name: guide ? guideText(guide, lang).text.n : (names.get(s.name) ?? t(s.name)) };
   });
   return NextResponse.json({ plan, startMin, locked, beta: !portoneEnabled });

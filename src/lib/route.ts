@@ -69,6 +69,8 @@ export interface RouteStop {
   score: number;
   /** 식사 들르기면 점심·저녁 (혼잡 점수 없음) */
   meal?: "lunch" | "dinner";
+  /** 이용자가 ☆로 담은 곳 */
+  picked?: boolean;
   /** 오늘 이 장소가 가장 붐비는 시각과 점수 (피했다는 설명용) */
   peak?: { hour: number; score: number };
   basis: Candidate["basis"];
@@ -82,6 +84,8 @@ export interface RoutePlan {
   peakAvgScore: number;
   totalTravelMin: number;
   endMin: number;
+  /** 담았지만 시간·운영 시간이 안 맞아 못 넣은 곳 (이름) */
+  missedPicks?: string[];
 }
 
 const CROWD_W = 1; // 혼잡 1점 = 비용 1
@@ -89,6 +93,7 @@ const TRAVEL_W = 0.8; // 이동 1분 = 비용 0.8
 const MIN_GAP_KM = 0.6; // 서로 600m 안의 장소는 한 코스에 하나만 (겹치는 동네)
 const MEAL_MISS = 30; // 식사 시간을 놓치는 순서의 벌점
 const MEAL_KM = 1.2; // 이보다 먼 맛집은 고르지 않는다
+const MAX_STOPS = 6; // 순서를 모두 비교하는 상한 (6곳 = 720가지)
 
 /**
  * 식사를 시작하는 시각 (자정부터 분). 1시간 먹는다고 보고 점심 11:20~12:40, 저녁 17:20~18:40 사이에 시작한다.
@@ -121,7 +126,7 @@ interface State {
 }
 
 /** 코스 하나를 따라가며 이동·식사·방문을 쌓는다. 욕심쟁이 고르기와 순서 비교가 같은 규칙을 쓴다 */
-function makePlanner(req: RouteRequest, travel: TravelFn, spots: MealSpot[]) {
+function makePlanner(req: RouteRequest, travel: TravelFn, spots: MealSpot[], mustIds: Set<string>) {
   const end = req.startMin + req.durationMin;
   const legMemo = new Map<string, Leg>();
   const leg = (a: LatLng, b: LatLng) => {
@@ -217,6 +222,7 @@ function makePlanner(req: RouteRequest, travel: TravelFn, spots: MealSpot[]) {
       score,
       peak: peakEntry ? { hour: Number(peakEntry[0]), score: peakEntry[1] } : undefined,
       basis: c.basis,
+      ...(mustIds.has(c.id) && { picked: true }),
     };
     const after: State = { ...s, pos: c, t: leave, stops: [...s.stops, stop], cost: s.cost + score * CROWD_W + l.minutes * TRAVEL_W };
     // 여기 있는 동안 식사 시간이 지나 버리면 바로 벌점 (욕심쟁이 고르기가 미리 알 수 있게)
@@ -257,32 +263,46 @@ function permutations<T>(items: T[]): T[][] {
 /**
  * travel: 구간 이동시간 (서버는 지하철 노선망, 없으면 직선거리 어림)
  * meals: 식사 장소 후보 (없으면 식사를 넣지 않는다)
+ * must: 이용자가 담은 곳. 관심사·거리와 상관없이 먼저 넣고, 남는 시간에 다른 곳을 고른다
  */
-export function planRoute(all: Candidate[], req: RouteRequest, opts: { travel?: TravelFn; meals?: MealSpot[] } = {}): RoutePlan {
+export function planRoute(
+  all: Candidate[],
+  req: RouteRequest,
+  opts: { travel?: TravelFn; meals?: MealSpot[]; must?: Candidate[] } = {},
+): RoutePlan {
   const radiusKm = req.transport === "walk" ? 3.5 : 15;
-  const pool = all.filter((c) => req.interests.includes(c.interest) && distanceKm(req.start, c) <= radiusKm);
+  const must = (opts.must ?? []).slice(0, MAX_STOPS);
+  const mustIds = new Set(must.map((c) => c.id));
+  const pool = all.filter((c) => !mustIds.has(c.id) && req.interests.includes(c.interest) && distanceKm(req.start, c) <= radiusKm);
   const spots = (opts.meals ?? []).filter((m) => distanceKm(req.start, m) <= radiusKm + MEAL_KM);
-  const planner = makePlanner(req, opts.travel ?? travelMinutes, spots);
+  const planner = makePlanner(req, opts.travel ?? travelMinutes, spots, mustIds);
 
-  // 1) 욕심쟁이로 고르기: 지금 위치에서 (도착 시각 혼잡 + 이동시간 + 식사 벌점) 비용이 가장 낮은 곳을 하나씩
+  // 1) 욕심쟁이로 고르기: 지금 위치에서 (도착 시각 혼잡 + 이동시간 + 식사 벌점) 비용이 가장 낮은 곳을 하나씩.
+  //    담은 곳이 있으면 그중에서 먼저 (시간 안에 들어가는 만큼), 그다음 나머지 후보에서
   const chosen: Candidate[] = [];
   let state = planner.initial();
-  for (;;) {
-    let best: { c: Candidate; cost: number; next: State } | undefined;
-    for (const c of pool) {
-      if (chosen.includes(c) || chosen.some((x) => distanceKm(x, c) < MIN_GAP_KM)) continue;
-      // 관심사가 여러 개면 같은 종류만 이어지지 않게 (직전과 같은 관심사면 약간 손해)
-      const repeat = chosen.length > 0 && chosen[chosen.length - 1].interest === c.interest && req.interests.length > 1 ? 8 : 0;
-      const next = planner.visit(state, c);
-      if (!next) continue;
-      const cost = next.cost - state.cost + repeat;
-      if (!best || cost < best.cost) best = { c, cost, next };
+  for (const [from, repeatPenalty] of [
+    [must, false],
+    [pool, true],
+  ] as const) {
+    while (chosen.length < MAX_STOPS) {
+      let best: { c: Candidate; cost: number; next: State } | undefined;
+      for (const c of from) {
+        if (chosen.includes(c) || chosen.some((x) => distanceKm(x, c) < MIN_GAP_KM && !(mustIds.has(x.id) && mustIds.has(c.id)))) continue;
+        // 관심사가 여러 개면 같은 종류만 이어지지 않게 (직전과 같은 관심사면 약간 손해)
+        const repeat =
+          repeatPenalty && chosen.length > 0 && chosen[chosen.length - 1].interest === c.interest && req.interests.length > 1 ? 8 : 0;
+        const next = planner.visit(state, c);
+        if (!next) continue;
+        const cost = next.cost - state.cost + repeat;
+        if (!best || cost < best.cost) best = { c, cost, next };
+      }
+      if (!best) break;
+      chosen.push(best.c);
+      state = best.next;
     }
-    if (!best) break;
-    chosen.push(best.c);
-    state = best.next;
-    if (chosen.length >= 6) break;
   }
+  const missedPicks = must.filter((c) => !chosen.includes(c)).map((c) => c.name);
 
   // 2) 고른 곳의 방문 순서를 모두 비교해 비용이 가장 낮은 순서 (6곳 = 720가지)
   let bestRun = simulate(chosen, planner);
@@ -299,5 +319,6 @@ export function planRoute(all: Candidate[], req: RouteRequest, opts: { travel?: 
     peakAvgScore: avg(sights.map((s) => s.peak?.score ?? s.score)),
     totalTravelMin: stops.reduce((s, x) => s + x.travelMin, 0),
     endMin: stops.at(-1)?.leave ?? req.startMin,
+    ...(missedPicks.length && { missedPicks }),
   };
 }

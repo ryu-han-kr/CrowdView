@@ -832,4 +832,8 @@ export default {
   "‘{name}’ 근처 숙소를 각 예약 사이트에서 바로 검색해요. 가격·예약은 그 사이트에서 확인하세요.": ["Search stays near ‘{name}’ on each booking site. Check prices and book on that site.", "「{name}」近くの宿を各予約サイトで検索します。料金・予約は各サイトでご確認ください。", "在各预订网站直接搜索“{name}”附近的住宿。价格和预订请在该网站确认。", "在各訂房網站直接搜尋「{name}」附近的住宿。價格與預訂請在該網站確認。"],
   "지역별 명소·서울 여행 가이드·근처 숙소 찾기": ["Regional sights, Seoul travel guide, nearby stays", "地域別名所・ソウル旅行ガイド・近くの宿探し", "各地景点·首尔旅行指南·查找附近住宿", "各地景點·首爾旅遊指南·查找附近住宿"],
   "한산한 코스 추천 전체 일정 (무료는 앞 2곳 미리보기)": ["Full quiet-route plans (free shows the first 2 stops)", "空いているコースの全行程 (無料は最初の2か所まで)", "人少路线完整行程 (免费版可预览前2处)", "人少路線完整行程 (免費版可預覽前2處)"],
+  "담은 곳 {n}곳을 코스에 넣기": ["Include my {n} saved places", "保存した{n}か所をコースに入れる", "把收藏的{n}处加入路线", "把收藏的{n}處加入路線"],
+  "담은 곳을 먼저 넣고, 남는 시간은 관심사에 맞는 한산한 곳으로 채워요 (최대 6곳)": ["Saved places go in first; leftover time is filled with quiet spots matching your interests (up to 6 stops)", "保存した場所を先に入れ、残りの時間は興味に合う空いている場所で埋めます (最大6か所)", "先加入收藏的地方，剩余时间用符合兴趣的人少地点补上 (最多6处)", "先加入收藏的地方，剩餘時間用符合興趣的人少地點補上 (最多6處)"],
+  "시간·운영 시간이 맞지 않아 못 넣은 곳: {names}. 일정을 늘리거나 출발 시각을 바꿔 보세요.": ["Couldn't fit (time or opening hours): {names}. Try a longer plan or another start time.", "時間・営業時間が合わず入れられなかった場所: {names}。日程を延ばすか出発時刻を変えてみてください。", "因时间或营业时间不合而未加入: {names}。请延长行程或更改出发时间。", "因時間或營業時間不合而未加入: {names}。請延長行程或更改出發時間。"],
+  "관심사를 하나 이상 골라 주세요": ["Pick at least one interest", "興味を1つ以上選んでください", "请至少选择一个兴趣", "請至少選擇一個興趣"],
 };
