@@ -4,13 +4,13 @@ import type { Lang } from "@/i18n/config";
 import { HORIZONS, getAccuracy, type DayStat } from "@/lib/accuracy";
 import { pageMeta } from "@/lib/seo";
 
-// 예측 정확도 공개: 서울 119곳에서 매시간 예측과 실제를 비교한 결과 (lib/accuracy, 수집기가 기록)
+// 예측 정확도 공개: 서울 121곳에서 매시간 예측과 실제를 비교한 결과 (lib/accuracy, 수집기가 기록)
 export const revalidate = 3600;
 
 const COPY = {
   ko: {
     title: "예측 정확도",
-    lead: "서울 실시간 119곳에서 매시간 예측을 저장해 두고, 그 시각이 되면 서울시 실제 값과 비교해요. ‘단계 일치’는 화면의 5단계가 맞은 비율, ‘평균 오차’는 0~100점 기준 점수 차이예요.",
+    lead: "서울 실시간 121곳에서 매시간 예측을 저장해 두고, 그 시각이 되면 서울시 실제 값과 비교해요. ‘단계 일치’는 화면의 5단계가 맞은 비율, ‘평균 오차’는 0~100점 기준 점수 차이예요.",
     horizon: { "official-1h": "서울시 공식 예측 · 1시간 뒤", "official-3h": "서울시 공식 예측 · 3시간 뒤", "pattern-24h": "CrowdView 패턴 예측 · 24시간 뒤" },
     week: "최근 7일",
     match: "단계 일치",
@@ -23,7 +23,7 @@ const COPY = {
   },
   en: {
     title: "Forecast accuracy",
-    lead: "Every hour we store forecasts for 119 Seoul areas and compare them with Seoul's actual values when that hour arrives. ‘Level match’ is the share of correct five-level predictions; ‘mean error’ is the score difference on a 0–100 scale.",
+    lead: "Every hour we store forecasts for 121 Seoul areas and compare them with Seoul's actual values when that hour arrives. ‘Level match’ is the share of correct five-level predictions; ‘mean error’ is the score difference on a 0–100 scale.",
     horizon: { "official-1h": "Seoul official forecast · 1 h ahead", "official-3h": "Seoul official forecast · 3 h ahead", "pattern-24h": "CrowdView pattern forecast · 24 h ahead" },
     week: "Last 7 days",
     match: "Level match",

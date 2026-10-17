@@ -99,6 +99,7 @@ export const SEOUL_AREAS: SeoulArea[] = [
   { code: "POI095", name: "반포한강공원", lat: 37.50672, lng: 126.98484 },
   { code: "POI096", name: "북서울꿈의숲", lat: 37.62272, lng: 127.0441 },
   { code: "POI098", name: "서리풀공원·몽마르뜨공원", lat: 37.50337, lng: 127.0033 },
+  { code: "POI100", name: "서울대공원", lat: 37.4332, lng: 127.0129 },
   { code: "POI101", name: "서울숲공원", lat: 37.54353, lng: 127.0427 },
   { code: "POI102", name: "아차산", lat: 37.56068, lng: 127.09485 },
   { code: "POI103", name: "양화한강공원", lat: 37.53982, lng: 126.90146 },
@@ -125,6 +126,8 @@ export const SEOUL_AREAS: SeoulArea[] = [
   { code: "POI125", name: "안양천", lat: 37.52079, lng: 126.87824 },
   { code: "POI126", name: "여의서로", lat: 37.53291, lng: 126.9164 },
   { code: "POI127", name: "올림픽공원", lat: 37.51645, lng: 127.1193 },
+  // 2026-10-18 추가: 수집 당시 응답이 없던 곳 (좌표는 응답에 시설 좌표가 없어 지도 기준 중심)
+  { code: "POI128", name: "홍제폭포", lat: 37.5858, lng: 126.942 },
   { code: "POI129", name: "송현녹지광장", lat: 37.57739, lng: 126.98544 },
   { code: "POI130", name: "시의회 앞", lat: 37.56836, lng: 126.97701 },
   { code: "POI131", name: "숭례문", lat: 37.56092, lng: 126.97591 },

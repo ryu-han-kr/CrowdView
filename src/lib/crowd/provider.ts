@@ -11,7 +11,7 @@ import { getSignals, type Signals } from "./signals";
 
 
 /**
- * 서울시 실시간 도시데이터가 있는 장소: 서울 119곳 묶음(lib/seoul-live, 10분 캐시)에서 그 지역 값을 그대로 쓴다.
+ * 서울시 실시간 도시데이터가 있는 장소: 서울 121곳 묶음(lib/seoul-live, 10분 캐시)에서 그 지역 값을 그대로 쓴다.
  * 장소 화면·서울 실시간 화면·홈이 같은 관측 시각의 같은 공식 단계를 보이게 (따로 부르면 시각이 달라 단계가 갈린다)
  */
 async function fetchSeoulCitydata(place: Place, s: Signals): Promise<CrowdSnapshot> {

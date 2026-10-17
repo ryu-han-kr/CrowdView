@@ -71,7 +71,7 @@ const KO: Copy = {
   ],
   sourcesTitle: "데이터 출처",
   sources: [
-    ["서울시 실시간 도시데이터", "서울 119곳 인구·12시간 예측", "10분"],
+    ["서울시 실시간 도시데이터", "서울 121곳 인구·12시간 예측", "10분"],
     ["인천국제공항공사 · 한국공항공사", "출국장 대기·혼잡, 주차, 승객 예고", "5~30분"],
     ["ThemeParks.wiki", "에버랜드·롯데월드 놀이기구 대기", "2분"],
     ["한국관광공사 TourAPI · 데이터랩 · 관광지 집중률", "축제 일정, 명소 사진·좌표, 지역 방문객, 30일 예측", "6시간~1주"],
@@ -136,7 +136,7 @@ const EN: Copy = {
   ],
   sourcesTitle: "Data sources",
   sources: [
-    ["Seoul real-time city data", "Population and 12-hour forecast for 119 Seoul areas", "10 min"],
+    ["Seoul real-time city data", "Population and 12-hour forecast for 121 Seoul areas", "10 min"],
     ["Incheon International Airport · Korea Airports Corporation", "Departure waits, parking, passenger notices", "5–30 min"],
     ["ThemeParks.wiki", "Everland and Lotte World ride waits", "2 min"],
     ["Korea Tourism Organization TourAPI · DataLab · concentration", "Festivals, landmark photos, regional visitors, 30-day forecast", "6 h – 1 week"],
