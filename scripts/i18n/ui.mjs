@@ -461,7 +461,7 @@ export default {
 
   // ── 지도
   "혼잡도 지도": ["Crowd map", "混雑度マップ", "拥挤度地图", "擁擠度地圖"],
-  "원이 크고 붉을수록 붐벼요. 위 색깔표로 단계를 확인하고, 핀을 누르면 자세히 볼 수 있어요.": ["Bigger, redder circles mean bigger crowds. Check the color scale above and tap a pin for details.", "円が大きく赤いほど混雑しています。上の色の目安で段階を確認し、ピンをタップすると詳細が見られます。", "圆圈越大越红越拥挤。可参考上方颜色条判断等级，点击图钉查看详情。", "圓圈越大越紅越擁擠。可參考上方顏色條判斷等級，點擊圖釘查看詳情。"],
+  "원이 크고 붉을수록 붐벼요. 오른쪽 위 색깔표로 단계를 확인하고, 핀을 누르면 자세히 볼 수 있어요.": ["Bigger, redder circles mean more crowded. Check levels in the color key at top right and tap a pin for details.", "円が大きく赤いほど混雑。右上の色見本で段階を確認し、ピンを押すと詳細が見られます。", "圆圈越大越红越拥挤。可在右上角色标查看等级，点按图钉查看详情。", "圓圈越大越紅越擁擠。可在右上角色標查看等級，點按圖釘查看詳情。"],
 
   // ── 마이페이지
   마이페이지: ["My page", "マイページ", "我的页面", "我的頁面"],
@@ -842,4 +842,8 @@ export default {
   "12시간 뒤부터는 지하철 승하차로 본 요일·시간대 패턴으로 예측해요": ["Beyond 12 hours, crowds are estimated from subway ridership patterns by weekday and hour", "12時間以降は地下鉄の乗降から見た曜日・時間帯のパターンで予測します", "12小时以后按地铁上下车人数的星期·时段规律预测", "12小時以後依地鐵上下車人數的星期·時段規律預測"],
   "패턴 예측": ["pattern est.", "パターン予測", "规律预测", "規律預測"],
   "‘패턴 예측’은 서울시 12시간 예측 밖이라 가까운 역의 요일·시간대 승하차로 어림한 값이에요.": ["‘Pattern est.’ is beyond Seoul's 12-hour forecast, estimated from nearby stations' ridership by weekday and hour.", "「パターン予測」はソウル市の12時間予測の範囲外のため、近くの駅の曜日・時間帯別乗降から見積もった値です。", "“规律预测”超出首尔市12小时预测范围，是根据附近车站按星期·时段的上下车人数估算的。", "「規律預測」超出首爾市12小時預測範圍，是依附近車站按星期·時段的上下車人數估算的。"],
+  // ── 목록 ↔ 지도
+  "{region} 명소·축제 지도": ["Map of sights & festivals in {region}", "{region}の名所・祭りマップ", "{region}景点·节庆地图", "{region}景點·節慶地圖"],
+  목록: ["List", "リスト", "列表", "列表"],
+  "앞쪽 {n}곳만 보여요": ["Showing the first {n}", "先頭の{n}か所のみ表示", "仅显示前{n}处", "僅顯示前{n}處"],
 };

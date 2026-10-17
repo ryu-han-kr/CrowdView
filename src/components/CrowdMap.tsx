@@ -6,17 +6,9 @@ import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { LEVELS, levelOf } from "@/lib/levels";
 import type { CrowdResult, Place } from "@/lib/types";
+import { KEY_ID, loadSdk } from "@/lib/naver-map";
 import { HeatMap, MapPlaceCard } from "./HeatMap";
-
-declare global {
-  interface Window {
-    naver?: any;
-    navermap_authFailure?: () => void;
-  }
-}
-
-const KEY_ID = process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID;
-const SCRIPT_ID = "naver-maps-sdk";
+import { MapLegend } from "./map/MapLegend";
 
 const REGIONS = {
   all: { label: "전국", lat: 36.0, lng: 127.6, zoom: 7 },
@@ -32,55 +24,12 @@ function circleRadius(score: number, zoom: number, lat: number): number {
   return (12 + score * 0.24) * metersPerPx;
 }
 
-/** 지도 글자 언어 (네이버 지도는 ko·en·ja·zh 지원) */
-const mapLanguage = (lang: string) => (lang.startsWith("zh") ? "zh" : lang);
-
-function loadSdk(keyId: string, lang: string): Promise<void> {
-  if (window.naver?.maps) return Promise.resolve();
-  return new Promise((resolve, reject) => {
-    let script = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
-    if (!script) {
-      script = document.createElement("script");
-      script.id = SCRIPT_ID;
-      script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${keyId}&language=${mapLanguage(lang)}`;
-      script.async = true;
-      document.head.appendChild(script);
-    }
-    script.addEventListener("load", () => resolve());
-    script.addEventListener("error", () => reject(new Error("naver maps sdk load failed")));
-  });
-}
-
 export function CrowdMap({ places, crowd }: { places: Place[]; crowd: Record<string, CrowdResult> }) {
   const [failed, setFailed] = useState(!KEY_ID);
   return (
     <div className="relative">
       {failed ? <HeatMap places={places} crowd={crowd} /> : <NaverCrowdMap places={places} crowd={crowd} onFail={() => setFailed(true)} />}
-      <MapScale places={places} crowd={crowd} />
-    </div>
-  );
-}
-
-/** 지도 위 색깔 기준표: 색이 어느 정도 혼잡인지와 단계별 장소 수 */
-function MapScale({ places, crowd }: { places: Place[]; crowd: Record<string, CrowdResult> }) {
-  const { t } = useI18n();
-  const open = places.filter((p) => crowd[p.id]?.open);
-  const count = (key: number) => open.filter((p) => levelOf(crowd[p.id].score).key === key).length;
-  return (
-    <div className="pointer-events-none absolute inset-x-3 top-[3.6rem] z-10 rounded-2xl bg-white/95 px-3 py-2 shadow-md backdrop-blur">
-      <div className="flex h-2 overflow-hidden rounded-full">
-        {LEVELS.map((l) => (
-          <div key={l.key} className="flex-1" style={{ background: l.color }} />
-        ))}
-      </div>
-      <div className="mt-1.5 flex text-center text-[10px] leading-tight">
-        {LEVELS.map((l) => (
-          <div key={l.key} className="flex-1">
-            <b style={{ color: l.color }}>{t(l.label)}</b>
-            <span className="block text-gray-500">{t("{n}곳", { n: count(l.key) })}</span>
-          </div>
-        ))}
-      </div>
+      <MapLegend counts={LEVELS.map((l) => places.filter((p) => crowd[p.id]?.open && levelOf(crowd[p.id].score).key === l.key).length)} />
     </div>
   );
 }
@@ -186,12 +135,12 @@ function NaverCrowdMap({
 
   return (
     <div className="relative">
-      <div className="absolute inset-x-3 top-3 z-10 flex gap-1 rounded-full bg-white/95 p-1 shadow-md backdrop-blur">
+      <div className="absolute top-3 left-3 z-10 flex gap-0.5 rounded-full bg-white/95 p-1 shadow-md backdrop-blur">
         {(Object.keys(REGIONS) as RegionKey[]).map((k) => (
           <button
             key={k}
             onClick={() => moveTo(k)}
-            className={`flex-1 rounded-full py-1.5 text-sm font-medium ${region === k ? "bg-gray-900 text-white" : "text-gray-600"}`}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold md:text-sm ${region === k ? "bg-gray-900 text-white" : "text-gray-600"}`}
           >
             {t(REGIONS[k].label)}
           </button>
