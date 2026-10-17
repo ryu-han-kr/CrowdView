@@ -1,20 +1,24 @@
-import { CrowdMap } from "@/components/CrowdMap";
 import type { Metadata } from "next";
-import { pageMeta } from "@/lib/seo";
-import { getT as getMetaT } from "@/i18n/server";
-import { getAllCrowd } from "@/lib/crowd/service";
-import { PLACES } from "@/lib/places";
+import { MapExplorer, type ExploreSpot } from "@/components/map/MapExplorer";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
-import { MapLegend } from "@/components/map/MapLegend";
-import { LEVELS, levelOf } from "@/lib/levels";
+import { getAllCrowd } from "@/lib/crowd/service";
+import { festivalHref, getFestivalCrowd, getFestivals, isLongRunning } from "@/lib/festivals";
+import { distanceKm, type LatLng } from "@/lib/geo";
+import { LANDMARKS, LANDMARK_KINDS, REGIONS, inRegion, landmarkLink } from "@/lib/korea";
+import { PLACES, placeHref } from "@/lib/places";
+import { pageMeta } from "@/lib/seo";
+import { SEOUL_AREAS } from "@/lib/seoul-areas";
+import { SEOUL_GROUPS, getAllSeoulLive, seoulGroup } from "@/lib/seoul-live";
+import { kst, addDays } from "@/lib/time";
+import { CATEGORY_LABEL } from "@/lib/types";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const lang = (await params).lang;
-  const t = getMetaT(lang);
+  const t = getT(lang);
   return pageMeta({
     lang,
     path: "/map",
@@ -23,25 +27,103 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   });
 }
 
+const regionOf = (region: string) => REGIONS.find((r) => inRegion(region, r.id))?.id ?? region.split(" ")[0];
+
 export default async function MapPage({ params }: { params: Promise<{ lang: string }> }) {
   const lang = (await params).lang as Lang;
   const t = getT(lang);
-  const crowd = await getAllCrowd();
+  const today = kst().date;
+  const [crowd, seoul, festivals] = await Promise.all([getAllCrowd(), getAllSeoulLive(), getFestivals(30).catch(() => [])]);
+
+  // 명소·축제 근처의 지금 혼잡: 1.5km 안 우리 장소 → 0.8km 안 서울 실시간 지역
+  const nearScore = (p: LatLng): number | undefined => {
+    const place = PLACES.find((x) => x.category !== "airport" && crowd[x.id]?.open && distanceKm(x, p) < 1.5);
+    if (place) return crowd[place.id].score;
+    const area = SEOUL_AREAS.find((a) => seoul[a.code] && distanceKm(a, p) < 0.8);
+    return area ? seoul[area.code].score : undefined;
+  };
+
+  const spots: ExploreSpot[] = [];
+  for (const p of PLACES) {
+    const c = crowd[p.id];
+    spots.push({
+      id: p.id,
+      theme: "live",
+      region: regionOf(p.region),
+      name: t(p.name),
+      lat: p.lat,
+      lng: p.lng,
+      href: placeHref(p),
+      score: c?.open ? c.score : undefined,
+      emoji: p.emoji,
+      sub: `${t(CATEGORY_LABEL[p.category])} · ${c?.open ? t("지금") : t("운영 종료")}`,
+      img: p.image,
+    });
+  }
+  for (const a of SEOUL_AREAS) {
+    const live = seoul[a.code];
+    if (!live) continue;
+    const g = SEOUL_GROUPS.find((x) => x.id === seoulGroup(a.name));
+    spots.push({
+      id: `seoul-${a.code}`,
+      theme: "seoul",
+      region: "서울",
+      name: a.name,
+      lat: a.lat,
+      lng: a.lng,
+      href: `/seoul/${a.code}`,
+      score: live.score,
+      emoji: g?.emoji ?? "📍",
+      sub: `${g ? t(g.label) : ""} · ${t("서울시 실시간")}`,
+    });
+  }
+  for (const l of LANDMARKS) {
+    const kind = LANDMARK_KINDS.find((k) => k.id === l.kind)!;
+    spots.push({
+      id: `lm-${l.id}`,
+      theme: "landmark",
+      region: l.region,
+      name: l.n[lang] ?? l.n.ko,
+      lat: l.lat,
+      lng: l.lng,
+      href: landmarkLink(l, lang).href,
+      score: nearScore(l),
+      emoji: kind.emoji,
+      sub: `${t(l.region)} · ${t(kind.label)}`,
+      img: l.img,
+    });
+  }
+  // 전국 명소 디렉터리(1,856곳)는 화면에서 /data/spots.json 으로 받는다 (HTML을 가볍게)
+  // 축제: 앞으로 2주 안에 열리는 곳은 작년 방문객 기준 예상 혼잡 (그 뒤는 회색)
+  const soon = addDays(today, 14);
+  const shownFestivals = festivals.filter((f) => f.lat && f.lng && !isLongRunning(f));
+  const fcrowd = await Promise.all(shownFestivals.map((f) => (f.start <= soon ? getFestivalCrowd(f).catch(() => undefined) : undefined)));
+  shownFestivals.forEach((f, i) => {
+    const on = f.start <= today && f.end >= today;
+    spots.push({
+      id: `fe-${f.id}`,
+      theme: "festival",
+      region: regionOf(f.region),
+      name: f.title,
+      lat: f.lat!,
+      lng: f.lng!,
+      href: festivalHref(f),
+      score: (on && nearScore(f as LatLng)) || fcrowd[i]?.score,
+      emoji: "🎪",
+      sub: `${on ? t("진행 중") : `${f.start.slice(5).replace("-", "/")}~`} · ${f.region}`,
+      img: f.image,
+    });
+  });
+
   return (
     <main className="pt-5 md:pt-8">
-      <div className="px-5 md:px-0">
-        <h1 className="text-2xl font-bold md:text-3xl">{t("혼잡도 지도")}</h1>
-        {/* 소제목 오른쪽(모바일은 아래)에 가로로 긴 혼잡도 기준표 */}
-        <div className="mt-1 flex flex-col gap-2 md:flex-row md:items-end md:justify-between md:gap-6">
-          <p className="text-sm text-gray-500">{t("원이 크고 붉을수록 붐벼요. 색깔표로 단계를 확인하고, 핀을 누르면 자세히 볼 수 있어요.")}</p>
-          <MapLegend
-            className="w-full shrink-0 md:w-[420px]"
-            counts={LEVELS.map((l) => PLACES.filter((p) => crowd[p.id]?.open && levelOf(crowd[p.id].score).key === l.key).length)}
-          />
-        </div>
-      </div>
-      <div className="mt-3 md:mt-5 md:overflow-hidden md:rounded-3xl">
-        <CrowdMap places={PLACES} crowd={crowd} />
+      <h1 className="px-5 text-2xl font-bold md:px-0 md:text-3xl">{t("혼잡도 지도")}</h1>
+      <div className="mt-1">
+        <MapExplorer
+          spots={spots}
+          regions={REGIONS.map((r) => r.id)}
+          subtitle={t("테마와 지역을 골라 보세요. 핀 색은 지금 혼잡 단계(축제는 예상), 회색은 혼잡 자료가 없는 곳이에요.")}
+        />
       </div>
     </main>
   );
