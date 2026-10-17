@@ -17,6 +17,8 @@ const ROWS: [label: string, free: boolean, plus: boolean][] = [
   ["시간대별·주간 혼잡 예측", true, true],
   ["축제 일정, 날씨·미세먼지, 공항 주차·입국 정보", true, true],
   ["찜한 장소 모아 보기", true, true],
+  ["지역별 명소·서울 여행 가이드·근처 숙소 찾기", true, true],
+  ["한산한 코스 추천 전체 일정 (무료는 앞 2곳 미리보기)", false, true],
   ["광고 없이 보기", false, true],
   ["찜한 장소가 한산해지면 알림 (웹 푸시)", false, true],
   ["혼잡해지기 전에 미리 알림", false, true],
