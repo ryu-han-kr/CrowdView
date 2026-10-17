@@ -4,9 +4,26 @@ import { LANGS, type Lang } from "@/i18n/config";
 import spots from "@/data/korea/spots.json";
 import wifi from "@/data/seoul/wifi.json";
 import { CULTURE, GUIDE, RESERVATIONS, TOILETS, guideText } from "@/lib/seoul-guide";
+import { translateNames } from "@/lib/name-translate";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
+
+/**
+ * 언어별 가이드 목록: [id, 종류, 이름, 위도, 경도, 구, 사진].
+ * 관광공사에서 더한 곳(kt-)은 한국어 이름뿐이라 한국어 목록에만. 그 언어 글이 없어 한국어 이름이 나오는 곳은 이름만 번역 (Papago 캐시, 빌드 때)
+ */
+async function guideRows(l: Lang) {
+  const rows = GUIDE.filter((p) => l === "ko" || !p.id.startsWith("kt-")).map((p) => {
+    const g = guideText(p, l);
+    return { p, name: g.text.n, ko: g.lang === "ko" && l !== "ko" };
+  });
+  const tr = await translateNames(
+    rows.filter((r) => r.ko).map((r) => r.name),
+    l,
+  ).catch(() => new Map<string, string>());
+  return rows.map(({ p, name }) => [p.id, p.kind, tr.get(name) ?? name, p.lat ?? null, p.lng ?? null, p.gu ?? null, p.img ?? null]);
+}
 
 const FILES: Record<string, () => unknown> = {
   "toilets.json": () => TOILETS,
@@ -17,10 +34,8 @@ const FILES: Record<string, () => unknown> = {
   "culture.json": () => CULTURE.map((c) => [c.n, c.lat, c.lng, c.k, c.a]),
   // 체험 예약: [이름, 위도, 경도, 분류, 장소, 링크, 접수 마감]
   "reservations.json": () => RESERVATIONS.filter((r) => r.lat && r.lng).map((r) => [r.n, r.lat, r.lng, r.cat, r.place, r.url, r.rcptEnd]),
-  // 언어별 가이드 목록: [id, 종류, 이름, 위도, 경도, 구, 사진]
-  ...Object.fromEntries(
-    LANGS.map((l) => [`guide-${l}.json`, () => GUIDE.map((p) => [p.id, p.kind, guideText(p, l as Lang).text.n, p.lat ?? null, p.lng ?? null, p.gu ?? null, p.img ?? null])]),
-  ),
+  // 언어별 가이드 목록: [id, 종류, 이름, 위도, 경도, 구, 사진]. 관광공사에서 더한 곳(kt-)은 한국어 이름뿐이라 한국어 목록에만
+  ...Object.fromEntries(LANGS.map((l) => [`guide-${l}.json`, () => guideRows(l as Lang)])),
 };
 
 export function generateStaticParams() {
@@ -30,5 +45,5 @@ export function generateStaticParams() {
 export async function GET(_req: Request, { params }: { params: Promise<{ file: string }> }) {
   const make = FILES[(await params).file];
   if (!make) return new Response("not found", { status: 404 });
-  return Response.json(make(), { headers: { "cache-control": "public, max-age=3600, s-maxage=86400" } });
+  return Response.json(await make(), { headers: { "cache-control": "public, max-age=3600, s-maxage=86400" } });
 }

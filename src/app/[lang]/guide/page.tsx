@@ -32,8 +32,12 @@ export default async function GuidePage({ params }: { params: Promise<{ lang: st
       <h1 className="text-2xl font-bold md:text-3xl">{t("서울 여행 가이드")}</h1>
       <p className="mt-1 mb-5 text-sm text-gray-500">{t("명소·맛집·쇼핑·자연 + 그 동네의 지금 혼잡도")}</p>
       <GuideList
-        initial={GUIDE.filter((p) => p.kind === "attraction").map((p) => [p.id, p.kind, guideText(p, lang).text.n, p.lat ?? null, p.lng ?? null, p.gu ?? null, p.img ?? null] as Row)}
-        counts={Object.fromEntries(GUIDE_KINDS.map((k) => [k.id, GUIDE.filter((p) => p.kind === k.id).length]))}
+        initial={GUIDE.filter((p) => p.kind === "attraction" && (lang === "ko" || !p.id.startsWith("kt-"))).map(
+          (p) => [p.id, p.kind, guideText(p, lang).text.n, p.lat ?? null, p.lng ?? null, p.gu ?? null, p.img ?? null] as Row,
+        )}
+        counts={Object.fromEntries(
+          GUIDE_KINDS.map((k) => [k.id, GUIDE.filter((p) => p.kind === k.id && (lang === "ko" || !p.id.startsWith("kt-"))).length]),
+        )}
       />
 
       {open.length > 0 && (
@@ -55,7 +59,9 @@ export default async function GuidePage({ params }: { params: Promise<{ lang: st
           {lang !== "ko" && <p className="mt-2 text-[11px] text-gray-400">{t("체험 예약 정보는 서울시 원문(한국어)이에요.")}</p>}
         </section>
       )}
-      <p className="mt-8 text-center text-[11px] text-gray-400">{t("Visit Seoul · 서울시 공공서비스예약 (서울 열린데이터광장, 주 1회 갱신). 위치는 가까운 지하철역 기준이에요.")}</p>
+      <p className="mt-8 text-center text-[11px] text-gray-400">
+        {t("Visit Seoul · 서울시 공공서비스예약 (서울 열린데이터광장, 주 1회 갱신). 위치는 가까운 지하철역 기준이에요.")}
+      </p>
     </main>
   );
 }

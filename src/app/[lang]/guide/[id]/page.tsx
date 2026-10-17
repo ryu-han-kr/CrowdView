@@ -43,6 +43,8 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
   const p = getGuidePlace(id);
   if (!p) notFound();
   const { text, lang: textLang } = guideText(p, lang);
+  // 그 언어 글이 없어 한국어로 보일 때 이름만이라도 번역 (Papago 캐시) — 원래 이름은 아래 작은 글씨로
+  const trName = textLang === "ko" && lang !== "ko" ? (await translateNames([text.n], lang)).get(text.n) : undefined;
   const kind = GUIDE_KINDS.find((k) => k.id === p.kind)!;
   const at = p.lat && p.lng ? { lat: p.lat, lng: p.lng } : undefined;
   const area = at && areaNear(at);
@@ -93,7 +95,8 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
         {kind.emoji} {t(kind.label)}
         {p.gu && ` · ${t(p.gu)}`}
       </p>
-      <h1 className="mt-1 text-2xl font-bold md:text-3xl">{text.n}</h1>
+      <h1 className="mt-1 text-2xl font-bold md:text-3xl">{trName ?? text.n}</h1>
+      {trName && <p className="mt-0.5 text-sm text-gray-500">{text.n}</p>}
       {textLang !== lang && <p className="mt-1 text-xs text-gray-400">{t("이 장소는 선택한 언어 글이 없어 다른 언어로 보여드려요.")}</p>}
       {p.imgL && (
         <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-3xl bg-gray-100 md:aspect-[21/8]">

@@ -23,14 +23,12 @@ export function SiteFooter({ lang, className = "" }: { lang: Lang; className?: s
         {B.serviceName} · {t("상호")} {B.company} · {t("대표")} {B.ceo} · {t("사업자등록번호")} {B.bizNo}
       </p>
       <p>
-        {t("통신판매업 신고")} {B.mailOrderNo} · {t("주소")} {B.address}
+        {t("통신판매업 신고")} {t(B.mailOrderNo)} · {t("주소")} {t(B.address)}
       </p>
       <p>
-        {t("고객센터")} {B.phone} · {B.email}
+        {t("고객센터")} {t(B.phone)} · {t(B.email)}
       </p>
-      <p className="mt-2 text-gray-400">
-        {t("혼잡도 정보는 공공데이터와 예측 모델로 만든 참고 정보로, 실제와 다를 수 있어요.")}
-      </p>
+      <p className="mt-2 text-gray-400">{t("혼잡도 정보는 공공데이터와 예측 모델로 만든 참고 정보로, 실제와 다를 수 있어요.")}</p>
       <p className="mt-1 text-gray-400">© 2026 {B.serviceName}</p>
     </footer>
   );
