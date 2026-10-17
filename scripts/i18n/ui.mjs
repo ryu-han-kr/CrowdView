@@ -895,4 +895,12 @@ export default {
   // ── 방법론·정확도 링크
   "데이터 출처·계산 방식": ["Data sources & methodology", "データ出典・計算方法", "数据来源·计算方法", "資料來源·計算方法"],
   "예측 정확도": ["Forecast accuracy", "予測精度", "预测准确度", "預測準確度"],
+  // ── 대안·공유 복사·캘린더·날씨 경고
+  "지금 덜 붐비는 근처 대안": ["Quieter places nearby right now", "今すいている近くの代わりの場所", "附近此刻人更少的替代地点", "附近此刻人更少的替代地點"],
+  "여기서 {km}km": ["{km} km from here", "ここから{km}km", "距此{km}公里", "距此{km}公里"],
+  "이 코스 장소를 담아서 내 일정으로 짜기": ["Save these stops and plan them for my schedule", "このコースの場所を保存して自分の日程で作る", "收藏这些地点，按我的日程重新规划", "收藏這些地點，依我的行程重新規劃"],
+  "캘린더에 넣기": ["Add to calendar", "カレンダーに追加", "添加到日历", "加入行事曆"],
+  캘린더: ["Calendar", "カレンダー", "日历", "行事曆"],
+  "{h}시쯤 비 예보가 있어요 (강수확률 {pop}%). 실내 장소를 담거나 우산을 챙기세요.": ["Rain is forecast around {h}:00 ({pop}% chance). Save indoor places or bring an umbrella.", "{h}時頃に雨の予報があります (降水確率{pop}%)。屋内の場所を選ぶか傘をお持ちください。", "{h}点左右有雨 (降水概率{pop}%)。可收藏室内地点或带伞。", "{h}點左右有雨 (降雨機率{pop}%)。可收藏室內地點或帶傘。"],
+  "이날 초미세먼지 ‘{grade}’ 예보예요. 야외 일정은 짧게 잡는 게 좋아요.": ["Fine dust is forecast as ‘{grade}’ that day. Keep outdoor time short.", "この日はPM2.5「{grade}」の予報です。屋外の予定は短めがおすすめです。", "当天细颗粒物预报为“{grade}”，户外行程宜短。", "當天細懸浮微粒預報為「{grade}」，戶外行程宜短。"],
 };

@@ -288,6 +288,8 @@ export interface RouteResponse {
   locked: number;
   beta: boolean;
   shareId?: string;
+  /** 코스 시간대 날씨 경고 (비·초미세먼지) */
+  warnings?: string[];
 }
 
 /** 코스 결과 (코스 추천 화면과 공유 페이지 /r/{id} 에서 함께 쓴다) */
@@ -299,6 +301,7 @@ export function RouteResult({
   shareId,
   onReplan,
   createdOn,
+  warnings,
 }: {
   start: LatLng & { name: string };
   plan: RoutePlan;
@@ -309,6 +312,7 @@ export function RouteResult({
   onReplan?: (i: number) => void;
   /** 코스를 만든 날 (공유 페이지: '내일'을 그날 기준으로) */
   createdOn?: string;
+  warnings?: string[];
 }) {
   const { t, lang, lp } = useI18n();
   const [shared, setShared] = useState(false);
@@ -325,6 +329,34 @@ export function RouteResult({
     } catch {}
   };
   const base = createdOn ? Date.parse(`${createdOn}T00:00:00Z`) : Date.now() + 9 * 3600_000;
+  /** 캘린더 파일(.ics): 장소마다 일정 하나 (한국 시각 → UTC) */
+  const downloadIcs = () => {
+    const day0 = Date.parse(`${new Date(base).toISOString().slice(0, 10)}T00:00:00Z`) - 9 * 3600_000;
+    const stamp = (min: number) => new Date(day0 + min * 60_000).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+    // iCalendar 글자 규칙: 쉼표·세미콜론·역슬래시 앞에 역슬래시
+    const esc = (s: string) => s.replace(/[\\,;]/g, (c) => `\\${c}`);
+    const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//CrowdView//Route//KO", "CALSCALE:GREGORIAN"];
+    plan.stops.forEach((s, i) =>
+      lines.push(
+        "BEGIN:VEVENT",
+        `UID:${shareId ?? "route"}-${i}@crowdview.app`,
+        `DTSTAMP:${stamp(0)}`,
+        `DTSTART:${stamp(s.arrive)}`,
+        `DTEND:${stamp(s.leave)}`,
+        `SUMMARY:${esc(`${s.meal ? "🍽️ " : `${i + 1}. `}${s.name}`)}`,
+        `GEO:${s.lat};${s.lng}`,
+        `URL:https://crowdview.app${lp(s.href)}`,
+        "END:VEVENT",
+      ),
+    );
+    lines.push("END:VCALENDAR");
+    const url = URL.createObjectURL(new Blob([lines.join("\r\n")], { type: "text/calendar" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "crowdview-route.ics";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
   // 공유 페이지는 나중에 열어 볼 수 있어서 '내일' 대신 늘 날짜로
   const dayLabel = (m: number) => {
     const d = Math.floor(m / 1440);
@@ -350,6 +382,9 @@ export function RouteResult({
         </div>
         <span className="flex shrink-0 items-center gap-2">
           {beta && <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">{t("베타 무료")}</span>}
+          <button onClick={downloadIcs} className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-bold text-gray-700" title={t("캘린더에 넣기")}>
+            📅 {t("캘린더")}
+          </button>
           {shareId && (
             <button onClick={share} className="rounded-full bg-gray-900 px-3 py-1.5 text-xs font-bold text-white">
               {shared ? `✓ ${t("링크를 복사했어요")}` : `🔗 ${t("공유")}`}
@@ -358,6 +393,13 @@ export function RouteResult({
         </span>
       </div>
 
+      {!!warnings?.length && (
+        <ul className="mt-3 space-y-1 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900">
+          {warnings.map((w) => (
+            <li key={w}>⚠️ {w}</li>
+          ))}
+        </ul>
+      )}
       <RouteSketch points={points} />
 
       <ol className="mt-4 space-y-2">

@@ -28,6 +28,7 @@ import { WeatherCard } from "@/components/WeatherCard";
 import { InlineAd } from "@/components/AdUnit";
 import { FaqBlock } from "@/components/FaqBlock";
 import { AlertButtons } from "@/components/AlertButtons";
+import { CalmAlternatives } from "@/components/CalmAlternatives";
 import { pushEnabled } from "@/lib/alerts";
 import { authEnabled } from "@/lib/auth";
 import { headcountInfo, isEstimated } from "@/lib/format";
@@ -232,6 +233,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
 
           <WeatherCard signals={signals} lang={lang} place={place} />
           <AlertButtons placeId={place.id} enabled={authEnabled && pushEnabled} />
+          {!beforeEvent && (
+            <CalmAlternatives lat={place.lat} lng={place.lng} score={isOpen ? crowd.score : undefined} selfId={place.id} lang={lang} />
+          )}
 
         {/* 언제 가면 좋을까 */}
           <section className="mt-4 rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">

@@ -11,7 +11,10 @@ import { portoneEnabled } from "@/lib/portone";
 import { INTERESTS, planRoute, type Candidate, type Interest } from "@/lib/route";
 import { MEAL_SPOTS, getPickCandidates, getRouteCandidates, transitTravel } from "@/lib/route-data";
 import { getGuidePlace, guideText } from "@/lib/seoul-guide";
-import { kst } from "@/lib/time";
+import { addDays, kst } from "@/lib/time";
+import { getSignals } from "@/lib/crowd/signals";
+import { distanceKm } from "@/lib/geo";
+import { PLACES } from "@/lib/places";
 import { isLang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { translateNames } from "@/lib/name-translate";
@@ -19,6 +22,28 @@ import { saveSharedRoute } from "@/lib/route-share";
 import { rateLimit } from "@/lib/ratelimit";
 
 const PREVIEW_STOPS = 2;
+
+/**
+ * 코스 시간대의 날씨 경고: 비 예보(강수 형태 또는 강수확률 60% 이상), 초미세먼지 '나쁨' 이상 예보.
+ * 출발지에서 가장 가까운 우리 장소의 예보를 빌려 쓴다 (이미 캐시된 기상청·에어코리아 값이라 추가 호출 거의 없음)
+ */
+async function weatherWarnings(lat: number, lng: number, startMin: number, endMin: number, t: ReturnType<typeof getT>): Promise<string[]> {
+  const near = PLACES.filter((p) => p.category !== "airport").sort((a, b) => distanceKm({ lat, lng }, a) - distanceKm({ lat, lng }, b))[0];
+  if (!near || distanceKm({ lat, lng }, near) > 30) return [];
+  const s = await getSignals(near);
+  const today = kst().date;
+  const out: string[] = [];
+  for (let h = Math.floor(startMin / 60); h <= Math.floor(endMin / 60); h++) {
+    const w = s.weather?.get(`${addDays(today, Math.floor(h / 24))} ${String(h % 24).padStart(2, "0")}`);
+    if (w && ((w.pty ?? 0) > 0 || (w.pop ?? 0) >= 60)) {
+      out.push(t("{h}시쯤 비 예보가 있어요 (강수확률 {pop}%). 실내 장소를 담거나 우산을 챙기세요.", { h: h % 24, pop: w.pop ?? 0 }));
+      break;
+    }
+  }
+  const pm = s.airForecast?.get(addDays(today, Math.floor(startMin / 1440)));
+  if (pm && pm >= 3) out.push(t("이날 초미세먼지 ‘{grade}’ 예보예요. 야외 일정은 짧게 잡는 게 좋아요.", { grade: t(pm >= 4 ? "매우나쁨" : "나쁨") }));
+  return out;
+}
 let memo: { at: number; data: Candidate[] } | undefined;
 
 async function candidates() {
@@ -50,7 +75,10 @@ export async function POST(req: Request) {
   // 대한민국 범위 밖 좌표는 받지 않는다
   if (!(lat > 33 && lat < 39 && lng > 124 && lng < 132)) return NextResponse.json({ error: "출발지가 한국 밖이에요" }, { status: 400 });
   const interests = (body.interests ?? []).filter((i): i is Interest => INTERESTS.some((x) => x.id === i));
-  const pickIds = (Array.isArray(body.picks) ? body.picks : []).filter((x): x is string => typeof x === "string" && /^(seoul-|vs-)[\w-]{1,40}$/.test(x)).slice(0, 6);
+  // 담은 곳: 서울 실시간(seoul-), 여행 가이드(vs-), 우리 장소 id (공유 코스를 담을 때)
+  const pickIds = (Array.isArray(body.picks) ? body.picks : [])
+    .filter((x): x is string => typeof x === "string" && (/^(seoul-|vs-)[\w-]{1,40}$/.test(x) || PLACES.some((p) => p.id === x)))
+    .slice(0, 6);
   if (!interests.length && !pickIds.length) return NextResponse.json({ error: "관심사를 하나 이상 골라 주세요" }, { status: 400 });
   const transport: Transport = body.transport === "walk" ? "walk" : "transit";
   // 출발: 오늘~6일 뒤. 서울시 12시간 예측 밖은 지하철 승하차 모양·장소 예측 모델로 (lib/forecast). 일정은 2~8시간
@@ -101,6 +129,7 @@ export async function POST(req: Request) {
     return { ...s, name: guide ? guideText(guide, lang).text.n : (names.get(s.name) ?? t(s.name)) };
   });
   const start = { lat, lng, name: String(body.start?.name ?? "출발").slice(0, 60) };
+  const warnings = plan.stops.length ? await weatherWarnings(lat, lng, startMin, plan.endMin, t).catch(() => []) : [];
   const shareId = plan.stops.length ? await saveSharedRoute({ plan, start, startMin, lang, locked }).catch(() => undefined) : undefined;
-  return NextResponse.json({ plan, startMin, locked, beta: !portoneEnabled, shareId });
+  return NextResponse.json({ plan, startMin, locked, beta: !portoneEnabled, shareId, warnings });
 }
