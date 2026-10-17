@@ -98,6 +98,8 @@ const MIN_GAP_KM = 0.6; // 서로 600m 안의 장소는 한 코스에 하나만 
 const MEAL_MISS = 30; // 식사 시간을 놓치는 순서의 벌점
 const MEAL_KM = 1.2; // 이보다 먼 맛집은 고르지 않는다
 const MAX_STOPS = 6; // 순서를 모두 비교하는 상한 (6곳 = 720가지)
+const MAX_WAIT = 90; // 문 열 때까지 기다리는 최대 시간 (분)
+const WAIT_W = 0.4; // 기다림 1분 = 비용 0.4 (이동보다 덜 아깝지만 공짜는 아님)
 
 /**
  * 식사를 시작하는 시각 (자정부터 분). 1시간 먹는다고 보고 점심 11:20~12:40, 저녁 17:20~18:40 사이에 시작한다.
@@ -223,7 +225,11 @@ function makePlanner(req: RouteRequest, travel: TravelFn, spots: MealSpot[], mus
       s = next;
     }
     const l = leg(s.pos, c);
-    const arrive = s.t + l.minutes;
+    // 문 열기 전에 도착하면 90분 안쪽은 기다렸다 들어간다 (예: 내일 9시 출발, 10시 개장)
+    const reach = s.t + l.minutes;
+    const opensAt = c.hours ? Math.floor(reach / 1440) * 1440 + c.hours[0] * 60 : reach;
+    const wait = opensAt > reach && opensAt - reach <= MAX_WAIT ? opensAt - reach : 0;
+    const arrive = reach + wait;
     const leave = arrive + c.stay;
     if (leave > end || !isOpen(c, arrive, leave)) return null;
     const { score, predicted } = scoreAt(c, arrive);
@@ -245,7 +251,7 @@ function makePlanner(req: RouteRequest, travel: TravelFn, spots: MealSpot[], mus
       ...(mustIds.has(c.id) && { picked: true }),
       ...(predicted && { predicted: true }),
     };
-    const after: State = { ...s, pos: c, t: leave, stops: [...s.stops, stop], cost: s.cost + score * CROWD_W + l.minutes * TRAVEL_W };
+    const after: State = { ...s, pos: c, t: leave, stops: [...s.stops, stop], cost: s.cost + score * CROWD_W + l.minutes * TRAVEL_W + wait * WAIT_W };
     // 여기 있는 동안 식사 시간이 지나 버리면 바로 벌점 (욕심쟁이 고르기가 미리 알 수 있게)
     return after.meals[0] && leave > after.meals[0].to ? miss(after) : after;
   }
