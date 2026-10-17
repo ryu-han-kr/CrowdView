@@ -8,7 +8,7 @@ import { RouteMap } from "./map/RouteMap";
 import { useI18n } from "@/i18n/client";
 import { currentPosition, kakaoDirections, type LatLng, type Transport } from "@/lib/geo";
 import { levelOf } from "@/lib/levels";
-import { usePicks } from "@/lib/prefs";
+import { usePicks, usePlans } from "@/lib/prefs";
 import { INTERESTS, type Interest, type RoutePlan } from "@/lib/route";
 import { LevelBadge } from "./Level";
 
@@ -348,6 +348,15 @@ export function RouteResult({
 }) {
   const { t, lang, lp } = useI18n();
   const [shared, setShared] = useState(false);
+  // 내 여행 계획에 저장 (마이페이지에 모인다, 로그인하면 기기 사이 동기화)
+  const { has: isSaved, add: addPlan, remove: removePlan } = usePlans();
+  const inPlans = !!shareId && isSaved(shareId);
+  const toggleSave = () => {
+    if (!shareId || !plan.stops.length) return;
+    if (inPlans) return removePlan(shareId);
+    const day = new Date(base + Math.floor(plan.stops[0].arrive / 1440) * 86_400_000).toISOString().slice(0, 10);
+    addPlan({ id: shareId, start: start.name, day, stops: plan.stops.filter((s) => !s.meal).map((s) => s.name), savedAt: new Date().toISOString() });
+  };
   const share = async () => {
     if (!shareId) return;
     const url = `${window.location.origin}${lp(`/r/${shareId}`)}`;
@@ -428,6 +437,15 @@ export function RouteResult({
           <button onClick={downloadIcs} className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-bold text-gray-700" title={t("캘린더에 넣기")}>
             📅 {t("캘린더")}
           </button>
+          {shareId && (
+            <button
+              onClick={toggleSave}
+              aria-pressed={inPlans}
+              className={`rounded-full px-3 py-1.5 text-xs font-bold ${inPlans ? "bg-indigo-600 text-white" : "bg-indigo-50 text-indigo-700"}`}
+            >
+              {inPlans ? `✓ ${t("저장됨")}` : `💾 ${t("저장")}`}
+            </button>
+          )}
           {shareId && (
             <button onClick={share} className="rounded-full bg-gray-900 px-3 py-1.5 text-xs font-bold text-white">
               {shared ? `✓ ${t("링크를 복사했어요")}` : `🔗 ${t("공유")}`}
