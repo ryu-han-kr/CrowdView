@@ -95,7 +95,30 @@ export function JudgementCard({
           </li>
         ))}
       </ul>
-      {place.criteria && (
+      {crowd.source === "seoul-citydata" ? (
+        <div className="mt-4">
+          <p className="text-xs font-bold text-gray-800">{t("이 장소의 단계 기준")} · {t("서울시 공식 혼잡 단계")}</p>
+          <div className="mt-2 flex overflow-hidden rounded-lg text-center text-[10px] leading-tight">
+            {[
+              ["여유", 1],
+              ["보통", 2],
+              ["약간 붐빔", 3],
+              ["붐빔", 4],
+            ].map(([official, i]) => {
+              const l = LEVELS[i as number];
+              return (
+                <div key={official} className="flex-1 py-1.5" style={{ background: `${l.color}1f`, color: l.color }}>
+                  <b>{t(official as string)}</b>
+                  <br />→ {t(l.label)}
+                </div>
+              );
+            })}
+          </div>
+          {crowd.officialLevel && (
+            <p className="mt-1.5 text-[11px] text-gray-500">{t("지금 서울시 공식 단계: ‘{level}’", { level: t(crowd.officialLevel) })}</p>
+          )}
+        </div>
+      ) : place.criteria && (
         <div className="mt-4">
           <p className="text-xs font-bold text-gray-800">
             {t("이 장소의 단계 기준")} · {t(place.criteria.basis)}
@@ -117,11 +140,6 @@ export function JudgementCard({
               );
             })}
           </div>
-          {crowd.officialLevel && (
-            <p className="mt-1.5 text-[11px] text-gray-500">
-              {t("참고: 서울시 공식 단계는 지금 ‘{level}’이에요.", { level: t(crowd.officialLevel) })}
-            </p>
-          )}
         </div>
       )}
       <p className="mt-2 text-[11px] text-gray-400">

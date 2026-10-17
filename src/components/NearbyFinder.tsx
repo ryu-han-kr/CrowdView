@@ -102,8 +102,10 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
           }));
       case "culture":
         return rows.map((r) => ({ key: `${r[0]}${r[1]}`, name: r[0] as string, lat: r[1] as number, lng: r[2] as number, sub: r[3] as string }));
-      case "reservation":
-        return rows.map((r) => ({
+      case "reservation": {
+        // 접수 마감이 지난 체험은 빼기 (데이터는 주 1회라 상태만으로는 늦다)
+        const now = new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 16).replace("T", " ");
+        return rows.filter((r) => !r[6] || String(r[6]) >= now).map((r) => ({
           key: r[5] as string,
           name: r[0] as string,
           lat: r[1] as number,
@@ -111,6 +113,7 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
           sub: `${r[3]} · ${r[4]}${r[6] ? ` · ${t("접수 마감")} ${String(r[6]).slice(5, 10)}` : ""}`,
           external: r[5] as string,
         }));
+      }
     }
   }, [data, tab, t]);
 

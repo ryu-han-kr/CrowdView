@@ -42,7 +42,7 @@ const SOURCE_LABEL: Record<CrowdResult["source"], string> = {
   "incheon-airport": "인천국제공항공사 출국장 혼잡도",
   "kac-airport": "한국공항공사 공항 혼잡도",
   "themeparks-wiki": "놀이기구 대기시간 · Powered by ThemeParks.wiki",
-  model: "CrowdView 예측 모델 (샘플)",
+  model: "CrowdView 추정 (요일·시간·날씨 패턴)",
 };
 
 // 빌드 때 장소별 페이지를 미리 만들어 두고, 이후엔 위 주기로 갱신한다
@@ -79,8 +79,10 @@ function shortDay(date: string, t: T, lang: Lang): string {
 }
 
 /** 영업시간 내 앞으로 가장 한산한 시간 */
+/** 오늘 남은 시간 중 가장 한산한 시 — 입장해서 1시간 이상 볼 수 있는 시각만 (마감 1시간 전 입장 마감 가정) */
 function bestUpcoming(points: HourPoint[], open: number, close: number): HourPoint | undefined {
-  return points.filter((p) => p.forecast && p.hour >= open && p.hour < close).sort((a, b) => a.score - b.score)[0];
+  const last = close >= 24 ? 23 : close - 2;
+  return points.filter((p) => p.forecast && p.hour >= open && p.hour <= last).sort((a, b) => a.score - b.score)[0];
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string; lang: string }> }): Promise<Metadata> {
@@ -91,7 +93,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return pageMeta({
     lang,
     path: placeHref(place),
-    title: t("{name} 실시간 혼잡도", { name: t(place.name) }),
+    // 실측 데이터가 없는 곳은 제목에도 '예측'이라고 쓴다
+    title: (place.seoulArea || place.themeparksId || place.airport ? t("{name} 실시간 혼잡도", { name: t(place.name) }) : t("{name} 혼잡 예측·방문 추천 시간", { name: t(place.name) })),
     description: t("{name} 지금 혼잡도와 오늘 시간대별 예측, 언제 가면 한산한지 알려드려요", { name: t(place.name) }),
     image: place.image,
   });
@@ -127,6 +130,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const dday = place.eventDate ? daysUntil(place.eventDate) : null;
   const eventForecast = place.eventDate && dday !== null && dday > 0 ? forecastForDate(place, place.eventDate) : null;
   const eventPeak = eventForecast && [...eventForecast].sort((a, b) => b.score - a.score)[0];
+  // 행사 장소인데 아직 열리기 전이면 '지금 혼잡도'는 행사 인원이 아니다 → 행사 전으로 표시
+  const beforeEvent = place.category === "event" && dday !== null && dday > 0;
 
   return (
     <main>
@@ -164,13 +169,15 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           <section className="mt-4 rounded-3xl px-4 py-3.5" style={{ background: `${level.color}14` }}>
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs font-medium text-gray-500">{t("지금 혼잡도")}</p>
-                <p className="text-2xl font-extrabold" style={{ color: level.color }}>
-                  {t(level.label)}
-                  {isOpen && isEstimated(crowd) && <DataTag className="text-xs" />}
+                <p className="text-xs font-medium text-gray-500">{beforeEvent ? t("행사 정보") : t("지금 혼잡도")}</p>
+                <p className="text-2xl font-extrabold" style={beforeEvent ? undefined : { color: level.color }}>
+                  {beforeEvent ? `${t("행사 전")} · D-${dday}` : t(level.label)}
+                  {!beforeEvent && isOpen && isEstimated(crowd) && <DataTag className="text-xs" />}
                 </p>
                 <p className="text-sm text-gray-600">
-                  {isOpen ? (
+                  {beforeEvent ? (
+                    t("아직 행사가 열리지 않았어요. 행사 당일 예상 혼잡은 아래에서 확인하세요.")
+                  ) : isOpen ? (
                     <>
                       {crowd.avgWaitMin !== undefined ? (
                         <>
@@ -192,7 +199,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               </div>
             </div>
             <p className={`mt-2 text-[11px] ${crowd.stale ? "font-semibold text-amber-600" : "text-gray-400"}`}>
-              {t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })} · {t(SOURCE_LABEL[crowd.source])}
+              {t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}
+              {crowd.stale && <> · {t("갱신 지연")}</>} · {t(SOURCE_LABEL[crowd.source])}
             </p>
           </section>
 

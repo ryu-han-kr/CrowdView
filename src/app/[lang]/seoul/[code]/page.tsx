@@ -240,8 +240,14 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
                   {
                     q: t("{name} 오늘 언제 가장 한산한가요?", { name }),
                     a: (() => {
-                      const calm = [...live.forecast].sort((a, b) => a.min - b.min)[0];
-                      return t("앞으로 12시간 중에는 {hour}쯤이 가장 한산할 것으로 예상돼요 (약 {range}).", {
+                      // 새벽처럼 다니기 어려운 시간은 빼고 08~21시 안에서만 고른다
+                      const daytime = live.forecast.filter((f) => {
+                        const h = Number(f.time.slice(11, 13));
+                        return h >= 8 && h <= 21;
+                      });
+                      const calm = [...daytime].sort((a, b) => a.min - b.min)[0];
+                      if (!calm) return t("앞으로 12시간 안에는 낮 시간대(08~21시) 예측이 없어요. 내일 다시 확인해 주세요.");
+                      return t("앞으로 12시간 중 낮 시간대(08~21시)에는 {hour}쯤이 가장 한산할 것으로 예상돼요 (서울시 공식 예측, 약 {range}).", {
                         hour: calm.time.slice(11, 16),
                         range: people(calm.min, calm.max),
                       });

@@ -201,7 +201,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
           )}
           <section className="rounded-3xl p-5" style={{ background: level ? `${level.color}14` : "#f9fafb" }}>
             <p className="text-xs font-medium text-gray-500">
-              {t("예상 혼잡도")}
+              {t("지역 방문 증가 예상 (시군구 기준)")}
               <DataTag />
             </p>
             {crowd && level ? (
@@ -215,6 +215,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
                     pct: pctAbs(crowd.ratio),
                   })}
                 </p>
+                <p className="mt-1 text-[11px] text-gray-500">{t("축제장 안의 인원이나 대기시간이 아니라 {area} 전체 방문객 통계예요.", { area: tr(crowd.signguName) })}</p>
               </>
             ) : (
               <p className="mt-1 text-sm text-gray-600">

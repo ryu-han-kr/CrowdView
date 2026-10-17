@@ -873,4 +873,17 @@ export default {
   "사진·정보: 한국관광공사 TourAPI (사진 있는 곳, 최근 갱신 순)": ["Photos & info: Korea Tourism Organization TourAPI (places with photos, recently updated first)", "写真・情報: 韓国観光公社 TourAPI (写真あり、最近更新順)", "照片·信息: 韩国观光公社 TourAPI (有照片的地点，按最近更新排序)", "照片·資訊: 韓國觀光公社 TourAPI (有照片的地點，依最近更新排序)"],
   문화시설: ["Culture", "文化施設", "文化设施", "文化設施"],
   기본순: ["Default", "標準順", "默认", "預設"],
+  // ── 데이터 신뢰성 (외부 검토 반영)
+  "지역 방문 증가 예상 (시군구 기준)": ["Expected rise in area visitors (district-level)", "地域の訪問増加予測 (市郡区単位)", "地区访客增长预测 (市郡区级)", "地區訪客增長預測 (市郡區級)"],
+  "축제장 안의 인원이나 대기시간이 아니라 {area} 전체 방문객 통계예요.": ["This is visitor data for all of {area}, not people or wait times inside the festival grounds.", "祭り会場内の人数や待ち時間ではなく、{area}全体の訪問者統計です。", "这不是节庆现场的人数或等候时间，而是{area}整体的访客统计。", "這不是節慶現場的人數或等候時間，而是{area}整體的訪客統計。"],
+  "{name} 혼잡 예측·방문 추천 시간": ["{name} crowd forecast & best time to visit", "{name} 混雑予測・おすすめ訪問時間", "{name} 拥挤预测·推荐游览时间", "{name} 擁擠預測·推薦遊覽時間"],
+  "행사 정보": ["Event info", "イベント情報", "活动信息", "活動資訊"],
+  "행사 전": ["Before the event", "開催前", "活动前", "活動前"],
+  "아직 행사가 열리지 않았어요. 행사 당일 예상 혼잡은 아래에서 확인하세요.": ["The event hasn't started yet. See the expected crowd for the event day below.", "まだ開催前です。当日の混雑予測は下でご確認ください。", "活动尚未开始。活动当天的预计拥挤度请看下方。", "活動尚未開始。活動當天的預計擁擠度請看下方。"],
+  "갱신 지연": ["update delayed", "更新遅延", "更新延迟", "更新延遲"],
+  "앞으로 12시간 안에는 낮 시간대(08~21시) 예측이 없어요. 내일 다시 확인해 주세요.": ["No daytime (08–21) forecast in the next 12 hours. Please check again tomorrow.", "今後12時間に日中(08~21時)の予測がありません。明日また確認してください。", "未来12小时内没有白天(08~21点)的预测，请明天再查看。", "未來12小時內沒有白天(08~21點)的預測，請明天再查看。"],
+  "앞으로 12시간 중 낮 시간대(08~21시)에는 {hour}쯤이 가장 한산할 것으로 예상돼요 (서울시 공식 예측, 약 {range}).": ["In the next 12 hours, around {hour} looks quietest during the day (08–21) (Seoul official forecast, about {range}).", "今後12時間の日中(08~21時)では{hour}頃が最も空いている見込みです (ソウル市公式予測、約{range})。", "未来12小时的白天(08~21点)中，预计{hour}左右人最少 (首尔市官方预测，约{range})。", "未來12小時的白天(08~21點)中，預計{hour}左右人最少 (首爾市官方預測，約{range})。"],
+  "서울시 공식 혼잡 단계": ["Seoul official crowd level", "ソウル市公式混雑段階", "首尔市官方拥挤等级", "首爾市官方擁擠等級"],
+  "지금 서울시 공식 단계: ‘{level}’": ["Seoul official level now: ‘{level}’", "現在のソウル市公式段階: 「{level}」", "当前首尔市官方等级: “{level}”", "目前首爾市官方等級: 「{level}」"],
+  "CrowdView 추정 (요일·시간·날씨 패턴)": ["CrowdView estimate (day, time & weather patterns)", "CrowdView推定 (曜日・時間・天気パターン)", "CrowdView估算 (星期·时段·天气规律)", "CrowdView估算 (星期·時段·天氣規律)"],
 };

@@ -6,7 +6,7 @@ import { RESERVATIONS } from "@/lib/seoul-guide";
 import { pageMeta } from "@/lib/seo";
 
 // 정적 데이터 + 하루 한 번 다시 그림 (체험 예약 마감 순서만 바뀐다)
-export const revalidate = 86400;
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const lang = (await params).lang;
@@ -22,7 +22,9 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 export default async function GuidePage({ params }: { params: Promise<{ lang: string }> }) {
   const lang = (await params).lang as Lang;
   const t = getT(lang);
-  const open = RESERVATIONS.filter((r) => r.status === "접수중")
+  // 접수 마감이 지난 것은 빼고 (데이터는 주 1회 갱신이라 상태만으로는 늦다)
+  const nowKst = new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 16).replace("T", " ");
+  const open = RESERVATIONS.filter((r) => r.status === "접수중" && (!r.rcptEnd || r.rcptEnd >= nowKst))
     .sort((a, b) => a.rcptEnd.localeCompare(b.rcptEnd))
     .slice(0, 6);
   return (
