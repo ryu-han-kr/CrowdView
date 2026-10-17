@@ -129,9 +129,11 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   );
   // 함께 가면 좋은 곳: 이름으로 좌표를 찾아 거리 + 그 근처(1km 안 서울 실시간 지역) 지금 혼잡
   const seoulNow = await getAllSeoulLive().catch(() => ({}) as Awaited<ReturnType<typeof getAllSeoulLive>>);
-  const selfName = place.name.replace(/\s/g, "");
+  // 연관 목록에 이 장소 자신이 다른 표기로 섞여 온다 (예: 롯데월드어드벤쳐) → 띄어쓰기·쳐/처 같은 표기 차이를 무시하고 뺀다
+  const sameName = (x: string) => x.replace(/\s/g, "").replace(/쳐/g, "처").replace(/져/g, "저").replace(/쪄/g, "쩌");
+  const selfName = sameName(place.name);
   const relatedInfo = related
-    .filter((r) => r.name.replace(/\s/g, "") !== selfName && !selfName.includes(r.name.replace(/\s/g, "")))
+    .filter((r) => sameName(r.name) !== selfName && !selfName.includes(sameName(r.name)))
     .map((r) => {
       const at = locateByName(r.name, place);
       const area =
