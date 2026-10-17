@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
+import { MoreSpots, spotCard, useSpots } from "./MoreSpots";
 import { StickyBar } from "./StickyBar";
 
 export interface ExploreRegion {
@@ -15,7 +16,8 @@ export interface ExploreRegion {
 
 /** 지역 여행: 지역 칩 → 그 지역 대표 명소(종류 칩) + 축제. ?region= 으로 바로 연다 */
 export function ExploreView({ regions, kinds }: { regions: ExploreRegion[]; kinds: { id: string; label: string; emoji: string }[] }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
+  const spots = useSpots();
   const [region, setRegion] = useState(regions[0]?.id);
   const [kind, setKind] = useState<string>("all");
   const [view, setView] = useState<"list" | "map">("list");
@@ -60,7 +62,12 @@ export function ExploreView({ regions, kinds }: { regions: ExploreRegion[]; kind
           </div>
           <SpotMap
             className="mt-3"
-            spots={[...landmarks.map((l) => ({ ...l, emoji: "📍" })), ...cur.festivals.map((f) => ({ ...f, emoji: "🎪" }))]
+            spots={[
+              ...landmarks.map((l) => ({ ...l, emoji: "📍" })),
+              ...cur.festivals.map((f) => ({ ...f, emoji: "🎪" })),
+              // 관광공사 등록 명소 (작은 점)
+              ...(spots ?? []).filter((x) => x[2] === cur.id).map((x) => ({ ...spotCard(x, lang, t), emoji: "·" })),
+            ]
               .filter((x): x is typeof x & { lat: number; lng: number } => x.lat !== undefined && x.lng !== undefined)
               .map((x) => ({
                 id: x.id,
@@ -137,6 +144,8 @@ export function ExploreView({ regions, kinds }: { regions: ExploreRegion[]; kind
               <p className="mt-4 rounded-2xl bg-gray-50 p-6 text-center text-sm text-gray-500">{t("앞으로 60일 안에 열리는 축제가 없어요.")}</p>
             )}
           </section>
+
+          <MoreSpots region={cur.id} />
         </>
       )}
     </div>

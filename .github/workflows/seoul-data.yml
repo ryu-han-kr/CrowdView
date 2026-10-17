@@ -31,6 +31,9 @@ jobs:
       # 지역별 대표 명소 사진·좌표 (한국관광공사 TourAPI). Secrets에 DATA_GO_KR_KEY가 없으면 건너뛴다
       - run: node scripts/korea-data/landmarks.mjs
         if: ${{ env.DATA_GO_KR_KEY != '' }}
+      # 지역별 명소 디렉터리 (관광지·문화시설·레포츠, 호출 51건)
+      - run: node scripts/korea-data/spots.mjs
+        if: ${{ env.DATA_GO_KR_KEY != '' }}
       - uses: peter-evans/create-pull-request@v7
         with:
           branch: chore/seoul-data

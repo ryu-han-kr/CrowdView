@@ -866,4 +866,11 @@ export default {
   "모두 끄기": ["Turn all off", "すべてオフ", "全部关闭", "全部關閉"],
   끄기: ["Turn off", "オフ", "关闭", "關閉"],
   "장소나 서울 실시간 지역 화면에서 🔔 알림을 켜면 여기에 모여요.": ["Turn on 🔔 alerts on a place or Seoul live area page and they'll appear here.", "スポットやソウルのリアルタイム地域の画面で🔔通知をオンにするとここに集まります。", "在地点或首尔实时地区页面开启🔔提醒后会显示在这里。", "在地點或首爾即時地區頁面開啟🔔提醒後會顯示在這裡。"],
+  // ── 명소 디렉터리·한산한 맛집
+  "{region} 더 많은 명소": ["More sights in {region}", "{region}のその他の名所", "{region}更多景点", "{region}更多景點"],
+  "한국관광공사 등록 {n}곳": ["{n} listed by the Korea Tourism Organization", "韓国観光公社登録 {n}か所", "韩国观光公社登记 {n}处", "韓國觀光公社登記 {n}處"],
+  "이 목록의 이름은 한국어로 보여요. 누르면 지도에서 위치를 볼 수 있어요.": ["Names in this list are in Korean. Tap one to see it on the map.", "このリストの名前は韓国語で表示されます。押すと地図で場所を確認できます。", "此列表的名称以韩语显示，点击可在地图上查看位置。", "此列表的名稱以韓語顯示，點擊可在地圖上查看位置。"],
+  "사진·정보: 한국관광공사 TourAPI (사진 있는 곳, 최근 갱신 순)": ["Photos & info: Korea Tourism Organization TourAPI (places with photos, recently updated first)", "写真・情報: 韓国観光公社 TourAPI (写真あり、最近更新順)", "照片·信息: 韩国观光公社 TourAPI (有照片的地点，按最近更新排序)", "照片·資訊: 韓國觀光公社 TourAPI (有照片的地點，依最近更新排序)"],
+  문화시설: ["Culture", "文化施設", "文化设施", "文化設施"],
+  기본순: ["Default", "標準順", "默认", "預設"],
 };
