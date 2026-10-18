@@ -15,6 +15,7 @@ import { fmtPeople, trRegion } from "@/i18n/patterns";
 import { getT } from "@/i18n/server";
 import { translateNames } from "@/lib/name-translate";
 import { formatHour } from "@/i18n/translate";
+import { KstNote } from "@/components/LocalTime";
 
 export const revalidate = 3600;
 
@@ -115,9 +116,12 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
                 {cat.emoji} {t(cat.label)}
               </Link>
               <h1 className="text-2xl font-bold md:text-3xl">{tr(f.title)}</h1>
+              <KstNote className="mt-1" />
               {lang !== "ko" && (
                 <p className="mt-1 text-xs text-gray-400">
-                  {translated ? `${f.title} · ${t("이름·장소는 Papago 자동 번역이에요. 요금은 한국어 원문이에요.")}` : t("축제 이름·장소·요금은 주최 측 원문(한국어)이에요.")}
+                  {translated
+                    ? `${f.title} · ${t("이름·장소는 Papago 자동 번역이에요. 요금은 한국어 원문이에요.")}`
+                    : t("축제 이름·장소·요금은 주최 측 원문(한국어)이에요.")}
                 </p>
               )}
             </div>
@@ -175,8 +179,8 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
                 </ul>
               )}
               <p className="mt-2 text-[11px] text-gray-400">
-                {t("서울시 실시간 도시데이터")} · {t("서울시 단계 ‘{level}’", { level: t(live.level) })} ·{" "}
-                {t("{time} 기준", { time: live.time })} · {t("축제 장소에서 {m}m 떨어진 실시간 지역", { m: live.distance })}
+                {t("서울시 실시간 도시데이터")} · {t("서울시 단계 ‘{level}’", { level: t(live.level) })} · {t("{time} 기준", { time: live.time })} ·{" "}
+                {t("축제 장소에서 {m}m 떨어진 실시간 지역", { m: live.distance })}
               </p>
             </section>
           )}
@@ -210,12 +214,19 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
                   {t(level.label)}
                 </p>
                 <p className="mt-1 text-sm text-gray-700">
-                  {t(crowd.ratio >= 1 ? "작년 이 기간 {area} 방문객이 평소보다 {pct} 많았어요" : "작년 이 기간 {area} 방문객이 평소보다 {pct} 적었어요", {
-                    area: tr(crowd.signguName),
-                    pct: pctAbs(crowd.ratio),
-                  })}
+                  {t(
+                    crowd.ratio >= 1
+                      ? "작년 이 기간 {area} 방문객이 평소보다 {pct} 많았어요"
+                      : "작년 이 기간 {area} 방문객이 평소보다 {pct} 적었어요",
+                    {
+                      area: tr(crowd.signguName),
+                      pct: pctAbs(crowd.ratio),
+                    },
+                  )}
                 </p>
-                <p className="mt-1 text-[11px] text-gray-500">{t("축제장 안의 인원이나 대기시간이 아니라 {area} 전체 방문객 통계예요.", { area: tr(crowd.signguName) })}</p>
+                <p className="mt-1 text-[11px] text-gray-500">
+                  {t("축제장 안의 인원이나 대기시간이 아니라 {area} 전체 방문객 통계예요.", { area: tr(crowd.signguName) })}
+                </p>
               </>
             ) : (
               <p className="mt-1 text-sm text-gray-600">
@@ -249,11 +260,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
                   <div key={l.key} className="flex-1 py-1.5" style={{ background: `${l.color}1f`, color: l.color }}>
                     <b>{t(l.label)}</b>
                     <br />
-                    {i === 0
-                      ? `~${pct(FESTIVAL_STEPS[0])}`
-                      : i === 4
-                        ? `${pct(FESTIVAL_STEPS[3])}+`
-                        : `~${pct(FESTIVAL_STEPS[i])}`}
+                    {i === 0 ? `~${pct(FESTIVAL_STEPS[0])}` : i === 4 ? `${pct(FESTIVAL_STEPS[3])}+` : `~${pct(FESTIVAL_STEPS[i])}`}
                   </div>
                 ))}
               </div>

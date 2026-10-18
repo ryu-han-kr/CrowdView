@@ -21,6 +21,7 @@ import { getSktCongestion } from "@/lib/skt";
 import { GUIDE, GUIDE_KINDS, TOILETS, guideText, nearest, photoNear } from "@/lib/seoul-guide";
 import Image from "next/image";
 import { canOptimize } from "@/lib/img";
+import { KstNote } from "@/components/LocalTime";
 
 export const revalidate = 600;
 
@@ -75,6 +76,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
         {group.emoji} {t(group.label)} · {t("서울")}
       </p>
       <h1 className="mt-1 text-2xl font-bold md:text-3xl">{name}</h1>
+      <KstNote className="mt-1" />
       {heroImg && (
         <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-3xl bg-gray-100 md:aspect-[21/8]">
           <Image

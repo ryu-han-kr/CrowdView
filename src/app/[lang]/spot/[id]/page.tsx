@@ -16,6 +16,7 @@ import { PLACES, placeHref } from "@/lib/places";
 import { breadcrumbLd, jsonLd, pageMeta, SITE } from "@/lib/seo";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { getAllSeoulLive } from "@/lib/seoul-live";
+import { KstNote } from "@/components/LocalTime";
 
 // 대표 명소 66곳 상세 (외부 검토: 얇은 페이지 대량 생성 대신 고른 명소만). 소개·이용 정보는 한국관광공사 자료,
 // 혼잡도는 가까운 우리 장소·서울 실시간 지역이 있을 때만 붙인다 (없으면 없다고 쓴다)
@@ -133,6 +134,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
       </p>
       <h1 className="mt-1 text-2xl font-bold md:text-3xl">{name}</h1>
       {lang !== "ko" && <p className="mt-0.5 text-sm text-gray-500">{l.n.ko}</p>}
+      <KstNote className="mt-1" />
 
       <div className="mt-5 grid gap-5 md:grid-cols-[1fr_340px]">
         <div className="min-w-0">

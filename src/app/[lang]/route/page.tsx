@@ -5,6 +5,7 @@ import { getT } from "@/i18n/server";
 import { translateNames } from "@/lib/name-translate";
 import { START_HUBS } from "@/lib/route-data";
 import { pageMeta } from "@/lib/seo";
+import { KstNote } from "@/components/LocalTime";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const lang = (await params).lang;
@@ -20,10 +21,16 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 export default async function RoutePage({ params }: { params: Promise<{ lang: string }> }) {
   const lang = (await params).lang as Lang;
   const t = getT(lang);
-  const names = Object.fromEntries(await translateNames(START_HUBS.map((h) => h.name), lang));
+  const names = Object.fromEntries(
+    await translateNames(
+      START_HUBS.map((h) => h.name),
+      lang,
+    ),
+  );
   return (
     <main className="px-5 pt-6 pb-10 md:px-0 md:pt-10">
       <h1 className="text-2xl font-bold md:text-3xl">{t("한산한 코스 추천")}</h1>
+      <KstNote className="mt-1" />
       <p className="mt-1 mb-6 text-sm text-gray-500">{t("가고 싶은 종류와 시간만 고르면, 도착할 때 덜 붐비는 순서로 이어 드려요")}</p>
       <RoutePlanner hubs={START_HUBS} names={names} />
     </main>

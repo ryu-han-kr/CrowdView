@@ -2,6 +2,10 @@
 import type { Dict } from "../translate";
 
 const dict: Dict = {
+  "내 시간 {time}": "your time {time}",
+  "이 페이지의 시각은 한국 시간(KST)이에요": "Times on this page are Korea time (KST)",
+  "한국 지금 {time}": "Korea now {time}",
+  "내 시간({zone}) {time}": "your time ({zone}) {time}",
   "공공데이터 실시간": "Live public data",
   "시간대별 혼잡 예측": "Hourly crowd forecast",
   "5개 언어": "5 languages",
