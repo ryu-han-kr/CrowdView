@@ -12,6 +12,9 @@ import { fetchSnapshot } from "./provider";
 import { modelSnapshot } from "./model";
 
 const FRESH_SECONDS = 15 * 60;
+// 화면의 '갱신 지연' 표시: 수집기(10분)가 세 번 넘게 연달아 못 받아 왔을 때만. 한 번 놓친 정도(20분)는 'n분 전 갱신'으로 충분하다
+// (운영 알림·/methodology 설명과 같은 40분)
+const STALE_LABEL_MIN = 40;
 // 수집기가 멈췄을 때만 사용자 요청이 갱신을 맡는다. 동시에 몰려도 장소당 1번만 부르도록 잠근다
 const LOCK_SECONDS = 60;
 const KEEP_SECONDS = 6 * 60 * 60;
@@ -20,7 +23,7 @@ const cacheKey = (p: Place) => `crowd:${p.category}:${p.id}`;
 
 function toResult(s: CrowdSnapshot): CrowdResult {
   const ageMinutes = Math.max(0, Math.floor((Date.now() - Date.parse(s.updatedAt)) / 60_000));
-  return { ...s, ageMinutes, stale: ageMinutes * 60 > FRESH_SECONDS };
+  return { ...s, ageMinutes, stale: ageMinutes > STALE_LABEL_MIN };
 }
 
 // 장소 여러 곳을 Redis 명령 1번(MGET)으로 읽는다
@@ -70,7 +73,7 @@ async function getCrowdFor(place: Place, cached: CrowdSnapshot | null): Promise<
   if (!cached) return toResult(await refresh(place, null));
 
   const result = toResult(cached);
-  if (result.stale) {
+  if (result.ageMinutes * 60 > FRESH_SECONDS) {
     after(async () => {
       if (await kv.setNX(`lock:refresh:${place.id}`, "1", LOCK_SECONDS).catch(() => false)) await refresh(place, cached);
     });
