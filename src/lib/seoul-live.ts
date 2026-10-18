@@ -1,5 +1,6 @@
 // 서울 축제·행사 장소를 서울시 실시간 도시데이터 지역에 연결해 실시간 인구를 받는다.
 import { APIS, beforeCall } from "./api-quota";
+import { kv } from "./cache";
 import { cached } from "./cached";
 import { SEOUL_AREAS, type SeoulArea } from "./seoul-areas";
 
@@ -77,15 +78,31 @@ export function getAllSeoulLive(): Promise<Record<string, Omit<SeoulLive, "dista
     600,
     async () => {
       const out: Record<string, Omit<SeoulLive, "distance">> = {};
-      const queue = [...SEOUL_AREAS];
-      await Promise.all(
-        Array.from({ length: 8 }, async () => {
-          for (let a = queue.shift(); a; a = queue.shift()) {
-            const live = await fetchSeoulLive(key, a.name).catch(() => undefined);
-            if (live) out[a.code] = live;
-          }
-        }),
-      );
+      const run = async (areas: SeoulArea[]) => {
+        const queue = [...areas];
+        await Promise.all(
+          Array.from({ length: 8 }, async () => {
+            for (let a = queue.shift(); a; a = queue.shift()) {
+              const live = await fetchSeoulLive(key, a.name).catch(() => undefined);
+              if (live) out[a.code] = live;
+            }
+          }),
+        );
+      };
+      await run(SEOUL_AREAS);
+      // 서울시가 몇 곳만 가끔 오류·시간 초과를 낸다 → 그곳만 한 번 더, 그래도 없으면 직전 값을 쓴다 (목록에서 빠지지 않게).
+      // 직전 값도 서울시 기준 시각이 90분 안일 때만 (계속 이어 붙여 오래된 값이 남지 않게)
+      const missing = () => SEOUL_AREAS.filter((a) => !out[a.code]);
+      if (missing().length && missing().length < SEOUL_AREAS.length / 2) await run(missing());
+      if (missing().length) {
+        const prev = await kv
+          .get("seoul:live:all")
+          .then((raw) => (raw ? (JSON.parse(raw) as { v: typeof out }).v : null))
+          .catch(() => null);
+        // 서울시 시각은 KST "YYYY-MM-DD HH:mm"
+        const recent = (time: string) => Date.now() - Date.parse(`${time.replace(" ", "T")}:00+09:00`) < 90 * 60_000;
+        for (const a of missing()) if (prev?.[a.code] && recent(prev[a.code].time)) out[a.code] = prev[a.code];
+      }
       return out;
     },
     (v) => Object.keys(v).length === 0,
