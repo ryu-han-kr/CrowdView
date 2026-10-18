@@ -27,6 +27,10 @@ const providers = {
     naver: {
       clientId: process.env.NAVER_CLIENT_ID,
       clientSecret: process.env.NAVER_CLIENT_SECRET ?? "",
+      // 이메일 제공을 거절(선택 항목)하면 email_not_found로 가입이 막힌다 → 카카오처럼 네이버 회원번호로 내부용 주소 (메일을 보내지 않는다)
+      mapProfileToUser: (profile: { response?: { id?: string; email?: string } }) => ({
+        email: profile.response?.email || `naver-${profile.response?.id}@users.crowdview.app`,
+      }),
     },
   }),
   ...(process.env.GOOGLE_CLIENT_ID && {
