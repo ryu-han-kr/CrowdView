@@ -135,7 +135,7 @@ export interface CrowdSnapshot {
 }
 
 export interface CrowdResult extends CrowdSnapshot {
-  /** 외부 API 장애 등으로 갱신되지 못한 데이터 */
+  /** 외부 API 장애 등으로 40분 넘게 갱신되지 못한 데이터 (화면에 '갱신 지연') */
   stale: boolean;
   ageMinutes: number;
 }
