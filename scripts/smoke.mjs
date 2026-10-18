@@ -85,6 +85,28 @@ try {
   const j = await res.json();
   if (!j.redis?.ok) fail("/api/health redis 실패");
   else console.log(`✓ /api/health ${res.status}${j.stale?.length ? ` (지연: ${j.stale.join(", ")})` : ""}`);
+  // 키가 필요한 기능: 켜진 것만 보여 주고, DB가 연결됐으면 저장소의 마이그레이션이 모두 적용됐는지 본다
+  const f = j.features ?? {};
+  const on = Object.entries(f)
+    .filter(([k, v]) => v === true || (k === "loginProviders" && v.length))
+    .map(([k, v]) => (Array.isArray(v) ? `${k}(${v.join("·")})` : k));
+  const sv = Object.entries(f.searchVerification ?? {})
+    .filter(([, v]) => v)
+    .map(([k]) => k);
+  if (sv.length) on.push(`search(${sv.join("·")})`);
+  console.log(`  켜진 기능: ${on.length ? on.join(", ") : "없음"}`);
+  if (j.db?.configured) {
+    if (!j.db.ok) fail(`DB 연결 실패: ${j.db.error}`);
+    else {
+      const { readdirSync } = await import("node:fs");
+      const missing = readdirSync(new URL("../db/migrations/", import.meta.url))
+        .filter((n) => n.endsWith(".sql"))
+        .filter((n) => !j.db.migrations.includes(n));
+      missing.length
+        ? fail(`마이그레이션 미적용: ${missing.join(", ")} → npm run db:migrate`)
+        : console.log(`✓ DB 마이그레이션 ${j.db.migrations.length}개`);
+    }
+  }
 } catch (e) {
   fail(`/api/health ${e.message}`);
 }
