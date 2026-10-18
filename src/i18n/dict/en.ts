@@ -113,7 +113,7 @@ const dict: Dict = {
   "과": "and",
   "에 동의한 것으로 봐요. 비밀번호는 받지 않아요.": ". We never ask for a password.",
   "로그인하고 찜을 모든 기기에서 보기": "Sign in to sync saved places across devices",
-  "카카오·Google 계정으로 3초면 끝나요": "Takes 3 seconds with Kakao or Google",
+  "카카오·네이버·Google 계정으로 3초면 끝나요": "Takes 3 seconds with Kakao, Naver or Google",
   "정말 탈퇴할까요? 찜·알림이 모두 지워져요.": "Delete your account? Saved places and alerts will be removed.",
   "탈퇴": "Delete",
   "취소": "Cancel",

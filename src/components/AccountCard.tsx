@@ -22,7 +22,7 @@ function Inner({ plusSlot }: { plusSlot?: React.ReactNode }) {
       <Link href="/login" className="flex items-center justify-between rounded-3xl border border-gray-100 px-4 py-4">
         <span>
           <span className="block text-sm font-bold">{t("로그인하고 찜을 모든 기기에서 보기")}</span>
-          <span className="block text-xs text-gray-500">{t("카카오·Google 계정으로 3초면 끝나요")}</span>
+          <span className="block text-xs text-gray-500">{t("카카오·네이버·Google 계정으로 3초면 끝나요")}</span>
         </span>
         <span className="text-sm font-semibold text-indigo-600">{t("로그인")} ›</span>
       </Link>

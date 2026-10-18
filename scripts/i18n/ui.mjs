@@ -338,11 +338,11 @@ export default {
     "登录后在所有设备查看收藏",
     "登入後在所有裝置查看收藏",
   ],
-  "카카오·Google 계정으로 3초면 끝나요": [
-    "Takes 3 seconds with Kakao or Google",
-    "カカオ・Googleアカウントで3秒",
-    "用Kakao或Google账号3秒完成",
-    "用Kakao或Google帳號3秒完成",
+  "카카오·네이버·Google 계정으로 3초면 끝나요": [
+    "Takes 3 seconds with Kakao, Naver or Google",
+    "カカオ・NAVER・Googleアカウントで3秒",
+    "用Kakao、Naver或Google账号3秒完成",
+    "用Kakao、Naver或Google帳號3秒完成",
   ],
   "정말 탈퇴할까요? 찜·알림이 모두 지워져요.": [
     "Delete your account? Saved places and alerts will be removed.",
