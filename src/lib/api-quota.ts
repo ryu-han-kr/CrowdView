@@ -76,9 +76,7 @@ export async function beforeCall(api: ApiInfo | undefined, amount = 1): Promise<
   }
   if (api.limit && n > api.limit * SAFETY) {
     await kv.decr(quotaKey(api.id), amount).catch(() => {});
-    throw new QuotaError(
-      `${api.name}: 오늘 ${n - amount}${api.unit ?? "회"}로 한도(${api.limit})의 ${SAFETY * 100}% 도달`,
-    );
+    throw new QuotaError(`${api.name}: 오늘 ${n - amount}${api.unit ?? "회"}로 한도(${api.limit})의 ${SAFETY * 100}% 도달`);
   }
 }
 
