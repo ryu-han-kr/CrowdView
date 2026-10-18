@@ -13,6 +13,7 @@ import { translateNames } from "@/lib/name-translate";
 import { GUIDE, GUIDE_KINDS, TOILETS, TOILET_FLAG, areaNear, getGuidePlace, guideText, nearest } from "@/lib/seoul-guide";
 import { getAllSeoulLive } from "@/lib/seoul-live";
 import { jsonLd, pageMeta } from "@/lib/seo";
+import { KstNote } from "@/components/LocalTime";
 
 // 가이드 글은 주 1회 바뀌고, 혼잡도는 10분마다 → 10분마다 다시 그림 (처음 열 때 만든다)
 export const revalidate = 600;
@@ -97,6 +98,7 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
       </p>
       <h1 className="mt-1 text-2xl font-bold md:text-3xl">{trName ?? text.n}</h1>
       {trName && <p className="mt-0.5 text-sm text-gray-500">{text.n}</p>}
+      <KstNote className="mt-1" />
       {textLang !== lang && <p className="mt-1 text-xs text-gray-400">{t("이 장소는 선택한 언어 글이 없어 다른 언어로 보여드려요.")}</p>}
       {p.imgL && (
         <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-3xl bg-gray-100 md:aspect-[21/8]">

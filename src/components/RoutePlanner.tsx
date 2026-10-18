@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { canOptimize } from "@/lib/img";
 import { RouteMap } from "./map/RouteMap";
 import { useI18n } from "@/i18n/client";
+import { LocalTime } from "./LocalTime";
 import { currentPosition, kakaoDirections, type LatLng, type Transport } from "@/lib/geo";
 import { levelOf } from "@/lib/levels";
 import { usePicks, usePlans } from "@/lib/prefs";
@@ -383,6 +384,12 @@ export function RouteResult({
     } catch {}
   };
   const base = createdOn ? Date.parse(`${createdOn}T00:00:00Z`) : Date.now() + 9 * 3600_000;
+  // 코스 시각(분)의 기준 날짜가 한국 기준 오늘부터 며칠 뒤인지 (공유 코스는 만든 날 기준) → 외국어 화면의 '내 시간'
+  const planDay = Math.round(
+    (Date.parse(`${new Date(base).toISOString().slice(0, 10)}T00:00:00Z`) -
+      Date.parse(`${new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10)}T00:00:00Z`)) /
+      86_400_000,
+  );
   /** 캘린더 파일(.ics): 장소마다 일정 하나 (한국 시각 → UTC) */
   const downloadIcs = () => {
     const day0 = Date.parse(`${new Date(base).toISOString().slice(0, 10)}T00:00:00Z`) - 9 * 3600_000;
@@ -439,6 +446,7 @@ export function RouteResult({
           <p className="text-lg font-bold">
             {t("{n}곳 코스", { n: plan.stops.length + locked })} · {dayLabel(plan.stops[0].arrive)}
             {clock(plan.stops[0].arrive - plan.stops[0].travelMin)}~{clock(plan.endMin)}
+            <LocalTime hour={(plan.stops[0].arrive - plan.stops[0].travelMin) / 60} to={plan.endMin / 60} dayOffset={planDay} />
           </p>
           <p className="text-sm text-gray-600">
             {t("평균 예상 혼잡")} <b style={{ color: levelOf(plan.avgScore).color }}>{t(levelOf(plan.avgScore).label)}</b>

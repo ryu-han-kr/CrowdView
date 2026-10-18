@@ -41,6 +41,7 @@ import { distanceKm } from "@/lib/geo";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { getAllSeoulLive } from "@/lib/seoul-live";
 import Link from "@/i18n/link";
+import { KstNote, LocalTime } from "@/components/LocalTime";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 // 관광공사 사진 여러 장 (scripts/korea-data/place-images.mjs)
@@ -261,7 +262,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             {!beforeEvent &&
               best &&
               ` ${t("오늘 남은 운영 시간 중에는 {hour}쯤이 가장 한산할 것으로 보여요.", { hour: formatHour(best.hour, lang) })}`}
+            {!beforeEvent && best && <LocalTime hour={best.hour} />}
           </p>
+          <KstNote className="mt-1" />
 
           {/* 현재 혼잡도 */}
           {/* 지금 혼잡도 */}
@@ -520,7 +523,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 <p>
                   {place.info?.closedToday
                     ? t("오늘 휴무")
-                    : t("오늘 {from} ~ {to}", { from: formatClock(place.hours[0]), to: formatClock(place.hours[1]) })}{" "}
+                    : t("오늘 {from} ~ {to}", { from: formatClock(place.hours[0]), to: formatClock(place.hours[1]) })}
+                  {!place.info?.closedToday && <LocalTime hour={place.hours[0]} to={place.hours[1]} />}{" "}
                   <span className={isOpen ? "text-emerald-600" : "text-gray-400"}>{isOpen ? `· ${t("운영 중")}` : `· ${t("운영 종료")}`}</span>
                   {!place.info?.hoursVerified && <DataTag kind="임의" />}
                 </p>
