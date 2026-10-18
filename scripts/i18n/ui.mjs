@@ -2,6 +2,7 @@
 // 수정 후 `node scripts/i18n/build.mjs` 로 src/i18n/dict/*.ts 를 다시 만든다
 export default {
   // ── 외국어 화면: 한국 시각 옆 '내 시간' (components/LocalTime.tsx)
+  회원: ["Member", "会員", "会员", "會員"],
   "내 시간 {time}": ["your time {time}", "現地時間 {time}", "您当地 {time}", "您當地 {time}"],
   "이 페이지의 시각은 한국 시간(KST)이에요": [
     "Times on this page are Korea time (KST)",

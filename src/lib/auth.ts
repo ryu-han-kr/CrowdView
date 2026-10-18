@@ -17,10 +17,23 @@ const providers = {
       // 이메일 동의는 비즈 앱만 받을 수 있어 기본 범위(account_email)를 빼고 닉네임·사진만 요청한다
       disableDefaultScope: true,
       scope: ["profile_nickname", "profile_image"],
-      // 이메일이 없으면 카카오 회원번호로 내부용 주소를 만든다 (메일을 보내지 않는다)
-      mapProfileToUser: (profile: { id: number; kakao_account?: { email?: string } }) => ({
-        email: profile.kakao_account?.email ?? `kakao-${profile.id}@users.crowdview.app`,
-      }),
+      // 이메일이 없으면 카카오 회원번호로 내부용 주소를 만든다 (메일을 보내지 않는다).
+      // 닉네임·사진은 kakao_account.profile에 오고, 예전 앱은 properties에만 온다 → 둘 다 본다
+      mapProfileToUser: (profile: {
+        id: number;
+        kakao_account?: { email?: string; profile?: { nickname?: string; profile_image_url?: string } };
+        properties?: { nickname?: string; profile_image?: string };
+      }) => {
+        const name = profile.kakao_account?.profile?.nickname || profile.properties?.nickname;
+        const image = profile.kakao_account?.profile?.profile_image_url || profile.properties?.profile_image;
+        return {
+          email: profile.kakao_account?.email ?? `kakao-${profile.id}@users.crowdview.app`,
+          ...(name && { name }),
+          ...(image && { image }),
+        };
+      },
+      // 동의 항목을 나중에 바꾸거나 이름·사진을 바꾸면 다음 로그인 때 반영
+      overrideUserInfoOnSignIn: true,
     },
   }),
   ...(process.env.NAVER_CLIENT_ID && {
@@ -31,12 +44,14 @@ const providers = {
       mapProfileToUser: (profile: { response?: { id?: string; email?: string } }) => ({
         email: profile.response?.email || `naver-${profile.response?.id}@users.crowdview.app`,
       }),
+      overrideUserInfoOnSignIn: true,
     },
   }),
   ...(process.env.GOOGLE_CLIENT_ID && {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+      overrideUserInfoOnSignIn: true,
     },
   }),
 };
