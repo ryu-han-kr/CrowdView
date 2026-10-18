@@ -32,7 +32,7 @@ export async function issueBillingKey(user: { id: string; name: string; email?: 
     issueName: "CrowdView Plus 정기결제 카드 등록",
     customer: {
       customerId: user.id,
-      fullName: user.name,
+      ...(user.name && { fullName: user.name }),
       ...(user.email && !user.email.endsWith("@users.crowdview.app") && { email: user.email }),
     },
     redirectUrl: completeUrl,

@@ -75,7 +75,9 @@ function NavAuthInner() {
         // eslint-disable-next-line @next/next/no-img-element
         <img src={user.image} alt="" className="h-7 w-7 rounded-full object-cover" />
       ) : (
-        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-xs text-indigo-700">{user.name.slice(0, 1)}</span>
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-xs text-indigo-700">
+          {user.name.slice(0, 1) || "👤"}
+        </span>
       )}
     </Link>
   ) : (

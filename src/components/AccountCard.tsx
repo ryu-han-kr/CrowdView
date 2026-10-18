@@ -35,11 +35,11 @@ function Inner({ plusSlot }: { plusSlot?: React.ReactNode }) {
           <img src={user.image} alt="" className="h-11 w-11 rounded-full object-cover" />
         ) : (
           <span className="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-100 font-bold text-indigo-700">
-            {user.name.slice(0, 1)}
+            {(user.name || t("회원")).slice(0, 1)}
           </span>
         )}
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-bold">{user.name}</p>
+          <p className="truncate text-sm font-bold">{user.name || t("회원")}</p>
           {!user.email.endsWith("@users.crowdview.app") && <p className="truncate text-xs text-gray-500">{user.email}</p>}
         </div>
         <LogoutButton />

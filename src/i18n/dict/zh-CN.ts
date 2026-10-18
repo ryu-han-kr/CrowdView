@@ -2,6 +2,7 @@
 import type { Dict } from "../translate";
 
 const dict: Dict = {
+  "회원": "会员",
   "내 시간 {time}": "您当地 {time}",
   "이 페이지의 시각은 한국 시간(KST)이에요": "本页时间均为韩国时间(KST)",
   "한국 지금 {time}": "韩国现在 {time}",
