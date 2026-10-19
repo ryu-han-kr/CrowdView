@@ -107,17 +107,17 @@ body {
 @property --glow-a {
   syntax: "<color>";
   inherits: true;
-  initial-value: rgba(191, 219, 254, 0.42);
+  initial-value: rgba(147, 197, 253, 0.55);
 }
 @property --glow-b {
   syntax: "<color>";
   inherits: true;
-  initial-value: rgba(186, 230, 253, 0.32);
+  initial-value: rgba(125, 211, 252, 0.4);
 }
 @property --glow-c {
   syntax: "<color>";
   inherits: true;
-  initial-value: #f3f8ff;
+  initial-value: #e3efff;
 }
 .page-glow {
   background:
@@ -131,17 +131,17 @@ body {
 /* 페이지마다 하늘색 안에서 아주 조금만 다르게 (모두 흰 바탕 + 밝은 파랑) */
 body[data-page="map"],
 body[data-page="seoul"] {
-  --glow-a: rgba(186, 230, 253, 0.42);
-  --glow-b: rgba(204, 251, 241, 0.3);
-  --glow-c: #f1f9ff;
+  --glow-a: rgba(125, 211, 252, 0.55);
+  --glow-b: rgba(153, 246, 228, 0.4);
+  --glow-c: #e2f4ff;
 }
 body[data-page="explore"],
 body[data-page="guide"],
 body[data-page="route"],
 body[data-page="me"] {
-  --glow-a: rgba(191, 219, 254, 0.4);
-  --glow-b: rgba(224, 231, 255, 0.35);
-  --glow-c: #f4f8ff;
+  --glow-a: rgba(147, 197, 253, 0.52);
+  --glow-b: rgba(165, 180, 252, 0.4);
+  --glow-c: #e5efff;
 }
 
 /* 페이지 큰 제목: 모든 화면에서 같은 크기·굵기·자간 (Tailwind 크기 클래스보다 우선) */
