@@ -36,7 +36,7 @@ export function PlusPromo({ t, price }: { t: T; price: string }) {
           <span className="ml-2 text-sm font-normal text-gray-500">{t("월 {n}원으로 더 편한 여행", { n: price })}</span>
         </h2>
       </div>
-      <ul className="no-scrollbar -mx-5 mt-3 flex snap-x gap-3 overflow-x-auto px-5 md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:px-0">
+      <ul className="no-scrollbar -mx-5 mt-3 flex snap-x scroll-px-5 gap-3 overflow-x-auto px-5 md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:scroll-px-0 md:px-0">
         {CARDS.map((c) => (
           <li key={c.title} className="w-[78%] shrink-0 snap-start md:w-auto">
             <Link href="/pricing" className="block overflow-hidden rounded-3xl bg-white shadow-[0_2px_16px_rgba(15,23,42,0.08)]">

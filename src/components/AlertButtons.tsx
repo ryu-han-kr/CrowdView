@@ -56,7 +56,7 @@ function Inner({ placeId }: { placeId: string }) {
   };
 
   return (
-    <section className="mt-4 rounded-3xl border border-indigo-100 p-4">
+    <section className="card mt-4">
       <p className="flex items-center gap-1 text-sm font-bold">
         <Glyph e="🔔" className="h-4 w-4 text-indigo-500" /> {t("혼잡 알림")}{" "}
         <span className="ml-1 rounded bg-indigo-600 px-1.5 py-0.5 text-[10px] text-white">Plus</span>

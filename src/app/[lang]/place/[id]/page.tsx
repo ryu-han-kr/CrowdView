@@ -312,7 +312,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           )}
 
           {/* 앞으로 시간대별 (지금 이후, 입장 가능한 시간까지) */}
-          <section className="mt-4 rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">
+          <section className="card mt-4">
             <p className="text-xs font-semibold text-indigo-500">
               <Glyph e="✨" /> {t("지금 이후 시간대별 예상")}
             </p>
@@ -330,7 +330,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             {todayReasons.length > 0 && (
               <div className="mt-2.5 flex flex-wrap gap-1.5">
                 {todayReasons.map((r) => (
-                  <span key={r.k} className="rounded-full bg-white px-2 py-0.5 text-[11px] text-gray-600">
+                  <span key={r.k} className="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600">
                     {trReason(r, t)}
                   </span>
                 ))}

@@ -40,7 +40,7 @@ export async function WeatherCard({ signals, lang, place }: { signals: Signals; 
           })}
         </p>
       )}
-      <section className="mt-3 flex items-center gap-3 rounded-3xl border border-sky-100 bg-sky-50 px-4 py-3.5">
+      <section className="card mt-3 flex items-center gap-3">
         {w && (
           <>
             <Glyph e={ICON(w.sky, w.pty)} className={`h-10 w-10 ${w.pty ? "text-sky-600" : w.sky === 1 ? "text-amber-400" : "text-sky-500"}`} />
@@ -67,7 +67,7 @@ export async function WeatherCard({ signals, lang, place }: { signals: Signals; 
         )}
       </section>
       {summary && (
-        <div className="mt-2 rounded-2xl bg-sky-50/60 px-4 py-2.5 text-xs leading-relaxed text-gray-600">
+        <div className="mt-2 rounded-2xl bg-gray-50 px-4 py-2.5 text-xs leading-relaxed text-gray-600">
           {summary.lines.map((l) => (
             <p key={l}>{l}</p>
           ))}
