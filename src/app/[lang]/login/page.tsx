@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "@/i18n/link";
-import { SocialLoginButtons } from "@/components/AuthButtons";
+import { ReviewLoginForm, SocialLoginButtons } from "@/components/AuthButtons";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { authEnabled, enabledProviders } from "@/lib/auth";
@@ -16,11 +16,11 @@ export default async function LoginPage({
   searchParams,
 }: {
   params: Promise<{ lang: string }>;
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; review?: string }>;
 }) {
   const lang = (await params).lang as Lang;
   // 로그인 후 돌아갈 곳 (같은 사이트 주소만)
-  const next = (await searchParams).next;
+  const { next, review } = await searchParams;
   const callbackURL = next?.startsWith("/") && !next.startsWith("//") ? next : undefined;
   const t = getT(lang);
   return (

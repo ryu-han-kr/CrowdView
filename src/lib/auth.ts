@@ -63,6 +63,8 @@ export const auth = betterAuth({
   // DB가 없으면 메모리 대신 꺼 둔다 (authEnabled=false, 라우트가 404)
   database: pool ?? undefined,
   socialProviders: providers,
+  // 결제대행사·카드사 심사용 계정만 이메일·비밀번호로 로그인 (가입은 막고, 계정은 scripts/review-account.ts로 만들고 지운다)
+  emailAndPassword: { enabled: true, disableSignUp: true, minPasswordLength: 12 },
   account: { accountLinking: { enabled: true, trustedProviders: ["kakao", "naver", "google"] } },
   // 마이페이지 '회원 탈퇴' (찜·알림·구독은 DB에서 함께 지워지고, 결제 기록은 법정 보관을 위해 user_id만 비운다)
   user: {
