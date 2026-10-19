@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "@/i18n/link";
 import { useI18n } from "@/i18n/client";
 import { signIn, signOut, useSession } from "@/lib/auth-client";
@@ -100,5 +101,48 @@ export function LogoutButton() {
     >
       {t("로그아웃")}
     </button>
+  );
+}
+
+/** 결제대행사·카드사 심사용 계정 로그인 (/login?review=1에서만 보인다. 가입은 막혀 있다) */
+export function ReviewLoginForm({ callbackURL = "/pricing" }: { callbackURL?: string }) {
+  const { t, lp } = useI18n();
+  const [error, setError] = useState(false);
+  const [busy, setBusy] = useState(false);
+  return (
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        const f = new FormData(e.currentTarget);
+        setBusy(true);
+        const { error } = await signIn.email({ email: String(f.get("email")), password: String(f.get("password")) });
+        setBusy(false);
+        if (error) return setError(true);
+        location.href = lp(callbackURL);
+      }}
+      className="card space-y-2.5 p-4"
+    >
+      <p className="text-sm font-bold">{t("심사용 로그인")}</p>
+      <input
+        name="email"
+        type="email"
+        required
+        autoComplete="username"
+        placeholder={t("이메일")}
+        className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
+      />
+      <input
+        name="password"
+        type="password"
+        required
+        autoComplete="current-password"
+        placeholder={t("비밀번호")}
+        className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm"
+      />
+      {error && <p className="text-xs text-red-600">{t("로그인하지 못했어요. 이메일과 비밀번호를 확인해 주세요.")}</p>}
+      <button disabled={busy} className="w-full rounded-2xl bg-gray-900 py-3 text-sm font-bold text-white disabled:opacity-50">
+        {t("로그인")}
+      </button>
+    </form>
   );
 }

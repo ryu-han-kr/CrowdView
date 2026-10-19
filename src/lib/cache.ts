@@ -80,8 +80,25 @@ function upstashKV(url: string, token: string): KV {
   };
 }
 
+/**
+ * 빌드 중에는 번역(tr…)만 저장하고 나머지 SET은 건너뛴다. 페이지 1,300개를 미리 만들며 빌드 한 번에 수만 건을 써서
+ * 무료 한도(월 50만 명령)를 빌드가 거의 다 썼다 (10/19 Upstash 사용량). 번역은 다시 만들면 파파고 한도를 써서 저장한다
+ */
+function buildSafe(inner: KV): KV {
+  const keep = (key: string) => key.startsWith("tr");
+  return {
+    ...inner,
+    set: (key, value, ttl) => (keep(key) ? inner.set(key, value, ttl) : Promise.resolve()),
+    setNX: (key, value, ttl) => (keep(key) ? inner.setNX(key, value, ttl) : Promise.resolve(true)),
+  };
+}
+
 const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
 const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN;
+// 운영 배포만 Redis를 쓴다. Preview 배포·로컬(.env.local에 운영 Redis 주소가 있다)·CI는 메모리 (운영 한도를 나눠 쓰지 않게).
+// 로컬에서 Redis를 꼭 봐야 하면 KV_FORCE=1
+const useRedis = !!url && !!token && (process.env.VERCEL_ENV === "production" || process.env.KV_FORCE === "1");
+const building = process.env.NEXT_PHASE === "phase-production-build";
 
-export const kv: KV = url && token ? upstashKV(url, token) : memoryKV();
-export const kvBackend = url && token ? "redis" : "memory";
+export const kv: KV = useRedis ? (building ? buildSafe(upstashKV(url!, token!)) : upstashKV(url!, token!)) : memoryKV();
+export const kvBackend = useRedis ? "redis" : "memory";
