@@ -13,9 +13,16 @@ import { subwayTrip } from "./subway";
 import { addDays, daysUntil, kst } from "./time";
 import type { Category, Place } from "./types";
 
-const PLACE_INTEREST: Partial<Record<Category, Interest>> = { landmark: "history", street: "shopping", themepark: "fun", beach: "nature" };
+const PLACE_INTEREST: Partial<Record<Category, Interest>> = {
+  landmark: "history",
+  street: "shopping",
+  themepark: "fun",
+  waterpark: "fun",
+  ski: "nature",
+  beach: "nature",
+};
 const PLACE_OVERRIDE: Record<string, Interest> = { namsan: "nature" };
-const PLACE_STAY: Partial<Record<Category, number>> = { landmark: 80, street: 70, themepark: 240, beach: 90 };
+const PLACE_STAY: Partial<Record<Category, number>> = { landmark: 80, street: 70, themepark: 240, waterpark: 240, ski: 300, beach: 90 };
 
 const GROUP_INTEREST: Partial<Record<SeoulGroup, Interest>> = { heritage: "history", park: "nature", street: "shopping", tour: "shopping" };
 // 운영 시간 정보가 없는 곳의 기본 방문 가능 시간 (밤늦게 공원·고궁으로 보내지 않게)

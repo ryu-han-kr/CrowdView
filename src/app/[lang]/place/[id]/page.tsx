@@ -210,7 +210,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
         dangerouslySetInnerHTML={{
           __html: jsonLd({
             "@context": "https://schema.org",
-            "@type": place.category === "themepark" ? "AmusementPark" : place.category === "beach" ? "Beach" : "TouristAttraction",
+            "@type":
+              { themepark: "AmusementPark", waterpark: "WaterPark", ski: "SkiResort", beach: "Beach" }[place.category as string] ??
+              "TouristAttraction",
             name: t(place.name),
             description: t(place.description),
             url: `${SITE}${localePath(lang, placeHref(place))}`,

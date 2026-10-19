@@ -23,7 +23,7 @@ const KO: Record<string, string> = {
   "Peter Pan": "피터팬",
   "Safari World": "사파리 월드",
   "Lost Valley": "로스트밸리",
-  "Hurricane": "허리케인",
+  Hurricane: "허리케인",
   "Double Rock Spin": "더블 락스핀",
   "Columbus Adventure": "콜럼버스 대탐험",
 };
@@ -46,14 +46,15 @@ export async function fetchThemePark(place: Place, s?: Signals): Promise<CrowdSn
   if (!res.ok) throw new Error(`themeparks ${res.status}`);
   const live = ((await res.json()).liveData ?? []) as LiveItem[];
   const now = Date.now();
-  const rides = live
-    .filter((i) => i.entityType === "ATTRACTION" && i.status === "OPERATING")
+  const operating = live.filter((i) => i.entityType === "ATTRACTION" && i.status === "OPERATING");
+  const rides = operating
     .map((i) => ({ name: i.name, wait: i.queue?.STANDBY?.waitTime, at: Date.parse(i.lastUpdated ?? "") }))
     .filter((r): r is { name: string; wait: number; at: number } => typeof r.wait === "number" && now - r.at < STALE_MS);
 
   const base = modelSnapshot(place, new Date(), s);
-  // 운영 중인 놀이기구가 없으면 폐장 시간
-  if (rides.length === 0) return { ...base, open: false };
+  // 운영 중인 놀이기구가 없으면 폐장 시간. 운영 중인데 대기시간을 안 주는 공원(일부 국내 공원)은 예측 모델 그대로
+  if (operating.length === 0) return { ...base, open: false };
+  if (rides.length === 0) return base;
 
   const avg = rides.reduce((sum, r) => sum + r.wait, 0) / rides.length;
   const score = waitScore(avg, place);

@@ -1,12 +1,14 @@
 import type { LevelSteps } from "./levels";
 
 // 홈 상단 파트 탭 순서와 같다
-export type Category = "landmark" | "street" | "themepark" | "beach" | "airport" | "event";
+export type Category = "landmark" | "street" | "themepark" | "waterpark" | "ski" | "beach" | "airport" | "event";
 
 export const CATEGORY_LABEL: Record<Category, string> = {
   landmark: "명소",
   street: "핫플",
   themepark: "놀이공원",
+  waterpark: "워터파크",
+  ski: "스키장",
   beach: "해변",
   airport: "공항",
   event: "축제",
@@ -85,6 +87,8 @@ export interface Place {
   busanDongs?: string[];
   /** ThemeParks.wiki 엔티티 (놀이기구 대기시간) */
   themeparksId?: string;
+  /** 계절 영업: 여는 달 ~ 닫는 달 (1~12, 해를 넘기면 [12, 3]처럼). 그 밖의 달은 시즌 아님 */
+  season?: [from: number, to: number];
   /** TourAPI에서 받아 붙인 정보 (getLivePlaces) */
   info?: PlaceInfo;
 }
@@ -123,6 +127,8 @@ export interface CrowdSnapshot {
   zones?: Zone[];
   /** 원천이 주는 공식 단계 (예: 서울시 '보통'). 장소 기준과 다를 수 있어 참고로 보여준다 */
   officialLevel?: string;
+  /** 계절 영업 장소의 시즌이 아닌 때 (스키장 여름 등) */
+  offSeason?: boolean;
   /** 테마파크: 운영 중 놀이기구 평균 대기(분) */
   avgWaitMin?: number;
   /** headcount가 한국공항공사 시간대별 탑승객 수(이번 시간 출발 승객)인지 */

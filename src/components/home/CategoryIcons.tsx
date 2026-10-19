@@ -7,6 +7,8 @@ import { Glyph } from "@/components/Glyph";
 const ITEMS: { href: string; label: string; emoji: string; bg: string; fg: string; badge?: string }[] = [
   { href: "/airport", label: "공항", emoji: "✈️", bg: "from-sky-50 to-blue-100", fg: "text-sky-600", badge: "실시간" },
   { href: "/?cat=themepark#places", label: "테마파크", emoji: "🎡", bg: "from-pink-50 to-rose-100", fg: "text-rose-500" },
+  { href: "/?cat=waterpark#places", label: "워터파크", emoji: "🌊", bg: "from-cyan-50 to-sky-100", fg: "text-cyan-600" },
+  { href: "/?cat=ski#places", label: "스키장", emoji: "⛷️", bg: "from-slate-50 to-blue-100", fg: "text-blue-600" },
   { href: "/events", label: "축제", emoji: "🎆", bg: "from-violet-50 to-purple-100", fg: "text-violet-600" },
   { href: "/seoul", label: "서울 실시간", emoji: "📍", bg: "from-indigo-50 to-indigo-100", fg: "text-indigo-600", badge: "121곳" },
   { href: "/explore", label: "지역 여행", emoji: "🗺️", bg: "from-emerald-50 to-teal-100", fg: "text-emerald-600", badge: "NEW" },
