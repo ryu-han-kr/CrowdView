@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { levelOf } from "@/lib/levels";
+import { Glyph } from "@/components/Glyph";
 
 export interface DayBar {
   date: string;
@@ -174,7 +175,7 @@ export function UpcomingHours({ hours, bestHour }: { hours: { hour: number; labe
           >
             <span className="text-[11px] font-semibold text-gray-700">{h.label}</span>
             <span className="text-[11px] font-bold" style={{ color: l.color }}>
-              {best ? "★ " : ""}
+              {best ? <Glyph e="★" className="mr-0.5 h-3 w-3 text-amber-400" /> : null}
               {t(l.label)}
             </span>
           </li>

@@ -1,6 +1,7 @@
 import type { Lang } from "@/i18n/config";
 import type { T } from "@/i18n/translate";
 import type { LatLng } from "@/lib/geo";
+import { Glyph } from "@/components/Glyph";
 
 // 근처 숙소 찾기: 숙소 플랫폼마다 그 장소 이름(아고다는 좌표)으로 검색한 결과를 새 창으로 연다.
 // 우리가 매물을 모으지 않고(제휴·API 승인 전) 각 사이트의 검색 화면으로 보낸다. 아이콘은 public/brands (각 사이트 파비콘)
@@ -50,7 +51,9 @@ export function stayLinks(ko: string, en: string, lang: Lang, at?: LatLng): { id
 export function StayLinks({ ko, en, lang, t, at, className = "" }: { ko: string; en: string; lang: Lang; t: T; at?: LatLng; className?: string }) {
   return (
     <section className={`rounded-3xl border border-gray-100 p-4 ${className}`}>
-      <p className="text-sm font-bold">🛏️ {t("근처 숙소 찾기")}</p>
+      <p className="flex items-center gap-1.5 text-sm font-bold">
+        <Glyph e="🛏️" className="h-4 w-4 text-indigo-500" /> {t("근처 숙소 찾기")}
+      </p>
       <p className="mt-0.5 text-xs text-gray-500">
         {t("‘{name}’ 근처 숙소를 각 예약 사이트에서 바로 검색해요. 가격·예약은 그 사이트에서 확인하세요.", { name: lang === "ko" ? ko : en })}
       </p>

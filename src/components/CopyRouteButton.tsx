@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/i18n/client";
 import { usePicks, type Pick } from "@/lib/prefs";
+import { Glyph } from "@/components/Glyph";
 
 /** 공유된 코스의 장소들을 내 ☆ 담은 곳으로 옮기고 코스 추천으로 간다 (그 장소들로 내 일정에 맞춰 다시 짜기) */
 export function CopyRouteButton({ stops }: { stops: Pick[] }) {
@@ -15,8 +16,11 @@ export function CopyRouteButton({ stops }: { stops: Pick[] }) {
     router.push(lp("/route"));
   };
   return (
-    <button onClick={copy} className="mt-3 block w-full rounded-2xl border border-indigo-200 bg-white py-3.5 text-center text-sm font-bold text-indigo-700">
-      ⭐ {t("이 코스 장소를 담아서 내 일정으로 짜기")}
+    <button
+      onClick={copy}
+      className="mt-3 block w-full rounded-2xl border border-indigo-200 bg-white py-3.5 text-center text-sm font-bold text-indigo-700"
+    >
+      <Glyph e="⭐" className="h-4 w-4 text-amber-400" /> {t("이 코스 장소를 담아서 내 일정으로 짜기")}
     </button>
   );
 }

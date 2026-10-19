@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { LANGS, LANG_LABEL, localePath, stripLang } from "@/i18n/config";
+import { Glyph } from "@/components/Glyph";
 
 /** 🌐 언어 선택. 같은 페이지의 다른 언어 주소로 이동한다 */
 export function LangSwitcher({ compact = false }: { compact?: boolean }) {
@@ -55,7 +56,7 @@ export function LangSwitcher({ compact = false }: { compact?: boolean }) {
                 }`}
               >
                 {LANG_LABEL[l]}
-                {l === lang && <span>✓</span>}
+                {l === lang && <Glyph e="✓" className="h-4 w-4" />}
               </button>
             </li>
           ))}

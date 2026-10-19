@@ -4,6 +4,7 @@ import Link from "@/i18n/link";
 import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { usePicks, usePlans } from "@/lib/prefs";
+import { Glyph } from "@/components/Glyph";
 
 /** 공유 코스는 30일 보관 (lib/route-share) */
 const KEEP_DAYS = 30;
@@ -17,7 +18,9 @@ export function SavedPlans() {
   return (
     <section>
       <div className="flex items-end justify-between">
-        <h2 className="text-lg font-bold">🧭 {t("내 여행 계획")}</h2>
+        <h2 className="flex items-center gap-1.5 text-lg font-bold">
+          <Glyph e="🧭" className="h-5 w-5 text-indigo-500" /> {t("내 여행 계획")}
+        </h2>
         <Link href="/route" className="text-xs font-semibold text-indigo-600">
           {t("새 코스 짜기")} ›
         </Link>
@@ -38,7 +41,7 @@ export function SavedPlans() {
                   )}
                 </Link>
                 <button onClick={() => remove(p.id)} aria-label={t("삭제")} className="px-2 text-gray-400">
-                  ✕
+                  <Glyph e="✕" className="h-4 w-4" />
                 </button>
               </li>
             );
@@ -57,7 +60,9 @@ export function MyPicks() {
   const { picks, remove } = usePicks();
   return (
     <section>
-      <h2 className="text-lg font-bold">⭐ {t("담은 곳")}</h2>
+      <h2 className="flex items-center gap-1.5 text-lg font-bold">
+        <Glyph e="⭐" className="h-5 w-5 text-amber-400" /> {t("담은 곳")}
+      </h2>
       {picks.length ? (
         <>
           <ul className="mt-2 flex flex-wrap gap-2">
@@ -67,7 +72,7 @@ export function MyPicks() {
                   {p.label}
                 </Link>
                 <button onClick={() => remove(p.id)} aria-label={t("삭제")} className="px-2 text-amber-700/60">
-                  ✕
+                  <Glyph e="✕" className="h-4 w-4" />
                 </button>
               </li>
             ))}
@@ -99,7 +104,9 @@ export function MySettings() {
   };
   return (
     <section>
-      <h2 className="text-lg font-bold">⚙️ {t("설정")}</h2>
+      <h2 className="flex items-center gap-1.5 text-lg font-bold">
+        <Glyph e="⚙️" className="h-5 w-5 text-gray-500" /> {t("설정")}
+      </h2>
       <ul className="mt-2 divide-y divide-gray-100 rounded-2xl border border-gray-100 bg-white text-sm">
         <li className="flex items-center justify-between gap-3 px-4 py-3">
           <span>{t("화면 테마")}</span>
@@ -123,7 +130,7 @@ export function MySettings() {
             <span className="block text-[11px] text-gray-400">{t("즐겨찾기·담은 곳·여행 계획·키워드 (로그인했다면 서버 것은 남아요)")}</span>
           </span>
           <button onClick={clearLocal} className="shrink-0 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700">
-            {done ? "✓" : t("지우기")}
+            {done ? <Glyph e="✓" className="h-4 w-4" /> : t("지우기")}
           </button>
         </li>
       </ul>
@@ -159,7 +166,14 @@ function ThemePicker() {
           aria-pressed={theme === v}
           className={`min-h-8 rounded-full px-3 py-1.5 ${theme === v ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
         >
-          {v === "auto" ? t("자동") : v === "light" ? `☀️ ${t("라이트")}` : `🌙 ${t("다크")}`}
+          {v === "auto" ? (
+            t("자동")
+          ) : (
+            <>
+              <Glyph e={v === "light" ? "☀️" : "🌙"} className="mr-1 h-3.5 w-3.5" />
+              {v === "light" ? t("라이트") : t("다크")}
+            </>
+          )}
         </button>
       ))}
     </div>

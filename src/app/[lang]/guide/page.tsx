@@ -4,6 +4,7 @@ import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { GUIDE, GUIDE_KINDS, RESERVATIONS, guideText } from "@/lib/seoul-guide";
 import { pageMeta } from "@/lib/seo";
+import { Glyph } from "@/components/Glyph";
 
 // 정적 데이터 + 하루 한 번 다시 그림 (체험 예약 마감 순서만 바뀐다)
 export const revalidate = 3600;
@@ -42,7 +43,9 @@ export default async function GuidePage({ params }: { params: Promise<{ lang: st
 
       {open.length > 0 && (
         <section className="mt-10">
-          <h2 className="text-lg font-bold">🎟️ {t("지금 예약할 수 있는 체험")}</h2>
+          <h2 className="flex items-center gap-1.5 text-lg font-bold">
+            <Glyph e="🎟️" className="h-5 w-5 text-indigo-500" /> {t("지금 예약할 수 있는 체험")}
+          </h2>
           <p className="text-xs text-gray-500">{t("서울시 공공서비스 예약 (고궁·박물관·문화시설)")}</p>
           <ul className="mt-3 grid gap-2 md:grid-cols-2 lg:grid-cols-3">
             {open.map((r) => (

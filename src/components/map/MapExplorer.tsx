@@ -6,6 +6,7 @@ import { useI18n } from "@/i18n/client";
 import { LEVELS, levelOf } from "@/lib/levels";
 import { MapLegend } from "./MapLegend";
 import { SpotMap, type MapSpot } from "./SpotMap";
+import { Glyph } from "@/components/Glyph";
 
 /** 지도에 올릴 곳 하나 (서버가 만든다). region: 짧은 시도 이름 (서울·부산·경기 …) */
 export interface ExploreSpot extends MapSpot {
@@ -84,7 +85,7 @@ export function MapExplorer({ spots: base, regions, subtitle }: { spots: Explore
       <div className="mt-4 flex gap-2 overflow-x-auto px-5 pb-1 md:px-0">
         {THEMES.map((th) => (
           <button key={th.id} onClick={() => setTheme(th.id)} aria-pressed={theme === th.id} className={chip(theme === th.id)}>
-            <span aria-hidden>{th.emoji}</span> {t(th.label)}
+            <Glyph e={th.emoji} /> {t(th.label)}
             <span className="opacity-60">{th.id === "all" ? spots.length : spots.filter((s) => s.theme === th.id).length}</span>
           </button>
         ))}

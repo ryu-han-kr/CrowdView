@@ -5,6 +5,7 @@
 // 시간대는 브라우저만 알 수 있어서 서버 화면에는 아무것도 없고, 열린 뒤에 붙는다 (한국어 화면·한국 시간대면 그대로 없음)
 import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
+import { Glyph } from "@/components/Glyph";
 
 const KST_OFFSET_MIN = 9 * 60;
 
@@ -60,7 +61,7 @@ export function KstNote({ className = "" }: { className?: string }) {
   const kstNow = new Intl.DateTimeFormat(lang, { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Seoul" }).format(now);
   return (
     <p className={`text-[11px] text-gray-500 ${className}`}>
-      🕒 {t("이 페이지의 시각은 한국 시간(KST)이에요")} · {t("한국 지금 {time}", { time: kstNow })} ·{" "}
+      <Glyph e="🕒" /> {t("이 페이지의 시각은 한국 시간(KST)이에요")} · {t("한국 지금 {time}", { time: kstNow })} ·{" "}
       {t("내 시간({zone}) {time}", { zone: zone.name, time: zone.fmt.format(now) })}
     </p>
   );

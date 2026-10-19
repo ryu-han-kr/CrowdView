@@ -6,6 +6,7 @@ import { useRef, useState } from "react";
 import { canOptimize } from "@/lib/img";
 import { useI18n } from "@/i18n/client";
 import { LevelBadge } from "../Level";
+import { Glyph } from "@/components/Glyph";
 
 export interface PhotoCardItem {
   id: string;
@@ -42,10 +43,14 @@ export function PhotoCard({ item, rank, className = "" }: { item: PhotoCardItem;
             className="object-cover transition-transform duration-300 md:group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full items-center justify-center bg-gradient-to-br from-indigo-100 to-sky-100 text-5xl">{item.emoji ?? "📍"}</div>
+          <div className="flex h-full items-center justify-center bg-gradient-to-br from-indigo-100 to-sky-100 text-indigo-400">
+            <Glyph e={item.emoji ?? "📍"} className="h-12 w-12" />
+          </div>
         )}
         {item.badge && (
-          <span className="absolute top-2 left-2 rounded-md bg-white/95 px-1.5 py-0.5 text-[11px] font-bold text-gray-900 shadow-sm">{item.badge}</span>
+          <span className="absolute top-2 left-2 rounded-md bg-white/95 px-1.5 py-0.5 text-[11px] font-bold text-gray-900 shadow-sm">
+            {item.badge}
+          </span>
         )}
         {item.score !== undefined && (
           <span className="absolute top-2 right-2 rounded-full bg-white/95 shadow-sm">
@@ -148,7 +153,15 @@ export function PhotoRail({
                 d < 0 ? "-left-5" : "-right-5"
               }`}
             >
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2.4}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d={d > 0 ? "m9 6 6 6-6 6" : "m15 6-6 6 6 6"} />
               </svg>
             </button>

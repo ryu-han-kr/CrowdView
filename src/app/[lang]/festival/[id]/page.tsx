@@ -16,6 +16,7 @@ import { getT } from "@/i18n/server";
 import { translateNames } from "@/lib/name-translate";
 import { formatHour } from "@/i18n/translate";
 import { KstNote } from "@/components/LocalTime";
+import { Glyph } from "@/components/Glyph";
 
 export const revalidate = 3600;
 
@@ -104,7 +105,9 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
               // eslint-disable-next-line @next/next/no-img-element
               <img src={f.image} alt={tr(f.title)} className="h-full w-full object-cover" />
             ) : (
-              <div className="flex h-full items-center justify-center text-7xl">{cat.emoji}</div>
+              <div className="flex h-full items-center justify-center text-indigo-300">
+                <Glyph e={cat.emoji} className="h-20 w-20" />
+              </div>
             )}
             <span className="absolute right-2 bottom-2 rounded bg-black/40 px-1.5 py-0.5 text-[10px] text-white/90">
               {f.source === "tourapi" ? t("사진 한국관광공사") : t("사진 서울시 문화행사 정보")}
@@ -113,7 +116,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
           <div className="mt-4 flex items-start justify-between gap-3">
             <div>
               <Link href={`/events?type=${cat.id}`} className="text-xs font-semibold text-indigo-600">
-                {cat.emoji} {t(cat.label)}
+                <Glyph e={cat.emoji} /> {t(cat.label)}
               </Link>
               <h1 className="text-2xl font-bold md:text-3xl">{tr(f.title)}</h1>
               <KstNote className="mt-1" />

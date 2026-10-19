@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { StickyBar } from "./StickyBar";
+import { Glyph } from "@/components/Glyph";
 
 // 이모지 칩 탭 + 내용 (홈 파트 칩과 같은 모양). 공항 상세의 파트 선택에 쓴다
 export interface ChipTab {
@@ -43,7 +44,7 @@ export function ChipTabPanels({ tabs }: { tabs: ChipTab[] }) {
                   on ? "border-gray-900 bg-gray-900 text-white" : "border-gray-200 bg-white text-gray-700 md:hover:border-gray-400"
                 }`}
               >
-                <span>{t.emoji}</span>
+                <Glyph e={t.emoji} />
                 {t.label}
               </button>
             );

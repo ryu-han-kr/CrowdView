@@ -8,6 +8,7 @@ import { placeHref } from "@/lib/places";
 import { headcountInfo, isEstimated } from "@/lib/format";
 import { DataTag } from "./DataTag";
 import { useI18n } from "@/i18n/client";
+import { Glyph } from "@/components/Glyph";
 
 /** 대표 사진이 있으면 사진, 없으면 색 배경 + 이모지 */
 export function PlaceThumb({ place, size = 48 }: { place: Place; size?: number }) {
@@ -29,7 +30,7 @@ export function PlaceThumb({ place, size = 48 }: { place: Place; size?: number }
         background: `linear-gradient(135deg, hsl(${place.hue} 80% 88%), hsl(${place.hue + 40} 80% 78%))`,
       }}
     >
-      {place.emoji}
+      <Glyph e={place.emoji} className="h-1/2 w-1/2 text-white drop-shadow-sm" />
     </div>
   );
 }
@@ -90,7 +91,7 @@ export function PlaceCard({ place, crowd }: { place: Place; crowd: CrowdResult }
             className="flex h-full items-center justify-center text-6xl"
             style={{ background: `linear-gradient(135deg, hsl(${place.hue} 80% 88%), hsl(${place.hue + 40} 80% 78%))` }}
           >
-            {place.emoji}
+            <Glyph e={place.emoji} className="h-16 w-16 text-white drop-shadow-sm" />
           </div>
         )}
         <span className="absolute top-3 left-3 flex rounded-full bg-white/95 shadow-sm">

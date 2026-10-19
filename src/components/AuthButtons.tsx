@@ -3,6 +3,7 @@
 import Link from "@/i18n/link";
 import { useI18n } from "@/i18n/client";
 import { signIn, signOut, useSession } from "@/lib/auth-client";
+import { Glyph } from "@/components/Glyph";
 
 /** 카카오·네이버·구글 로그인 버튼 (켜진 수단만) */
 export function SocialLoginButtons({
@@ -76,7 +77,7 @@ function NavAuthInner() {
         <img src={user.image} alt="" className="h-7 w-7 rounded-full object-cover" />
       ) : (
         <span className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-xs text-indigo-700">
-          {user.name.slice(0, 1) || "👤"}
+          {user.name.slice(0, 1) || <Glyph e="👤" className="h-4 w-4" />}
         </span>
       )}
     </Link>

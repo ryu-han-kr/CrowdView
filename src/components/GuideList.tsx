@@ -9,6 +9,7 @@ import { currentPosition, distanceKm, type LatLng } from "@/lib/geo";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { FilterLayout, PickStar } from "./FilterLayout";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
+import { Glyph } from "@/components/Glyph";
 
 export type Row = [id: string, kind: string, name: string, lat: number | null, lng: number | null, gu: string | null, img?: string | null];
 interface Live {
@@ -116,7 +117,7 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
           onClick={async () => setMe(me ? null : await currentPosition().catch(() => null))}
           className={`shrink-0 rounded-2xl px-3 py-2.5 md:w-full text-sm font-semibold ${me ? "bg-indigo-600 text-white" : "bg-indigo-50 text-indigo-700"}`}
         >
-          📍 {t("내 주변")}
+          <Glyph e="📍" /> {t("내 주변")}
         </button>
       }
       groups={[
@@ -220,8 +221,8 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
                               className="object-cover transition-transform duration-300 md:group-hover:scale-105"
                             />
                           ) : (
-                            <div className="flex h-full items-center justify-center bg-gradient-to-br from-indigo-50 to-sky-100 text-4xl">
-                              {kind?.emoji}
+                            <div className="flex h-full items-center justify-center bg-gradient-to-br from-indigo-50 to-sky-100 text-indigo-300">
+                              <Glyph e={kind?.emoji} className="h-10 w-10" />
                             </div>
                           )}
                           {level && (
@@ -236,7 +237,11 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
                         </div>
                         <p className="mt-1.5 truncate text-sm font-semibold">{r[2]}</p>
                         <p className="truncate text-xs text-gray-500">
-                          {kind && `${kind.emoji} ${t(kind.label)}`}
+                          {kind && (
+                            <>
+                              <Glyph e={kind.emoji} /> {t(kind.label)}
+                            </>
+                          )}
                           {r[5] ? ` · ${t(r[5])}` : ""}
                           {me && r[3] !== null && ` · ${distanceKm(me, { lat: r[3], lng: r[4]! }).toFixed(1)}km`}
                         </p>

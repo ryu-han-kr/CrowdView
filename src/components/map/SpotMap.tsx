@@ -9,6 +9,7 @@ import { LEVELS, levelOf } from "@/lib/levels";
 import { KEY_ID, loadSdk } from "@/lib/naver-map";
 import { LevelBadge } from "../Level";
 import { MapLegend } from "./MapLegend";
+import { Glyph } from "@/components/Glyph";
 
 export interface MapSpot {
   id: string;
@@ -41,7 +42,7 @@ export function ViewToggle({ view, onChange }: { view: "list" | "map"; onChange:
           aria-pressed={view === v}
           className={`min-h-8 rounded-full px-3 py-1.5 ${view === v ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
         >
-          {v === "list" ? `☰ ${t("목록")}` : `🗺️ ${t("지도")}`}
+          <Glyph e={v === "list" ? "☰" : "🗺️"} /> {v === "list" ? t("목록") : t("지도")}
         </button>
       ))}
     </div>
@@ -96,7 +97,9 @@ function SpotCard({ spot, onClose }: { spot: MapSpot; onClose: () => void }) {
         // eslint-disable-next-line @next/next/no-img-element
         <img src={spot.img} alt="" className="h-12 w-12 shrink-0 rounded-xl object-cover" />
       ) : (
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-2xl">{spot.emoji ?? "📍"}</span>
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gray-100 text-gray-500">
+          <Glyph e={spot.emoji ?? "📍"} className="h-6 w-6" />
+        </span>
       )}
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-bold">{spot.name}</span>
@@ -118,7 +121,7 @@ function SpotCard({ spot, onClose }: { spot: MapSpot; onClose: () => void }) {
         </Link>
       )}
       <button onClick={onClose} aria-label="close" className="px-1 text-gray-400">
-        ✕
+        <Glyph e="✕" className="h-4 w-4" />
       </button>
     </div>
   );

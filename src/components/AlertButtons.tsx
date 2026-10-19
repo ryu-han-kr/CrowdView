@@ -6,6 +6,7 @@ import { useI18n } from "@/i18n/client";
 import { useSession } from "@/lib/auth-client";
 import { getPushSubscription } from "@/lib/plus-browser";
 import { usePlus } from "@/lib/plus-client";
+import { Glyph } from "@/components/Glyph";
 
 type Kind = "calm" | "busy";
 
@@ -56,7 +57,10 @@ function Inner({ placeId }: { placeId: string }) {
 
   return (
     <section className="mt-4 rounded-3xl border border-indigo-100 p-4">
-      <p className="text-sm font-bold">🔔 {t("혼잡 알림")} <span className="ml-1 rounded bg-indigo-600 px-1.5 py-0.5 text-[10px] text-white">Plus</span></p>
+      <p className="flex items-center gap-1 text-sm font-bold">
+        <Glyph e="🔔" className="h-4 w-4 text-indigo-500" /> {t("혼잡 알림")}{" "}
+        <span className="ml-1 rounded bg-indigo-600 px-1.5 py-0.5 text-[10px] text-white">Plus</span>
+      </p>
       {plus ? (
         <div className="mt-3 flex gap-2">
           {(["calm", "busy"] as const).map((k) => (
@@ -67,7 +71,7 @@ function Inner({ placeId }: { placeId: string }) {
               className={`flex-1 rounded-2xl px-3 py-2.5 text-xs font-semibold ${on[k] ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-700"}`}
             >
               {k === "calm" ? t("한산해지면 알림") : t("붐비기 시작하면 알림")}
-              {on[k] && " ✓"}
+              {on[k] && <Glyph e="✓" className="ml-1 h-3.5 w-3.5" />}
             </button>
           ))}
         </div>

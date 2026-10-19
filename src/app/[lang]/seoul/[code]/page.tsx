@@ -22,6 +22,7 @@ import { GUIDE, GUIDE_KINDS, TOILETS, guideText, nearest, photoNear } from "@/li
 import Image from "next/image";
 import { canOptimize } from "@/lib/img";
 import { KstNote } from "@/components/LocalTime";
+import { Glyph } from "@/components/Glyph";
 
 export const revalidate = 600;
 
@@ -73,7 +74,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
         ← {t("서울 실시간 인구")}
       </Link>
       <p className="mt-3 text-xs font-medium text-gray-500">
-        {group.emoji} {t(group.label)} · {t("서울")}
+        <Glyph e={group.emoji} /> {t(group.label)} · {t("서울")}
       </p>
       <h1 className="mt-1 text-2xl font-bold md:text-3xl">{name}</h1>
       <KstNote className="mt-1" />
@@ -156,7 +157,9 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
           {extra?.commerce && (
             <section className="mt-4 rounded-3xl border border-gray-100 p-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-sm font-bold">💳 {t("지금 가게들은")}</h2>
+                <h2 className="flex items-center gap-1.5 text-sm font-bold">
+                  <Glyph e="💳" className="h-4 w-4 text-indigo-500" /> {t("지금 가게들은")}
+                </h2>
                 <span className="text-xs font-bold" style={{ color: BUSY[extra.commerce.level] }}>
                   {t("상권 전체 '{level}'", { level: t(extra.commerce.level) })}
                 </span>
@@ -177,9 +180,17 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
               <p className="mt-2 text-[11px] text-gray-400">{t("카드 결제 건수로 본 업종별 붐빔 (서울시 실시간 도시데이터)")}</p>
               {(extra.road || extra.bikes) && (
                 <p className="mt-3 text-xs text-gray-600">
-                  {extra.road && `🚗 ${t("주변 도로")} ${t(extra.road.index)} (${extra.road.speed}km/h)`}
+                  {extra.road && (
+                    <>
+                      <Glyph e="🚗" /> {t("주변 도로")} {t(extra.road.index)} ({extra.road.speed}km/h)
+                    </>
+                  )}
                   {extra.road && extra.bikes ? " · " : ""}
-                  {extra.bikes ? `🚲 ${t("따릉이 {n}대", { n: extra.bikes })}` : ""}
+                  {extra.bikes ? (
+                    <>
+                      <Glyph e="🚲" /> {t("따릉이 {n}대", { n: extra.bikes })}
+                    </>
+                  ) : null}
                 </p>
               )}
             </section>
@@ -226,7 +237,9 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
                   href={`/near?tab=toilet&lat=${area.lat}&lng=${area.lng}&name=${encodeURIComponent(name)}`}
                   className="flex items-center justify-between text-sm font-semibold"
                 >
-                  <span>🚻 {t("800m 안 공중화장실 {n}곳", { n: toilets })}</span>
+                  <span>
+                    <Glyph e="🚻" /> {t("800m 안 공중화장실 {n}곳", { n: toilets })}
+                  </span>
                   <span className="text-indigo-600">{t("보기")} ›</span>
                 </Link>
                 {spots.length > 0 && (

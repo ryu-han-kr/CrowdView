@@ -9,6 +9,7 @@ import { CATEGORY_LABEL, type Category, type CrowdResult, type Place } from "@/l
 import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
 import { StickyBar } from "./StickyBar";
+import { Glyph } from "@/components/Glyph";
 
 type Filter = "all" | "fav" | Category;
 type Sort = "calm" | "busy";
@@ -92,7 +93,7 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
           />
           {query && (
             <button onClick={() => setQuery("")} aria-label={t("검색어 지우기")} className="text-gray-400">
-              ✕
+              <Glyph e="✕" className="h-4 w-4" />
             </button>
           )}
         </label>
@@ -106,7 +107,7 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
                 filter === c.id ? "border-gray-900 bg-gray-900 text-white" : "border-gray-200 bg-white text-gray-700 md:hover:border-gray-400"
               }`}
             >
-              <span>{c.emoji}</span>
+              <Glyph e={c.emoji} />
               {c.label}
             </button>
           ))}
