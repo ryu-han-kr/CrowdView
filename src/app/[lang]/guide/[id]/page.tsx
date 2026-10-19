@@ -14,6 +14,7 @@ import { GUIDE, GUIDE_KINDS, TOILETS, TOILET_FLAG, areaNear, getGuidePlace, guid
 import { getAllSeoulLive } from "@/lib/seoul-live";
 import { jsonLd, pageMeta } from "@/lib/seo";
 import { KstNote } from "@/components/LocalTime";
+import { Glyph } from "@/components/Glyph";
 
 // 가이드 글은 주 1회 바뀌고, 혼잡도는 10분마다 → 10분마다 다시 그림 (처음 열 때 만든다)
 export const revalidate = 600;
@@ -93,7 +94,7 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
         ← {t("서울 여행 가이드")}
       </Link>
       <p className="mt-3 text-xs font-medium text-gray-500">
-        {kind.emoji} {t(kind.label)}
+        <Glyph e={kind.emoji} /> {t(kind.label)}
         {p.gu && ` · ${t(p.gu)}`}
       </p>
       <h1 className="mt-1 text-2xl font-bold md:text-3xl">{trName ?? text.n}</h1>
@@ -170,7 +171,9 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
           {toilets.length > 0 && (
             <section>
               <div className="flex items-center justify-between">
-                <h2 className="text-lg font-bold">🚻 {t("가까운 화장실")}</h2>
+                <h2 className="flex items-center gap-1.5 text-lg font-bold">
+                  <Glyph e="🚻" className="h-5 w-5 text-indigo-500" /> {t("가까운 화장실")}
+                </h2>
                 <Link href={`/near?tab=toilet&lat=${at!.lat}&lng=${at!.lng}&name=${encodeURIComponent(text.n)}`} className="text-sm text-gray-500">
                   {t("더 보기")} ›
                 </Link>

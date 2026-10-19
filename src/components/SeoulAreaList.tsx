@@ -12,6 +12,7 @@ import { SEOUL_GROUPS, type SeoulGroup } from "@/lib/seoul-live";
 import { FilterLayout, PickStar } from "./FilterLayout";
 import { LevelBadge } from "./Level";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
+import { Glyph } from "@/components/Glyph";
 
 export interface SeoulAreaRow {
   code: string;
@@ -103,7 +104,15 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
                 onClick={() => (s === "near" && !me ? useNearby() : setSort(s))}
                 className={`min-h-8 rounded-full px-3 py-1.5 ${sort === s ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
               >
-                {s === "busy" ? t("붐비는 순") : s === "calm" ? t("한산한 순") : `📍 ${t("내 주변")}`}
+                {s === "busy" ? (
+                  t("붐비는 순")
+                ) : s === "calm" ? (
+                  t("한산한 순")
+                ) : (
+                  <>
+                    <Glyph e="📍" /> {t("내 주변")}
+                  </>
+                )}
               </button>
             ))}
           </div>

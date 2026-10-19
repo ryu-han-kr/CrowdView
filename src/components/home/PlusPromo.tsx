@@ -1,5 +1,6 @@
 import Link from "@/i18n/link";
 import type { T } from "@/i18n/translate";
+import { Glyph } from "@/components/Glyph";
 
 // 홈 중간의 Plus 혜택 배너: 혜택 3가지를 색 카드로 보여주고 요금 안내로 보낸다
 const CARDS = [
@@ -42,7 +43,7 @@ export function PlusPromo({ t, price }: { t: T; price: string }) {
               <div className={`relative bg-gradient-to-r px-5 pt-4 pb-7 text-white ${c.head}`}>
                 <p className="font-bold">{t(c.title)}</p>
                 <p className="text-xs text-white/85">{t(c.sub)}</p>
-                <span className="absolute top-2 right-4 text-4xl drop-shadow">{c.emoji}</span>
+                <Glyph e={c.emoji} className="absolute top-3 right-4 h-9 w-9 text-white/90 drop-shadow" />
               </div>
               <div className="-mt-3 rounded-t-3xl bg-white px-5 pt-4 pb-5">
                 <ul className="space-y-1 text-sm text-gray-700">

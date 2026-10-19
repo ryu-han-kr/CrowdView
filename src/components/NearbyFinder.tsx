@@ -4,6 +4,7 @@ import Link from "@/i18n/link";
 import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { currentPosition, distanceKm, type LatLng } from "@/lib/geo";
+import { Glyph } from "@/components/Glyph";
 
 type Tab = "toilet" | "wifi" | "guide" | "culture" | "reservation";
 const TABS: { id: Tab; label: string; emoji: string; file: (lang: string) => string }[] = [
@@ -88,7 +89,13 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
           };
         });
       case "wifi":
-        return rows.map((r) => ({ key: `${r[1]}${r[2]}`, name: r[0] as string, lat: r[1] as number, lng: r[2] as number, sub: r[3] ? t("실외") : t("실내") }));
+        return rows.map((r) => ({
+          key: `${r[1]}${r[2]}`,
+          name: r[0] as string,
+          lat: r[1] as number,
+          lng: r[2] as number,
+          sub: r[3] ? t("실외") : t("실내"),
+        }));
       case "guide":
         return rows
           .filter((r) => r[3] !== null)
@@ -105,14 +112,16 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
       case "reservation": {
         // 접수 마감이 지난 체험은 빼기 (데이터는 주 1회라 상태만으로는 늦다)
         const now = new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 16).replace("T", " ");
-        return rows.filter((r) => !r[6] || String(r[6]) >= now).map((r) => ({
-          key: r[5] as string,
-          name: r[0] as string,
-          lat: r[1] as number,
-          lng: r[2] as number,
-          sub: `${r[3]} · ${r[4]}${r[6] ? ` · ${t("접수 마감")} ${String(r[6]).slice(5, 10)}` : ""}`,
-          external: r[5] as string,
-        }));
+        return rows
+          .filter((r) => !r[6] || String(r[6]) >= now)
+          .map((r) => ({
+            key: r[5] as string,
+            name: r[0] as string,
+            lat: r[1] as number,
+            lng: r[2] as number,
+            sub: `${r[3]} · ${r[4]}${r[6] ? ` · ${t("접수 마감")} ${String(r[6]).slice(5, 10)}` : ""}`,
+            external: r[5] as string,
+          }));
       }
     }
   }, [data, tab, t]);
@@ -127,14 +136,15 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
       .slice(0, 30);
   }, [items, at, filters, tab]);
 
-  const chip = (on: boolean) => `shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium ${on ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`;
+  const chip = (on: boolean) =>
+    `shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium ${on ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`;
 
   return (
     <div>
       <div className="no-scrollbar flex gap-2 overflow-x-auto">
         {TABS.map((x) => (
           <button key={x.id} onClick={() => setTab(x.id)} className={chip(tab === x.id)}>
-            {x.emoji} {t(x.label)}
+            <Glyph e={x.emoji} /> {t(x.label)}
           </button>
         ))}
       </div>
@@ -145,7 +155,7 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
           at?.name === t("내 위치") ? "bg-indigo-600 text-white" : "bg-indigo-50 text-indigo-700"
         }`}
       >
-        📍 {at?.name === t("내 위치") ? t("내 위치 기준") : t("내 위치 사용하기")}
+        <Glyph e="📍" /> {at?.name === t("내 위치") ? t("내 위치 기준") : t("내 위치 사용하기")}
       </button>
       <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
         {hubs.map((h) => (
@@ -180,7 +190,9 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
 
       {error && <p className="mt-3 text-sm font-semibold text-red-600">{error}</p>}
       {!at ? (
-        <p className="mt-6 rounded-2xl bg-gray-50 p-5 text-sm text-gray-600">{t("내 위치를 켜거나 위에서 장소를 고르면 가까운 곳부터 보여드려요.")}</p>
+        <p className="mt-6 rounded-2xl bg-gray-50 p-5 text-sm text-gray-600">
+          {t("내 위치를 켜거나 위에서 장소를 고르면 가까운 곳부터 보여드려요.")}
+        </p>
       ) : !data[tab] ? (
         <p className="mt-6 text-sm text-gray-500">{t("불러오는 중…")}</p>
       ) : list.length === 0 ? (
@@ -235,7 +247,9 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
           })}
         </ul>
       )}
-      <p className="mt-4 text-[11px] text-gray-400">{t("서울시 공중화장실·공공와이파이·문화공간·공공서비스예약, Visit Seoul (서울 열린데이터광장, 주 1회 갱신)")}</p>
+      <p className="mt-4 text-[11px] text-gray-400">
+        {t("서울시 공중화장실·공공와이파이·문화공간·공공서비스예약, Visit Seoul (서울 열린데이터광장, 주 1회 갱신)")}
+      </p>
     </div>
   );
 }

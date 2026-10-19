@@ -5,6 +5,7 @@ import { useI18n } from "@/i18n/client";
 import { useFavorites, usePreferredTags } from "@/lib/prefs";
 import type { CrowdResult, Place } from "@/lib/types";
 import { PlaceRow } from "./PlaceRow";
+import { Glyph } from "@/components/Glyph";
 
 export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<string, CrowdResult> }) {
   const { favorites } = useFavorites();
@@ -33,7 +34,9 @@ export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<stri
   return (
     <div className="space-y-8">
       <section>
-        <h2 className="text-lg font-bold">❤️ {t("즐겨찾기")}</h2>
+        <h2 className="flex items-center gap-1.5 text-lg font-bold">
+          <Glyph e="❤️" className="h-5 w-5 text-rose-500" /> {t("즐겨찾기")}
+        </h2>
         {favPlaces.length ? (
           <ul className="mt-1 divide-y divide-gray-100">
             {favPlaces.map((p) => (
@@ -43,9 +46,7 @@ export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<stri
             ))}
           </ul>
         ) : (
-          <p className="mt-2 rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">
-            {t("장소 상세 화면 오른쪽 위 🤍 를 누르면 여기에 모여요.")}
-          </p>
+          <p className="mt-2 rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">{t("장소 상세 화면 오른쪽 위 🤍 를 누르면 여기에 모여요.")}</p>
         )}
       </section>
 
@@ -86,7 +87,7 @@ export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<stri
                   aria-label={t("{tag} 선택 해제", { tag: t(tag) })}
                   className="rounded-full bg-indigo-500 py-1.5 pr-2.5 pl-3 text-sm text-white"
                 >
-                  #{t(tag)} <span className="ml-0.5 opacity-70">✕</span>
+                  #{t(tag)} <Glyph e="✕" className="ml-0.5 h-3 w-3 opacity-70" />
                 </button>
               ))}
             </div>
@@ -110,7 +111,9 @@ export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<stri
         </div>
         {recommended.length > 0 && (
           <div className="mt-4 rounded-3xl bg-indigo-50/60 p-3">
-            <p className="px-1 text-xs font-semibold text-indigo-500">✨ {t("취향 맞춤 추천")}</p>
+            <p className="px-1 text-xs font-semibold text-indigo-500">
+              <Glyph e="✨" /> {t("취향 맞춤 추천")}
+            </p>
             <ul className="divide-y divide-indigo-100/70">
               {recommended.map((p) => (
                 <li key={p.id}>

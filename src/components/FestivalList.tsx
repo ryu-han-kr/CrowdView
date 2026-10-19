@@ -9,6 +9,7 @@ import { compactNumber } from "@/lib/format";
 import type { SeoulLive } from "@/lib/seoul-live";
 import { DataTag } from "./DataTag";
 import { LevelBadge } from "./Level";
+import { Glyph } from "@/components/Glyph";
 
 const fmt = (d: string) => d.slice(5).replace("-", "/");
 
@@ -80,11 +81,9 @@ export function FestivalList({
               c.id === category ? "border-indigo-500 bg-indigo-50 text-indigo-700" : "border-gray-200 text-gray-600"
             }`}
           >
-            {c.emoji && <span className="mr-1">{c.emoji}</span>}
+            {c.emoji && <Glyph e={c.emoji} className="mr-1 h-[1em] w-[1em]" />}
             {t(c.label)}
-            <span className="ml-1 text-xs opacity-60">
-              {c.id === "all" ? inRegion.length : inRegion.filter((f) => f.category === c.id).length}
-            </span>
+            <span className="ml-1 text-xs opacity-60">{c.id === "all" ? inRegion.length : inRegion.filter((f) => f.category === c.id).length}</span>
           </button>
         ))}
       </div>
@@ -133,17 +132,13 @@ export function FestivalList({
                               <>
                                 <LevelBadge score={live.score} />
                                 <span className="rounded bg-emerald-600 px-1 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
-                                <span>
-                                  {t("{min}~{max}명", { min: compactNumber(live.min, lang), max: compactNumber(live.max, lang) })}
-                                </span>
+                                <span>{t("{min}~{max}명", { min: compactNumber(live.min, lang), max: compactNumber(live.max, lang) })}</span>
                               </>
                             ) : c ? (
                               <>
                                 <LevelBadge score={c.score} />
                                 <DataTag />
-                                <span>
-                                  {t("작년 {pct}%", { pct: `${c.ratio >= 1 ? "+" : ""}${Math.round((c.ratio - 1) * 100)}` })}
-                                </span>
+                                <span>{t("작년 {pct}%", { pct: `${c.ratio >= 1 ? "+" : ""}${Math.round((c.ratio - 1) * 100)}` })}</span>
                               </>
                             ) : (
                               <span className="text-gray-400">
@@ -180,7 +175,11 @@ export function FestivalList({
           </ul>
         </details>
       )}
-      {list.length === 0 && <p className="mt-8 text-center text-sm text-gray-500">{category === "all" ? t("이 지역에는 예정된 축제가 없어요.") : t("이 종류의 축제가 없어요.")}</p>}
+      {list.length === 0 && (
+        <p className="mt-8 text-center text-sm text-gray-500">
+          {category === "all" ? t("이 지역에는 예정된 축제가 없어요.") : t("이 종류의 축제가 없어요.")}
+        </p>
+      )}
     </>
   );
 }

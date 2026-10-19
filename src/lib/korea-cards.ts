@@ -24,7 +24,7 @@ export function landmarkCard(l: Landmark, lang: Lang, t: T, crowd: Crowd, seoul:
     external: link.external,
     img: l.img,
     title: l.n[lang] ?? l.n.ko,
-    sub: `${t(l.region)} · ${kind.emoji} ${t(kind.label)}`,
+    sub: `${t(l.region)} · ${t(kind.label)}`,
     score,
     lat: l.lat,
     lng: l.lng,

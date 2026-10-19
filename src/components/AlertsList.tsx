@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { useSession } from "@/lib/auth-client";
 import { usePlus } from "@/lib/plus-client";
+import { Glyph } from "@/components/Glyph";
 
 interface AlertRow {
   placeId: string;
@@ -44,7 +45,9 @@ export function AlertsList({ enabled }: { enabled: boolean }) {
   return (
     <section>
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold">🔔 {t("내 혼잡 알림")}</h2>
+        <h2 className="flex items-center gap-1.5 text-lg font-bold">
+          <Glyph e="🔔" className="h-5 w-5 text-indigo-500" /> {t("내 혼잡 알림")}
+        </h2>
         {!!rows?.length && (
           <button disabled={busy} onClick={() => off({ all: true }, () => false)} className="text-xs font-semibold text-gray-500">
             {t("모두 끄기")}
@@ -57,7 +60,7 @@ export function AlertsList({ enabled }: { enabled: boolean }) {
         <ul className="mt-2 divide-y divide-gray-100 rounded-2xl border border-gray-100">
           {rows.map((r) => (
             <li key={`${r.placeId}-${r.kind}`} className="flex items-center gap-3 px-4 py-3">
-              <span className="text-lg">{r.kind === "calm" ? "🌿" : "🔥"}</span>
+              <Glyph e={r.kind === "calm" ? "🌿" : "🔥"} className={`h-5 w-5 ${r.kind === "calm" ? "text-emerald-500" : "text-rose-500"}`} />
               <span className="min-w-0 flex-1">
                 {r.href ? (
                   <Link href={r.href} className="block truncate text-sm font-semibold">

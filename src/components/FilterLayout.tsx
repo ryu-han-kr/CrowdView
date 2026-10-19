@@ -3,6 +3,7 @@
 import Link from "@/i18n/link";
 import { useI18n } from "@/i18n/client";
 import { usePicks, type Pick } from "@/lib/prefs";
+import { Glyph } from "@/components/Glyph";
 
 export interface FilterOption {
   id: string;
@@ -51,7 +52,8 @@ export function FilterLayout({
     groups.forEach((g) => g.onChange([]));
   };
   const toggle = (g: FilterGroup, id: string) => g.onChange(g.selected.includes(id) ? g.selected.filter((x) => x !== id) : [...g.selected, id]);
-  const chip = (on: boolean) => `shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium ${on ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`;
+  const chip = (on: boolean) =>
+    `shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium ${on ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`;
 
   const search = (
     <label className="flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-2.5">
@@ -67,7 +69,7 @@ export function FilterLayout({
       />
       {query && (
         <button onClick={() => onQuery("")} aria-label={t("검색어 지우기")} className="text-gray-400">
-          ✕
+          <Glyph e="✕" className="h-4 w-4" />
         </button>
       )}
     </label>
@@ -96,15 +98,15 @@ export function FilterLayout({
               {query.trim() && (
                 <li>
                   <button onClick={() => onQuery("")} className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-gray-700 shadow-sm">
-                    “{query.trim()}” ✕
+                    “{query.trim()}” <Glyph e="✕" className="ml-0.5 h-3 w-3" />
                   </button>
                 </li>
               )}
               {chosen.map(({ g, o }) => (
                 <li key={`${g.id}:${o.id}`}>
                   <button onClick={() => toggle(g, o.id)} className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-gray-700 shadow-sm">
-                    {o.emoji && `${o.emoji} `}
-                    {o.label} ✕
+                    {o.emoji && <Glyph e={o.emoji} className="mr-1 h-[1em] w-[1em]" />}
+                    {o.label} <Glyph e="✕" className="ml-0.5 h-3 w-3" />
                   </button>
                 </li>
               ))}
@@ -127,10 +129,12 @@ export function FilterLayout({
                 const on = g.selected.includes(o.id);
                 return (
                   <li key={o.id}>
-                    <label className={`flex cursor-pointer items-center gap-2.5 rounded-xl px-2 py-1.5 text-sm ${on ? "bg-gray-100 font-semibold" : "hover:bg-gray-50"}`}>
+                    <label
+                      className={`flex cursor-pointer items-center gap-2.5 rounded-xl px-2 py-1.5 text-sm ${on ? "bg-gray-100 font-semibold" : "hover:bg-gray-50"}`}
+                    >
                       <input type="checkbox" checked={on} onChange={() => toggle(g, o.id)} className="h-4 w-4 accent-indigo-600" />
                       <span className="min-w-0 flex-1 truncate">
-                        {o.emoji && <span className="mr-1">{o.emoji}</span>}
+                        {o.emoji && <Glyph e={o.emoji} className="mr-1 h-[1em] w-[1em]" />}
                         {o.label}
                       </span>
                       {o.count !== undefined && <span className="text-xs text-gray-400">{o.count}</span>}
@@ -161,7 +165,7 @@ export function FilterLayout({
                 </button>
                 {g.options.map((o) => (
                   <button key={o.id} onClick={() => toggle(g, o.id)} className={chip(g.selected.includes(o.id))}>
-                    {o.emoji && <span className="mr-1">{o.emoji}</span>}
+                    {o.emoji && <Glyph e={o.emoji} className="mr-1 h-[1em] w-[1em]" />}
                     {o.label}
                     {o.count !== undefined && <span className="ml-1 text-xs opacity-60">{o.count}</span>}
                   </button>
@@ -170,7 +174,7 @@ export function FilterLayout({
             ))}
           {picks.length > 0 && (
             <p className="mt-3 rounded-2xl bg-indigo-50 px-4 py-2.5 text-xs text-indigo-800">
-              ⭐ {t("담은 곳 {n}곳", { n: picks.length })}: {picks.map((p) => p.label).join(", ")}
+              <Glyph e="⭐" className="h-4 w-4 text-amber-400" /> {t("담은 곳 {n}곳", { n: picks.length })}: {picks.map((p) => p.label).join(", ")}
             </p>
           )}
         </div>
@@ -185,7 +189,9 @@ function PicksBox({ picks, remove, clear }: { picks: Pick[]; remove: (id: string
   return (
     <section className="mt-6 rounded-2xl border border-gray-100 p-3.5">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-bold">⭐ {t("담은 곳 {n}곳", { n: picks.length })}</p>
+        <p className="flex items-center gap-1 text-sm font-bold">
+          <Glyph e="⭐" className="h-4 w-4 text-amber-400" /> {t("담은 곳 {n}곳", { n: picks.length })}
+        </p>
         {picks.length > 0 && (
           <button onClick={clear} className="text-xs font-semibold text-gray-400">
             {t("비우기")}
@@ -200,7 +206,7 @@ function PicksBox({ picks, remove, clear }: { picks: Pick[]; remove: (id: string
                 {p.label}
               </Link>
               <button onClick={() => remove(p.id)} aria-label={t("빼기")} className="text-xs text-gray-400">
-                ✕
+                <Glyph e="✕" className="h-4 w-4" />
               </button>
             </li>
           ))}
@@ -210,7 +216,7 @@ function PicksBox({ picks, remove, clear }: { picks: Pick[]; remove: (id: string
       )}
       {picks.length > 0 && (
         <Link href="/route" className="mt-3 block rounded-xl bg-indigo-600 py-2 text-center text-xs font-bold text-white">
-          🧭 {t("한산한 코스 짜러 가기")}
+          <Glyph e="🧭" /> {t("한산한 코스 짜러 가기")}
         </Link>
       )}
     </section>
@@ -229,7 +235,7 @@ export function PickStar({ pick }: { pick: Pick }) {
       aria-label={on ? t("담기 취소") : t("담기")}
       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg leading-none ${on ? "text-amber-400" : "text-gray-300 hover:text-amber-300"}`}
     >
-      {on ? "★" : "☆"}
+      <Glyph e={on ? "★" : "☆"} className={`h-5 w-5 ${on ? "text-amber-400" : ""}`} />
     </button>
   );
 }

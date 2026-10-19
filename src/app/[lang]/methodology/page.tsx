@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "@/i18n/link";
 import type { Lang } from "@/i18n/config";
 import { pageMeta } from "@/lib/seo";
+import { Glyph } from "@/components/Glyph";
 
 // 데이터 출처·계산 방식·한계 공개 (외부 검토: 신뢰·AI 인용을 위해 방법론을 사람이 읽을 수 있게).
 // 긴 설명이라 한국어·영어 본문을 여기 두고, 일본어·중국어 화면은 영어 본문을 보여준다
@@ -139,7 +140,11 @@ const EN: Copy = {
     ["Seoul real-time city data", "Population and 12-hour forecast for 121 Seoul areas", "10 min"],
     ["Incheon International Airport · Korea Airports Corporation", "Departure waits, parking, passenger notices", "5–30 min"],
     ["ThemeParks.wiki", "Everland and Lotte World ride waits", "2 min"],
-    ["Korea Tourism Organization TourAPI · DataLab · concentration", "Festivals, landmark photos, regional visitors, 30-day forecast", "6 h – 1 week"],
+    [
+      "Korea Tourism Organization TourAPI · DataLab · concentration",
+      "Festivals, landmark photos, regional visitors, 30-day forecast",
+      "6 h – 1 week",
+    ],
     ["KMA · AirKorea · KASI", "Weather, fine dust, public holidays", "1–12 h"],
     ["Seoul Open Data Plaza", "Subway lines, station times and ridership; toilets, Wi-Fi, culture spaces, Visit Seoul", "weekly"],
   ],
@@ -195,7 +200,7 @@ export default async function MethodologyPage({ params }: { params: Promise<{ la
           </table>
         </section>
         <Link href="/accuracy" className="mt-8 inline-block rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white">
-          📈 {c.accuracyLink}
+          <Glyph e="📈" /> {c.accuracyLink}
         </Link>
       </article>
     </main>

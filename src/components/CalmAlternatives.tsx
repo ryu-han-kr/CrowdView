@@ -9,6 +9,7 @@ import { PLACES, placeHref } from "@/lib/places";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { getAllSeoulLive, seoulGroup } from "@/lib/seoul-live";
 import { LevelBadge } from "./Level";
+import { Glyph } from "@/components/Glyph";
 
 const NEAR_KM = 3;
 
@@ -32,7 +33,10 @@ export async function CalmAlternatives({
   lang: Lang;
 }) {
   const t = getT(lang);
-  const [crowd, seoul] = await Promise.all([getAllCrowd().catch(() => ({}) as Awaited<ReturnType<typeof getAllCrowd>>), getAllSeoulLive().catch(() => ({}) as Awaited<ReturnType<typeof getAllSeoulLive>>)]);
+  const [crowd, seoul] = await Promise.all([
+    getAllCrowd().catch(() => ({}) as Awaited<ReturnType<typeof getAllCrowd>>),
+    getAllSeoulLive().catch(() => ({}) as Awaited<ReturnType<typeof getAllSeoulLive>>),
+  ]);
   const here = { lat, lng };
   const myLevel = score === undefined ? 99 : levelOf(score).key;
   const items = [
@@ -55,11 +59,16 @@ export async function CalmAlternatives({
     .sort((a, b) => a.score - b.score || a.km - b.km)
     .slice(0, 3);
   if (!items.length) return null;
-  const names = await translateNames(items.map((x) => x.name), lang);
+  const names = await translateNames(
+    items.map((x) => x.name),
+    lang,
+  );
 
   return (
     <section className="mt-4 rounded-3xl border border-emerald-100 bg-emerald-50/60 p-4">
-      <p className="text-sm font-bold text-emerald-900">🌿 {t("지금 덜 붐비는 근처 대안")}</p>
+      <p className="flex items-center gap-1.5 text-sm font-bold text-emerald-900">
+        <Glyph e="🌿" className="h-4 w-4" /> {t("지금 덜 붐비는 근처 대안")}
+      </p>
       <ul className="mt-2 space-y-1.5">
         {items.map((x) => (
           <li key={x.id}>

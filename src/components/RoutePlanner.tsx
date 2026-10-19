@@ -12,6 +12,7 @@ import { levelOf } from "@/lib/levels";
 import { usePicks, usePlans } from "@/lib/prefs";
 import { INTERESTS, type Interest, type RoutePlan } from "@/lib/route";
 import { LevelBadge } from "./Level";
+import { Glyph } from "@/components/Glyph";
 
 interface Hub {
   id: string;
@@ -183,14 +184,16 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
         {picks.length > 0 && (
           <div className="rounded-2xl border border-amber-100 bg-amber-50/70 p-4">
             <label className="flex items-center justify-between gap-3">
-              <span className="text-sm font-bold">⭐ {t("담은 곳 {n}곳을 코스에 넣기", { n: picks.length })}</span>
+              <span className="flex items-center gap-1 text-sm font-bold">
+                <Glyph e="⭐" className="h-4 w-4 text-amber-400" /> {t("담은 곳 {n}곳을 코스에 넣기", { n: picks.length })}
+              </span>
               <input type="checkbox" checked={usePicked} onChange={(e) => setUsePicked(e.target.checked)} className="h-5 w-5 accent-indigo-600" />
             </label>
             <ul className="mt-2 flex flex-wrap gap-1.5">
               {picks.map((p) => (
                 <li key={p.id}>
                   <button onClick={() => removePick(p.id)} className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-gray-700 shadow-sm">
-                    {p.label} ✕
+                    {p.label} <Glyph e="✕" className="ml-0.5 h-3 w-3" />
                   </button>
                 </li>
               ))}
@@ -207,7 +210,7 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
               start?.name === t("내 위치") ? "bg-indigo-600 text-white" : "bg-indigo-50 text-indigo-700"
             }`}
           >
-            📍 {locating ? t("위치 찾는 중…") : start?.name === t("내 위치") ? t("내 위치에서 출발") : t("내 위치 사용하기")}
+            <Glyph e="📍" /> {locating ? t("위치 찾는 중…") : start?.name === t("내 위치") ? t("내 위치에서 출발") : t("내 위치 사용하기")}
           </button>
           <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
             {hubs.map((h) => (
@@ -282,7 +285,7 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
                   aria-pressed={on}
                   className={chip(on)}
                 >
-                  {i.emoji} {t(i.label)}
+                  <Glyph e={i.emoji} /> {t(i.label)}
                 </button>
               );
             })}
@@ -294,7 +297,7 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
           <div className="mt-2 flex gap-2">
             {(["transit", "walk"] as const).map((m) => (
               <button key={m} onClick={() => setTransport(m)} className={chip(transport === m)}>
-                {m === "transit" ? `🚇 ${t("대중교통")}` : `🚶 ${t("걷기 위주")}`}
+                <Glyph e={m === "transit" ? "🚇" : "🚶"} /> {m === "transit" ? t("대중교통") : t("걷기 위주")}
               </button>
             ))}
           </div>
@@ -304,7 +307,11 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
           {busy ? t("코스를 짜는 중…") : t("한산한 코스 만들기")}
         </button>
         {error && <p className="text-sm font-semibold text-red-600">{error}</p>}
-        {notice && <p className="rounded-2xl bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-900">🌙 {notice}</p>}
+        {notice && (
+          <p className="rounded-2xl bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-900">
+            <Glyph e="🌙" /> {notice}
+          </p>
+        )}
       </section>
 
       <section className="mt-8 lg:mt-0">
@@ -461,7 +468,7 @@ export function RouteResult({
         <span className="flex shrink-0 items-center gap-2">
           {beta && <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700">{t("베타 무료")}</span>}
           <button onClick={downloadIcs} className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-bold text-gray-700" title={t("캘린더에 넣기")}>
-            📅 {t("캘린더")}
+            <Glyph e="📅" /> {t("캘린더")}
           </button>
           {shareId && (
             <button
@@ -469,12 +476,12 @@ export function RouteResult({
               aria-pressed={inPlans}
               className={`rounded-full px-3 py-1.5 text-xs font-bold ${inPlans ? "bg-indigo-600 text-white" : "bg-indigo-50 text-indigo-700"}`}
             >
-              {inPlans ? `✓ ${t("저장됨")}` : `💾 ${t("저장")}`}
+              <Glyph e={inPlans ? "✓" : "💾"} /> {inPlans ? t("저장됨") : t("저장")}
             </button>
           )}
           {shareId && (
             <button onClick={share} className="rounded-full bg-gray-900 px-3 py-1.5 text-xs font-bold text-white">
-              {shared ? `✓ ${t("링크를 복사했어요")}` : `🔗 ${t("공유")}`}
+              <Glyph e={shared ? "✓" : "🔗"} /> {shared ? t("링크를 복사했어요") : t("공유")}
             </button>
           )}
         </span>
@@ -483,7 +490,9 @@ export function RouteResult({
       {!!warnings?.length && (
         <ul className="mt-3 space-y-1 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-900">
           {warnings.map((w) => (
-            <li key={w}>⚠️ {w}</li>
+            <li key={w}>
+              <Glyph e="⚠️" /> {w}
+            </li>
           ))}
         </ul>
       )}
@@ -500,7 +509,7 @@ export function RouteResult({
                 rel="noreferrer"
                 className="ml-4 flex items-center gap-2 border-l-2 border-dashed border-gray-200 py-1.5 pl-5 text-xs text-gray-500"
               >
-                {s.walk ? "🚶" : "🚇"} {s.lines?.length ? <>{s.lines.map((l) => lineName(t, l)).join(" → ")} · </> : null}
+                <Glyph e={s.walk ? "🚶" : "🚇"} /> {s.lines?.length ? <>{s.lines.map((l) => lineName(t, l)).join(" → ")} · </> : null}
                 {t("{n}분", { n: s.travelMin })} · {s.travelKm}km · <span className="text-indigo-600">{t("길찾기")} ›</span>
               </a>
               <Link
@@ -512,12 +521,14 @@ export function RouteResult({
                   {s.img ? (
                     <Image src={s.img} alt="" fill sizes="64px" unoptimized={!canOptimize(s.img)} className="object-cover" />
                   ) : (
-                    <span className="flex h-full items-center justify-center text-2xl">{s.meal ? "🍽️" : "📍"}</span>
+                    <span className="flex h-full items-center justify-center text-gray-400">
+                      <Glyph e={s.meal ? "🍽️" : "📍"} className="h-6 w-6" />
+                    </span>
                   )}
                   <span
                     className={`absolute top-1 left-1 flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold text-white shadow ${s.meal ? "bg-amber-500" : "bg-indigo-600"}`}
                   >
-                    {s.meal ? "🍽️" : i + 1}
+                    {s.meal ? <Glyph e="🍽️" className="h-3.5 w-3.5" /> : i + 1}
                   </span>
                 </span>
                 <span className="min-w-0 flex-1">
@@ -526,7 +537,7 @@ export function RouteResult({
                     {s.meal && <> · {t(s.meal === "lunch" ? "점심" : "저녁")}</>}
                   </span>
                   <span className="block truncate text-sm font-bold">
-                    {s.picked && <span className="mr-1 text-amber-400">★</span>}
+                    {s.picked && <Glyph e="★" className="mr-1 h-3.5 w-3.5 text-amber-400" />}
                     {s.name}
                   </span>
                   {/* 왜 이 시간에 가는지 */}
@@ -571,7 +582,9 @@ export function RouteResult({
       )}
       {locked > 0 && (
         <Link href="/pricing" className="mt-3 block rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-4 text-white">
-          <p className="text-sm font-bold">🔒 {t("나머지 {n}곳은 Plus에서 볼 수 있어요", { n: locked })}</p>
+          <p className="flex items-center gap-1 text-sm font-bold">
+            <Glyph e="🔒" className="h-4 w-4" /> {t("나머지 {n}곳은 Plus에서 볼 수 있어요", { n: locked })}
+          </p>
           <p className="text-xs text-white/80">{t("전체 시간표 · 붐비면 다시 짜기 · 월 3,900원")}</p>
         </Link>
       )}

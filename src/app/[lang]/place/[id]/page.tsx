@@ -42,6 +42,7 @@ import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { getAllSeoulLive } from "@/lib/seoul-live";
 import Link from "@/i18n/link";
 import { KstNote, LocalTime } from "@/components/LocalTime";
+import { Glyph } from "@/components/Glyph";
 
 // ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 // 관광공사 사진 여러 장 (scripts/korea-data/place-images.mjs)
@@ -312,7 +313,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
 
           {/* 앞으로 시간대별 (지금 이후, 입장 가능한 시간까지) */}
           <section className="mt-4 rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">
-            <p className="text-xs font-semibold text-indigo-500">✨ {t("지금 이후 시간대별 예상")}</p>
+            <p className="text-xs font-semibold text-indigo-500">
+              <Glyph e="✨" /> {t("지금 이후 시간대별 예상")}
+            </p>
             {isOpen && upcoming.length > 0 ? (
               <UpcomingHours hours={upcoming} bestHour={best?.hour} />
             ) : (
@@ -358,7 +361,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           {dday !== null && (
             <section className="mt-6 rounded-3xl bg-gray-900 p-5 text-white">
               <div className="flex items-center justify-between">
-                <h2 className="font-bold">🎯 {t("이벤트 당일 예측")}</h2>
+                <h2 className="flex items-center gap-1.5 font-bold">
+                  <Glyph e="🎯" className="h-5 w-5 text-indigo-500" /> {t("이벤트 당일 예측")}
+                </h2>
                 <span className="rounded-full bg-white/15 px-2.5 py-0.5 text-sm font-bold">
                   {isOngoingEvent(place) ? t("진행 중") : dday > 0 ? `D-${dday}` : dday === 0 ? "D-DAY" : t("종료")}
                 </span>

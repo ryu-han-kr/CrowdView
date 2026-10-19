@@ -7,6 +7,7 @@ import { useI18n } from "@/i18n/client";
 import { distanceKm } from "@/lib/geo";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
+import { Glyph } from "@/components/Glyph";
 
 /** [contentid, 종류, 지역, 이름, 위도, 경도, 작은 사진, 시군구] */
 export type SpotRow = [string, "attraction" | "culture" | "leisure", string, string, number, number, string, string];
@@ -60,7 +61,7 @@ export function spotCard(s: SpotRow, lang: string, t: (k: string) => string, sco
     external: true,
     img: s[6],
     title: s[3],
-    sub: `${s[7] ? `${t(s[7])} · ` : ""}${kind.emoji} ${t(kind.label)}`,
+    sub: `${s[7] ? `${t(s[7])} · ` : ""}${t(kind.label)}`,
     score,
     lat: s[4],
     lng: s[5],
@@ -94,7 +95,8 @@ export function MoreSpots({ region, initial, counts }: { region: string; initial
     return level ? LEVEL_SCORE[level] : undefined;
   };
   if (rows && !inRegion.length && !counts?.[region]) return null;
-  const chip = (on: boolean) => `shrink-0 rounded-full px-3.5 py-1.5 text-sm font-semibold ${on ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`;
+  const chip = (on: boolean) =>
+    `shrink-0 rounded-full px-3.5 py-1.5 text-sm font-semibold ${on ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`;
 
   return (
     <section className="mt-10">
@@ -109,7 +111,7 @@ export function MoreSpots({ region, initial, counts }: { region: string; initial
         </button>
         {SPOT_KINDS.filter((k) => inRegion.some((s) => s[1] === k.id)).map((k) => (
           <button key={k.id} onClick={() => (setKind(k.id), setShown(PAGE))} className={chip(kind === k.id)}>
-            {k.emoji} {t(k.label)}
+            <Glyph e={k.emoji} /> {t(k.label)}
           </button>
         ))}
       </div>
@@ -125,7 +127,10 @@ export function MoreSpots({ region, initial, counts }: { region: string; initial
             ))}
           </ul>
           {list.length > shown && (
-            <button onClick={() => setShown((n) => n + PAGE)} className="mx-auto mt-5 block rounded-full border border-gray-200 bg-white px-5 py-2 text-sm font-semibold text-gray-700">
+            <button
+              onClick={() => setShown((n) => n + PAGE)}
+              className="mx-auto mt-5 block rounded-full border border-gray-200 bg-white px-5 py-2 text-sm font-semibold text-gray-700"
+            >
               {t("더 보기")} ({list.length - shown})
             </button>
           )}

@@ -6,6 +6,7 @@ import { CopyRouteButton } from "@/components/CopyRouteButton";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { getSharedRoute } from "@/lib/route-share";
+import { Glyph } from "@/components/Glyph";
 
 // 공유된 코스 (코스 추천에서 만든 결과를 30일 보관). 혼잡 예측은 만든 시점 기준이라 검색엔진에는 올리지 않는다
 export const dynamic = "force-dynamic";
@@ -36,7 +37,7 @@ export default async function SharedRoutePage({ params }: { params: Promise<{ la
         <RouteResult start={r.start} plan={r.plan} locked={r.locked} beta={false} createdOn={r.createdOn} shareId={id} />
         <CopyRouteButton stops={r.plan.stops.filter((s) => !s.meal).map((s) => ({ id: s.id, label: s.name, href: s.href }))} />
         <Link href="/route" className="mt-6 block rounded-2xl bg-indigo-600 py-3.5 text-center text-sm font-bold text-white">
-          🧭 {t("나도 한산한 코스 짜기")}
+          <Glyph e="🧭" /> {t("나도 한산한 코스 짜기")}
         </Link>
       </div>
     </main>

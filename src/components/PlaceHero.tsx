@@ -8,6 +8,7 @@ import { useI18n } from "@/i18n/client";
 import { imageCreditText } from "@/lib/places";
 import { useFavorites } from "@/lib/prefs";
 import type { Place } from "@/lib/types";
+import { Glyph } from "@/components/Glyph";
 
 const HERO_HEIGHT = 280;
 
@@ -59,7 +60,7 @@ export function PlaceHero({ place, gallery = [] }: { place: Place; gallery?: str
           className="flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-lg backdrop-blur"
           aria-label={fav ? t("즐겨찾기 해제") : t("즐겨찾기")}
         >
-          {fav ? "❤️" : "🤍"}
+          <Glyph e={fav ? "❤️" : "🤍"} className={`h-5 w-5 ${fav ? "text-rose-500" : "text-gray-700"}`} />
         </button>
       </div>
 
@@ -132,7 +133,7 @@ export function PlaceHero({ place, gallery = [] }: { place: Place; gallery?: str
               opacity: 1 - progress * 0.8,
             }}
           >
-            {place.emoji}
+            <Glyph e={place.emoji} className="h-[1em] w-[1em] text-white drop-shadow" />
           </span>
         )}
         <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />

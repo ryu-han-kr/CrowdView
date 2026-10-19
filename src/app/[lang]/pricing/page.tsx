@@ -5,10 +5,18 @@ import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { pageMeta } from "@/lib/seo";
 import { PLUS } from "@/lib/business";
+import { Glyph } from "@/components/Glyph";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const t = getT((await params).lang);
-  return pageMeta({ lang: (await params).lang, path: "/pricing", title: t("요금 안내"), description: t("CrowdView는 무료로 쓸 수 있어요. Plus는 광고 제거와 혼잡 알림을 월 {price}원에 제공해요.", { price: PLUS.priceKrw.toLocaleString() }) });
+  return pageMeta({
+    lang: (await params).lang,
+    path: "/pricing",
+    title: t("요금 안내"),
+    description: t("CrowdView는 무료로 쓸 수 있어요. Plus는 광고 제거와 혼잡 알림을 월 {price}원에 제공해요.", {
+      price: PLUS.priceKrw.toLocaleString(),
+    }),
+  });
 }
 
 // 무료 / Plus 비교 (✓ 제공, – 미제공)
@@ -45,9 +53,7 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
           </section>
           <section className="rounded-3xl bg-gradient-to-br from-indigo-600 to-violet-600 p-5 text-white">
             <p className="text-sm font-semibold text-white/80">{PLUS.name}</p>
-            <p className="mt-1 text-3xl font-extrabold">
-              {t("월 {n}원", { n: price })}
-            </p>
+            <p className="mt-1 text-3xl font-extrabold">{t("월 {n}원", { n: price })}</p>
             <p className="mt-1 text-xs text-white/80">{t("부가세 포함 · 매달 자동 결제 · 언제든 해지")}</p>
             <PlusCheckoutButton className="mt-5 w-full" />
           </section>
@@ -65,8 +71,12 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
             {ROWS.map(([label, free, plus]) => (
               <tr key={label} className="border-b border-gray-100">
                 <td className="py-3 pr-2">{t(label)}</td>
-                <td className="text-center">{free ? <span className="text-emerald-600">✓</span> : <span className="text-gray-300">–</span>}</td>
-                <td className="text-center">{plus ? <span className="font-bold text-indigo-600">✓</span> : <span className="text-gray-300">–</span>}</td>
+                <td className="text-center">
+                  {free ? <Glyph e="✓" className="mx-auto h-4 w-4 text-emerald-600" label="O" /> : <span className="text-gray-300">–</span>}
+                </td>
+                <td className="text-center">
+                  {plus ? <Glyph e="✓" className="mx-auto h-4 w-4 text-indigo-600" label="O" /> : <span className="text-gray-300">–</span>}
+                </td>
               </tr>
             ))}
           </tbody>

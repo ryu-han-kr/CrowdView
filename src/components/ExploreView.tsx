@@ -7,6 +7,7 @@ import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
 import { MoreSpots, spotCard, useSpots, type SpotRow } from "./MoreSpots";
 import { StickyBar } from "./StickyBar";
+import { Glyph } from "@/components/Glyph";
 
 export interface ExploreRegion {
   id: string;
@@ -117,7 +118,7 @@ export function ExploreView({
                 .filter((k) => cur.landmarks.some((l) => l.kind === k.id))
                 .map((k) => (
                   <button key={k.id} onClick={() => setKind(k.id)} className={chip(kind === k.id)}>
-                    {k.emoji} {t(k.label)}
+                    <Glyph e={k.emoji} /> {t(k.label)}
                   </button>
                 ))}
             </div>
