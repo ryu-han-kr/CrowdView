@@ -390,6 +390,7 @@ const dict: Dict = {
   "종료": "Ended",
   "운영 중": "Open",
   "운영 종료": "Closed",
+  "{from}월 ~ {to}월에만 운영해요": "Open only from month {from} to {to}",
   "운영 시간 {from} ~ {to}": "Hours {from} – {to}",
   "늘어나는 중": "rising",
   "줄어드는 중": "falling",

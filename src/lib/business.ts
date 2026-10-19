@@ -11,9 +11,9 @@ export const BUSINESS = {
   bizNo: "528-25-02324",
   /** 통신판매업 신고번호 (예: 제2026-서울강남-0000호) */
   mailOrderNo: "등록 예정",
-  address: "등록 예정",
-  phone: "등록 예정",
-  email: "등록 예정",
+  address: "서울특별시 강남구 밤고개로26길 50, 607동 401호 (율현동, 강남한신휴플러스6단지)",
+  phone: "010-6705-5683",
+  email: "hks.han666@gmail.com",
   /** 개인정보 보호책임자 */
   privacyOfficer: "한경수",
   url: "https://crowdview.app",

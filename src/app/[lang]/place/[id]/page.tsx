@@ -161,8 +161,11 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const level = isOpen
     ? levelOf(crowd.score)
     : {
-        label: "운영 종료",
-        desc: t("운영 시간 {from} ~ {to}", { from: formatHour(place.hours[0], lang), to: formatHour(place.hours[1], lang) }),
+        label: crowd.offSeason ? "시즌 아님" : "운영 종료",
+        desc:
+          crowd.offSeason && place.season
+            ? t("{from}월 ~ {to}월에만 운영해요", { from: place.season[0], to: place.season[1] })
+            : t("운영 시간 {from} ~ {to}", { from: formatHour(place.hours[0], lang), to: formatHour(place.hours[1], lang) }),
         color: "#6b7280",
       };
   const best = bestUpcoming(crowd.hourly, ...place.hours);
@@ -532,7 +535,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                     ? t("오늘 휴무")
                     : t("오늘 {from} ~ {to}", { from: formatClock(place.hours[0]), to: formatClock(place.hours[1]) })}
                   {!place.info?.closedToday && <LocalTime hour={place.hours[0]} to={place.hours[1]} />}{" "}
-                  <span className={isOpen ? "text-emerald-600" : "text-gray-400"}>{isOpen ? `· ${t("운영 중")}` : `· ${t("운영 종료")}`}</span>
+                  <span className={isOpen ? "text-emerald-600" : "text-gray-400"}>
+                    {isOpen ? `· ${t("운영 중")}` : `· ${t(crowd.offSeason ? "시즌 아님" : "운영 종료")}`}
+                  </span>
                   {!place.info?.hoursVerified && <DataTag kind="임의" />}
                 </p>
                 {place.info?.hoursText && (
