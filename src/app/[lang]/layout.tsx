@@ -71,6 +71,12 @@ export default async function RootLayout({ children, params }: { children: React
             __html: `try{var t=localStorage.getItem("cv:theme");if(t==="dark"||t==="auto")document.documentElement.dataset.theme=t}catch(e){}if(/(?:^|; *)cv-plus=1(?:;|$)/.test(document.cookie))document.documentElement.dataset.plus="1"`,
           }}
         />
+        {/* 관광공사 사진은 주소가 바뀌어 사라지기도 한다(10/20 3,047장 중 236장 404) → 깨진 사진은 숨겨 카드의 색 배경이 보이게 */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.addEventListener("error",function(e){var t=e.target;if(t&&t.tagName==="IMG")t.style.visibility="hidden"},true)`,
+          }}
+        />
       </head>
       <body className="relative isolate bg-white font-sans antialiased">
         {/* 구글 애드센스 (발행자 ID가 있을 때만). EEA·영국 이용자 동의 화면은 애드센스 콘솔 '개인 정보 보호 및 메시지'에서 켠다 */}

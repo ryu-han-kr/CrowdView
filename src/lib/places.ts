@@ -1,8 +1,20 @@
 import { makeT, type T } from "../i18n/translate";
 import type { Place } from "./types";
 
-/** 사진 경로: public/places/{id}.jpg (한국관광공사). 관광공사 사진이 없는 곳은 색 배경 */
-const NO_PHOTO = new Set(["caribbean-bay", "splas-resom", "phoenix"]);
+/** 사진 경로: public/places/{id}.jpg (한국관광공사). 관광공사 사진이 없는 곳은 위키미디어 공용 사진(출처 표시), 그것도 없으면 색 배경 */
+const NO_PHOTO = new Set(["splas-resom"]);
+const LEISURE_CREDITS: Record<string, Place["imageCredit"]> = {
+  "caribbean-bay": {
+    author: "박은영",
+    license: "CC BY 4.0",
+    url: "https://commons.wikimedia.org/wiki/File:%EC%BA%90%EB%A6%AC%EB%B9%84%EC%95%88_%EB%B2%A0%EC%9D%B4_%ED%8F%AC%ED%8A%B8%EB%A6%AC%EC%8A%A4_1.jpg",
+  },
+  phoenix: {
+    author: "Jinho Jung",
+    license: "CC BY-SA 2.0",
+    url: "https://commons.wikimedia.org/wiki/File:%ED%9C%98%EB%8B%89%EC%8A%A4%ED%8C%8C%ED%81%AC_58.jpg",
+  },
+};
 
 /** 놀이공원·워터파크·스키장 공통 기본값 (피크 13:30, 실데이터 없음) */
 function leisure(
@@ -15,7 +27,19 @@ function leisure(
   lng: number,
   o: Pick<Place, "capacity" | "popularity" | "hours" | "emoji" | "hue" | "tags" | "description"> & Partial<Place>,
 ): Place {
-  return { id, name, category, region, address, lat, lng, peakHour: 13.5, ...o, image: NO_PHOTO.has(id) ? undefined : `/places/${id}.jpg` };
+  return {
+    id,
+    name,
+    category,
+    region,
+    address,
+    lat,
+    lng,
+    peakHour: 13.5,
+    ...o,
+    image: NO_PHOTO.has(id) ? undefined : `/places/${id}.jpg`,
+    ...(LEISURE_CREDITS[id] && { imageCredit: LEISURE_CREDITS[id] }),
+  };
 }
 
 // 샘플 장소 데이터. 이벤트 일정은 예시이며 실제 일정과 다를 수 있음.

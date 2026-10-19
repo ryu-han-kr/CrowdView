@@ -41,7 +41,8 @@ export function LangSwitcher({ compact = false }: { compact?: boolean }) {
           <circle cx="12" cy="12" r="9" />
           <path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3Z" />
         </svg>
-        {LANG_LABEL[lang]}
+        {/* PC 상단 메뉴: 태블릿 폭에서는 지구본만 (메뉴 '마이'가 밀려 가려지던 것) */}
+        <span className={compact ? undefined : "hidden lg:inline"}>{LANG_LABEL[lang]}</span>
       </button>
       {open && (
         <ul role="listbox" className="absolute right-0 z-50 mt-1.5 w-36 overflow-hidden rounded-2xl border border-gray-100 bg-white py-1 shadow-xl">
