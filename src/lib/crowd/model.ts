@@ -14,6 +14,8 @@ const SPREAD: Record<Place["category"], number> = {
   landmark: 3.2,
   street: 3.6,
   themepark: 3.6,
+  waterpark: 3.2,
+  ski: 3.4,
   beach: 3.4,
   airport: 4.5,
   event: 2.2,
@@ -24,6 +26,8 @@ export const OUTDOOR: Record<Place["category"], number> = {
   landmark: 0.8,
   street: 0.5,
   themepark: 0.7,
+  waterpark: 0.6,
+  ski: 1,
   beach: 1,
   airport: 0,
   event: 1,
@@ -41,6 +45,14 @@ function hash(str: string): number {
 /** 시드 기반 -1 ~ 1 노이즈 */
 function noise(seed: string): number {
   return (hash(seed) / 0xffffffff) * 2 - 1;
+}
+
+/** 계절 영업 장소가 그 날짜(YYYY-MM-DD)에 시즌인지 */
+export function inSeason(place: Place, date: string): boolean {
+  if (!place.season) return true;
+  const m = Number(date.slice(5, 7));
+  const [from, to] = place.season;
+  return from <= to ? m >= from && m <= to : m >= from || m <= to;
 }
 
 const clamp = (v: number) => Math.max(0, Math.min(100, v));
@@ -123,7 +135,7 @@ interface Expected {
 /** 특정 시각의 기대 혼잡도와 인원 (노이즈 없음) */
 function expected(place: Place, t: KstParts, s?: Signals): Expected {
   const [open, close] = place.hours;
-  if (t.hour < open || t.hour >= close) return { score: 3 };
+  if (t.hour < open || t.hour >= close || !inSeason(place, t.date)) return { score: 3 };
   if (place.info?.closedToday && t.date === kst().date) return { score: 3 };
   const h = Math.floor(t.hour);
 
@@ -131,8 +143,7 @@ function expected(place: Place, t: KstParts, s?: Signals): Expected {
   const pax = s?.pax?.get(t.date)?.[h];
   if (pax !== undefined && place.paxSteps) return { score: scoreFromValue(pax, place.paxSteps), people: pax, peopleKind: "real" };
 
-  const factors =
-    dayFactor(place, t, s) * weatherFactor(place, t, s) * airFactor(place, t.date, s) * concentrationFactor(s, t.date);
+  const factors = dayFactor(place, t, s) * weatherFactor(place, t, s) * airFactor(place, t.date, s) * concentrationFactor(s, t.date);
   const pop = s?.localPop?.hourly;
   const eventDay = !!place.eventDate && t.date >= place.eventDate && t.date <= (place.eventEndDate ?? place.eventDate);
 
@@ -146,9 +157,7 @@ function expected(place: Place, t: KstParts, s?: Signals): Expected {
   const d = t.hour - place.peakHour;
   const curve = 0.25 + 0.75 * Math.exp(-(d * d) / (2 * SPREAD[place.category] ** 2));
   const score = clamp(100 * place.popularity * curve * factors);
-  return place.criteria?.unit === "명"
-    ? { score, people: valueFromScore(score, place.criteria.steps), peopleKind: "est" }
-    : { score };
+  return place.criteria?.unit === "명" ? { score, people: valueFromScore(score, place.criteria.steps), peopleKind: "est" } : { score };
 }
 
 export function expectedScore(place: Place, t: KstParts, s?: Signals): number {
@@ -164,8 +173,7 @@ export function hourlyCurve(place: Place, date: KstParts, nowHour: number | null
     // 추정 곡선의 지난 시간만 약간 흔들어 실측처럼 보이게 하던 노이즈 (실제 수치가 있으면 쓰지 않음)
     const jitter = forecast || e.peopleKind !== "est" ? 0 : noise(`${place.id}:${date.date}:${h}`) * 7;
     const score = Math.round(clamp(e.score + jitter));
-    const people =
-      e.peopleKind === "est" && place.criteria ? valueFromScore(score, place.criteria.steps) : e.people;
+    const people = e.peopleKind === "est" && place.criteria ? valueFromScore(score, place.criteria.steps) : e.people;
     points.push({ hour: h, score, forecast, ...(people !== undefined ? { people, peopleKind: e.peopleKind } : {}) });
   }
   return points;
@@ -196,8 +204,7 @@ export function forecastReasons(place: Place, date: string, peakHour: number, s?
     if (w.tmp !== undefined && w.tmp <= -8) reasons.push({ k: "🥶 {tmp}°C 한파", p: { tmp: w.tmp } });
   } else if (outdoor > 0) {
     const m = midAt(s, { ...kstDateParts(date), hour: peakHour });
-    if (m?.rainy && m.pop >= 60)
-      reasons.push({ k: outdoor >= 0.5 ? "🌧 {wf} 예보 → 한산" : "🌧 {wf} 예보 → 실내로 몰림", p: { wf: m.wf } });
+    if (m?.rainy && m.pop >= 60) reasons.push({ k: outdoor >= 0.5 ? "🌧 {wf} 예보 → 한산" : "🌧 {wf} 예보 → 실내로 몰림", p: { wf: m.wf } });
     else if (m && m.pop >= 60) reasons.push({ k: "☔ 강수확률 {pop}%", p: { pop: m.pop } });
   }
   const ag = airGrade(s, date);
@@ -239,10 +246,10 @@ export function modelSnapshot(place: Place, at: Date = new Date(), s?: Signals):
   return {
     placeId: place.id,
     score,
-    open: now.hour >= place.hours[0] && now.hour < place.hours[1] && !place.info?.closedToday,
+    open: now.hour >= place.hours[0] && now.hour < place.hours[1] && !place.info?.closedToday && inSeason(place, now.date),
+    ...(inSeason(place, now.date) ? {} : { offSeason: true }),
     // 인원 기준이 있으면 같은 기준으로 환산 (그래프·카드 숫자가 서로 맞도록)
-    headcount:
-      place.criteria?.unit === "명" ? valueFromScore(score, place.criteria.steps) : Math.round((place.capacity * score) / 100),
+    headcount: place.criteria?.unit === "명" ? valueFromScore(score, place.criteria.steps) : Math.round((place.capacity * score) / 100),
     trend: delta > 4 ? "up" : delta < -4 ? "down" : "flat",
     hourly: hourlyCurve(place, now, now.hour, s),
     source: "model",

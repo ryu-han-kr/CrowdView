@@ -18,6 +18,8 @@ const CATEGORY_EMOJI: Record<Category, string> = {
   landmark: "🏯",
   street: "🛍️",
   themepark: "🎢",
+  waterpark: "🌊",
+  ski: "⛷️",
   beach: "🏖️",
   airport: "✈️",
   event: "🎆",
@@ -63,7 +65,7 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
       title: t(p.name),
       sub: [t(p.region), hc?.text].filter(Boolean).join(" · "),
       score: c.open ? c.score : undefined,
-      badge: c.open ? undefined : t("운영 종료"),
+      badge: c.open ? undefined : t(c.offSeason ? "시즌 아님" : "운영 종료"),
       lat: p.lat,
       lng: p.lng,
     };
