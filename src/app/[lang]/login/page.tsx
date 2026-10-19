@@ -31,6 +31,12 @@ export default async function LoginPage({
         <div className="mt-8">
           <SocialLoginButtons providers={authEnabled ? enabledProviders : []} callbackURL={callbackURL} raw={!!callbackURL} />
         </div>
+        {/* 결제대행사·카드사 심사용 (가입은 막혀 있고, 계정은 scripts/review-account.ts로만 만든다) */}
+        {authEnabled && review === "1" && (
+          <div className="mt-6">
+            <ReviewLoginForm />
+          </div>
+        )}
         <p className="mt-6 text-center text-[11px] leading-relaxed text-gray-400">
           {t("시작하면")}{" "}
           <Link href="/terms" className="underline">
