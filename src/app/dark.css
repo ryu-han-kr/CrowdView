@@ -1,65 +1,65 @@
 
-/* ── 다크 모드: 시스템 설정을 따르고(자동), 마이페이지 설정에서 라이트·다크로 고정할 수 있다 (html[data-theme]).
+/* ── 다크 모드: 기본은 라이트(흰 바탕). 마이페이지 설정에서 '다크'로 고정하거나 '자동'(시스템 설정 따름)을 고를 수 있다 (html[data-theme]).
    화면마다 클래스를 고치지 않고 Tailwind 색 변수(회색 눈금 뒤집기, 옅은 색 → 어두운 색조)와 흰 바탕만 바꾼다.
    (scripts/dark-css.py 로 만든 블록 — 고칠 때는 스크립트를 고쳐 다시 만든다) */
 @media (prefers-color-scheme: dark) {
-:root:not([data-theme="light"]) {
+:root[data-theme="auto"] {
   
 --surface: #111a2b;  --page: #0b1220;  color-scheme: dark;  --color-gray-50: #151d2e;  --color-gray-100: #1c2639;  --color-gray-200: #28344a;  --color-gray-300: #3a475e;  --color-gray-400: #7b879b;  --color-gray-500: #97a3b6;  --color-gray-600: #b3bfce;  --color-gray-700: #cad4e1;  --color-gray-800: #e0e7f0;  --color-gray-900: #f1f5f9;  --color-gray-950: #f8fafc;  --color-slate-50: #151d2e;  --color-slate-100: #1c2639;  --color-slate-200: #28344a;  --color-slate-300: #3a475e;  --color-slate-400: #7b879b;  --color-slate-500: #97a3b6;  --color-slate-600: #b3bfce;  --color-slate-700: #cad4e1;  --color-slate-800: #e0e7f0;  --color-slate-900: #f1f5f9;  --color-slate-950: #f8fafc;  --color-zinc-50: #151d2e;  --color-zinc-100: #1c2639;  --color-zinc-200: #28344a;  --color-zinc-300: #3a475e;  --color-zinc-400: #7b879b;  --color-zinc-500: #97a3b6;  --color-zinc-600: #b3bfce;  --color-zinc-700: #cad4e1;  --color-zinc-800: #e0e7f0;  --color-zinc-900: #f1f5f9;  --color-zinc-950: #f8fafc;  --color-neutral-50: #151d2e;  --color-neutral-100: #1c2639;  --color-neutral-200: #28344a;  --color-neutral-300: #3a475e;  --color-neutral-400: #7b879b;  --color-neutral-500: #97a3b6;  --color-neutral-600: #b3bfce;  --color-neutral-700: #cad4e1;  --color-neutral-800: #e0e7f0;  --color-neutral-900: #f1f5f9;  --color-neutral-950: #f8fafc;  --color-indigo-50: color-mix(in oklab, var(--color-indigo-500) 13%, #111a2b);  --color-indigo-100: color-mix(in oklab, var(--color-indigo-500) 22%, #111a2b);  --color-indigo-200: color-mix(in oklab, var(--color-indigo-500) 34%, #111a2b);  --color-indigo-700: var(--color-indigo-300);  --color-indigo-800: color-mix(in oklab, var(--color-indigo-300) 60%, white);  --color-indigo-900: color-mix(in oklab, var(--color-indigo-300) 35%, white);  --color-sky-50: color-mix(in oklab, var(--color-sky-500) 13%, #111a2b);  --color-sky-100: color-mix(in oklab, var(--color-sky-500) 22%, #111a2b);  --color-sky-200: color-mix(in oklab, var(--color-sky-500) 34%, #111a2b);  --color-sky-700: var(--color-sky-300);  --color-sky-800: color-mix(in oklab, var(--color-sky-300) 60%, white);  --color-sky-900: color-mix(in oklab, var(--color-sky-300) 35%, white);  --color-emerald-50: color-mix(in oklab, var(--color-emerald-500) 13%, #111a2b);  --color-emerald-100: color-mix(in oklab, var(--color-emerald-500) 22%, #111a2b);  --color-emerald-200: color-mix(in oklab, var(--color-emerald-500) 34%, #111a2b);  --color-emerald-700: var(--color-emerald-300);  --color-emerald-800: color-mix(in oklab, var(--color-emerald-300) 60%, white);  --color-emerald-900: color-mix(in oklab, var(--color-emerald-300) 35%, white);  --color-amber-50: color-mix(in oklab, var(--color-amber-500) 13%, #111a2b);  --color-amber-100: color-mix(in oklab, var(--color-amber-500) 22%, #111a2b);  --color-amber-200: color-mix(in oklab, var(--color-amber-500) 34%, #111a2b);  --color-amber-700: var(--color-amber-300);  --color-amber-800: color-mix(in oklab, var(--color-amber-300) 60%, white);  --color-amber-900: color-mix(in oklab, var(--color-amber-300) 35%, white);  --color-violet-50: color-mix(in oklab, var(--color-violet-500) 13%, #111a2b);  --color-violet-100: color-mix(in oklab, var(--color-violet-500) 22%, #111a2b);  --color-violet-200: color-mix(in oklab, var(--color-violet-500) 34%, #111a2b);  --color-violet-700: var(--color-violet-300);  --color-violet-800: color-mix(in oklab, var(--color-violet-300) 60%, white);  --color-violet-900: color-mix(in oklab, var(--color-violet-300) 35%, white);  --color-red-50: color-mix(in oklab, var(--color-red-500) 13%, #111a2b);  --color-red-100: color-mix(in oklab, var(--color-red-500) 22%, #111a2b);  --color-red-200: color-mix(in oklab, var(--color-red-500) 34%, #111a2b);  --color-red-700: var(--color-red-300);  --color-red-800: color-mix(in oklab, var(--color-red-300) 60%, white);  --color-red-900: color-mix(in oklab, var(--color-red-300) 35%, white);  --color-rose-50: color-mix(in oklab, var(--color-rose-500) 13%, #111a2b);  --color-rose-100: color-mix(in oklab, var(--color-rose-500) 22%, #111a2b);  --color-rose-200: color-mix(in oklab, var(--color-rose-500) 34%, #111a2b);  --color-rose-700: var(--color-rose-300);  --color-rose-800: color-mix(in oklab, var(--color-rose-300) 60%, white);  --color-rose-900: color-mix(in oklab, var(--color-rose-300) 35%, white);  --color-orange-50: color-mix(in oklab, var(--color-orange-500) 13%, #111a2b);  --color-orange-100: color-mix(in oklab, var(--color-orange-500) 22%, #111a2b);  --color-orange-200: color-mix(in oklab, var(--color-orange-500) 34%, #111a2b);  --color-orange-700: var(--color-orange-300);  --color-orange-800: color-mix(in oklab, var(--color-orange-300) 60%, white);  --color-orange-900: color-mix(in oklab, var(--color-orange-300) 35%, white);  --color-teal-50: color-mix(in oklab, var(--color-teal-500) 13%, #111a2b);  --color-teal-100: color-mix(in oklab, var(--color-teal-500) 22%, #111a2b);  --color-teal-200: color-mix(in oklab, var(--color-teal-500) 34%, #111a2b);  --color-teal-700: var(--color-teal-300);  --color-teal-800: color-mix(in oklab, var(--color-teal-300) 60%, white);  --color-teal-900: color-mix(in oklab, var(--color-teal-300) 35%, white);  --color-blue-50: color-mix(in oklab, var(--color-blue-500) 13%, #111a2b);  --color-blue-100: color-mix(in oklab, var(--color-blue-500) 22%, #111a2b);  --color-blue-200: color-mix(in oklab, var(--color-blue-500) 34%, #111a2b);  --color-blue-700: var(--color-blue-300);  --color-blue-800: color-mix(in oklab, var(--color-blue-300) 60%, white);  --color-blue-900: color-mix(in oklab, var(--color-blue-300) 35%, white);  --color-green-50: color-mix(in oklab, var(--color-green-500) 13%, #111a2b);  --color-green-100: color-mix(in oklab, var(--color-green-500) 22%, #111a2b);  --color-green-200: color-mix(in oklab, var(--color-green-500) 34%, #111a2b);  --color-green-700: var(--color-green-300);  --color-green-800: color-mix(in oklab, var(--color-green-300) 60%, white);  --color-green-900: color-mix(in oklab, var(--color-green-300) 35%, white);  --color-yellow-50: color-mix(in oklab, var(--color-yellow-500) 13%, #111a2b);  --color-yellow-100: color-mix(in oklab, var(--color-yellow-500) 22%, #111a2b);  --color-yellow-200: color-mix(in oklab, var(--color-yellow-500) 34%, #111a2b);  --color-yellow-700: var(--color-yellow-300);  --color-yellow-800: color-mix(in oklab, var(--color-yellow-300) 60%, white);  --color-yellow-900: color-mix(in oklab, var(--color-yellow-300) 35%, white);  --color-pink-50: color-mix(in oklab, var(--color-pink-500) 13%, #111a2b);  --color-pink-100: color-mix(in oklab, var(--color-pink-500) 22%, #111a2b);  --color-pink-200: color-mix(in oklab, var(--color-pink-500) 34%, #111a2b);  --color-pink-700: var(--color-pink-300);  --color-pink-800: color-mix(in oklab, var(--color-pink-300) 60%, white);  --color-pink-900: color-mix(in oklab, var(--color-pink-300) 35%, white);  --color-purple-50: color-mix(in oklab, var(--color-purple-500) 13%, #111a2b);  --color-purple-100: color-mix(in oklab, var(--color-purple-500) 22%, #111a2b);  --color-purple-200: color-mix(in oklab, var(--color-purple-500) 34%, #111a2b);  --color-purple-700: var(--color-purple-300);  --color-purple-800: color-mix(in oklab, var(--color-purple-300) 60%, white);  --color-purple-900: color-mix(in oklab, var(--color-purple-300) 35%, white);  --color-lime-50: color-mix(in oklab, var(--color-lime-500) 13%, #111a2b);  --color-lime-100: color-mix(in oklab, var(--color-lime-500) 22%, #111a2b);  --color-lime-200: color-mix(in oklab, var(--color-lime-500) 34%, #111a2b);  --color-lime-700: var(--color-lime-300);  --color-lime-800: color-mix(in oklab, var(--color-lime-300) 60%, white);  --color-lime-900: color-mix(in oklab, var(--color-lime-300) 35%, white);  --color-cyan-50: color-mix(in oklab, var(--color-cyan-500) 13%, #111a2b);  --color-cyan-100: color-mix(in oklab, var(--color-cyan-500) 22%, #111a2b);  --color-cyan-200: color-mix(in oklab, var(--color-cyan-500) 34%, #111a2b);  --color-cyan-700: var(--color-cyan-300);  --color-cyan-800: color-mix(in oklab, var(--color-cyan-300) 60%, white);  --color-cyan-900: color-mix(in oklab, var(--color-cyan-300) 35%, white);  --color-fuchsia-50: color-mix(in oklab, var(--color-fuchsia-500) 13%, #111a2b);  --color-fuchsia-100: color-mix(in oklab, var(--color-fuchsia-500) 22%, #111a2b);  --color-fuchsia-200: color-mix(in oklab, var(--color-fuchsia-500) 34%, #111a2b);  --color-fuchsia-700: var(--color-fuchsia-300);  --color-fuchsia-800: color-mix(in oklab, var(--color-fuchsia-300) 60%, white);  --color-fuchsia-900: color-mix(in oklab, var(--color-fuchsia-300) 35%, white);
   background: var(--page) !important;
 }
-:root:not([data-theme="light"]) body {
+:root[data-theme="auto"] body {
   color: #e5e9f0;
 }
 /* 흰 바탕 카드·바 → 어두운 면 (text-white는 색 버튼 위 글자라 그대로 흰색) */
-:root:not([data-theme="light"]) :is([class~="bg-white"], [class~="md:bg-white"]) {
+:root[data-theme="auto"] :is([class~="bg-white"], [class~="md:bg-white"]) {
   background-color: var(--surface) !important;
 }
-:root:not([data-theme="light"]) [class*="bg-white/"] {
+:root[data-theme="auto"] [class*="bg-white/"] {
   background-color: color-mix(in oklab, var(--surface) 92%, transparent) !important;
 }
-:root:not([data-theme="light"]) [class~="from-white"] {
+:root[data-theme="auto"] [class~="from-white"] {
   --tw-gradient-from: var(--page) !important;
 }
-:root:not([data-theme="light"]) [class~="to-white"] {
+:root[data-theme="auto"] [class~="to-white"] {
   --tw-gradient-to: var(--page) !important;
 }
 /* 진한 회색 버튼·선택 칩(흰 글자)은 밝은 칩 + 어두운 글자로 */
-:root:not([data-theme="light"]) .bg-gray-900 {
+:root[data-theme="auto"] .bg-gray-900 {
   background-color: #e2e8f0 !important;
   color: #0b1220 !important;
 }
-:root:not([data-theme="light"]) .bg-gray-900 :is(.text-white, span, svg) {
+:root[data-theme="auto"] .bg-gray-900 :is(.text-white, span, svg) {
   color: #0b1220 !important;
 }
 /* 가운데 영역: 모바일은 앱 화면(어두운 면), 태블릿·PC는 배경이 비치게 그대로 투명 */
 @media (min-width: 768px) {
-  :root:not([data-theme="light"]) [class~="md:bg-transparent"] {
+  :root[data-theme="auto"] [class~="md:bg-transparent"] {
     background-color: transparent !important;
   }
 }
 /* 진한 색 글자(-600·-500)는 어두운 바탕에서 흐려서 한 단계 밝게 (배경색 -600은 그대로) */
-:root:not([data-theme="light"]) :is(.text-indigo-600, .text-indigo-500) { color: var(--color-indigo-400) !important; }
-:root:not([data-theme="light"]) :is(.text-sky-600, .text-sky-500) { color: var(--color-sky-400) !important; }
-:root:not([data-theme="light"]) :is(.text-emerald-600, .text-emerald-500) { color: var(--color-emerald-400) !important; }
-:root:not([data-theme="light"]) :is(.text-amber-600, .text-amber-500) { color: var(--color-amber-400) !important; }
-:root:not([data-theme="light"]) :is(.text-violet-600, .text-violet-500) { color: var(--color-violet-400) !important; }
-:root:not([data-theme="light"]) :is(.text-red-600, .text-red-500) { color: var(--color-red-400) !important; }
-:root:not([data-theme="light"]) :is(.text-rose-600, .text-rose-500) { color: var(--color-rose-400) !important; }
-:root:not([data-theme="light"]) :is(.text-orange-600, .text-orange-500) { color: var(--color-orange-400) !important; }
-:root:not([data-theme="light"]) :is(.text-teal-600, .text-teal-500) { color: var(--color-teal-400) !important; }
-:root:not([data-theme="light"]) :is(.text-blue-600, .text-blue-500) { color: var(--color-blue-400) !important; }
-:root:not([data-theme="light"]) :is(.text-green-600, .text-green-500) { color: var(--color-green-400) !important; }
-:root:not([data-theme="light"]) :is(.text-yellow-600, .text-yellow-500) { color: var(--color-yellow-400) !important; }
-:root:not([data-theme="light"]) :is(.text-pink-600, .text-pink-500) { color: var(--color-pink-400) !important; }
-:root:not([data-theme="light"]) :is(.text-purple-600, .text-purple-500) { color: var(--color-purple-400) !important; }
-:root:not([data-theme="light"]) :is(.text-lime-600, .text-lime-500) { color: var(--color-lime-400) !important; }
-:root:not([data-theme="light"]) :is(.text-cyan-600, .text-cyan-500) { color: var(--color-cyan-400) !important; }
-:root:not([data-theme="light"]) :is(.text-fuchsia-600, .text-fuchsia-500) { color: var(--color-fuchsia-400) !important; }
-:root:not([data-theme="light"]) main h1 {
+:root[data-theme="auto"] :is(.text-indigo-600, .text-indigo-500) { color: var(--color-indigo-400) !important; }
+:root[data-theme="auto"] :is(.text-sky-600, .text-sky-500) { color: var(--color-sky-400) !important; }
+:root[data-theme="auto"] :is(.text-emerald-600, .text-emerald-500) { color: var(--color-emerald-400) !important; }
+:root[data-theme="auto"] :is(.text-amber-600, .text-amber-500) { color: var(--color-amber-400) !important; }
+:root[data-theme="auto"] :is(.text-violet-600, .text-violet-500) { color: var(--color-violet-400) !important; }
+:root[data-theme="auto"] :is(.text-red-600, .text-red-500) { color: var(--color-red-400) !important; }
+:root[data-theme="auto"] :is(.text-rose-600, .text-rose-500) { color: var(--color-rose-400) !important; }
+:root[data-theme="auto"] :is(.text-orange-600, .text-orange-500) { color: var(--color-orange-400) !important; }
+:root[data-theme="auto"] :is(.text-teal-600, .text-teal-500) { color: var(--color-teal-400) !important; }
+:root[data-theme="auto"] :is(.text-blue-600, .text-blue-500) { color: var(--color-blue-400) !important; }
+:root[data-theme="auto"] :is(.text-green-600, .text-green-500) { color: var(--color-green-400) !important; }
+:root[data-theme="auto"] :is(.text-yellow-600, .text-yellow-500) { color: var(--color-yellow-400) !important; }
+:root[data-theme="auto"] :is(.text-pink-600, .text-pink-500) { color: var(--color-pink-400) !important; }
+:root[data-theme="auto"] :is(.text-purple-600, .text-purple-500) { color: var(--color-purple-400) !important; }
+:root[data-theme="auto"] :is(.text-lime-600, .text-lime-500) { color: var(--color-lime-400) !important; }
+:root[data-theme="auto"] :is(.text-cyan-600, .text-cyan-500) { color: var(--color-cyan-400) !important; }
+:root[data-theme="auto"] :is(.text-fuchsia-600, .text-fuchsia-500) { color: var(--color-fuchsia-400) !important; }
+:root[data-theme="auto"] main h1 {
   color: #f8fafc;
 }
-:root:not([data-theme="light"]) .page-glow {
+:root[data-theme="auto"] .page-glow {
   --glow-a: rgba(79, 70, 229, 0.22);
   --glow-b: rgba(14, 165, 233, 0.16);
   --glow-c: #10182a;

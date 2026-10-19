@@ -131,28 +131,28 @@ export function MySettings() {
   );
 }
 
-/** 화면 테마: 자동(시스템) · 라이트 · 다크. html[data-theme]와 localStorage(cv:theme) */
+/** 화면 테마: 라이트(기본) · 다크 · 자동(시스템 설정 따름). html[data-theme]와 localStorage(cv:theme) */
 function ThemePicker() {
   const { t } = useI18n();
-  const [theme, setTheme] = useState<"auto" | "light" | "dark">("auto");
+  const [theme, setTheme] = useState<"auto" | "light" | "dark">("light");
   useEffect(() => {
     try {
       const v = localStorage.getItem("cv:theme");
-      if (v === "light" || v === "dark") setTheme(v);
+      if (v === "auto" || v === "dark") setTheme(v);
     } catch {}
   }, []);
   const pick = (v: "auto" | "light" | "dark") => {
     setTheme(v);
     try {
-      if (v === "auto") localStorage.removeItem("cv:theme");
+      if (v === "light") localStorage.removeItem("cv:theme");
       else localStorage.setItem("cv:theme", v);
     } catch {}
-    if (v === "auto") delete document.documentElement.dataset.theme;
+    if (v === "light") delete document.documentElement.dataset.theme;
     else document.documentElement.dataset.theme = v;
   };
   return (
     <div className="flex rounded-full bg-gray-100 p-0.5 text-xs font-semibold" suppressHydrationWarning>
-      {(["auto", "light", "dark"] as const).map((v) => (
+      {(["light", "dark", "auto"] as const).map((v) => (
         <button
           key={v}
           onClick={() => pick(v)}
