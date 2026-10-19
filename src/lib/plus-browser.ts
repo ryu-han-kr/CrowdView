@@ -1,11 +1,11 @@
 "use client";
 
-// 브라우저 쪽 Plus 도우미: 포트원 빌링키 발급 → 서버 구독, 웹 푸시 구독
+// 브라우저 쪽 Plus 도우미: 토스페이먼츠 카드 등록(자동결제) → 서버 구독, 웹 푸시 구독
 import type { PlusState } from "./plus";
 
-export const PORTONE_STORE_ID = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
-export const PORTONE_CHANNEL_KEY = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
-export const checkoutEnabled = !!PORTONE_STORE_ID && !!PORTONE_CHANNEL_KEY;
+/** 토스페이먼츠 'API 개별 연동 키'의 클라이언트 키 (test_ck_… / live_ck_…) */
+export const TOSS_CLIENT_KEY = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY;
+export const checkoutEnabled = !!TOSS_CLIENT_KEY;
 
 async function post<T>(url: string, body?: unknown): Promise<T> {
   const res = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body ?? {}) });
@@ -14,32 +14,27 @@ async function post<T>(url: string, body?: unknown): Promise<T> {
   return json as T;
 }
 
-export const subscribePlus = (billingKey: string) => post<{ plus: PlusState }>("/api/plus/subscribe", { billingKey });
+export const subscribePlus = (authKey: string, customerKey: string) => post<{ plus: PlusState }>("/api/plus/subscribe", { authKey, customerKey });
 export const cancelPlus = () => post<{ plus: PlusState }>("/api/plus/cancel");
 export const refundPlus = () => post<{ plus: PlusState }>("/api/plus/refund");
 
 /**
- * 카드 등록(빌링키 발급) 창을 띄운다. PC는 창 안에서 끝나 빌링키를 돌려주고,
- * 모바일은 completeUrl로 이동했다가 돌아온다 (/plus/complete 가 마무리)
+ * 토스 카드 등록창을 연다. 등록이 끝나면 completeUrl로 이동하고(?authKey=…&customerKey=…), 실패·취소면 ?code=…&message=…
+ * 이동하기 때문에 돌아오는 값은 없다. 창을 닫으면 오류(USER_CANCEL)
  */
-export async function issueBillingKey(user: { id: string; name: string; email?: string }, completeUrl: string): Promise<string> {
-  const PortOne = await import("@portone/browser-sdk/v2");
-  const res = await PortOne.requestIssueBillingKey({
-    storeId: PORTONE_STORE_ID!,
-    channelKey: PORTONE_CHANNEL_KEY!,
-    billingKeyMethod: "CARD",
-    issueId: `issue_${user.id.slice(0, 12)}_${Date.now().toString(36)}`,
-    issueName: "CrowdView Plus 정기결제 카드 등록",
-    customer: {
-      customerId: user.id,
-      ...(user.name && { fullName: user.name }),
-      ...(user.email && !user.email.endsWith("@users.crowdview.app") && { email: user.email }),
-    },
-    redirectUrl: completeUrl,
+export async function startCardRegistration(user: { name: string; email?: string }, completeUrl: string): Promise<void> {
+  const res = await fetch("/api/plus/subscribe", { cache: "no-store" });
+  const json = (await res.json().catch(() => ({}))) as { customerKey?: string; error?: string };
+  if (!res.ok || !json.customerKey) throw new Error(json.error ?? `HTTP ${res.status}`);
+  const { loadTossPayments } = await import("@tosspayments/tosspayments-sdk");
+  const toss = await loadTossPayments(TOSS_CLIENT_KEY!);
+  await toss.payment({ customerKey: json.customerKey }).requestBillingAuth({
+    method: "CARD",
+    successUrl: completeUrl,
+    failUrl: completeUrl,
+    ...(user.name && { customerName: user.name }),
+    ...(user.email && !user.email.endsWith("@users.crowdview.app") && { customerEmail: user.email }),
   });
-  if (!res) throw new Error("결제 창이 닫혔어요");
-  if (res.code) throw new Error(res.message ?? res.code);
-  return res.billingKey;
 }
 
 /** 웹 푸시 구독 (알림 권한 요청 포함) */

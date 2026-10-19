@@ -4,7 +4,7 @@ import { getAllCrowd, refreshAll } from "@/lib/crowd/service";
 import { trackAccuracy } from "@/lib/accuracy";
 import { opsAlert } from "@/lib/ops";
 import { getAllSeoulLive } from "@/lib/seoul-live";
-import { expireEnded, sendRenewalNotices } from "@/lib/plus";
+import { chargeDue, expireEnded, sendRenewalNotices } from "@/lib/plus";
 import { kst } from "@/lib/time";
 
 // Vercel Cron(vercel.json, 10분마다, GET)이 Authorization: Bearer CRON_SECRET 헤더로 호출한다.
@@ -20,6 +20,8 @@ export async function GET(req: Request) {
   // 만료 정리·자동결제 7일 전 안내는 하루 한 번 (새벽 4시 첫 수집)이면 충분 — 매번 돌리면 DB가 계속 깨어 있다
   const now = kst();
   const daily = Math.floor(now.hour) === 4 && (now.hour % 1) * 60 < 10;
+  // Plus 자동결제: 결제일이 된 구독을 결제한다 (토스는 예약 결제가 없어서 우리가 돌린다. 대상이 없으면 DB 조회 1번)
+  const charged = await chargeDue().catch(async (e) => (await opsAlert("Plus 자동결제 실행 실패", e), 0));
   const expired = daily ? await expireEnded().catch(async (e) => (await opsAlert("구독 만료 정리 실패", e), 0)) : 0;
   // 예측 정확도: 매시 정각 첫 수집 때 채점·새 예측 저장 (서울 121곳, Redis)
   const hourly = (now.hour % 1) * 60 < 10;
@@ -32,11 +34,17 @@ export async function GET(req: Request) {
     await opsAlert(
       `실시간 데이터 갱신 지연 ${staleEntries.length}곳`,
       staleEntries.map(([id, c]) => `${id}(${c.source} ${c.ageMinutes}분)`).join(", "),
-      { key: `stale:${staleEntries.map(([id]) => id).sort().join(",")}`, cooldownS: 3 * 3600 },
+      {
+        key: `stale:${staleEntries
+          .map(([id]) => id)
+          .sort()
+          .join(",")}`,
+        cooldownS: 3 * 3600,
+      },
     );
   // 실시간 원본이 하나도 안 들어오면(전부 예측값) 원본 API·키 장애일 가능성이 크다
   if (refreshed.length && refreshed.every((r) => r.source === "model")) await opsAlert(`실시간 수집 전체 실패 (${refreshed.length}곳 모두 예측값)`);
-  return NextResponse.json({ refreshed, alerts, expired, notices, scored });
+  return NextResponse.json({ refreshed, alerts, charged, expired, notices, scored });
 }
 
 export const POST = GET;

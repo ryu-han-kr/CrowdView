@@ -1,18 +1,25 @@
-// Plus 구독 시작: 브라우저에서 발급받은 빌링키로 첫 달을 결제하고 다음 달을 예약한다
+// Plus 구독: GET은 카드 등록창에 쓸 토스 고객 키, POST는 카드 등록창에서 돌아온 authKey로 빌링키 발급 → 첫 달 결제
 import { NextResponse } from "next/server";
 import { opsAlert } from "@/lib/ops";
-import { subscribe } from "@/lib/plus";
+import { checkoutCustomerKey, subscribe } from "@/lib/plus";
 import { errorJson, requireUser, unauthorized, withPlusCookie } from "@/lib/plus-http";
-import { portoneEnabled } from "@/lib/portone";
+import { tossEnabled } from "@/lib/toss";
 
-export async function POST(req: Request) {
-  if (!portoneEnabled) return NextResponse.json({ error: "결제 준비 중이에요" }, { status: 503 });
+export async function GET(req: Request) {
+  if (!tossEnabled) return NextResponse.json({ error: "결제 준비 중이에요" }, { status: 503 });
   const user = await requireUser(req);
   if (!user) return unauthorized();
-  const { billingKey } = (await req.json().catch(() => ({}))) as { billingKey?: string };
-  if (!billingKey || typeof billingKey !== "string") return errorJson("빌링키가 없어요");
+  return NextResponse.json({ customerKey: checkoutCustomerKey(user.id) }, { headers: { "cache-control": "no-store" } });
+}
+
+export async function POST(req: Request) {
+  if (!tossEnabled) return NextResponse.json({ error: "결제 준비 중이에요" }, { status: 503 });
+  const user = await requireUser(req);
+  if (!user) return unauthorized();
+  const { authKey, customerKey } = (await req.json().catch(() => ({}))) as { authKey?: string; customerKey?: string };
+  if (!authKey || typeof authKey !== "string" || !customerKey || typeof customerKey !== "string") return errorJson("카드 등록 정보가 없어요");
   try {
-    const plus = await subscribe(user.id, billingKey);
+    const plus = await subscribe(user.id, authKey, customerKey);
     return withPlusCookie(NextResponse.json({ plus }), plus);
   } catch (e) {
     console.error("[plus] subscribe", user.id, e);
