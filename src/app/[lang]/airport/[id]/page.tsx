@@ -90,7 +90,15 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
         <div className="lg:sticky lg:top-24 lg:self-start">
           {place.image && (
             <div className="relative mt-3 h-40 overflow-hidden rounded-3xl bg-gray-100">
-              <Image src={place.image} alt={t(place.name)} fill priority sizes="(max-width: 448px) 100vw, 448px" className="object-cover" />
+              <Image
+                src={place.image}
+                alt={t(place.name)}
+                fill
+                loading="eager"
+                fetchPriority="high"
+                sizes="(max-width: 448px) 100vw, 448px"
+                className="object-cover"
+              />
               <span className="absolute right-2 bottom-2 rounded bg-black/35 px-1.5 py-0.5 text-[10px] text-white/90">
                 {imageCreditText(place, t)}
               </span>

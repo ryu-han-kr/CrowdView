@@ -84,7 +84,8 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
             src={heroImg}
             alt={name}
             fill
-            priority
+            loading="eager"
+            fetchPriority="high"
             sizes="(min-width: 768px) 1100px, 100vw"
             unoptimized={!canOptimize(heroImg)}
             className="object-cover"

@@ -122,7 +122,8 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
           src={l.img}
           alt={name}
           fill
-          priority
+          loading="eager"
+          fetchPriority="high"
           sizes="(min-width: 768px) 960px, 100vw"
           unoptimized={!canOptimize(l.img)}
           className="object-cover"
