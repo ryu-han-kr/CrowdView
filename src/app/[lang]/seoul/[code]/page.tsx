@@ -11,7 +11,7 @@ import { FaqBlock } from "@/components/FaqBlock";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { breadcrumbLd, jsonLd, pageMeta, SITE } from "@/lib/seo";
-import { localePath } from "@/i18n/config";
+import { DEFAULT_LANG, localePath } from "@/i18n/config";
 import { compactNumber } from "@/lib/format";
 import { levelOf } from "@/lib/levels";
 import { translateNames } from "@/lib/name-translate";
@@ -26,7 +26,9 @@ import { Glyph } from "@/components/Glyph";
 
 export const revalidate = 600;
 
-export function generateStaticParams() {
+// 빌드 때는 한국어만 미리 만들고 다른 언어는 처음 열 때 만든다 (빌드 페이지 약 1,300개 → 500개 아래, Vercel 빌드 시간 절약)
+export function generateStaticParams({ params }: { params: { lang: string } }) {
+  if (params.lang !== DEFAULT_LANG) return [];
   return SEOUL_AREAS.map((a) => ({ code: a.code }));
 }
 
