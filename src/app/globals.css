@@ -2,8 +2,7 @@
 @import "./dark.css";
 
 @theme {
-  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
-    "Malgun Gothic", system-ui, sans-serif;
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
 }
 
 html {
@@ -30,16 +29,18 @@ body {
 }
 
 .forecast-bar {
-  background-image: repeating-linear-gradient(
-    -45deg,
-    rgb(255 255 255 / 0.45) 0 3px,
-    transparent 3px 6px
-  );
+  background-image: repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.45) 0 3px, transparent 3px 6px);
 }
 
 @keyframes pulse-ring {
-  0% { transform: scale(0.6); opacity: 0.8; }
-  100% { transform: scale(1.8); opacity: 0; }
+  0% {
+    transform: scale(0.6);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
 }
 .pulse-ring {
   animation: pulse-ring 1.8s ease-out infinite;
@@ -51,8 +52,13 @@ body {
    - 키보드로 이동하면: 파란 테두리 */
 :where(a[href], button, summary, label:has(input), [role="tab"], [role="button"]) {
   cursor: pointer;
-  transition: transform 0.12s ease, filter 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease,
-    color 0.15s ease, border-color 0.15s ease;
+  transition:
+    transform 0.12s ease,
+    filter 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
 }
 :where(a[href], button, summary, [role="tab"], [role="button"]):not(:disabled):active {
   transform: scale(0.97);
@@ -87,9 +93,15 @@ body {
 
 /* 페이지 이동 중 상단 진행 막대 (NavProgress) */
 @keyframes nav-progress {
-  0% { transform: scaleX(0); }
-  60% { transform: scaleX(0.7); }
-  100% { transform: scaleX(0.92); }
+  0% {
+    transform: scaleX(0);
+  }
+  60% {
+    transform: scaleX(0.7);
+  }
+  100% {
+    transform: scaleX(0.92);
+  }
 }
 .nav-progress {
   transform-origin: left;
@@ -116,8 +128,7 @@ body {
 }
 .page-glow {
   background:
-    radial-gradient(60% 70% at 85% 0%, var(--glow-a), transparent 70%),
-    radial-gradient(50% 60% at 10% 10%, var(--glow-b), transparent 70%),
+    radial-gradient(60% 70% at 85% 0%, var(--glow-a), transparent 70%), radial-gradient(50% 60% at 10% 10%, var(--glow-b), transparent 70%),
     linear-gradient(to bottom, var(--glow-c) 0%, color-mix(in srgb, var(--glow-c) 45%, white) 45%, rgba(255, 255, 255, 0) 100%);
   transition:
     --glow-a 0.8s ease,
@@ -176,4 +187,9 @@ main h1 {
 }
 main h2 {
   letter-spacing: -0.025em;
+}
+
+/* Plus 회원에게는 Plus 홍보(홈 혜택 카드·마이 탭 요금 카드)를 숨긴다. data-plus는 레이아웃 첫 스크립트가 cv-plus 쿠키를 보고 붙인다 (깜빡임 없이) */
+html[data-plus="1"] [data-plus-promo] {
+  display: none !important;
 }

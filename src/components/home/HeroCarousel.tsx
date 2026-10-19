@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { canOptimize } from "@/lib/img";
 import { useI18n } from "@/i18n/client";
+import { usePlus } from "@/lib/plus-client";
 
 export interface HeroSlide {
   id: string;
@@ -20,8 +21,11 @@ const AUTO_MS = 4500; // 자동으로 넘어가는 간격
 const RESUME_MS = 8000; // 직접 넘긴 뒤 이만큼 지나면 다시 자동
 
 /** 큰 포토 배너: 자동으로 넘어가고, 화살표·점·밀어서 넘기기. 끝에서 처음으로 이어진다 */
-export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
+export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
   const { t } = useI18n();
+  // Plus 회원에게는 Plus 홍보 배너를 빼고 보여 준다 (맨 끝 배너라 빼도 지금 보이는 배너가 바뀌지 않는다)
+  const plus = usePlus();
+  const slides = plus ? all.filter((s) => s.id !== "plus") : all;
   const [index, setIndex] = useState(0);
   const holdUntil = useRef(0);
   const touchX = useRef<number | null>(null);
@@ -112,7 +116,15 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                 d === "prev" ? "left-4" : "right-4"
               }`}
             >
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                viewBox="0 0 24 24"
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2.4}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d={d === "next" ? "m9 6 6 6-6 6" : "m15 6-6 6 6 6"} />
               </svg>
             </button>

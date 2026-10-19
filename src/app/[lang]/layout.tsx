@@ -70,7 +70,11 @@ export default async function RootLayout({ children, params }: { children: React
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
         {/* 화면 테마(라이트·다크 고정)를 그리기 전에 적용해 깜빡이지 않게. 저장 값이 없으면 시스템 설정(자동) */}
-        <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem("cv:theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}` }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem("cv:theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}if(/(?:^|; *)cv-plus=1(?:;|$)/.test(document.cookie))document.documentElement.dataset.plus="1"`,
+          }}
+        />
       </head>
       <body className="relative isolate bg-white font-sans antialiased">
         {/* 구글 애드센스 (발행자 ID가 있을 때만). EEA·영국 이용자 동의 화면은 애드센스 콘솔 '개인 정보 보호 및 메시지'에서 켠다 */}
