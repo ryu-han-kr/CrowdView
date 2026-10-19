@@ -5,16 +5,10 @@
   --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
 }
 
+/* 바탕은 흰색, 위쪽에만 은은한 하늘색 그라데이션(.page-glow) */
 html {
-  background: #f4f5f7;
+  background: #fff;
   -webkit-tap-highlight-color: transparent;
-}
-
-/* 태블릿·PC는 바깥과 가운데 배경을 같게 (모바일은 가운데 앱 화면이 떠 보이도록 회색 유지) */
-@media (min-width: 768px) {
-  html {
-    background: #fff;
-  }
 }
 
 body {
@@ -108,23 +102,22 @@ body {
   animation: nav-progress 2.5s cubic-bezier(0.1, 0.6, 0.3, 1) forwards;
 }
 
-/* 페이지 위쪽 은은한 파랑·보라 그라데이션 (참고: 야놀자 '요즘놀거리') */
 /* 페이지 위쪽 은은한 그라데이션. 페이지마다 색만 조금 다르고(PageTheme이 body[data-page]를 바꾼다),
    색은 0.8초 동안 천천히 바뀌어 페이지를 넘겨도 튀지 않는다 */
 @property --glow-a {
   syntax: "<color>";
   inherits: true;
-  initial-value: rgba(199, 210, 254, 0.55);
+  initial-value: rgba(191, 219, 254, 0.42);
 }
 @property --glow-b {
   syntax: "<color>";
   inherits: true;
-  initial-value: rgba(186, 230, 253, 0.45);
+  initial-value: rgba(186, 230, 253, 0.32);
 }
 @property --glow-c {
   syntax: "<color>";
   inherits: true;
-  initial-value: #eef2ff;
+  initial-value: #f3f8ff;
 }
 .page-glow {
   background:
@@ -135,41 +128,20 @@ body {
     --glow-b 0.8s ease,
     --glow-c 0.8s ease;
 }
-/* 지도: 하늘·민트 */
-body[data-page="map"] {
-  --glow-a: rgba(186, 230, 253, 0.6);
-  --glow-b: rgba(167, 243, 208, 0.4);
-  --glow-c: #ecfeff;
-}
-/* 지역 여행·명소: 연두·하늘 */
-body[data-page="explore"] {
-  --glow-a: rgba(187, 247, 208, 0.5);
-  --glow-b: rgba(186, 230, 253, 0.45);
-  --glow-c: #f0fdf4;
-}
-/* 여행 가이드: 살구·연노랑 */
-body[data-page="guide"] {
-  --glow-a: rgba(254, 215, 170, 0.45);
-  --glow-b: rgba(253, 230, 138, 0.35);
-  --glow-c: #fff7ed;
-}
-/* 추천 코스: 연보라 */
-body[data-page="route"] {
-  --glow-a: rgba(221, 214, 254, 0.6);
-  --glow-b: rgba(199, 210, 254, 0.45);
-  --glow-c: #f5f3ff;
-}
-/* 서울 실시간: 청록 */
+/* 페이지마다 하늘색 안에서 아주 조금만 다르게 (모두 흰 바탕 + 밝은 파랑) */
+body[data-page="map"],
 body[data-page="seoul"] {
-  --glow-a: rgba(153, 246, 228, 0.45);
-  --glow-b: rgba(186, 230, 253, 0.5);
-  --glow-c: #f0fdfa;
+  --glow-a: rgba(186, 230, 253, 0.42);
+  --glow-b: rgba(204, 251, 241, 0.3);
+  --glow-c: #f1f9ff;
 }
-/* 마이·요금: 분홍빛 보라 */
+body[data-page="explore"],
+body[data-page="guide"],
+body[data-page="route"],
 body[data-page="me"] {
-  --glow-a: rgba(251, 207, 232, 0.45);
-  --glow-b: rgba(221, 214, 254, 0.45);
-  --glow-c: #fdf4ff;
+  --glow-a: rgba(191, 219, 254, 0.4);
+  --glow-b: rgba(224, 231, 255, 0.35);
+  --glow-c: #f4f8ff;
 }
 
 /* 페이지 큰 제목: 모든 화면에서 같은 크기·굵기·자간 (Tailwind 크기 클래스보다 우선) */

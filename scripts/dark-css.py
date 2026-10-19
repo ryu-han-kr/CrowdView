@@ -64,10 +64,10 @@ def rules(P):
 }}
 """
 css="""
-/* ── 다크 모드: 시스템 설정을 따르고(자동), 마이페이지 설정에서 라이트·다크로 고정할 수 있다 (html[data-theme]).
+/* ── 다크 모드: 기본은 라이트(흰 바탕). 마이페이지 설정에서 '다크'로 고정하거나 '자동'(시스템 설정 따름)을 고를 수 있다 (html[data-theme]).
    화면마다 클래스를 고치지 않고 Tailwind 색 변수(회색 눈금 뒤집기, 옅은 색 → 어두운 색조)와 흰 바탕만 바꾼다.
    (scripts/dark-css.py 로 만든 블록 — 고칠 때는 스크립트를 고쳐 다시 만든다) */
 @media (prefers-color-scheme: dark) {
-"""+rules(':root:not([data-theme="light"])')+"}\n"+rules(':root[data-theme="dark"]')
+"""+rules(':root[data-theme="auto"]')+"}\n"+rules(':root[data-theme="dark"]')
 import sys
 open(sys.argv[1],"w",encoding="utf8").write(css)

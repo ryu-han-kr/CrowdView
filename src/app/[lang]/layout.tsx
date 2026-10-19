@@ -72,7 +72,7 @@ export default async function RootLayout({ children, params }: { children: React
         {/* 화면 테마(라이트·다크 고정)를 그리기 전에 적용해 깜빡이지 않게. 저장 값이 없으면 시스템 설정(자동) */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem("cv:theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}if(/(?:^|; *)cv-plus=1(?:;|$)/.test(document.cookie))document.documentElement.dataset.plus="1"`,
+            __html: `try{var t=localStorage.getItem("cv:theme");if(t==="dark"||t==="auto")document.documentElement.dataset.theme=t}catch(e){}if(/(?:^|; *)cv-plus=1(?:;|$)/.test(document.cookie))document.documentElement.dataset.plus="1"`,
           }}
         />
       </head>
