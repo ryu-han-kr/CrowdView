@@ -5,14 +5,22 @@ import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { usePicks, usePlans } from "@/lib/prefs";
 import { Glyph } from "@/components/Glyph";
+import { shareUrl } from "./ShareListButtons";
 
 /** 공유 코스는 30일 보관 (lib/route-share) */
 const KEEP_DAYS = 30;
 
 /** 마이페이지: 내 여행 계획 (추천 코스에서 저장한 코스) */
 export function SavedPlans() {
-  const { t, lang } = useI18n();
+  const { t, lang, lp } = useI18n();
   const { plans, remove } = usePlans();
+  const [copied, setCopied] = useState<string | null>(null);
+  const share = async (id: string) => {
+    if (await shareUrl(`${location.origin}${lp(`/r/${id}`)}`, t("한산한 코스"))) {
+      setCopied(id);
+      setTimeout(() => setCopied(null), 2500);
+    }
+  };
   const dateLabel = (d: string) =>
     new Intl.DateTimeFormat(lang, { month: "numeric", day: "numeric", weekday: "short", timeZone: "UTC" }).format(new Date(`${d}T00:00:00Z`));
   return (
@@ -40,6 +48,10 @@ export function SavedPlans() {
                     <span className="block text-[11px] text-amber-600">{t("코스 링크는 {n}일 뒤 사라져요", { n: Math.max(0, left) })}</span>
                   )}
                 </Link>
+                {/* 다른 사람에게 코스 보내기 (공유 링크 /r/{id}) */}
+                <button onClick={() => share(p.id)} aria-label={t("공유")} className="px-2 text-indigo-500">
+                  {copied === p.id ? <span className="text-[11px] font-semibold">{t("복사됨")}</span> : <Glyph e="🔗" className="h-4 w-4" />}
+                </button>
                 <button onClick={() => remove(p.id)} aria-label={t("삭제")} className="px-2 text-gray-400">
                   <Glyph e="✕" className="h-4 w-4" />
                 </button>

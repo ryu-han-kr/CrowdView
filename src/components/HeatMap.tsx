@@ -23,8 +23,17 @@ const REGIONS = {
 type RegionKey = keyof typeof REGIONS;
 
 const HAN_RIVER: [number, number][] = [
-  [126.86, 37.585], [126.9, 37.555], [126.935, 37.53], [126.97, 37.515], [127.0, 37.515],
-  [127.03, 37.525], [127.07, 37.53], [127.1, 37.525], [127.13, 37.545], [127.18, 37.56], [127.26, 37.58],
+  [126.86, 37.585],
+  [126.9, 37.555],
+  [126.935, 37.53],
+  [126.97, 37.515],
+  [127.0, 37.515],
+  [127.03, 37.525],
+  [127.07, 37.53],
+  [127.1, 37.525],
+  [127.13, 37.545],
+  [127.18, 37.56],
+  [127.26, 37.58],
 ];
 
 export function HeatMap({ places, crowd }: { places: Place[]; crowd: Record<string, CrowdResult> }) {
@@ -38,9 +47,7 @@ export function HeatMap({ places, crowd }: { places: Place[]; crowd: Record<stri
     y: ((r.lat[1] - lat) / (r.lat[1] - r.lat[0])) * H,
   });
 
-  const visible = places.filter(
-    (p) => p.lat >= r.lat[0] && p.lat <= r.lat[1] && p.lng >= r.lng[0] && p.lng <= r.lng[1],
-  );
+  const visible = places.filter((p) => p.lat >= r.lat[0] && p.lat <= r.lat[1] && p.lng >= r.lng[0] && p.lng <= r.lng[1]);
   const sel = visible.find((p) => p.id === selected);
 
   return (
@@ -94,9 +101,7 @@ export function HeatMap({ places, crowd }: { places: Place[]; crowd: Record<stri
           const c = crowd[p.id];
           if (!c.open) return null;
           const radius = 28 + c.score * 0.9;
-          return (
-            <circle key={`h-${p.id}`} cx={x} cy={y} r={radius} fill={`url(#heat-${levelOf(c.score).key})`} />
-          );
+          return <circle key={`h-${p.id}`} cx={x} cy={y} r={radius} fill={`url(#heat-${levelOf(c.score).key})`} />;
         })}
         {visible.map((p) => {
           const { x, y } = project(p.lat, p.lng);
@@ -121,7 +126,17 @@ export function HeatMap({ places, crowd }: { places: Place[]; crowd: Record<stri
               <text x={x} y={y + 6} textAnchor="middle" fontSize="16">
                 {p.emoji}
               </text>
-              <text x={x} y={y + 32} textAnchor="middle" fontSize="11" fontWeight="600" fill="#334155" stroke="white" strokeWidth="3" paintOrder="stroke">
+              <text
+                x={x}
+                y={y + 32}
+                textAnchor="middle"
+                fontSize="11"
+                fontWeight="600"
+                fill="#334155"
+                stroke="white"
+                strokeWidth="3"
+                paintOrder="stroke"
+              >
                 {t(p.name)}
               </text>
             </g>
@@ -157,7 +172,7 @@ export function MapPlaceCard({ place, crowd }: { place: Place; crowd: CrowdResul
           )}
         </p>
         <div className="mt-1.5">
-          <LevelBadge score={crowd.score} closed={!crowd.open} />
+          <LevelBadge score={crowd.score} closed={!crowd.open} offSeason={crowd.offSeason} />
           {crowd.open && isEstimated(crowd) && <DataTag />}
         </div>
       </div>
