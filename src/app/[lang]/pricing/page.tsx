@@ -55,6 +55,8 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
             <p className="text-sm font-semibold text-white/80">{PLUS.name}</p>
             <p className="mt-1 text-3xl font-extrabold">{t("월 {n}원", { n: price })}</p>
             <p className="mt-1 text-xs text-white/80">{t("부가세 포함 · 매달 자동 결제 · 언제든 해지")}</p>
+            {/* 결제대행사·카드사 심사: 상품 페이지에 서비스 제공 기간을 명확히 */}
+            <p className="mt-1 text-xs font-semibold text-white">{t("이용 기간: 결제한 날부터 1개월 (매달 같은 날 자동 갱신)")}</p>
             <PlusCheckoutButton className="mt-5 w-full" />
           </section>
         </div>

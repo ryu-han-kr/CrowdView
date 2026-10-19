@@ -395,6 +395,7 @@ const dict: Dict = {
   "이메일": "Email",
   "비밀번호": "Password",
   "로그인하지 못했어요. 이메일과 비밀번호를 확인해 주세요.": "Couldn't sign in. Check your email and password.",
+  "이용 기간: 결제한 날부터 1개월 (매달 같은 날 자동 갱신)": "Service period: 1 month from the payment date (renews on the same day each month)",
   "운영 시간 {from} ~ {to}": "Hours {from} – {to}",
   "늘어나는 중": "rising",
   "줄어드는 중": "falling",
