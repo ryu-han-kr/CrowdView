@@ -24,7 +24,8 @@ export default async function AdminPage() {
     <main className="px-5 pt-6 pb-10 md:px-0 md:pt-10">
       <h1 className="text-2xl font-bold">운영 도구</h1>
       <p className="mt-1 text-sm text-gray-500">
-        이용 중 {active}명 · 결제 실패 {subs.filter((s) => s.status === "past_due").length}명 · 최근 30일 결제 {month.length}건 {revenue.toLocaleString()}원 (KST 표시)
+        이용 중 {active}명 · 결제 실패 {subs.filter((s) => s.status === "past_due").length}명 · 최근 30일 결제 {month.length}건{" "}
+        {revenue.toLocaleString()}원 (KST 표시)
       </p>
 
       <section className="mt-6">
@@ -89,7 +90,9 @@ export default async function AdminPage() {
                 <tr key={p.id} className="border-t border-gray-100">
                   <td className="px-3 py-2 whitespace-nowrap">{day(p.paid_at ?? p.created_at)}</td>
                   <td className="px-3 py-2 text-xs">{p.email ?? "(탈퇴)"}</td>
-                  <td className={`px-3 py-2 whitespace-nowrap ${p.status === "failed" ? "font-bold text-red-600" : ""}`}>{PAY[p.status] ?? p.status}</td>
+                  <td className={`px-3 py-2 whitespace-nowrap ${p.status === "failed" ? "font-bold text-red-600" : ""}`}>
+                    {PAY[p.status] ?? p.status}
+                  </td>
                   <td className="px-3 py-2 text-right">{p.amount.toLocaleString()}</td>
                   <td className="px-3 py-2 text-right">{p.cancelled_amount ? p.cancelled_amount.toLocaleString() : ""}</td>
                   <td className="px-3 py-2 font-mono text-[11px] text-gray-400">{p.id}</td>
@@ -99,7 +102,7 @@ export default async function AdminPage() {
           </table>
         </div>
       </section>
-      <p className="mt-6 text-[11px] text-gray-400">환불·해지는 포트원에서 실제로 처리되고, 처리할 때마다 디스코드 운영 채널에 기록이 남아요.</p>
+      <p className="mt-6 text-[11px] text-gray-400">환불은 토스페이먼츠에서 실제로 처리되고, 처리할 때마다 디스코드 운영 채널에 기록이 남아요.</p>
     </main>
   );
 }

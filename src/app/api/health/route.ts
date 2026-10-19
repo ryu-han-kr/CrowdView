@@ -6,7 +6,7 @@ import { authEnabled, enabledProviders } from "@/lib/auth";
 import { pushEnabled } from "@/lib/alerts";
 import { pool } from "@/lib/db";
 import { mailEnabled } from "@/lib/mail";
-import { portoneEnabled } from "@/lib/portone";
+import { tossEnabled } from "@/lib/toss";
 import { getVitals } from "@/lib/vitals";
 import { getApiUsage } from "@/lib/api-quota";
 import { kv, kvBackend } from "@/lib/cache";
@@ -38,8 +38,8 @@ function features() {
   return {
     auth: authEnabled,
     loginProviders: enabledProviders,
-    payment: portoneEnabled && has("NEXT_PUBLIC_PORTONE_CHANNEL_KEY"),
-    paymentWebhook: has("PORTONE_WEBHOOK_SECRET"),
+    payment: tossEnabled,
+    paymentTestMode: tossEnabled && (process.env.TOSS_SECRET_KEY ?? "").startsWith("test_"),
     push: pushEnabled,
     mail: mailEnabled,
     admin: has("ADMIN_EMAILS"),

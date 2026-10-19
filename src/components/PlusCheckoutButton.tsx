@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { useSession } from "@/lib/auth-client";
-import { checkoutEnabled, issueBillingKey, subscribePlus } from "@/lib/plus-browser";
+import { checkoutEnabled, startCardRegistration } from "@/lib/plus-browser";
 import { usePlus } from "@/lib/plus-client";
 
-/** Plus 구독 버튼: 로그인 → 카드 등록(포트원·토스페이먼츠) → 첫 달 결제 */
+/** Plus 구독 버튼: 로그인 → 토스페이먼츠 카드 등록 → (돌아와서 /plus/complete) 첫 달 결제 */
 export function PlusCheckoutButton({ className = "" }: { className?: string }) {
   const { t } = useI18n();
   if (!checkoutEnabled)
@@ -48,12 +48,11 @@ function Checkout({ className }: { className: string }) {
           setBusy(true);
           setError(null);
           try {
-            const key = await issueBillingKey(data.user, `${location.origin}${lp("/plus/complete")}`);
-            await subscribePlus(key);
-            location.href = `${lp("/plus/complete")}?ok=1`;
+            // 등록이 끝나면 토스가 /plus/complete로 보내고, 거기서 첫 달을 결제한다
+            await startCardRegistration(data.user, `${location.origin}${lp("/plus/complete")}`);
           } catch (e) {
-            setError(e instanceof Error ? e.message : String(e));
-          } finally {
+            const code = (e as { code?: string })?.code;
+            if (code !== "USER_CANCEL") setError(e instanceof Error ? e.message : String(e));
             setBusy(false);
           }
         }}

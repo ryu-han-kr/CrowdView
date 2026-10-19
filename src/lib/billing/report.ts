@@ -17,7 +17,7 @@ const FIXED_MONTHLY: { name: string; note: string; krw: number }[] = [
   { name: "Resend", note: "무료 (월 3,000통)", krw: 0 },
   { name: "공공데이터·서울시 API", note: "무료 (하루 한도, 2쪽 참고)", krw: 0 },
   { name: "도메인 crowdview.app", note: "Cloudflare 연 약 $14 (월할)", krw: 1_700 },
-  { name: "토스페이먼츠·포트원", note: "미연동 (결제액 수수료)", krw: 0 },
+  { name: "토스페이먼츠", note: "결제액의 약 3.74% (카드 3.4% + 부가세)", krw: 0 },
 ];
 
 export interface UsageLine {
@@ -58,10 +58,7 @@ export async function buildCostReport(now = new Date()): Promise<CostReport> {
   let naver: CostReport["naver"];
   let latestDate: string | null = null;
   try {
-    const [rows, demandKrw] = await Promise.all([
-      getDailyUsage(compact(`${month}-01`), compact(yesterday)),
-      getMonthDemand(compact(month)),
-    ]);
+    const [rows, demandKrw] = await Promise.all([getDailyUsage(compact(`${month}-01`), compact(yesterday)), getMonthDemand(compact(month))]);
     latestDate = rows.reduce<string | null>((max, r) => (!max || r.date > max ? r.date : max), null);
     naver = { demandKrw, usage: summarize(rows, latestDate) };
   } catch (e) {
@@ -132,8 +129,10 @@ export function reportTitle(r: CostReport): string {
 export function reportSummary(r: CostReport): string {
   const naver = "error" in r.naver ? " · ⚠️ 네이버 클라우드 조회 실패" : "";
   const near = apiWarnings(r);
-  const api = near.length ? `
-⚠️ API 한도 70% 이상: ${near.join(", ")}` : "";
+  const api = near.length
+    ? `
+⚠️ API 한도 70% 이상: ${near.join(", ")}`
+    : "";
   return `📄 CrowdView 비용 정산 리포트 · ${reportStamp(r)}
 이번 달 누적 ${won(r.monthToDateKrw)} · 월말 예상 ${won(r.projectedKrw)}${naver}${api}`;
 }

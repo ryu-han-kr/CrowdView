@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { subscribePlus } from "@/lib/plus-browser";
 
-/** 결제 마무리: 모바일은 돌아온 주소의 billingKey로 구독을 끝내고, PC는 완료 안내만 */
+/** 결제 마무리: 토스 카드 등록창에서 돌아온 authKey로 첫 달을 결제한다 (실패·취소면 ?code=…&message=…) */
 export function PlusComplete() {
   const { t } = useI18n();
   const [state, setState] = useState<"working" | "done" | "error">("working");
@@ -16,13 +16,15 @@ export function PlusComplete() {
     if (started.current) return;
     started.current = true;
     const q = new URLSearchParams(location.search);
-    if (q.get("ok") === "1") return setState("done");
-    const key = q.get("billingKey");
-    if (q.get("code") || !key) {
+    const authKey = q.get("authKey");
+    const customerKey = q.get("customerKey");
+    if (q.get("code") || !authKey || !customerKey) {
       setMessage(q.get("message") ?? t("카드 등록이 취소됐어요"));
       return setState("error");
     }
-    subscribePlus(key)
+    // 새로고침해도 같은 authKey로 두 번 보내지 않게 주소에서 지운다
+    history.replaceState(null, "", location.pathname);
+    subscribePlus(authKey, customerKey)
       .then(() => setState("done"))
       .catch((e) => {
         setMessage(e instanceof Error ? e.message : String(e));

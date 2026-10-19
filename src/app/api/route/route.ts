@@ -7,7 +7,7 @@ import { NextResponse } from "next/server";
 import { currentUser } from "@/lib/auth";
 import type { Transport } from "@/lib/geo";
 import { isPlus } from "@/lib/plus";
-import { portoneEnabled } from "@/lib/portone";
+import { tossEnabled } from "@/lib/toss";
 import { INTERESTS, planRoute, type Candidate, type Interest } from "@/lib/route";
 import { MEAL_SPOTS, getPickCandidates, getRouteCandidates, transitTravel } from "@/lib/route-data";
 import { getGuidePlace, guideText } from "@/lib/seoul-guide";
@@ -111,7 +111,7 @@ export async function POST(req: Request) {
   );
 
   let locked = 0;
-  if (portoneEnabled) {
+  if (tossEnabled) {
     const user = await currentUser(req.headers);
     if (!user || !(await isPlus(user.id))) {
       locked = Math.max(0, plan.stops.length - PREVIEW_STOPS);
@@ -131,5 +131,5 @@ export async function POST(req: Request) {
   const start = { lat, lng, name: String(body.start?.name ?? "출발").slice(0, 60) };
   const warnings = plan.stops.length ? await weatherWarnings(lat, lng, startMin, plan.endMin, t).catch(() => []) : [];
   const shareId = plan.stops.length ? await saveSharedRoute({ plan, start, startMin, lang, locked }).catch(() => undefined) : undefined;
-  return NextResponse.json({ plan, startMin, locked, beta: !portoneEnabled, shareId, warnings });
+  return NextResponse.json({ plan, startMin, locked, beta: !tossEnabled, shareId, warnings });
 }
