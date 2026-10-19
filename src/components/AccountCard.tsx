@@ -19,7 +19,7 @@ function Inner({ plusSlot }: { plusSlot?: React.ReactNode }) {
   if (isPending) return <div className="h-20 animate-pulse rounded-3xl bg-gray-50" />;
   if (!user)
     return (
-      <Link href="/login" className="flex items-center justify-between rounded-3xl border border-gray-100 px-4 py-4">
+      <Link href="/login" className="card flex items-center justify-between">
         <span>
           <span className="block text-sm font-bold">{t("로그인하고 찜을 모든 기기에서 보기")}</span>
           <span className="block text-xs text-gray-500">{t("카카오·네이버·Google 계정으로 3초면 끝나요")}</span>
@@ -28,7 +28,7 @@ function Inner({ plusSlot }: { plusSlot?: React.ReactNode }) {
       </Link>
     );
   return (
-    <section className="rounded-3xl border border-gray-100 p-4">
+    <section className="card">
       <div className="flex items-center gap-3">
         {user.image ? (
           // eslint-disable-next-line @next/next/no-img-element

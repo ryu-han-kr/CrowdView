@@ -30,7 +30,7 @@ export function SavedPlans() {
           {plans.map((p) => {
             const left = KEEP_DAYS - Math.floor((Date.now() - Date.parse(p.savedAt)) / 86_400_000);
             return (
-              <li key={p.id} className="flex items-center gap-2 rounded-2xl border border-gray-100 bg-white pr-2">
+              <li key={p.id} className="card flex items-center gap-2 p-0 pr-2">
                 <Link href={`/r/${p.id}`} className="min-w-0 flex-1 px-4 py-3">
                   <span className="block text-xs font-semibold text-indigo-500">
                     {dateLabel(p.day)} · {t("{name}에서 출발", { name: p.start })}
@@ -48,7 +48,7 @@ export function SavedPlans() {
           })}
         </ul>
       ) : (
-        <p className="mt-2 rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">{t("추천 코스 결과에서 ‘저장’을 누르면 여기에 모여요.")}</p>
+        <p className="mt-2 empty-note">{t("추천 코스 결과에서 ‘저장’을 누르면 여기에 모여요.")}</p>
       )}
     </section>
   );
@@ -82,7 +82,7 @@ export function MyPicks() {
           </Link>
         </>
       ) : (
-        <p className="mt-2 rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">{t("목록의 ☆를 누르면 가고 싶은 곳을 여기에 모아 둘 수 있어요")}</p>
+        <p className="mt-2 empty-note">{t("목록의 ☆를 누르면 가고 싶은 곳을 여기에 모아 둘 수 있어요")}</p>
       )}
     </section>
   );
@@ -107,7 +107,7 @@ export function MySettings() {
       <h2 className="flex items-center gap-1.5 text-lg font-bold">
         <Glyph e="⚙️" className="h-5 w-5 text-gray-500" /> {t("설정")}
       </h2>
-      <ul className="mt-2 divide-y divide-gray-100 rounded-2xl border border-gray-100 bg-white text-sm">
+      <ul className="mt-2 card divide-y divide-gray-100 p-0 text-sm">
         <li className="flex items-center justify-between gap-3 px-4 py-3">
           <span>{t("화면 테마")}</span>
           <ThemePicker />

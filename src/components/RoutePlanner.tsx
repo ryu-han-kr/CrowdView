@@ -444,11 +444,7 @@ export function RouteResult({
     return d === 0 ? "" : `${d === 1 ? t("내일") : date} `;
   };
   if (!plan.stops.length)
-    return (
-      <p className="rounded-2xl bg-gray-50 p-5 text-sm text-gray-600">
-        {t("조건에 맞는 곳을 찾지 못했어요. 관심사를 늘리거나 대중교통·일정을 바꿔 보세요.")}
-      </p>
-    );
+    return <p className="empty-note p-5">{t("조건에 맞는 곳을 찾지 못했어요. 관심사를 늘리거나 대중교통·일정을 바꿔 보세요.")}</p>;
   const saved = plan.peakAvgScore - plan.avgScore;
   const points = [start, ...plan.stops.map((s) => ({ lat: s.lat, lng: s.lng, name: s.name, score: s.meal ? undefined : s.score, meal: !!s.meal }))];
   return (

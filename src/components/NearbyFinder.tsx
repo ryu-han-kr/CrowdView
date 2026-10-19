@@ -190,13 +190,11 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
 
       {error && <p className="mt-3 text-sm font-semibold text-red-600">{error}</p>}
       {!at ? (
-        <p className="mt-6 rounded-2xl bg-gray-50 p-5 text-sm text-gray-600">
-          {t("내 위치를 켜거나 위에서 장소를 고르면 가까운 곳부터 보여드려요.")}
-        </p>
+        <p className="mt-6 empty-note p-5">{t("내 위치를 켜거나 위에서 장소를 고르면 가까운 곳부터 보여드려요.")}</p>
       ) : !data[tab] ? (
         <p className="mt-6 text-sm text-gray-500">{t("불러오는 중…")}</p>
       ) : list.length === 0 ? (
-        <p className="mt-6 rounded-2xl bg-gray-50 p-5 text-sm text-gray-600">{t("3km 안에 찾는 곳이 없어요.")}</p>
+        <p className="mt-6 empty-note p-5">{t("3km 안에 찾는 곳이 없어요.")}</p>
       ) : (
         <ul className="mt-4 divide-y divide-gray-100 rounded-2xl border border-gray-100">
           {list.map((x) => {

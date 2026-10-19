@@ -171,7 +171,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
 
           <section className="mt-6">
             <h2 className="text-lg font-bold">{t("이용 정보")}</h2>
-            <dl className="mt-2 divide-y divide-gray-100 rounded-2xl border border-gray-100 bg-white">
+            <dl className="mt-2 card divide-y divide-gray-100 p-0">
               {rows
                 .filter((r): r is [string, string] => !!r[1])
                 .map(([k, v]) => (

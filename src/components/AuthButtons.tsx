@@ -18,7 +18,7 @@ export function SocialLoginButtons({
 }) {
   const { t, lp: toLang } = useI18n();
   const lp = (p: string) => (raw ? p : toLang(p));
-  if (!providers.length) return <p className="rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">{t("로그인 준비 중이에요.")}</p>;
+  if (!providers.length) return <p className="empty-note">{t("로그인 준비 중이에요.")}</p>;
   return (
     <div className="space-y-2.5">
       {providers.includes("kakao") && (

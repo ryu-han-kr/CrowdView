@@ -140,9 +140,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
               <p className="mt-2 text-[11px] text-gray-400">{t("{time} 기준", { time: live.time.slice(11) })}</p>
             </section>
           ) : (
-            <p className="rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">
-              {t("지금은 서울시 데이터를 받지 못했어요. 잠시 후 다시 확인해 주세요.")}
-            </p>
+            <p className="empty-note">{t("지금은 서울시 데이터를 받지 못했어요. 잠시 후 다시 확인해 주세요.")}</p>
           )}
 
           {skt && (

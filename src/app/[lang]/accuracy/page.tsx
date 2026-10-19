@@ -11,7 +11,11 @@ const COPY = {
   ko: {
     title: "예측 정확도",
     lead: "서울 실시간 121곳에서 매시간 예측을 저장해 두고, 그 시각이 되면 서울시 실제 값과 비교해요. ‘단계 일치’는 화면의 5단계가 맞은 비율, ‘평균 오차’는 0~100점 기준 점수 차이예요.",
-    horizon: { "official-1h": "서울시 공식 예측 · 1시간 뒤", "official-3h": "서울시 공식 예측 · 3시간 뒤", "pattern-24h": "CrowdView 패턴 예측 · 24시간 뒤" },
+    horizon: {
+      "official-1h": "서울시 공식 예측 · 1시간 뒤",
+      "official-3h": "서울시 공식 예측 · 3시간 뒤",
+      "pattern-24h": "CrowdView 패턴 예측 · 24시간 뒤",
+    },
     week: "최근 7일",
     match: "단계 일치",
     err: "평균 오차",
@@ -24,7 +28,11 @@ const COPY = {
   en: {
     title: "Forecast accuracy",
     lead: "Every hour we store forecasts for 121 Seoul areas and compare them with Seoul's actual values when that hour arrives. ‘Level match’ is the share of correct five-level predictions; ‘mean error’ is the score difference on a 0–100 scale.",
-    horizon: { "official-1h": "Seoul official forecast · 1 h ahead", "official-3h": "Seoul official forecast · 3 h ahead", "pattern-24h": "CrowdView pattern forecast · 24 h ahead" },
+    horizon: {
+      "official-1h": "Seoul official forecast · 1 h ahead",
+      "official-3h": "Seoul official forecast · 3 h ahead",
+      "pattern-24h": "CrowdView pattern forecast · 24 h ahead",
+    },
     week: "Last 7 days",
     match: "Level match",
     err: "Mean error",
@@ -99,7 +107,10 @@ export default async function AccuracyPage({ params }: { params: Promise<{ lang:
                         <td key={h.id} className="px-3 py-2">
                           {s?.n ? (
                             <>
-                              <b>{pct(s)}</b> <span className="text-xs text-gray-500">· {err(s)} · {s.n}</span>
+                              <b>{pct(s)}</b>{" "}
+                              <span className="text-xs text-gray-500">
+                                · {err(s)} · {s.n}
+                              </span>
                             </>
                           ) : (
                             "–"
@@ -113,7 +124,7 @@ export default async function AccuracyPage({ params }: { params: Promise<{ lang:
           </table>
         </div>
       ) : (
-        <p className="mt-8 rounded-2xl bg-gray-50 p-5 text-sm text-gray-600">{c.empty}</p>
+        <p className="mt-8 empty-note p-5">{c.empty}</p>
       )}
       <Link href="/methodology" className="mt-6 inline-block text-sm font-semibold text-indigo-600">
         {c.method} ›

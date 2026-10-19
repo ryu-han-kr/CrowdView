@@ -131,9 +131,7 @@ export function ExploreView({
                 ))}
               </ul>
             ) : (
-              <p className="mt-4 rounded-2xl bg-gray-50 p-6 text-center text-sm text-gray-500">
-                {t("아직 고른 명소가 없어요. 축제를 확인해 보세요.")}
-              </p>
+              <p className="mt-4 empty-note p-6 text-center">{t("아직 고른 명소가 없어요. 축제를 확인해 보세요.")}</p>
             )}
           </section>
 
@@ -153,7 +151,7 @@ export function ExploreView({
                 ))}
               </ul>
             ) : (
-              <p className="mt-4 rounded-2xl bg-gray-50 p-6 text-center text-sm text-gray-500">{t("앞으로 60일 안에 열리는 축제가 없어요.")}</p>
+              <p className="mt-4 empty-note p-6 text-center">{t("앞으로 60일 안에 열리는 축제가 없어요.")}</p>
             )}
           </section>
 
