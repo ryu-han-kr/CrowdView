@@ -1,6 +1,82 @@
 // 화면 문구 번역 원본: 한국어 → [English, 日本語, 简体中文, 繁體中文]
 // 수정 후 `node scripts/i18n/build.mjs` 로 src/i18n/dict/*.ts 를 다시 만든다
 export default {
+  // ── 결제·해지·환불 확인 창 (components/ConfirmSheet.tsx)
+  "처리 중…": ["Processing…", "処理中…", "处理中…", "處理中…"],
+  "{name} 결제": ["{name} checkout", "{name} のお支払い", "{name} 付款", "{name} 付款"],
+  "월 {price}원 (부가세 포함)": [
+    "KRW {price}/month (VAT included)",
+    "月{price}ウォン(税込)",
+    "每月{price}韩元(含增值税)",
+    "每月{price}韓元(含增值稅)",
+  ],
+  "오늘 첫 달이 결제되고, 매달 오늘과 같은 날짜에 같은 카드로 자동 결제돼요": [
+    "The first month is charged today, then the same card is charged automatically on this date every month",
+    "本日初月分を決済し、以降毎月同じ日に同じカードで自動決済されます",
+    "今天支付首月费用，之后每月同一天自动从同一张卡扣款",
+    "今天支付首月費用，之後每月同一天自動從同一張卡扣款",
+  ],
+  "자동 결제 7일 전에 미리 알려 드려요": [
+    "We will remind you 7 days before each renewal",
+    "自動決済の7日前にお知らせします",
+    "自动扣款前7天会提醒您",
+    "自動扣款前7天會提醒您",
+  ],
+  "언제든 마이페이지에서 해지할 수 있고, 해지해도 낸 기간까지는 이용해요": [
+    "Cancel anytime in My page and keep Plus until the end of the paid period",
+    "マイページからいつでも解約でき、解約後も支払済み期間は利用できます",
+    "可随时在我的页面取消，取消后仍可使用至已付期间结束",
+    "可隨時在我的頁面取消，取消後仍可使用至已付期間結束",
+  ],
+  "결제 후 7일 안에 Plus 기능을 쓰지 않았으면 전액 환불돼요": [
+    "Full refund within 7 days if you have not used Plus features",
+    "決済後7日以内でPlus機能を未使用なら全額返金します",
+    "付款后7天内未使用Plus功能可全额退款",
+    "付款後7天內未使用Plus功能可全額退款",
+  ],
+  "위 내용을 확인했고, 매달 자동 결제에 동의해요": [
+    "I have read the above and agree to monthly automatic payments",
+    "上記を確認し、毎月の自動決済に同意します",
+    "我已确认以上内容，同意每月自动扣款",
+    "我已確認以上內容，同意每月自動扣款",
+  ],
+  "카드 등록하고 결제하기": ["Add card and pay", "カードを登録して決済", "绑定银行卡并付款", "綁定信用卡並付款"],
+  "정기결제를 해지할까요?": ["Cancel your subscription?", "定期決済を解約しますか?", "要取消自动续费吗?", "要取消自動續費嗎?"],
+  "{date}까지는 Plus를 계속 쓸 수 있어요": [
+    "You can keep using Plus until {date}",
+    "{date}まではPlusを引き続き利用できます",
+    "{date}前仍可继续使用Plus",
+    "{date}前仍可繼續使用Plus",
+  ],
+  "그 뒤로는 자동 결제되지 않아요": ["You will not be charged after that", "その後は自動決済されません", "之后不会再自动扣款", "之後不會再自動扣款"],
+  "다시 쓰고 싶으면 요금 안내에서 다시 시작하면 돼요": [
+    "To use it again, just restart from the pricing page",
+    "再開したい場合は料金案内から再度お申し込みください",
+    "如需再次使用，可在价格页面重新开通",
+    "如需再次使用，可在價格頁面重新開通",
+  ],
+  해지하기: ["Cancel subscription", "解約する", "取消订阅", "取消訂閱"],
+  "전액 환불할까요?": ["Get a full refund?", "全額返金しますか?", "要全额退款吗?", "要全額退款嗎?"],
+  "이번 달 이용료 {price}원을 전액 환불해요": [
+    "This month's KRW {price} will be fully refunded",
+    "今月の利用料{price}ウォンを全額返金します",
+    "本月费用{price}韩元将全额退款",
+    "本月費用{price}韓元將全額退款",
+  ],
+  "Plus가 바로 끝나요 (광고 제거·혼잡 알림 해제)": [
+    "Plus ends immediately (ads return, crowd alerts turn off)",
+    "Plusはすぐに終了します(広告表示・混雑通知解除)",
+    "Plus将立即结束(恢复广告、关闭拥挤提醒)",
+    "Plus將立即結束(恢復廣告、關閉擁擠提醒)",
+  ],
+  "카드사에 따라 환불이 보이기까지 3~7영업일 걸릴 수 있어요": [
+    "It may take 3-7 business days to appear, depending on your card issuer",
+    "カード会社により反映まで3〜7営業日かかる場合があります",
+    "视发卡机构而定，退款可能需3~7个工作日到账",
+    "視發卡機構而定，退款可能需3~7個工作天入帳",
+  ],
+  "환불은 되돌릴 수 없어요": ["Refunds cannot be undone", "返金は取り消せません", "退款无法撤销", "退款無法撤銷"],
+  환불하기: ["Refund", "返金する", "退款", "退款"],
   // ── 외국어 화면: 한국 시각 옆 '내 시간' (components/LocalTime.tsx)
   회원: ["Member", "会員", "会员", "會員"],
   "내 시간 {time}": ["your time {time}", "現地時間 {time}", "您当地 {time}", "您當地 {time}"],
