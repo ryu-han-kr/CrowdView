@@ -141,7 +141,7 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
         />
       ) : (
         <ul className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
-          {list.map((r) => {
+          {list.map((r, i) => {
             const g = SEOUL_GROUPS.find((x) => x.id === r.group);
             return (
               <li key={r.code} className="relative">
@@ -153,6 +153,9 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
                         alt=""
                         fill
                         sizes="(min-width: 1280px) 20vw, (min-width: 768px) 28vw, 45vw"
+                        // 첫 화면에 보이는 맨 위 두 줄은 바로 받는다 (가장 큰 그림이 늦게 뜨던 문제)
+                        loading={i < 4 ? "eager" : "lazy"}
+                        fetchPriority={i < 2 ? "high" : "auto"}
                         unoptimized={!canOptimize(r.img)}
                         className="object-cover transition-transform duration-300 md:group-hover:scale-105"
                       />

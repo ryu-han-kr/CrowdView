@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 7 * 24 * 3600,
   },
+  // 글꼴 파일은 폴더 이름에 버전이 있어 내용이 바뀌지 않으므로 1년 보관
+  async headers() {
+    return [{ source: "/fonts/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }] }];
+  },
 };
 
 export default nextConfig;

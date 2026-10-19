@@ -90,8 +90,8 @@ export function PlaceHero({ place, gallery = [] }: { place: Place; gallery?: str
                     src={src}
                     alt={i === 0 ? t(place.name) : ""}
                     fill
-                    priority={i === 0}
-                    loading={i === 0 ? undefined : "lazy"}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    fetchPriority={i === 0 ? "high" : "auto"}
                     sizes="(min-width: 768px) 1100px, 100vw"
                     unoptimized={!canOptimize(src)}
                     className="object-cover will-change-transform"

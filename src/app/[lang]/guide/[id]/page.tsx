@@ -107,7 +107,8 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
             src={p.imgL}
             alt={text.n}
             fill
-            priority
+            loading="eager"
+            fetchPriority="high"
             sizes="(min-width: 768px) 1100px, 100vw"
             unoptimized={!canOptimize(p.imgL)}
             className="object-cover"

@@ -77,7 +77,8 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
               alt=""
               fill
               sizes="(min-width: 768px) 1100px, 100vw"
-              priority={i === 0}
+              loading={i === 0 ? "eager" : "lazy"}
+              fetchPriority={i === 0 ? "high" : "auto"}
               unoptimized={!canOptimize(s.img)}
               className="object-cover"
             />
