@@ -65,14 +65,14 @@ export async function CalmAlternatives({
   );
 
   return (
-    <section className="mt-4 rounded-3xl border border-emerald-100 bg-emerald-50/60 p-4">
-      <p className="flex items-center gap-1.5 text-sm font-bold text-emerald-900">
-        <Glyph e="🌿" className="h-4 w-4" /> {t("지금 덜 붐비는 근처 대안")}
+    <section className="card mt-4">
+      <p className="flex items-center gap-1.5 text-sm font-bold">
+        <Glyph e="🌿" className="h-4 w-4 text-emerald-500" /> {t("지금 덜 붐비는 근처 대안")}
       </p>
       <ul className="mt-2 space-y-1.5">
         {items.map((x) => (
           <li key={x.id}>
-            <Link href={x.href} className="flex items-center gap-3 rounded-2xl bg-white px-3 py-2.5">
+            <Link href={x.href} className="card-row flex items-center gap-3">
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-semibold">{names.get(x.name) ?? t(x.name)}</span>
                 <span className="block text-xs text-gray-500">{t("여기서 {km}km", { km: x.km.toFixed(1) })}</span>

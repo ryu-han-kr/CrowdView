@@ -37,3 +37,17 @@ test("코스 추천: 결과가 나온다", async ({ page }) => {
   await page.getByRole("button", { name: "한산한 코스 만들기" }).click();
   await expect(page.getByText(/곳 코스/).first()).toBeVisible({ timeout: 20_000 });
 });
+
+test("홈: 가장 큰 요소 표시 시간(LCP)이 측정된다 (사진 줄 스냅 이동이 측정을 멈추게 했던 것)", async ({ page, browserName }) => {
+  test.skip(browserName !== "chromium", "LCP는 크롬만 지원");
+  await page.addInitScript(() => {
+    (window as unknown as { __lcp: number }).__lcp = 0;
+    new PerformanceObserver((l) => ((window as unknown as { __lcp: number }).__lcp += l.getEntries().length)).observe({
+      type: "largest-contentful-paint",
+      buffered: true,
+    });
+  });
+  await page.goto("/", { waitUntil: "load" });
+  await page.waitForTimeout(1500);
+  expect(await page.evaluate(() => (window as unknown as { __lcp: number }).__lcp)).toBeGreaterThan(0);
+});

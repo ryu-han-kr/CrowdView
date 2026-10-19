@@ -136,7 +136,12 @@ export function PhotoRail({
         </div>
       )}
       <div className="relative mt-3">
-        <ul ref={ref} className="no-scrollbar -mx-5 flex snap-x gap-3 overflow-x-auto scroll-smooth px-5 md:mx-0 md:gap-4 md:px-0">
+        {/* scroll-px: 스냅 기준을 좌우 여백(px-5)과 맞춘다. 안 맞으면 처음 열 때 브라우저가 목록을 20px 스냅 이동시키고,
+            크롬은 그걸 사용자 스크롤로 보고 홈의 LCP(가장 큰 요소 표시 시간) 측정을 멈췄다 (Lighthouse NO_LCP) */}
+        <ul
+          ref={ref}
+          className="no-scrollbar -mx-5 flex snap-x scroll-px-5 gap-3 overflow-x-auto scroll-smooth px-5 md:mx-0 md:scroll-px-0 md:gap-4 md:px-0"
+        >
           {shown.map((it, i) => (
             <li key={it.id} className="w-[42%] shrink-0 snap-start sm:w-[30%] md:w-[calc((100%-4rem)/5)]">
               <PhotoCard item={it} rank={ranked ? i + 1 : undefined} />
