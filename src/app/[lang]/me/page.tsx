@@ -51,7 +51,7 @@ export default async function MePage({ params }: { params: Promise<{ lang: strin
         <MySettings />
       </div>
 
-      <Link href="/pricing" className="mt-10 mb-6 block rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-600 p-5 text-white">
+      <Link href="/pricing" data-plus-promo className="mt-10 mb-6 block rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-600 p-5 text-white">
         <p className="text-xs font-semibold opacity-80">{PLUS.name}</p>
         <p className="mt-1 text-lg font-bold">{t("광고 제거 · 혼잡 알림")}</p>
         <p className="mt-2 text-2xl font-extrabold">{t("월 {n}원", { n: PLUS.priceKrw.toLocaleString() })}</p>

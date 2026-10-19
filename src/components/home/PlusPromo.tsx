@@ -28,7 +28,7 @@ const CARDS = [
 
 export function PlusPromo({ t, price }: { t: T; price: string }) {
   return (
-    <section className="mt-10 md:mt-14">
+    <section data-plus-promo className="mt-10 md:mt-14">
       <div className="flex items-end justify-between">
         <h2 className="text-lg font-bold md:text-xl">
           {t("CrowdView Plus")}
