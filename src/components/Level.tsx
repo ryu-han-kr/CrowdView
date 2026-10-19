@@ -23,9 +23,20 @@ export function LevelMeter({ score, className = "" }: { score: number; className
   );
 }
 
-export function LevelBadge({ score, large = false, closed = false }: { score: number; large?: boolean; closed?: boolean }) {
+export function LevelBadge({
+  score,
+  large = false,
+  closed = false,
+  offSeason = false,
+}: {
+  score: number;
+  large?: boolean;
+  closed?: boolean;
+  /** 계절 영업 장소의 비시즌 (스키장 등) */
+  offSeason?: boolean;
+}) {
   const { t } = useI18n();
-  const level = closed ? { label: "운영 종료", color: "#9ca3af" } : levelOf(score);
+  const level = closed ? { label: offSeason ? "시즌 아님" : "운영 종료", color: "#9ca3af" } : levelOf(score);
   return (
     <span
       className={`inline-flex shrink-0 items-center gap-1.5 rounded-full align-middle leading-none font-semibold whitespace-nowrap ${

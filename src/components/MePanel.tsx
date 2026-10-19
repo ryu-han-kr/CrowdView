@@ -6,6 +6,7 @@ import { useFavorites, usePreferredTags } from "@/lib/prefs";
 import type { CrowdResult, Place } from "@/lib/types";
 import { PlaceRow } from "./PlaceRow";
 import { Glyph } from "@/components/Glyph";
+import { ShareListButton } from "./ShareListButtons";
 
 export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<string, CrowdResult> }) {
   const { favorites } = useFavorites();
@@ -34,9 +35,13 @@ export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<stri
   return (
     <div className="space-y-8">
       <section>
-        <h2 className="flex items-center gap-1.5 text-lg font-bold">
-          <Glyph e="❤️" className="h-5 w-5 text-rose-500" /> {t("즐겨찾기")}
-        </h2>
+        <div className="flex items-end justify-between">
+          <h2 className="flex items-center gap-1.5 text-lg font-bold">
+            <Glyph e="❤️" className="h-5 w-5 text-rose-500" /> {t("즐겨찾기")}
+          </h2>
+          {/* 즐겨찾기 + 담은 곳을 링크로 보내기 */}
+          <ShareListButton />
+        </div>
         {favPlaces.length ? (
           <ul className="mt-1 divide-y divide-gray-100">
             {favPlaces.map((p) => (
