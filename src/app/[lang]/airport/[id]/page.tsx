@@ -377,5 +377,5 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
 }
 
 function Empty({ children }: { children: React.ReactNode }) {
-  return <p className="rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">{children}</p>;
+  return <p className="empty-note">{children}</p>;
 }

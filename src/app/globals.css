@@ -192,6 +192,16 @@ html[data-plus="1"] [data-plus-promo] {
   outline: 1px solid rgb(15 23 42 / 0.04);
   outline-offset: -1px;
 }
+/* 아직 비어 있는 목록 안내 (점선 테두리로 '여기에 채워진다'는 자리 표시). 흰 바탕·그라데이션 위 어디서나 같은 모양 */
+@utility empty-note {
+  border-radius: 1rem;
+  border: 1px dashed var(--color-gray-200);
+  background: color-mix(in oklab, var(--surface, #fff) 70%, transparent);
+  padding: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-gray-500);
+}
 /* 카드 안의 한 줄 항목 */
 @utility card-row {
   border-radius: 1rem;

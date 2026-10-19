@@ -46,12 +46,14 @@ export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<stri
             ))}
           </ul>
         ) : (
-          <p className="mt-2 rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">{t("장소 상세 화면 오른쪽 위 🤍 를 누르면 여기에 모여요.")}</p>
+          <p className="mt-2 empty-note">{t("장소 상세 화면 오른쪽 위 🤍 를 누르면 여기에 모여요.")}</p>
         )}
       </section>
 
       <section id="keywords" className="scroll-mt-24">
-        <h2 className="text-lg font-bold">{t("관심 키워드")}</h2>
+        <h2 className="flex items-center gap-1.5 text-lg font-bold">
+          <Glyph e="🏷️" className="h-5 w-5 text-indigo-500" /> {t("관심 키워드")}
+        </h2>
         <p className="mt-0.5 text-xs text-gray-500">{t("고른 키워드로 지금 한산한 곳을 추천해 드려요.")}</p>
 
         {/* 선택한 키워드 */}

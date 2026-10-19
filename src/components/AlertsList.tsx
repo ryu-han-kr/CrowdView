@@ -57,7 +57,7 @@ export function AlertsList({ enabled }: { enabled: boolean }) {
       {rows === null ? (
         <p className="mt-2 text-sm text-gray-400">{t("불러오는 중…")}</p>
       ) : rows.length ? (
-        <ul className="mt-2 divide-y divide-gray-100 rounded-2xl border border-gray-100">
+        <ul className="mt-2 card divide-y divide-gray-100 p-0">
           {rows.map((r) => (
             <li key={`${r.placeId}-${r.kind}`} className="flex items-center gap-3 px-4 py-3">
               <Glyph e={r.kind === "calm" ? "🌿" : "🔥"} className={`h-5 w-5 ${r.kind === "calm" ? "text-emerald-500" : "text-rose-500"}`} />
@@ -82,7 +82,7 @@ export function AlertsList({ enabled }: { enabled: boolean }) {
           ))}
         </ul>
       ) : (
-        <p className="mt-2 rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">{t("장소나 서울 실시간 지역 화면에서 🔔 알림을 켜면 여기에 모여요.")}</p>
+        <p className="mt-2 empty-note">{t("장소나 서울 실시간 지역 화면에서 🔔 알림을 켜면 여기에 모여요.")}</p>
       )}
     </section>
   );

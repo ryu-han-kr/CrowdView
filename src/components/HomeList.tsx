@@ -145,7 +145,7 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
           </div>
         </div>
         {!list.length ? (
-          <p className="mt-4 rounded-2xl bg-gray-50 p-6 text-center text-sm text-gray-500">{t("‘{q}’에 맞는 장소가 없어요.", { q: query })}</p>
+          <p className="mt-4 empty-note p-6 text-center">{t("‘{q}’에 맞는 장소가 없어요.", { q: query })}</p>
         ) : view === "map" ? (
           <SpotMap
             spots={cards.map((c) => ({

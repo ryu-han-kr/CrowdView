@@ -25,7 +25,7 @@ export function HistoryChart({
   const points = days.flatMap((d) => d.points);
   if (points.length === 0) {
     return (
-      <p className="rounded-2xl bg-gray-50 p-4 text-sm text-gray-500">
+      <p className="empty-note">
         {t("아직 쌓인 기록이 없어요. 실시간 데이터를 받을 때마다 기록이 쌓이고, 어제부터 지금까지의 추이를 여기서 볼 수 있어요.")}
       </p>
     );
