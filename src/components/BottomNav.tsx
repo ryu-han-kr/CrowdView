@@ -14,8 +14,18 @@ export const TABS = [
   // 서울 실시간은 PC 상단 메뉴에만 (모바일 하단 탭은 그대로, 홈의 카드로 들어간다)
   { href: "/explore", label: "지역 여행", icon: "M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 0v14m6-12v14", desktopOnly: true },
   { href: "/guide", label: "여행 가이드", icon: "M4 19.5V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-1.5Zm0 0A2 2 0 0 1 6 17h12M9 7h6", desktopOnly: true },
-  { href: "/route", label: "추천 코스", icon: "M6 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm12-10a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM6 15V9a4 4 0 0 1 4-4h2m2 14h-2a4 4 0 0 1-4-4m10-6v6a4 4 0 0 1-4 4", desktopOnly: true },
-  { href: "/seoul", label: "서울 실시간", icon: "M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z", desktopOnly: true },
+  {
+    href: "/route",
+    label: "추천 코스",
+    icon: "M6 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm12-10a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM6 15V9a4 4 0 0 1 4-4h2m2 14h-2a4 4 0 0 1-4-4m10-6v6a4 4 0 0 1-4 4",
+    desktopOnly: true,
+  },
+  {
+    href: "/seoul",
+    label: "서울 실시간",
+    icon: "M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z",
+    desktopOnly: true,
+  },
   { href: "/me", label: "마이", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 9a8 8 0 0 1 16 0" },
 ];
 
@@ -50,7 +60,15 @@ export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
                   active ? "bg-indigo-50 text-indigo-600" : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                 }`}
               >
-                <svg viewBox="0 0 24 24" className="hidden h-5 w-5 xl:block" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinejoin="round" strokeLinecap="round">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="hidden h-5 w-5 xl:block"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.9}
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                >
                   <path d={tab.icon} />
                 </svg>
                 {t(tab.label)}
@@ -59,9 +77,12 @@ export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
           })}
         </nav>
         <span className="ml-auto" aria-hidden />
-        <p className="hidden text-xs whitespace-nowrap text-gray-400 xl:block">{t("실시간 혼잡도 · AI 예측")}</p>
-        <LangSwitcher />
-        <NavAuth enabled={authEnabled} />
+        <p className="hidden text-xs whitespace-nowrap text-gray-400 2xl:block">{t("실시간 혼잡도 · AI 예측")}</p>
+        {/* 오른쪽 버튼은 줄어들지 않게 (좁은 화면에서 '한국어'·'로그인'이 두 줄로 꺾이던 것) — 모자라면 메뉴 쪽이 옆으로 밀린다 */}
+        <div className="flex shrink-0 items-center gap-2 whitespace-nowrap">
+          <LangSwitcher />
+          <NavAuth enabled={authEnabled} />
+        </div>
       </div>
     </header>
   );
@@ -85,7 +106,15 @@ export function BottomNav() {
                 }`}
               >
                 <span className={`flex h-8 w-14 items-center justify-center rounded-full transition-colors ${active ? "bg-indigo-50" : ""}`}>
-                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinejoin="round" strokeLinecap="round">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-6 w-6"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={active ? 2.2 : 1.8}
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                  >
                     <path d={tab.icon} />
                   </svg>
                 </span>
