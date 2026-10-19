@@ -45,6 +45,7 @@ function features() {
     admin: has("ADMIN_EMAILS"),
     ads: has("NEXT_PUBLIC_ADSENSE_CLIENT"),
     sktCongestion: has("SK_OPENAPI_APP_KEY"),
+    errorTracking: has("NEXT_PUBLIC_SENTRY_DSN"),
     searchVerification: {
       google: has("NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION"),
       naver: has("NEXT_PUBLIC_NAVER_SITE_VERIFICATION"),
