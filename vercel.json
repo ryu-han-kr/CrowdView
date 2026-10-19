@@ -1,15 +1,29 @@
 {
-  "regions": ["icn1"],
+  "regions": [
+    "icn1"
+  ],
+  "ignoreCommand": "bash scripts/vercel-ignore.sh",
   "redirects": [
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.crowdview.app" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.crowdview.app"
+        }
+      ],
       "destination": "https://crowdview.app/:path*",
       "permanent": true
     }
   ],
   "crons": [
-    { "path": "/api/cron/refresh", "schedule": "*/10 * * * *" },
-    { "path": "/api/cron/cost-report", "schedule": "0 0 * * *" }
+    {
+      "path": "/api/cron/refresh",
+      "schedule": "*/10 * * * *"
+    },
+    {
+      "path": "/api/cron/cost-report",
+      "schedule": "0 0 * * *"
+    }
   ]
 }

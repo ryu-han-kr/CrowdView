@@ -13,8 +13,9 @@ import { SEOUL_GROUPS, getAllSeoulLive, seoulGroup } from "@/lib/seoul-live";
 import { kst, addDays } from "@/lib/time";
 import { CATEGORY_LABEL } from "@/lib/types";
 
-// ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
-export const revalidate = 60;
+// ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
+// (60초였을 때 ISR 쓰기 5일에 13만 건. 데이터는 10분마다 갱신되니 5분이면 충분)
+export const revalidate = 300;
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const lang = (await params).lang;

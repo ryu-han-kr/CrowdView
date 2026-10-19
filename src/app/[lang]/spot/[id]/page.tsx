@@ -5,7 +5,7 @@ import { CalmAlternatives } from "@/components/CalmAlternatives";
 import { LevelBadge } from "@/components/Level";
 import { StayLinks } from "@/components/StayLinks";
 import Link from "@/i18n/link";
-import type { Lang } from "@/i18n/config";
+import { DEFAULT_LANG, type Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { distanceKm } from "@/lib/geo";
@@ -23,7 +23,9 @@ import { Glyph } from "@/components/Glyph";
 // 혼잡도는 가까운 우리 장소·서울 실시간 지역이 있을 때만 붙인다 (없으면 없다고 쓴다)
 export const revalidate = 600;
 
-export function generateStaticParams() {
+// 빌드 때는 한국어만 미리 만들고 다른 언어는 처음 열 때 만든다 (빌드 페이지 약 1,300개 → 500개 아래, Vercel 빌드 시간 절약)
+export function generateStaticParams({ params }: { params: { lang: string } }) {
+  if (params.lang !== DEFAULT_LANG) return [];
   return LANDMARKS.map((l) => ({ id: l.id }));
 }
 

@@ -16,7 +16,7 @@ import { getLivePlace, isOngoingEvent } from "@/lib/place-info";
 import { PLACES, placeHref } from "@/lib/places";
 import { daysUntil, formatClock, kst } from "@/lib/time";
 import type { Lang } from "@/i18n/config";
-import { localePath } from "@/i18n/config";
+import { DEFAULT_LANG, localePath } from "@/i18n/config";
 import { fmtAge, fmtMinutes, fmtPeople, trReason } from "@/i18n/patterns";
 import { getT } from "@/i18n/server";
 import { formatHour, type T } from "@/i18n/translate";
@@ -44,11 +44,12 @@ import Link from "@/i18n/link";
 import { KstNote, LocalTime } from "@/components/LocalTime";
 import { Glyph } from "@/components/Glyph";
 
-// ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
+// ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 // 관광공사 사진 여러 장 (scripts/korea-data/place-images.mjs)
 const PLACE_IMAGES = placeImages as Record<string, string[]>;
 
-export const revalidate = 60;
+// (60초였을 때 ISR 쓰기 5일에 13만 건. 데이터는 10분마다 갱신되니 5분이면 충분)
+export const revalidate = 300;
 
 const SOURCE_LABEL: Record<CrowdResult["source"], string> = {
   "seoul-citydata": "서울시 실시간 도시데이터",
@@ -59,7 +60,9 @@ const SOURCE_LABEL: Record<CrowdResult["source"], string> = {
 };
 
 // 빌드 때 장소별 페이지를 미리 만들어 두고, 이후엔 위 주기로 갱신한다
-export function generateStaticParams() {
+// 빌드 때는 한국어만 미리 만들고 다른 언어는 처음 열 때 만든다 (빌드 페이지 약 1,300개 → 500개 아래, Vercel 빌드 시간 절약)
+export function generateStaticParams({ params }: { params: { lang: string } }) {
+  if (params.lang !== DEFAULT_LANG) return [];
   return PLACES.map((p) => ({ id: p.id }));
 }
 

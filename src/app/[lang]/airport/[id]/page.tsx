@@ -20,16 +20,19 @@ import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
 import { PLACES, getPlace, imageCreditText } from "@/lib/places";
 import { kst } from "@/lib/time";
-import type { Lang } from "@/i18n/config";
+import { DEFAULT_LANG, type Lang } from "@/i18n/config";
 import { fmtAge, fmtMinutes, fmtPeople, trParking, trZone } from "@/i18n/patterns";
 import { getT } from "@/i18n/server";
 import { headcountInfo } from "@/lib/format";
 import { KstNote } from "@/components/LocalTime";
 
-// ISR: CDN이 60초 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
-export const revalidate = 60;
+// ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
+// (60초였을 때 ISR 쓰기 5일에 13만 건. 데이터는 10분마다 갱신되니 5분이면 충분)
+export const revalidate = 300;
 
-export function generateStaticParams() {
+// 빌드 때는 한국어만 미리 만들고 다른 언어는 처음 열 때 만든다 (빌드 페이지 약 1,300개 → 500개 아래, Vercel 빌드 시간 절약)
+export function generateStaticParams({ params }: { params: { lang: string } }) {
+  if (params.lang !== DEFAULT_LANG) return [];
   return PLACES.filter((p) => p.category === "airport").map((p) => ({
     id: p.id,
   }));
