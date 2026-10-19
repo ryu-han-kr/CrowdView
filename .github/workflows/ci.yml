@@ -1,4 +1,4 @@
-# PR·main 푸시마다 타입 검사 + 핵심 계산 테스트 (코스·지하철·예측·결제 규칙). 비밀 키가 필요 없다
+# PR·main 푸시마다 타입 검사 + 핵심 계산 테스트 (코스·지하철·예측·결제 규칙) + 화면 자동 시험(Playwright). 비밀 키가 필요 없다
 name: ci
 
 on:
@@ -18,3 +18,24 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+
+  # 화면 자동 시험: 앱을 빌드해서 띄우고(비밀 키 없이 → 예측 데이터) 휴대폰 크롬·사파리 엔진·PC에서 주요 화면을 연다
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npx playwright test
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7

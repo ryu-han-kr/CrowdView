@@ -12,3 +12,9 @@ next-env.d.ts
 
 # next dev가 자동 생성
 AGENTS.md
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/.lighthouseci/
