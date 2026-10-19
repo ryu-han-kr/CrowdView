@@ -55,7 +55,7 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
       .sort((a, b) =>
         sort === "near" && me
           ? distanceKm(me, a) - distanceKm(me, b)
-          : (sort === "busy" ? 1 : -1) * ((b.score ?? -1) - (a.score ?? -1)) || a.name.localeCompare(b.name),
+          : (sort === "busy" ? 1 : -1) * ((b.score ?? -1) - (a.score ?? -1)) || a.name.localeCompare(b.name, "ko"),
       );
   }, [rows, names, groups, levels, sort, q, me]);
 

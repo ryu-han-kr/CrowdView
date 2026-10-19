@@ -27,8 +27,8 @@ function lineName(t: ReturnType<typeof useI18n>["t"], line: string) {
 }
 
 /** 한국 시간 기준 오늘부터 n일 뒤의 요일 (0=일) */
-const kstDay = (n: number) => new Date(Date.now() + 9 * 3600_000 + n * 86_400_000).getUTCDay();
-const kstHour = () => new Date(Date.now() + 9 * 3600_000).getUTCHours();
+const kstDay = (n: number, now = Date.now()) => new Date(now + 9 * 3600_000 + n * 86_400_000).getUTCDay();
+const kstHour = (now = Date.now()) => new Date(now + 9 * 3600_000).getUTCHours();
 const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
 const STATE_KEY = "route:planner";
@@ -39,6 +39,11 @@ const clock = (m: number) => `${String(Math.floor(m / 60) % 24).padStart(2, "0")
 export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record<string, string> }) {
   const { t, lang } = useI18n();
   const tr = (ko: string) => names[ko] ?? t(ko);
+  // 지금 시각·요일은 브라우저에서 열린 뒤에만 쓴다. 이 화면은 미리 만들어 두는 페이지라 서버가 그린 시각(빌드 때)과
+  // 브라우저 시각이 달라 화면 불일치 오류(React #418)가 났다. 열리기 전에는 시각으로 거르지 않는다
+  const [now, setNow] = useState<number | null>(null);
+  useEffect(() => setNow(Date.now()), []);
+  const hourNow = now === null ? -1 : kstHour(now);
   const weekdayName = (dow: number) =>
     new Intl.DateTimeFormat(lang, { weekday: "short", timeZone: "UTC" }).format(new Date(Date.UTC(2026, 0, 4 + dow)));
   const [start, setStart] = useState<(LatLng & { name: string }) | null>(null);
@@ -226,8 +231,8 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
                 }}
                 className={chip(day === d)}
               >
-                {d === 0 ? t("오늘") : d === 1 ? t("내일") : weekdayName(kstDay(d))}
-                {d > 1 && [0, 6].includes(kstDay(d)) && <span className="ml-1 text-[10px] text-rose-400">●</span>}
+                {d === 0 ? t("오늘") : d === 1 ? t("내일") : now === null ? `+${d}` : weekdayName(kstDay(d, now))}
+                {d > 1 && now !== null && [0, 6].includes(kstDay(d, now)) && <span className="ml-1 text-[10px] text-rose-400">●</span>}
               </button>
             ))}
           </div>
@@ -238,13 +243,13 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
                 {t("지금")}
               </button>
             )}
-            {HOURS.filter((h) => day > 0 || h > kstHour()).map((h) => (
+            {HOURS.filter((h) => day > 0 || h > hourNow).map((h) => (
               <button key={h} onClick={() => setHour(h)} className={chip(hour === h)}>
                 {t("{h}시", { h })}
               </button>
             ))}
           </div>
-          {(day > 0 || (hour !== null && hour - kstHour() > 10)) && (
+          {(day > 0 || (hour !== null && now !== null && hour - hourNow > 10)) && (
             <p className="mt-2 text-[11px] text-gray-500">{t("12시간 뒤부터는 지하철 승하차로 본 요일·시간대 패턴으로 예측해요")}</p>
           )}
         </div>

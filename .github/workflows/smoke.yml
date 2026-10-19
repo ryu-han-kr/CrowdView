@@ -17,3 +17,21 @@ jobs:
         with:
           node-version: 22
       - run: node scripts/smoke.mjs https://crowdview.app
+
+  # 속도·접근성·검색 점수 (Lighthouse). 처음엔 기준 미달이어도 경고만 하고 실패시키지 않는다
+  lighthouse:
+    needs: smoke
+    if: github.event_name != 'deployment_status' || (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npx --yes @lhci/cli@0.15.1 autorun || true
+      - run: node scripts/lighthouse-summary.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse
+          path: .lighthouseci/reports
+          retention-days: 14
