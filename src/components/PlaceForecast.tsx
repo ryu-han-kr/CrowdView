@@ -310,35 +310,39 @@ export function WeekForecast({
 }
 
 /**
- * 월별 (앞으로 12개월): 운영 시간 평균 혼잡과 예상 인원. 손가락으로 훑으면 그 달 인원.
+ * 월별 (앞으로 12개월): 달력처럼 12칸, 칸은 그 달 운영 시간 평균 단계의 색과 이름만.
  * 레퍼런스: Queue-Times "9월이 가장 한산(27%)"처럼 결론 한 줄
  */
-export function MonthlyBars({ year }: { year: YearBar[] }) {
+export function MonthCalendar({ year }: { year: YearBar[] }) {
   const { t } = useI18n();
   const valid = year.filter((m) => m.avg > 0);
+  if (!valid.length) return null;
   const calm = valid.reduce((a, b) => (b.avg < a.avg ? b : a), valid[0]);
   const busy = valid.reduce((a, b) => (b.avg > a.avg ? b : a), valid[0]);
-  const [sel, setSel] = useState(Math.max(0, year.indexOf(calm)));
-  if (!valid.length) return null;
-  const h = relative(year.map((x) => x.avg));
-  const m = year[sel];
   return (
     <div>
       <h2 className="text-lg font-bold">{t("월별 혼잡도")}</h2>
       <p className="mt-0.5 text-[15px] leading-relaxed text-gray-700">
         {t("가장 한산한 달은 {calm}, 가장 붐비는 달은 {busy}이에요.", { calm: calm.label, busy: busy.label })}
       </p>
-      <div className="mt-3 rounded-2xl bg-gray-50 px-4 py-2.5 text-[15px]" aria-live="polite">
-        <b>{m.label}</b> · <b style={{ color: levelOf(m.avg).color }}>{t(levelOf(m.avg).label)}</b>
-        {m.people && <b className="ml-1.5 text-gray-900">{m.people}</b>}
-        <span className="ml-1 text-sm text-gray-500">({t("운영 시간 평균")})</span>
-      </div>
-      <ScrubBars
-        tall
-        sel={sel}
-        onSel={setSel}
-        items={year.map((x) => ({ key: x.label, label: x.label, height: h(x.avg), score: x.avg, top: topText(x.peopleShort, x.avg, t), calm: x === calm }))}
-      />
+      {/* 달마다 차이가 작아 모두 같은 단계일 때가 많아서, 단계 색을 바탕으로 다른 달보다 붐빌수록 진하게 */}
+      <ul className="mt-3 grid grid-cols-4 gap-2">
+        {year.map((m) => {
+          const l = levelOf(m.avg);
+          const rel = busy.avg === calm.avg ? 0.6 : (m.avg - calm.avg) / (busy.avg - calm.avg);
+          const alpha = Math.round((0.25 + rel * 0.75) * 255)
+            .toString(16)
+            .padStart(2, "0");
+          return (
+            <li key={m.label} className="overflow-hidden rounded-xl border border-gray-100 text-center" title={m.people}>
+              <p className="bg-gray-50 py-1 text-xs font-semibold text-gray-600">{m.label}</p>
+              <p className="py-2.5 text-[13px] font-bold text-gray-900" style={{ background: m.avg ? `${l.color}${alpha}` : "#e5e7eb" }}>
+                {m === calm ? t("가장 한산") : m === busy ? t("가장 붐빔") : m.avg ? t(l.label) : "–"}
+              </p>
+            </li>
+          );
+        })}
+      </ul>
       <p className="mt-2 text-[11px] text-gray-400">{t("운영 시간 평균 혼잡으로 본 CrowdView 추정이에요 (요일·공휴일·계절 패턴).")}</p>
     </div>
   );
