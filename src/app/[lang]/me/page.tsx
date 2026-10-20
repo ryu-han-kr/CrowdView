@@ -2,7 +2,7 @@ import { MePanel } from "@/components/MePanel";
 import { MyPicks, MySettings, SavedPlans } from "@/components/MeSections";
 import { AccountCard } from "@/components/AccountCard";
 import { PlusPanel } from "@/components/PlusPanel";
-import { AlertsList } from "@/components/AlertsList";
+import { AlertsList, TripsList } from "@/components/AlertsList";
 import { pushEnabled } from "@/lib/alerts";
 import { authEnabled } from "@/lib/auth";
 import type { Metadata } from "next";
@@ -48,6 +48,7 @@ export default async function MePage({ params }: { params: Promise<{ lang: strin
         <MePanel places={PLACES} crowd={crowd} />
         <div id="alerts" className="scroll-mt-24">
           <AlertsList enabled={authEnabled && pushEnabled} />
+          <TripsList enabled={authEnabled && pushEnabled} />
         </div>
         <MySettings />
       </div>

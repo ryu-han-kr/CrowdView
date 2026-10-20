@@ -28,8 +28,22 @@ const KO: Record<string, string> = {
   "Columbus Adventure": "콜럼버스 대탐험",
 };
 
+// 구역: ThemeParks.wiki에는 구역 정보가 없어서, 놀이기구 외부 ID 앞자리로 묶는다 (에버랜드: H100V02xxx = 아메리칸 어드벤처 등)
+// 레퍼런스: Queue-Times가 놀이기구를 구역(land)별로 묶어 보여 준다
+const AREAS: Record<string, Record<string, string>> = {
+  "b4dd937f-a79d-4b82-922f-e8ab0fbf5b5b": {
+    H100V01: "글로벌 페어",
+    H100V02: "아메리칸 어드벤처",
+    H100V03: "매직랜드",
+    H100V05: "유러피언 어드벤처",
+    H100V06: "주토피아",
+  },
+};
+const areaOf = (place: Place, externalId?: string) => (externalId && AREAS[place.themeparksId ?? ""]?.[externalId.slice(0, 7)]) || undefined;
+
 interface LiveItem {
   name: string;
+  externalId?: string;
   entityType: string;
   status?: string;
   lastUpdated?: string;
@@ -48,8 +62,8 @@ export async function fetchThemePark(place: Place, s?: Signals): Promise<CrowdSn
   const now = Date.now();
   const operating = live.filter((i) => i.entityType === "ATTRACTION" && i.status === "OPERATING");
   const rides = operating
-    .map((i) => ({ name: i.name, wait: i.queue?.STANDBY?.waitTime, at: Date.parse(i.lastUpdated ?? "") }))
-    .filter((r): r is { name: string; wait: number; at: number } => typeof r.wait === "number" && now - r.at < STALE_MS);
+    .map((i) => ({ name: i.name, wait: i.queue?.STANDBY?.waitTime, at: Date.parse(i.lastUpdated ?? ""), area: areaOf(place, i.externalId) }))
+    .filter((r): r is { name: string; wait: number; at: number; area: string | undefined } => typeof r.wait === "number" && now - r.at < STALE_MS);
 
   const base = modelSnapshot(place, new Date(), s);
   // 운영 중인 놀이기구가 없으면 폐장 시간. 운영 중인데 대기시간을 안 주는 공원(일부 국내 공원)은 예측 모델 그대로
@@ -58,10 +72,15 @@ export async function fetchThemePark(place: Place, s?: Signals): Promise<CrowdSn
 
   const avg = rides.reduce((sum, r) => sum + r.wait, 0) / rides.length;
   const score = waitScore(avg, place);
-  const zones: Zone[] = rides
-    .sort((a, b) => b.wait - a.wait)
-    .slice(0, 8)
-    .map((r) => ({ id: r.name, label: KO[r.name] ?? r.name, score: waitScore(r.wait, place), waitMin: r.wait }));
+  // 대기 긴 순서 전체 (화면은 위 8개 + 구역별 보기). 구역을 아는 공원만 전체를 남긴다
+  const sorted = rides.sort((a, b) => b.wait - a.wait);
+  const zones: Zone[] = (sorted.some((r) => r.area) ? sorted : sorted.slice(0, 8)).map((r) => ({
+    id: r.name,
+    label: KO[r.name] ?? r.name,
+    score: waitScore(r.wait, place),
+    waitMin: r.wait,
+    ...(r.area && { area: r.area }),
+  }));
 
   const hourly = base.hourly.map((p) => ({ ...p }));
   const current = hourly.filter((p) => !p.forecast).at(-1);

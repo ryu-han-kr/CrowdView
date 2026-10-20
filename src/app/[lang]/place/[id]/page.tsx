@@ -8,7 +8,7 @@ import { LevelBadge } from "@/components/Level";
 import { PlaceHero } from "@/components/PlaceHero";
 import { forecastForDate, forecastReasons, weekForecast } from "@/lib/crowd/model";
 import { UpcomingHours, WeekForecast } from "@/components/PlaceForecast";
-import { getHistory, type HistoryPoint } from "@/lib/crowd/history";
+import { getDaySummaries, getHistory, type HistoryPoint } from "@/lib/crowd/history";
 import { getSignals } from "@/lib/crowd/signals";
 import { getCrowd } from "@/lib/crowd/service";
 import { siteShare } from "@/lib/crowd/provider";
@@ -32,6 +32,7 @@ import { InlineAd } from "@/components/AdUnit";
 import { FaqBlock } from "@/components/FaqBlock";
 import { AlertButtons } from "@/components/AlertButtons";
 import { CalmAlternatives } from "@/components/CalmAlternatives";
+import { CrowdReport } from "@/components/CrowdReport";
 import { pushEnabled } from "@/lib/alerts";
 import { authEnabled } from "@/lib/auth";
 import { compactNumber, headcountInfo, isEstimated } from "@/lib/format";
@@ -196,11 +197,31 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     .map((p) => ({ hour: p.hour, label: formatHour(p.hour, lang), score: p.score }));
   // 더보기: 앞으로 30일 달력 · 12개월 월평균 (가장 붐빌 때 기준, 추정)
   const long = weekForecast(place, signals, 365);
+  // 달력 칸마다 '그날 이유'(공휴일·비·관광공사 예측 등)도 같이 (레퍼런스: Undercover Tourist 혼잡 달력)
   const monthCells = long.slice(0, 30).map((d) => ({
     date: d.date,
     day: Number(d.date.slice(8, 10)),
     dow: new Date(`${d.date}T00:00:00Z`).getUTCDay(),
     peakScore: d.peakScore,
+    peakLabel: formatHour(d.peakHour, lang),
+    long: `${Number(d.date.slice(5, 7))}/${Number(d.date.slice(8, 10))} (${weekday(d.date, lang, "short")})`,
+    reasons: d.reasons.map((r) => trReason(r, t)),
+    holiday: d.reasons.some((r) => r.k.startsWith("🎌")),
+  }));
+  // 요일별 평균 (레퍼런스: Queue-Times 통계 '요일별 평균 혼잡'). 실측 하루 요약이 요일마다 3일 이상 쌓였으면 실측, 아니면 앞으로 12주 예측
+  const sums = await getDaySummaries(place.id);
+  const dowOf = (date: string) => new Date(`${date}T00:00:00Z`).getUTCDay();
+  const realByDow = [0, 1, 2, 3, 4, 5, 6].map((w) => sums.filter(([d]) => dowOf(d) === w).map(([, , mean]) => mean));
+  const weekdayReal = realByDow.every((xs) => xs.length >= 3);
+  const modelByDow: number[][] = [[], [], [], [], [], [], []];
+  if (!weekdayReal)
+    for (const d of long.slice(0, 84)) {
+      const open = forecastForDate(place, d.date).filter((p) => p.hour >= place.hours[0] && p.hour < Math.min(24, place.hours[1]));
+      if (open.length) modelByDow[dowOf(d.date)].push(open.reduce((a, p) => a + p.score, 0) / open.length);
+    }
+  const weekdayBars = (weekdayReal ? realByDow : modelByDow).map((xs, w) => ({
+    label: new Intl.DateTimeFormat(lang, { weekday: "short", timeZone: "UTC" }).format(new Date(Date.UTC(2026, 0, 4 + w))),
+    avg: xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : 0,
   }));
   // 12개월: 가장 붐빌 때는 달마다 비슷하게 꽉 차서, 운영 시간 평균 혼잡으로 비교한다 (사흘에 하루씩 표본)
   const byMonth = new Map<string, number[]>();
@@ -215,6 +236,13 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     label: new Intl.DateTimeFormat(lang, { month: "short", timeZone: "UTC" }).format(new Date(`${ym}-15T00:00:00Z`)),
     avg: Math.round(xs.reduce((a, b) => a + b, 0) / xs.length),
   }));
+  // 놀이기구 구역별 평균 대기 (구역을 아는 공원만)
+  const areas = [...new Set((crowd.zones ?? []).map((z) => z.area).filter((a): a is string => !!a))]
+    .map((name) => {
+      const rides = crowd.zones!.filter((z) => z.area === name);
+      return { name, rides, avg: Math.round(rides.reduce((a, z) => a + (z.waitMin ?? 0), 0) / rides.length) };
+    })
+    .sort((a, b) => b.avg - a.avg);
   const dday = place.eventDate ? daysUntil(place.eventDate) : null;
   const eventForecast = place.eventDate && dday !== null && dday > 0 ? forecastForDate(place, place.eventDate) : null;
   const eventPeak = eventForecast && [...eventForecast].sort((a, b) => b.score - a.score)[0];
@@ -303,6 +331,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 <p className="text-[28px] leading-tight font-extrabold" style={beforeEvent ? undefined : { color: level.color }}>
                   {beforeEvent ? `${t("행사 전")} · D-${dday}` : t(level.label)}
                   {!beforeEvent && isOpen && isEstimated(crowd) && <DataTag className="text-xs" />}
+                  {/* 0~100 혼잡 지수 (레퍼런스: Queue-Times "Very quiet (12%)") */}
+                  {!beforeEvent && isOpen && <span className="ml-2 align-middle text-sm font-semibold whitespace-nowrap text-gray-500">{t("혼잡 지수 {n}", { n: crowd.score })}</span>}
                 </p>
                 <p className="mt-0.5 text-base text-gray-700">
                   {beforeEvent ? (
@@ -344,6 +374,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
 
           <WeatherCard signals={signals} lang={lang} place={place} />
           <AlertButtons placeId={place.id} enabled={authEnabled && pushEnabled} />
+          {isOpen && !beforeEvent && <CrowdReport placeId={place.id} askWait={["themepark", "waterpark", "ski"].includes(place.category)} />}
           {!beforeEvent && (
             <CalmAlternatives lat={place.lat} lng={place.lng} score={isOpen ? crowd.score : undefined} selfId={place.id} lang={lang} />
           )}
@@ -353,6 +384,16 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             <p className="text-xs font-semibold text-indigo-500">
               <Glyph e="✨" /> {t("지금 이후 시간대별 예상")}
             </p>
+            {/* 가장 한산한 때를 크게 (레퍼런스: BestTime "Quietest at 8 AM — go early") */}
+            {isOpen && best && !closingSoon && (
+              <p className="mt-1.5 text-xl leading-snug font-extrabold text-emerald-700">
+                <Glyph e="★" className="mr-1 h-5 w-5 text-amber-400" />
+                {t("{hour}쯤 가면 가장 한산해요", { hour: formatHour(best.hour, lang) })}
+                <span className="ml-1.5 align-middle text-sm font-semibold" style={{ color: levelOf(best.score).color }}>
+                  {t("예상 {level}", { level: t(levelOf(best.score).label) })}
+                </span>
+              </p>
+            )}
             {isOpen && upcoming.length > 0 ? (
               <UpcomingHours hours={upcoming} bestHour={best?.hour} />
             ) : (
@@ -382,7 +423,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             <section className="mt-8">
               <h2 className="text-lg font-bold">{t("지금 대기가 긴 놀이기구")}</h2>
               <ul className="mt-3 divide-y divide-gray-100 rounded-2xl border border-gray-100">
-                {crowd.zones.map((z) => (
+                {crowd.zones.slice(0, 8).map((z) => (
                   <li key={z.id} className="flex items-center gap-3 px-4 py-3">
                     <span className="min-w-0 flex-1 truncate text-sm font-semibold">{t(z.label)}</span>
                     <b className="text-sm">{fmtMinutes(z.waitMin ?? 0, t)}</b>
@@ -390,6 +431,29 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   </li>
                 ))}
               </ul>
+              {/* 구역별 (레퍼런스: Queue-Times가 놀이기구를 구역별로 묶음). 구역을 아는 공원(에버랜드)만 */}
+              {areas.length > 1 && (
+                <details className="group mt-3 rounded-2xl border border-gray-100">
+                  <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold">
+                    {t("구역별로 보기")} <span className="text-gray-400 group-open:rotate-90">›</span>
+                  </summary>
+                  <div className="divide-y divide-gray-100 border-t border-gray-100">
+                    {areas.map((a) => (
+                      <div key={a.name} className="px-4 py-3">
+                        <p className="flex items-center justify-between gap-3">
+                          <b className="text-[15px]">{t(a.name)}</b>
+                          <span className="text-sm text-gray-600">
+                            {t("평균 {n}분", { n: a.avg })} · {t("{n}개 운영", { n: a.rides.length })}
+                          </span>
+                        </p>
+                        <p className="mt-1 text-sm leading-relaxed text-gray-600">
+                          {a.rides.map((z) => `${t(z.label)} ${z.waitMin ?? 0}${t("분")}`).join(" · ")}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </details>
+              )}
               <p className="mt-2 text-xs text-gray-400">Powered by ThemeParks.wiki · {t("5분 단위 갱신")}</p>
             </section>
           )}
@@ -464,7 +528,11 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               }))}
               month={monthCells}
               year={yearBars}
+              weekdays={weekdayBars}
+              weekdaysReal={weekdayReal}
               calmestDate={calmest.date}
+              placeId={place.id}
+              tripEnabled={authEnabled && pushEnabled}
             />
           </section>
 
