@@ -13,7 +13,10 @@ const NAVER_FREE: Record<string, { free: number; unitPrice?: number }> = {
 // 네이버 클라우드(지도·Papago)는 위 NCP 청구 금액에 이미 들어 있다
 const FIXED_MONTHLY: { name: string; note: string; krw: number }[] = [
   { name: "Vercel", note: "Pro $20 (Spend Management 상한 $50)", krw: 28_000 },
-  { name: "Upstash Redis", note: "Free (월 50만 명령·256MB)", krw: 0 },
+  // 10/20 Pay as you go로 전환 (10만 명령당 $0.2, 상한 $20). 빌드 중 저장 생략 뒤 예상 월 50~150만 명령
+  { name: "Upstash Redis", note: "Pay as you go 10만 명령당 $0.2 (월 상한 $20)", krw: 3_000 },
+  { name: "Neon Postgres", note: "Free (0.5GB)", krw: 0 },
+  { name: "Sentry", note: "Developer 무료 (월 5천 오류)", krw: 0 },
   { name: "Resend", note: "무료 (월 3,000통)", krw: 0 },
   { name: "공공데이터·서울시 API", note: "무료 (하루 한도, 2쪽 참고)", krw: 0 },
   { name: "도메인 crowdview.app", note: "Cloudflare 연 약 $14 (월할)", krw: 1_700 },
