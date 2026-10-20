@@ -1030,6 +1030,8 @@ const dict: Dict = {
   "부가세 포함 · 1개월 이용권 (한 번 결제, 자동 갱신 없음)": "VAT incl. · 1-month pass (single payment, no auto-renewal)",
   "이용 중에 다시 결제하면 남은 기간 뒤로 1개월이 더해져요.": "Paying again while active adds 1 month after your remaining period.",
   "1개월 {n}원": "₩{n} for 1 month",
+  "이번 주 시간대별 예상 혼잡 · 초록 칸이 한산해요": "Expected crowds by time this week · green cells are quiet",
+  "시": "h",
   "롯데월드 어드벤처": "Lotte World Adventure",
   "에버랜드": "Everland",
   "서울랜드": "Seoul Land",

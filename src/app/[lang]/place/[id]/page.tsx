@@ -7,7 +7,7 @@ import { HourlyChart } from "@/components/HourlyChart";
 import { LevelBadge } from "@/components/Level";
 import { PlaceHero } from "@/components/PlaceHero";
 import { forecastForDate, forecastReasons, weekForecast } from "@/lib/crowd/model";
-import { MonthlyBars, UpcomingHours, WeekForecast } from "@/components/PlaceForecast";
+import { MonthCalendar, UpcomingHours, WeekForecast } from "@/components/PlaceForecast";
 import { getDaySummaries, getHistory, type HistoryPoint } from "@/lib/crowd/history";
 import { getSignals } from "@/lib/crowd/signals";
 import { getCrowd } from "@/lib/crowd/service";
@@ -568,15 +568,10 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             />
           </section>
 
-          {/* 월별 (12개월): 운영 시간 평균과 예상 인원 */}
-          <section className="mt-8">
-            <MonthlyBars year={yearBars} />
-          </section>
-
           {/* 이번 주 × 시간 히트맵: 언제 가면 한산한지 한눈에 */}
           <section className="mt-8">
             <h2 className="text-lg font-bold">{t("언제 가면 한산할까")}</h2>
-            <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("날마다 운영 시간 색 띠 · 띠를 누르거나 밀면 그 시간 예상 인원")}</p>
+            <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("이번 주 시간대별 예상 혼잡 · 초록 칸이 한산해요")}</p>
             <WeekHeatmap days={heatDays} nowHour={now.hour} />
           </section>
 
@@ -717,6 +712,11 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               ))}
             </div>
             {lang !== "ko" && <p className="pt-1 text-xs text-gray-400">{t("운영 시간·휴무·문의·주소는 한국어 원문이에요.")}</p>}
+          </section>
+
+          {/* 월별 (12개월): 달력처럼 색만 — 맨 아래 */}
+          <section className="mb-10">
+            <MonthCalendar year={yearBars} />
           </section>
         </div>
       </div>
