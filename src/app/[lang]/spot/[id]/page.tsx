@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import spotImages from "@/data/korea/spot-images.json";
 import { notFound } from "next/navigation";
 import { CalmAlternatives } from "@/components/CalmAlternatives";
-import { LevelBadge } from "@/components/Level";
 import { StayLinks } from "@/components/StayLinks";
 import Link from "@/i18n/link";
 import { DEFAULT_LANG, type Lang } from "@/i18n/config";
@@ -17,7 +16,9 @@ import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { getAllSeoulLive } from "@/lib/seoul-live";
 import { KstNote } from "@/components/LocalTime";
 import { Glyph } from "@/components/Glyph";
-import { PhotoGallery } from "@/components/PhotoGallery";
+import { PlaceHero } from "@/components/PlaceHero";
+import { WeatherCard } from "@/components/WeatherCard";
+import { formatHour } from "@/i18n/translate";
 import { DailyForecastChart } from "@/components/DailyForecastChart";
 import { HourlyChart } from "@/components/HourlyChart";
 import { CrowdGauge } from "@/components/CrowdGauge";
@@ -116,6 +117,11 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
   const nowScore = live ? live.score : model.now.score;
   const nowOpen = live ? live.open : model.now.open;
   const nowLevel = levelOf(nowScore);
+  // 오늘 남은 운영 시간 중 가장 한산한 시각 (입장 마감 1시간 전까지)
+  const last = model.place.hours[1] >= 24 ? 23 : model.place.hours[1] - 2;
+  const best = (nearHourly?.points ?? model.now.hourly)
+    .filter((p) => p.forecast && p.hour >= model.place.hours[0] && p.hour <= last)
+    .sort((a, b) => a.score - b.score)[0];
 
   const others = LANDMARKS.filter((x) => x.region === l.region && x.id !== l.id)
     .sort((a, b) => distanceKm(a, l) - distanceKm(b, l))
@@ -129,7 +135,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
   ];
 
   return (
-    <main className="px-5 pt-4 pb-10 md:px-0 md:pt-8">
+    <main>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -152,70 +158,90 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
           ]),
         }}
       />
-      <Link href="/explore" className="text-sm text-gray-500">
-        ← {t("지역 여행")}
-      </Link>
+      {/* 위 사진: 장소 상세와 같은 전체 폭 사진 + 뒤로 버튼 (관광공사 사진 5~12장 넘겨 보기) */}
+      <PlaceHero place={{ ...model.place, name, image: undefined, emoji: kind.emoji }} gallery={photos} favorite={false} />
 
-      {/* 사진 여러 장을 옆으로 밀어 넘겨 본다 (관광공사 사진, 명소마다 5~12장) */}
-      <PhotoGallery
-        photos={photos}
-        alt={name}
-        credits={photos.map(() => t("사진 한국관광공사"))}
-        sizes="(min-width: 768px) 960px, 100vw"
-        className="mt-3 aspect-[4/3] rounded-3xl bg-gray-100 md:aspect-[21/8]"
-      />
+      {/* 장소 상세와 같은 틀: 모바일은 한 줄, PC는 왼쪽(지금·날씨) 고정 + 오른쪽(그래프·소개) */}
+      <div className="relative -mt-6 px-5 pb-10 md:mt-8 md:px-0 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-10">
+        <div className="lg:sticky lg:top-24 lg:self-start">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
+              <Glyph e={kind.emoji} className="mr-0.5 h-3.5 w-3.5" />
+              {t(kind.label)}
+            </span>
+            <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600">{t(l.region)}</span>
+          </div>
+          <h1 className="mt-2 text-[26px] leading-tight font-extrabold tracking-tight md:text-3xl">{name}</h1>
+          {lang !== "ko" && <p className="mt-0.5 text-sm text-gray-500">{l.n.ko}</p>}
+          {info?.overview && (
+            <p lang="ko" className="mt-2 text-[15px] leading-7 text-gray-600">
+              {firstSentence(info.overview)}
+            </p>
+          )}
+          {/* 한 문장 요약 (장소 상세와 같은 상자) */}
+          <p className="mt-3 rounded-2xl bg-gray-50 px-4 py-3 text-[15px] leading-7 text-gray-800">
+            {nowOpen
+              ? t("{name}의 지금 혼잡도는 ‘{level}’이에요.", { name, level: t(nowLevel.label) })
+              : t("{name}은(는) 지금 운영 시간이 아니에요.", { name })}
+            {best && ` ${t("오늘 남은 운영 시간 중에는 {hour}쯤이 가장 한산할 것으로 보여요.", { hour: formatHour(best.hour, lang) })}`}
+          </p>
+          <KstNote className="mt-1" />
 
-      <p className="mt-4 text-xs font-medium text-gray-500">
-        {t(l.region)} · <Glyph e={kind.emoji} /> {t(kind.label)}
-      </p>
-      <h1 className="mt-1 text-2xl font-bold md:text-3xl">{name}</h1>
-      {lang !== "ko" && <p className="mt-0.5 text-sm text-gray-500">{l.n.ko}</p>}
-      <KstNote className="mt-1" />
-
-      <div className="mt-5 grid gap-5 md:grid-cols-[1fr_340px]">
-        <div className="min-w-0">
-          {/* 지금 혼잡도: 근처 실시간이 있으면 그 값, 없으면 예측 모델 추정 (모든 명소 같은 자리, 휴대폰에서 맨 위) */}
-          <section className="mb-6 flex items-center gap-4 rounded-3xl px-4 py-3.5" style={{ background: `${nowLevel.color}14` }}>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-gray-600">{t("지금 혼잡도")}</p>
-              <p className="text-[28px] leading-tight font-extrabold" style={{ color: nowOpen ? nowLevel.color : "#6b7280" }}>
-                {nowOpen ? t(nowLevel.label) : t("운영 시간 아님")}
-                {!live && nowOpen && <DataTag className="text-xs" />}
-              </p>
-              <p className="mt-0.5 text-sm text-gray-600">
-                {live ? t("가까운 측정 지점 {name} 기준", { name: live.label }) : t("요일·시간·날씨·관광공사 예측으로 본 CrowdView 추정")}
-              </p>
+          {/* 지금 혼잡도 (장소 상세와 같은 모양: 단계 + 반원 계기판) */}
+          <section className="mt-4 rounded-3xl px-4 py-3.5" style={{ background: `${nowOpen ? nowLevel.color : "#6b7280"}14` }}>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-gray-600">{t("지금 혼잡도")}</p>
+                <p className="text-[28px] leading-tight font-extrabold" style={{ color: nowOpen ? nowLevel.color : "#6b7280" }}>
+                  {nowOpen ? t(nowLevel.label) : t("운영 시간 아님")}
+                  {!live && nowOpen && <DataTag className="text-xs" />}
+                </p>
+                <p className="mt-0.5 text-base text-gray-700">{t(nowOpen ? nowLevel.desc : "운영 시간 {from} ~ {to}", { from: formatHour(model.place.hours[0], lang), to: formatHour(model.place.hours[1], lang) })}</p>
+              </div>
+              <CrowdGauge score={nowScore} closed={!nowOpen} size={120} />
             </div>
-            <CrowdGauge score={nowScore} closed={!nowOpen} size={112} />
+            <p className="mt-2 text-xs text-gray-400">
+              {live ? (
+                <Link href={live.href} className="underline">
+                  {t("가까운 측정 지점 {name} 기준", { name: live.label })} ›
+                </Link>
+              ) : (
+                t("요일·시간·날씨·관광공사 예측으로 본 CrowdView 추정")
+              )}
+            </p>
           </section>
 
-          {/* 그래프: 모든 명소에 같은 자리. 관광공사 30일 예측 → 가까운 측정 지점의 오늘 시간대별 (없으면 없다고 쓴다) */}
-          <section className="mb-6">
-            <h2 className="text-lg font-bold">{t("앞으로 30일 붐빔 예측")}</h2>
-            {daily.length > 1 ? (
-              <>
-                <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("한국관광공사 관광지 집중률 예측 · 그래프를 눌러 날짜별로 보기")}</p>
-                <DailyForecastChart days={daily} weekdays={daily.map((d) => weekday(d.date))} />
-              </>
-            ) : (
-              <p className="mt-1 text-sm text-gray-500">{t("관광공사 예측 자료가 아직 없는 곳이에요.")}</p>
-            )}
-          </section>
-          <section className="mb-6">
+          <WeatherCard signals={model.signals} lang={lang} place={model.place} />
+          {nowOpen && (
+            <CalmAlternatives lat={l.lat} lng={l.lng} score={nowScore} selfId={place ? place.id : area ? `seoul-${area.code}` : `spot-${l.id}`} lang={lang} />
+          )}
+          <a
+            href={landmarkMapHref(l, lang)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 block rounded-2xl border border-gray-200 bg-white py-3 text-center text-sm font-semibold"
+          >
+            <Glyph e="🗺️" /> {t("지도에서 보기")}
+          </a>
+        </div>
+
+        <div className="lg:[&>*:first-child]:mt-0">
+          {/* 순서: 장소 상세와 같게 — 오늘 시간대별 → 언제 가면 한산할까 → (월별 대신) 앞으로 30일 */}
+          <section className="mt-8">
             <h2 className="text-lg font-bold">
               {t("오늘 시간대별")}
               {!nearHourly && <DataTag />}
             </h2>
-            <p className="mt-0.5 mb-3 text-sm text-gray-500">
-              {nearHourly ? t("가까운 측정 지점 {name} 기준", { name: live!.label }) : t("요일·시간·날씨·관광공사 예측으로 본 CrowdView 추정")}
-            </p>
-            {nearHourly ? (
-              <HourlyChart points={nearHourly.points} highlightHour={Math.floor(kst().hour)} estimated={nearHourly.estimated} unit={nearHourly.unit} />
-            ) : (
-              <HourlyChart points={model.now.hourly} highlightHour={Math.floor(kst().hour)} estimated />
-            )}
+            <div className="mt-4">
+              {nearHourly ? (
+                <HourlyChart points={nearHourly.points} highlightHour={Math.floor(kst().hour)} estimated={nearHourly.estimated} unit={nearHourly.unit} />
+              ) : (
+                <HourlyChart points={model.now.hourly} highlightHour={Math.floor(kst().hour)} estimated />
+              )}
+            </div>
           </section>
-          <section className="mb-6">
+
+          <section className="mt-8">
             <h2 className="text-lg font-bold">
               {t("언제 가면 한산할까")}
               <DataTag />
@@ -231,8 +257,21 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
               }))}
             />
           </section>
+
+          <section className="mt-8">
+            <h2 className="text-lg font-bold">{t("앞으로 30일 붐빔 예측")}</h2>
+            {daily.length > 1 ? (
+              <>
+                <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("한국관광공사 관광지 집중률 예측 · 그래프를 눌러 날짜별로 보기")}</p>
+                <DailyForecastChart days={daily} weekdays={daily.map((d) => weekday(d.date))} />
+              </>
+            ) : (
+              <p className="mt-1 text-sm text-gray-500">{t("관광공사 예측 자료가 아직 없는 곳이에요.")}</p>
+            )}
+          </section>
+
           {info?.overview && (
-            <section>
+            <section className="mt-8">
               <h2 className="text-lg font-bold">{t("소개")}</h2>
               {lang !== "ko" && <p className="mt-1 text-xs text-gray-500">{t("소개 글은 한국관광공사의 한국어 자료예요.")}</p>}
               {/* 긴 소개는 첫 단락만 보이고 나머지는 펼쳐 보기 (글만 길게 늘어서지 않게) */}
@@ -250,75 +289,16 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
             </section>
           )}
 
-
-          <section className="mt-6">
-            <h2 className="text-lg font-bold">{t("이용 정보")}</h2>
-            <dl className="mt-2 card divide-y divide-gray-100 p-0">
-              {rows
-                .filter((r): r is [string, string] => !!r[1])
-                .map(([k, v]) => (
-                  <div key={k} className="flex gap-3 px-4 py-3 text-sm">
-                    <dt className="w-20 shrink-0 font-semibold text-gray-500">{k}</dt>
-                    <dd lang="ko" className="min-w-0 whitespace-pre-line text-gray-800">
-                      {v}
-                    </dd>
-                  </div>
-                ))}
-              {info?.homepage && (
-                <div className="flex gap-3 px-4 py-3 text-sm">
-                  <dt className="w-20 shrink-0 font-semibold text-gray-500">{t("홈페이지")}</dt>
-                  <dd className="min-w-0 truncate">
-                    <a href={info.homepage} target="_blank" rel="noopener noreferrer" className="text-indigo-600 underline">
-                      {info.homepage.replace(/^https?:\/\//, "").replace(/\/$/, "")}
-                    </a>
-                  </dd>
-                </div>
-              )}
-            </dl>
-            <p className="mt-1.5 text-xs text-gray-400">{t("자료: 한국관광공사. 방문 전 공식 안내를 확인하세요.")}</p>
-          </section>
-        </div>
-
-        <aside className="space-y-4">
-          <section className="rounded-3xl border border-indigo-100 bg-white p-4">
-            <p className="text-sm font-bold">{t("지금 혼잡도")}</p>
-            {live ? (
-              <Link href={live.href} className="mt-2 flex items-center gap-3 rounded-2xl bg-indigo-50/60 px-3 py-2.5">
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold">{live.label}</span>
-                  <span className="block text-xs text-gray-500">{t("가까운 측정 지점 · 자세히 보기")}</span>
-                </span>
-                <LevelBadge score={live.score} closed={!live.open} />
-              </Link>
-            ) : (
-              <p className="mt-2 flex items-center justify-between gap-2 text-sm text-gray-600">
-                {t("실시간 자료가 없어 예측으로 보여 드려요")}
-                <LevelBadge score={nowScore} closed={!nowOpen} />
-              </p>
-            )}
-          </section>
-          {nowOpen && (
-            <CalmAlternatives lat={l.lat} lng={l.lng} score={nowScore} selfId={place ? place.id : area ? `seoul-${area.code}` : `spot-${l.id}`} lang={lang} />
-          )}
-
-          <a
-            href={landmarkMapHref(l, lang)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block rounded-2xl border border-gray-200 bg-white py-3 text-center text-sm font-semibold"
-          >
-            <Glyph e="🗺️" /> {t("지도에서 보기")}
-          </a>
-          <StayLinks ko={l.n.ko} en={l.n.en} lang={lang} t={t} at={l} />
+          <StayLinks ko={l.n.ko} en={l.n.en} lang={lang} t={t} at={l} className="mt-6" />
 
           {others.length > 0 && (
-            <section className="rounded-3xl border border-gray-100 bg-white p-4">
-              <p className="text-sm font-bold">{t("{region}의 다른 명소", { region: t(l.region) })}</p>
-              <ul className="mt-2 space-y-1">
+            <section className="mt-8">
+              <h2 className="text-lg font-bold">{t("{region}의 다른 명소", { region: t(l.region) })}</h2>
+              <ul className="mt-2 divide-y divide-gray-100 rounded-2xl border border-gray-100">
                 {others.map((o) => (
                   <li key={o.id}>
-                    <Link href={`/spot/${o.id}`} className="flex items-center justify-between rounded-xl px-2 py-1.5 text-sm hover:bg-gray-50">
-                      <span className="truncate">{o.n[lang] ?? o.n.ko}</span>
+                    <Link href={`/spot/${o.id}`} className="flex items-center justify-between px-4 py-3 text-sm hover:bg-gray-50">
+                      <span className="truncate font-semibold">{o.n[lang] ?? o.n.ko}</span>
                       <span className="shrink-0 text-xs text-gray-400">{t("{km}km", { km: distanceKm(o, l).toFixed(0) })}</span>
                     </Link>
                   </li>
@@ -326,7 +306,31 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
               </ul>
             </section>
           )}
-        </aside>
+
+          {/* 정보 (장소 상세와 같은 자리·모양) */}
+          <section className="mt-8 space-y-3 text-sm">
+            <h2 className="text-lg font-bold">{t("정보")}</h2>
+            {rows
+              .filter((r): r is [string, string] => !!r[1])
+              .map(([k, v]) => (
+                <div key={k} className="flex gap-3">
+                  <span className="w-16 shrink-0 text-gray-400">{k}</span>
+                  <span lang="ko" className="min-w-0 whitespace-pre-line text-gray-800">
+                    {v}
+                  </span>
+                </div>
+              ))}
+            {info?.homepage && (
+              <div className="flex gap-3">
+                <span className="w-16 shrink-0 text-gray-400">{t("홈페이지")}</span>
+                <a href={info.homepage} target="_blank" rel="noopener noreferrer" className="min-w-0 truncate text-indigo-600 underline">
+                  {info.homepage.replace(/^https?:\/\//, "").replace(/\/$/, "")}
+                </a>
+              </div>
+            )}
+            <p className="pt-1 text-xs text-gray-400">{t("자료: 한국관광공사. 방문 전 공식 안내를 확인하세요.")}</p>
+          </section>
+        </div>
       </div>
     </main>
   );

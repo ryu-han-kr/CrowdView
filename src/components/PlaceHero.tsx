@@ -15,7 +15,7 @@ const HERO_HEIGHT = 280;
  * 상단 이미지 영역 + 스크롤에 따라 축소/페이드되는 패럴랙스, 스크롤 후 나타나는 상단 바.
  * gallery: 관광공사 사진 여러 장 — 밀거나 화살표로 넘겨 본다 (첫 장은 대표 사진)
  */
-export function PlaceHero({ place, gallery = [] }: { place: Place; gallery?: string[] }) {
+export function PlaceHero({ place, gallery = [], favorite = true }: { place: Place; gallery?: string[]; favorite?: boolean }) {
   const router = useRouter();
   const { isFavorite, toggle } = useFavorites();
   const { t, lp } = useI18n();
@@ -51,13 +51,18 @@ export function PlaceHero({ place, gallery = [] }: { place: Place; gallery?: str
         <span className="font-semibold" style={{ opacity: progress >= 1 ? 1 : 0, transition: "opacity .2s" }}>
           {t(place.name)}
         </span>
-        <button
-          onClick={() => toggle(place.id)}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-lg backdrop-blur"
-          aria-label={fav ? t("즐겨찾기 해제") : t("즐겨찾기")}
-        >
-          <Glyph e={fav ? "❤️" : "🤍"} className={`h-5 w-5 ${fav ? "text-rose-500" : "text-gray-700"}`} />
-        </button>
+        {/* 즐겨찾기는 우리 장소만 (대표 명소 상세는 빈 자리로 가운데 제목 맞춤) */}
+        {favorite ? (
+          <button
+            onClick={() => toggle(place.id)}
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/80 text-lg backdrop-blur"
+            aria-label={fav ? t("즐겨찾기 해제") : t("즐겨찾기")}
+          >
+            <Glyph e={fav ? "❤️" : "🤍"} className={`h-5 w-5 ${fav ? "text-rose-500" : "text-gray-700"}`} />
+          </button>
+        ) : (
+          <span className="h-9 w-9" />
+        )}
       </div>
 
       <div

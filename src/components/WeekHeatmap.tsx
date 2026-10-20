@@ -25,6 +25,8 @@ export function WeekHeatmap({ days, nowHour }: { days: HeatDay[]; nowHour: numbe
   if (!all.length) return null;
   const from = Math.min(...all);
   const to = Math.max(...all) + 1;
+  // 2시간씩 묶은 칸. 운영 시간이 길면(12시간 넘게) 3시간씩 — 휴대폰 한 화면에 들어가게
+  const BLOCK = to - from > 12 ? 3 : 2;
   const blocks = Array.from({ length: Math.ceil((to - from) / BLOCK) }, (_, i) => from + i * BLOCK);
 
   return (
