@@ -19,7 +19,22 @@ const nextConfig: NextConfig = {
   },
   // 글꼴 파일은 폴더 이름에 버전이 있어 내용이 바뀌지 않으므로 1년 보관
   async headers() {
-    return [{ source: "/fonts/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }] }];
+    return [
+      { source: "/fonts/:path*", headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }] },
+      // 보안 헤더 (QA 10/21): 남의 사이트가 우리 화면(결제 확인 창 등)을 틀에 넣어 속이지 못하게, 파일 종류 추측 막기,
+      // 다른 사이트로 넘어갈 때 주소 전체를 보내지 않기, 카메라·마이크 끄기(위치는 '근처' 기능 때문에 우리 사이트만).
+      // 전체 CSP는 지도·결제·광고 스크립트가 많아 뒤로 미룬다 (frame-ancestors만)
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Content-Security-Policy", value: "frame-ancestors 'self'" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self)" },
+        ],
+      },
+    ];
   },
 };
 

@@ -172,7 +172,7 @@ export function MapPlaceCard({ place, crowd }: { place: Place; crowd: CrowdResul
           )}
         </p>
         <div className="mt-1.5">
-          <LevelBadge score={crowd.score} closed={!crowd.open} offSeason={crowd.offSeason} />
+          <LevelBadge score={crowd.score} closed={!crowd.open} offSeason={crowd.offSeason} event={place.category === "event" ? { start: place.eventDate, end: place.eventEndDate } : undefined} />
           {crowd.open && isEstimated(crowd) && <DataTag />}
         </div>
       </div>

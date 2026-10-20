@@ -54,6 +54,15 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
     .filter((p) => !q || [p.name, p.region, ...p.tags, CATEGORY_LABEL[p.category]].flatMap((s) => [s, t(s)]).some((s) => s.toLowerCase().includes(q)))
     .sort((a, b) => Number(crowd[b.id].open) - Number(crowd[a.id].open) || (sort === "calm" ? 1 : -1) * (crowd[a.id].score - crowd[b.id].score));
 
+  // 닫힌 곳 표시: 행사는 열리기 전이면 'D-n', 끝났으면 '종료' (QA 10/21: 열리기 전 행사가 '운영 종료'로 보임)
+  const today = new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
+  const closedLabel = (p: (typeof list)[number], offSeason?: boolean) => {
+    if (p.category === "event" && p.eventDate) {
+      if (p.eventDate > today) return `D-${Math.round((Date.parse(p.eventDate) - Date.parse(today)) / 86_400_000)}`;
+      if ((p.eventEndDate ?? p.eventDate) < today) return t("종료");
+    }
+    return t(offSeason ? "시즌 아님" : "운영 종료");
+  };
   const cards: (PhotoCardItem & { lat: number; lng: number; emoji: string })[] = list.map((p) => {
     const c = crowd[p.id];
     const hc = headcountInfo(c, i18n);
@@ -65,7 +74,7 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
       title: t(p.name),
       sub: [t(p.region), hc?.text].filter(Boolean).join(" · "),
       score: c.open ? c.score : undefined,
-      badge: c.open ? undefined : t(c.offSeason ? "시즌 아님" : "운영 종료"),
+      badge: c.open ? undefined : closedLabel(p, c.offSeason),
       lat: p.lat,
       lng: p.lng,
     };

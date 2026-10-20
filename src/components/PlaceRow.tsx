@@ -60,7 +60,7 @@ export function PlaceRow({ place, crowd }: { place: Place; crowd: CrowdResult })
         </p>
       </div>
       <span className="flex shrink-0 flex-col items-end">
-        <LevelBadge score={crowd.score} closed={!crowd.open} offSeason={crowd.offSeason} />
+        <LevelBadge score={crowd.score} closed={!crowd.open} offSeason={crowd.offSeason} event={place.category === "event" ? { start: place.eventDate, end: place.eventEndDate } : undefined} />
         {crowd.open && isEstimated(crowd) && <DataTag className="mt-0.5" />}
       </span>
     </Link>
@@ -95,7 +95,7 @@ export function PlaceCard({ place, crowd }: { place: Place; crowd: CrowdResult }
           </div>
         )}
         <span className="absolute top-3 left-3 flex rounded-full bg-white/95 shadow-sm">
-          <LevelBadge score={crowd.score} closed={!crowd.open} offSeason={crowd.offSeason} />
+          <LevelBadge score={crowd.score} closed={!crowd.open} offSeason={crowd.offSeason} event={place.category === "event" ? { start: place.eventDate, end: place.eventEndDate } : undefined} />
         </span>
       </div>
       {/* 카드 높이를 맞추려고 글 영역 높이를 고정 (추세 줄이 없어도 같은 높이) */}

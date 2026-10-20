@@ -28,15 +28,28 @@ export function LevelBadge({
   large = false,
   closed = false,
   offSeason = false,
+  event,
 }: {
   score: number;
   large?: boolean;
   closed?: boolean;
   /** 계절 영업 장소의 비시즌 (스키장 등) */
   offSeason?: boolean;
+  /** 행사 장소: 열리기 전이면 'D-n', 끝났으면 '종료' (운영 종료와 구분 — QA 10/21: 열리기 전 행사가 '운영 종료'로 보임) */
+  event?: { start?: string; end?: string };
 }) {
   const { t } = useI18n();
-  const level = closed ? { label: offSeason ? "시즌 아님" : "운영 종료", color: "#9ca3af" } : levelOf(score);
+  const today = new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
+  const dday = event?.start ? Math.round((Date.parse(event.start) - Date.parse(today)) / 86_400_000) : undefined;
+  const ended = !!event?.start && (event.end ?? event.start) < today;
+  const level =
+    closed && dday !== undefined && dday > 0
+      ? { label: `D-${dday}`, color: "#6366f1" }
+      : closed && ended
+        ? { label: "종료", color: "#9ca3af" }
+        : closed
+          ? { label: offSeason ? "시즌 아님" : "운영 종료", color: "#9ca3af" }
+          : levelOf(score);
   return (
     <span
       className={`inline-flex shrink-0 items-center gap-1.5 rounded-full align-middle leading-none font-semibold whitespace-nowrap ${

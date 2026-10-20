@@ -2394,4 +2394,7 @@ export default {
   "1개월 {n}원으로 더 편한 여행": ["A smoother trip for ₩{n} a month","1か月{n}ウォンでもっと快適な旅","1个月{n}韩元，旅行更轻松","1個月{n}韓元，旅行更輕鬆"],
   "전체 시간표 · 붐비면 다시 짜기 · 1개월 3,900원": ["Full schedule · re-plan when crowded · ₩3,900 for 1 month","全日程・混んだら再作成・1か月3,900ウォン","完整行程 · 拥挤时重新规划 · 1个月3,900韩元","完整行程 · 擁擠時重新規劃 · 1個月3,900韓元"],
   "{name}의 지금 혼잡도는 ‘{level}’이에요.": ["{name} is ‘{level}’ right now.", "{name}の今の混雑度は「{level}」です。", "{name}现在的拥挤度为“{level}”。", "{name}現在的擁擠度為「{level}」。"],
+  "작년 이맘때 {region} 방문객": ["Visitors to {region} this time last year","昨年の今ごろの{region}の訪問者","去年此时{region}的游客","去年此時{region}的遊客"],
+  "관광공사 데이터랩 · 다른 지역에서 온 사람과 외국인, 작년 같은 요일": ["KTO DataLab · visitors from other regions and abroad, same weekday last year","観光公社データラボ・他地域からの訪問者と外国人、昨年の同じ曜日","观光公社数据实验室 · 外地游客与外国人，去年同一星期","觀光公社數據實驗室 · 外地遊客與外國人，去年同一星期"],
+  "하루 평균 약 {n}명, {day}이 가장 많았어요 (약 {m}명).": ["About {n} a day on average; {day} was the busiest (about {m}).","1日平均約{n}人、{day}が最も多かったです（約{m}人）。","日均约{n}人，{day}最多（约{m}人）。","日均約{n}人，{day}最多（約{m}人）。"],
 };
