@@ -7,12 +7,12 @@ import { HourlyChart } from "@/components/HourlyChart";
 import { LevelBadge } from "@/components/Level";
 import { PlaceHero } from "@/components/PlaceHero";
 import { forecastForDate, forecastReasons, weekForecast } from "@/lib/crowd/model";
-import { UpcomingHours, WeekForecast } from "@/components/PlaceForecast";
+import { MonthlyBars, UpcomingHours, WeekForecast } from "@/components/PlaceForecast";
 import { getDaySummaries, getHistory, type HistoryPoint } from "@/lib/crowd/history";
 import { getSignals } from "@/lib/crowd/signals";
 import { getCrowd } from "@/lib/crowd/service";
 import { siteShare } from "@/lib/crowd/provider";
-import { levelOf } from "@/lib/levels";
+import { levelOf, valueFromScore } from "@/lib/levels";
 import { closedToday, getLivePlace, isOngoingEvent } from "@/lib/place-info";
 import { CrowdGauge } from "@/components/CrowdGauge";
 import { WeekHeatmap } from "@/components/WeekHeatmap";
@@ -177,6 +177,21 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     crowd.area ? "area" : "real",
   );
   const week = weekForecast(place, signals);
+  // 예상 인원: 점수 대신 사람 수로 (기준 단위가 '분'인 놀이공원은 대기 분). 서울 명소는 주변 지역 인원을 명소 크기로 줄인다
+  const steps = place.criteria?.steps;
+  const unit = place.criteria?.unit;
+  const peopleAt = (score: number) =>
+    steps ? (unit === "분" ? valueFromScore(score, steps) : Math.round((valueFromScore(score, steps) * (crowd.area ? share : 1)) / 100) * 100) : undefined;
+  const peopleText = (score: number) => {
+    const v = peopleAt(score);
+    if (v === undefined) return undefined;
+    return unit === "분" ? t("대기 약 {n}", { n: fmtMinutes(v, t) }) : t("약 {v}", { v: fmtPeople(v, t, lang) });
+  };
+  const peopleShort = (score: number) => {
+    const v = peopleAt(score);
+    if (v === undefined) return undefined;
+    return unit === "분" ? t("{n}분", { n: v }) : compactNumber(v, lang);
+  };
   const calmest = week.reduce((a, b) => (b.peakScore < a.peakScore ? b : a));
   const todayPeak = week[0];
   const todayReasons = forecastReasons(place, todayPeak.date, todayPeak.peakHour + 0.5, signals);
@@ -211,6 +226,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     long: `${Number(d.date.slice(5, 7))}/${Number(d.date.slice(8, 10))} (${weekday(d.date, lang, "short")})`,
     reasons: d.reasons.map((r) => trReason(r, t)),
     holiday: d.reasons.some((r) => r.k.startsWith("🎌")),
+    people: peopleText(d.peakScore),
   }));
   // 요일별 평균 (레퍼런스: Queue-Times 통계 '요일별 평균 혼잡'). 실측 하루 요약이 요일마다 3일 이상 쌓였으면 실측, 아니면 앞으로 12주 예측
   const sums = await getDaySummaries(place.id);
@@ -226,7 +242,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const weekdayBars = (weekdayReal ? realByDow : modelByDow).map((xs, w) => ({
     label: new Intl.DateTimeFormat(lang, { weekday: "short", timeZone: "UTC" }).format(new Date(Date.UTC(2026, 0, 4 + w))),
     avg: xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : 0,
-  }));
+  })).map((b) => ({ ...b, people: b.avg ? peopleText(b.avg) : undefined, peopleShort: b.avg ? peopleShort(b.avg) : undefined }));
   // 12개월: 가장 붐빌 때는 달마다 비슷하게 꽉 차서, 운영 시간 평균 혼잡으로 비교한다 (사흘에 하루씩 표본)
   const byMonth = new Map<string, number[]>();
   for (const [i, d] of long.entries()) {
@@ -239,7 +255,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const yearBars = [...byMonth.entries()].slice(0, 12).map(([ym, xs]) => ({
     label: new Intl.DateTimeFormat(lang, { month: "short", timeZone: "UTC" }).format(new Date(`${ym}-15T00:00:00Z`)),
     avg: Math.round(xs.reduce((a, b) => a + b, 0) / xs.length),
-  }));
+  })).map((b) => ({ ...b, people: peopleText(b.avg), peopleShort: peopleShort(b.avg) }));
   // 놀이기구 구역별 평균 대기 (구역을 아는 공원만)
   const areas = [...new Set((crowd.zones ?? []).map((z) => z.area).filter((a): a is string => !!a))]
     .map((name) => {
@@ -255,7 +271,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
       date: d.date,
       label: shortDay(d.date, t, lang),
       closed,
-      hours: closed ? [] : pts.filter((p) => p.hour >= place.hours[0] && p.hour < Math.min(24, place.hours[1])).map((p) => ({ hour: p.hour, score: p.score })),
+      hours: closed ? [] : pts.filter((p) => p.hour >= place.hours[0] && p.hour < Math.min(24, place.hours[1])).map((p) => ({ hour: p.hour, score: p.score, people: peopleText(p.score) })),
     };
   });
   const dday = place.eventDate ? daysUntil(place.eventDate) : null;
@@ -346,8 +362,6 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 <p className="text-[28px] leading-tight font-extrabold" style={beforeEvent ? undefined : { color: level.color }}>
                   {beforeEvent ? `${t("행사 전")} · D-${dday}` : t(level.label)}
                   {!beforeEvent && isOpen && isEstimated(crowd) && <DataTag className="text-xs" />}
-                  {/* 0~100 혼잡 지수 (레퍼런스: Queue-Times "Very quiet (12%)") */}
-                  {!beforeEvent && isOpen && <span className="ml-2 align-middle text-sm font-semibold whitespace-nowrap text-gray-500">{t("혼잡 지수 {n}", { n: crowd.score })}</span>}
                 </p>
                 <p className="mt-0.5 text-base text-gray-700">
                   {beforeEvent ? (
@@ -532,14 +546,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             </div>
           </section>
 
-          {/* 이번 주 × 시간 히트맵: 언제 가면 한산한지 한눈에 */}
-          <section className="mt-8">
-            <h2 className="text-lg font-bold">{t("언제 가면 한산할까")}</h2>
-            <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("이번 주 시간마다 예상 혼잡 · 칸을 누르면 자세히")}</p>
-            <WeekHeatmap days={heatDays} nowHour={now.hour} />
-          </section>
-
-          {/* 이번 주 (막대를 누르면 그날) + 더보기: 30일·12개월 */}
+          {/* 이번 주 (막대를 훑으면 그날 예상 인원) + 더보기: 30일·요일별 */}
           <section className="mt-8">
             <WeekForecast
               week={week.map((d) => ({
@@ -549,15 +556,28 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 peakScore: d.peakScore,
                 peakLabel: formatHour(d.peakHour, lang),
                 reasons: d.reasons.map((r) => trReason(r, t)),
+                people: peopleText(d.peakScore),
+                peopleShort: peopleShort(d.peakScore),
               }))}
               month={monthCells}
-              year={yearBars}
               weekdays={weekdayBars}
               weekdaysReal={weekdayReal}
               calmestDate={calmest.date}
               placeId={place.id}
               tripEnabled={authEnabled && pushEnabled}
             />
+          </section>
+
+          {/* 월별 (12개월): 운영 시간 평균과 예상 인원 */}
+          <section className="mt-8">
+            <MonthlyBars year={yearBars} />
+          </section>
+
+          {/* 이번 주 × 시간 히트맵: 언제 가면 한산한지 한눈에 */}
+          <section className="mt-8">
+            <h2 className="text-lg font-bold">{t("언제 가면 한산할까")}</h2>
+            <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("날마다 운영 시간 색 띠 · 띠를 누르거나 밀면 그 시간 예상 인원")}</p>
+            <WeekHeatmap days={heatDays} nowHour={now.hour} />
           </section>
 
           {signals.localPop && <VisitorProfile pop={signals.localPop} lang={lang} />}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { levelOf } from "@/lib/levels";
 import { Glyph } from "@/components/Glyph";
@@ -16,6 +16,9 @@ export interface DayBar {
   /** 가장 붐비는 시각 (예: 14시) */
   peakLabel: string;
   reasons: string[];
+  /** 가장 붐빌 때 예상 인원(또는 대기) 문장, 막대 위 짧은 숫자 (기준이 없는 곳은 없음) */
+  people?: string;
+  peopleShort?: string;
 }
 export interface MonthCell {
   date: string;
@@ -29,22 +32,102 @@ export interface MonthCell {
   reasons: string[];
   /** 공휴일이면 날짜를 빨갛게 */
   holiday: boolean;
+  people?: string;
 }
 export interface YearBar {
   label: string;
   avg: number;
+  /** 운영 시간 평균 예상 인원 문장 · 막대 위 짧은 숫자 */
+  people?: string;
+  peopleShort?: string;
 }
 
-type More = "month" | "weekday" | "year";
+interface BarItem {
+  key: string;
+  label: string;
+  /** 막대 높이용 0~100 */
+  height: number;
+  score: number;
+  /** 막대 위 (인원 짧게, 없으면 단계) */
+  top: string;
+  calm?: boolean;
+}
 
 /**
- * 이번 주 막대 (누르거나 올리면 그날 정보) + 더보기(앞으로 30일 달력 · 요일별 · 12개월 평균).
- * 레퍼런스: Queue-Times(요일·월 평균 + 결론 문장), Undercover Tourist(달력 칸의 '그날 이유'), TouringPlans(날짜 저장 알림)
+ * 막대 묶음: 주식 그래프처럼 손가락(또는 마우스)으로 막대 위를 지나가면 그 막대가 골라지고 위 칸에 인원이 나온다.
+ * 세로로 밀면 화면 스크롤 (touch-action: pan-y)
+ */
+function ScrubBars({ items, sel, onSel, tall = false }: { items: BarItem[]; sel: number; onSel: (i: number) => void; tall?: boolean }) {
+  // 막대가 많으면(12개월) 글자를 줄이고, 막대 위 숫자는 고른 막대만
+  const many = items.length > 8;
+  const { t } = useI18n();
+  const box = useRef<HTMLUListElement>(null);
+  const dragging = useRef(false);
+  const pick = (clientX: number) => {
+    const r = box.current?.getBoundingClientRect();
+    if (!r || !items.length) return;
+    onSel(Math.max(0, Math.min(items.length - 1, Math.floor(((clientX - r.left) / r.width) * items.length))));
+  };
+  return (
+    <ul
+      ref={box}
+      className={`mt-4 flex select-none items-end ${many ? "gap-1" : "gap-1.5"} ${tall ? "h-44" : "h-40"}`}
+      style={{ touchAction: "pan-y" }}
+      onPointerDown={(e) => {
+        dragging.current = true;
+        if (e.pointerType === "mouse") pick(e.clientX);
+      }}
+      onPointerMove={(e) => (dragging.current || e.pointerType === "mouse") && pick(e.clientX)}
+      onPointerUp={(e) => {
+        if (dragging.current) pick(e.clientX);
+        dragging.current = false;
+      }}
+      onPointerCancel={() => (dragging.current = false)}
+      onPointerLeave={() => (dragging.current = false)}
+    >
+      {items.map((it, i) => {
+        const l = levelOf(it.score);
+        const on = i === sel;
+        return (
+          <li key={it.key} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end">
+            <span className={`mb-1 text-[11px] whitespace-nowrap tabular-nums ${on ? "font-bold text-gray-900" : "text-gray-500"} ${many && !on ? "invisible" : ""}`}>
+              {it.top}
+            </span>
+            <span
+              className={`block w-full rounded-lg transition-all ${on ? "ring-2 ring-gray-900 ring-offset-1" : "opacity-75"}`}
+              style={{ height: `${Math.max(6, it.height)}%`, background: l.color }}
+            />
+            <span
+              className={`mt-1.5 whitespace-nowrap ${many ? "text-[11px] tracking-tight" : "text-sm"} ${on ? "font-bold text-gray-900" : it.calm ? "font-bold text-emerald-600" : "font-medium text-gray-600"}`}
+            >
+              {it.label}
+            </span>
+            <span className="sr-only">{t(l.label)}</span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** 막대 위 짧은 글: 인원이 있으면 인원, 없으면 단계 */
+const topText = (peopleShort: string | undefined, score: number, t: (k: string) => string) => peopleShort ?? t(levelOf(score).label);
+
+/** 차이가 작아도 보이도록 가장 낮은 막대 30%, 가장 높은 막대 100% */
+const relative = (xs: number[]) => {
+  const valid = xs.filter((x) => x > 0);
+  const min = Math.min(...valid);
+  const max = Math.max(...valid);
+  return (v: number) => (v <= 0 ? 0 : max === min ? 70 : 30 + ((v - min) / (max - min)) * 70);
+};
+
+/**
+ * 이번 주 막대 (손가락으로 훑으면 그날 예상 인원) + 더보기(앞으로 30일 달력 · 요일별).
+ * 레퍼런스: Queue-Times(요일 평균 + 결론 문장), Undercover Tourist(달력 칸의 '그날 이유'), TouringPlans(날짜 저장 알림)
  */
 export function WeekForecast({
   week,
   month,
-  year,
   weekdays,
   weekdaysReal,
   calmestDate,
@@ -53,7 +136,6 @@ export function WeekForecast({
 }: {
   week: DayBar[];
   month: MonthCell[];
-  year: YearBar[];
   /** 일~토 평균 혼잡 */
   weekdays: YearBar[];
   /** 요일별이 실측 하루 요약인지 (아니면 예측) */
@@ -64,8 +146,9 @@ export function WeekForecast({
 }) {
   const { t, lang } = useI18n();
   const [sel, setSel] = useState(0);
-  const [more, setMore] = useState<null | More>(null);
+  const [more, setMore] = useState<null | "month" | "weekday">(null);
   const [day, setDay] = useState(0);
+  const [wd, setWd] = useState(0);
   const d = week[sel];
   const lv = levelOf(d.peakScore);
   const dows = [0, 1, 2, 3, 4, 5, 6].map((i) =>
@@ -74,13 +157,18 @@ export function WeekForecast({
   const m = month[Math.min(day, month.length - 1)];
   const mCalm = month.reduce((a, b) => (b.peakScore < a.peakScore ? b : a), month[0]);
   const mBusy = month.reduce((a, b) => (b.peakScore > a.peakScore ? b : a), month[0]);
+  const wdH = relative(weekdays.map((x) => x.avg));
+  const wdValid = weekdays.filter((x) => x.avg > 0);
+  const wdCalm = wdValid.reduce((a, b) => (b.avg < a.avg ? b : a), wdValid[0]);
+  const wdBusy = wdValid.reduce((a, b) => (b.avg > a.avg ? b : a), wdValid[0]);
+  const w = weekdays[wd];
 
   return (
     <div>
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold">{t("이번 주")}</h2>
-          <p className="mt-0.5 text-sm text-gray-500">{t("하루 중 가장 붐빌 때 기준 · 공휴일·날씨·관광공사 예측 반영")}</p>
+          <p className="mt-0.5 text-sm text-gray-500">{t("하루 중 가장 붐빌 때 · 막대를 누르거나 밀어 보세요")}</p>
         </div>
         <button
           onClick={() => setMore(more ? null : "month")}
@@ -91,63 +179,46 @@ export function WeekForecast({
         </button>
       </div>
 
-      <ul className="mt-4 grid grid-cols-7 gap-1.5">
-        {week.map((w, i) => {
-          const l = levelOf(w.peakScore);
-          const on = i === sel;
-          return (
-            <li key={w.date}>
-              <button
-                onClick={() => setSel(i)}
-                onMouseEnter={() => setSel(i)}
-                onFocus={() => setSel(i)}
-                aria-pressed={on}
-                className="flex w-full flex-col items-center"
-              >
-                <span className={`flex h-24 w-full items-end rounded-lg ${on ? "bg-indigo-50" : "bg-gray-50"}`}>
-                  <span
-                    className={`block w-full rounded-lg transition-opacity ${on ? "ring-2 ring-gray-900 ring-offset-1" : "opacity-80"}`}
-                    style={{ height: `${Math.max(8, w.peakScore)}%`, background: l.color }}
-                  />
-                </span>
-                <span
-                  className={`mt-1.5 text-sm ${on ? "font-bold text-gray-900" : w.date === calmestDate ? "font-bold text-emerald-600" : "font-medium"}`}
-                >
-                  {w.short}
-                </span>
-                <span className="text-xs leading-tight font-semibold" style={{ color: l.color }}>
-                  {t(l.label)}
-                </span>
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-
-      {/* 고른 날 */}
-      <div className="mt-3 rounded-2xl bg-gray-50 px-4 py-3 text-[15px] leading-relaxed">
-        <p>
-          <b>{d.long}</b> · {t("가장 붐빌 때 {hour}", { hour: d.peakLabel })} · <b style={{ color: lv.color }}>{t(lv.label)}</b>{" "}
-          <span className="text-sm whitespace-nowrap text-gray-500">{t("혼잡 지수 {n}", { n: d.peakScore })}</span>
+      {/* 고른 날: 인원이 먼저, 크게 */}
+      <div className="mt-3 rounded-2xl bg-gray-50 px-4 py-3" aria-live="polite">
+        <p className="text-sm text-gray-600">
+          <b className="text-gray-900">{d.long}</b> · {t("가장 붐빌 때 {hour}", { hour: d.peakLabel })}
           {d.date === calmestDate && (
             <span className="ml-1.5 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-700">{t("이번 주 가장 한산")}</span>
           )}
+        </p>
+        <p className="mt-0.5 text-xl font-extrabold">
+          <span style={{ color: lv.color }}>{t(lv.label)}</span>
+          {d.people && <span className="ml-2 text-lg font-bold text-gray-900">{d.people}</span>}
         </p>
         {d.reasons.length > 0 && <p className="mt-1 text-sm text-gray-600">{d.reasons.join(" · ")}</p>}
         <TripWatchButton placeId={placeId} date={d.date} enabled={tripEnabled} />
       </div>
 
+      <ScrubBars
+        sel={sel}
+        onSel={setSel}
+        items={week.map((x) => ({
+          key: x.date,
+          label: x.short,
+          height: x.peakScore,
+          score: x.peakScore,
+          top: topText(x.peopleShort, x.peakScore, t),
+          calm: x.date === calmestDate,
+        }))}
+      />
+
       {more && (
         <div className="mt-4 rounded-2xl border border-gray-100 p-4">
           <div className="flex gap-1 rounded-full bg-gray-100 p-0.5 text-xs font-semibold">
-            {(["month", "weekday", "year"] as const).map((k) => (
+            {(["month", "weekday"] as const).map((k) => (
               <button
                 key={k}
                 onClick={() => setMore(k)}
                 aria-pressed={more === k}
                 className={`min-h-8 flex-1 rounded-full px-2 py-1.5 ${more === k ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
               >
-                {k === "month" ? t("앞으로 30일") : k === "weekday" ? t("요일별") : t("월별 (12개월)")}
+                {k === "month" ? t("앞으로 30일") : t("요일별")}
               </button>
             ))}
           </div>
@@ -192,8 +263,8 @@ export function WeekForecast({
                 <div className="mt-3 rounded-2xl bg-gray-50 px-4 py-3 text-[15px] leading-relaxed">
                   <p>
                     <b>{m.long}</b> · {t("가장 붐빌 때 {hour}", { hour: m.peakLabel })} ·{" "}
-                    <b style={{ color: levelOf(m.peakScore).color }}>{t(levelOf(m.peakScore).label)}</b>{" "}
-                    <span className="text-sm whitespace-nowrap text-gray-500">{t("혼잡 지수 {n}", { n: m.peakScore })}</span>
+                    <b style={{ color: levelOf(m.peakScore).color }}>{t(levelOf(m.peakScore).label)}</b>
+                    {m.people && <b className="ml-1.5 text-gray-900">{m.people}</b>}
                   </p>
                   <p className="mt-1 text-sm text-gray-600">{m.reasons.length ? m.reasons.join(" · ") : t("평소 요일·계절 패턴 그대로예요")}</p>
                   <TripWatchButton placeId={placeId} date={m.date} enabled={tripEnabled} />
@@ -201,17 +272,74 @@ export function WeekForecast({
               )}
             </div>
           )}
-          {more === "weekday" && <BarsView bars={weekdays} kind="weekday" />}
-          {more === "year" && <BarsView bars={year} kind="month" />}
+          {more === "weekday" && wdValid.length > 0 && (
+            <div className="mt-3">
+              <p className="text-[15px] leading-relaxed">
+                {t("{calm}요일이 가장 한산하고, {busy}요일이 가장 붐벼요.", { calm: wdCalm.label, busy: wdBusy.label })}
+              </p>
+              <div className="mt-3 rounded-2xl bg-gray-50 px-4 py-2.5 text-[15px]" aria-live="polite">
+                <b>{w.label}</b> · <b style={{ color: levelOf(w.avg).color }}>{t(levelOf(w.avg).label)}</b>
+                {w.people && <b className="ml-1.5 text-gray-900">{w.people}</b>}
+                <span className="ml-1 text-sm text-gray-500">({t("운영 시간 평균")})</span>
+              </div>
+              <ScrubBars
+                sel={wd}
+                onSel={setWd}
+                items={weekdays.map((x) => ({
+                  key: x.label,
+                  label: x.label,
+                  height: wdH(x.avg),
+                  score: x.avg,
+                  top: topText(x.peopleShort, x.avg, t),
+                  calm: x === wdCalm,
+                }))}
+              />
+            </div>
+          )}
           <p className="mt-3 text-[11px] text-gray-400">
             {more === "month"
               ? t("요일·공휴일·계절 패턴으로 본 CrowdView 추정이에요 (가장 붐빌 때 기준).")
-              : more === "weekday" && weekdaysReal
+              : weekdaysReal
                 ? t("지금까지 쌓인 실측 기록의 하루 평균이에요.")
                 : t("운영 시간 평균 혼잡으로 본 CrowdView 추정이에요 (요일·공휴일·계절 패턴).")}
           </p>
         </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * 월별 (앞으로 12개월): 운영 시간 평균 혼잡과 예상 인원. 손가락으로 훑으면 그 달 인원.
+ * 레퍼런스: Queue-Times "9월이 가장 한산(27%)"처럼 결론 한 줄
+ */
+export function MonthlyBars({ year }: { year: YearBar[] }) {
+  const { t } = useI18n();
+  const valid = year.filter((m) => m.avg > 0);
+  const calm = valid.reduce((a, b) => (b.avg < a.avg ? b : a), valid[0]);
+  const busy = valid.reduce((a, b) => (b.avg > a.avg ? b : a), valid[0]);
+  const [sel, setSel] = useState(Math.max(0, year.indexOf(calm)));
+  if (!valid.length) return null;
+  const h = relative(year.map((x) => x.avg));
+  const m = year[sel];
+  return (
+    <div>
+      <h2 className="text-lg font-bold">{t("월별 혼잡도")}</h2>
+      <p className="mt-0.5 text-[15px] leading-relaxed text-gray-700">
+        {t("가장 한산한 달은 {calm}, 가장 붐비는 달은 {busy}이에요.", { calm: calm.label, busy: busy.label })}
+      </p>
+      <div className="mt-3 rounded-2xl bg-gray-50 px-4 py-2.5 text-[15px]" aria-live="polite">
+        <b>{m.label}</b> · <b style={{ color: levelOf(m.avg).color }}>{t(levelOf(m.avg).label)}</b>
+        {m.people && <b className="ml-1.5 text-gray-900">{m.people}</b>}
+        <span className="ml-1 text-sm text-gray-500">({t("운영 시간 평균")})</span>
+      </div>
+      <ScrubBars
+        tall
+        sel={sel}
+        onSel={setSel}
+        items={year.map((x) => ({ key: x.label, label: x.label, height: h(x.avg), score: x.avg, top: topText(x.peopleShort, x.avg, t), calm: x === calm }))}
+      />
+      <p className="mt-2 text-[11px] text-gray-400">{t("운영 시간 평균 혼잡으로 본 CrowdView 추정이에요 (요일·공휴일·계절 패턴).")}</p>
     </div>
   );
 }
@@ -240,49 +368,5 @@ export function UpcomingHours({ hours, bestHour }: { hours: { hour: number; labe
         );
       })}
     </ul>
-  );
-}
-
-/**
- * 12개월·요일별 평균 혼잡 막대 + 결론 한 줄 (레퍼런스: Queue-Times "9월이 가장 한산(27%)").
- * 차이가 작아도 보이도록 가장 낮은 막대를 30%, 가장 높은 막대를 100% 높이로
- */
-function BarsView({ bars, kind }: { bars: YearBar[]; kind: "month" | "weekday" }) {
-  const { t } = useI18n();
-  const valid = bars.filter((m) => m.avg > 0);
-  if (!valid.length) return null;
-  const min = Math.min(...valid.map((m) => m.avg));
-  const max = Math.max(...valid.map((m) => m.avg));
-  const calm = valid.find((m) => m.avg === min)!;
-  const busy = valid.find((m) => m.avg === max)!;
-  const h = (v: number) => (max === min ? 70 : 30 + ((v - min) / (max - min)) * 70);
-  return (
-    <div className="mt-3">
-      <p className="text-[15px] leading-relaxed">
-        {kind === "month"
-          ? t("가장 한산한 달은 {calm}, 가장 붐비는 달은 {busy}이에요.", { calm: calm.label, busy: busy.label })
-          : t("{calm}요일이 가장 한산하고(평균 {calmN}), {busy}요일이 가장 붐벼요(평균 {busyN}).", {
-              calm: calm.label,
-              busy: busy.label,
-              calmN: calm.avg,
-              busyN: busy.avg,
-            })}
-      </p>
-      <ul className="mt-3 flex h-36 items-end gap-1.5">
-        {bars.map((m) => {
-          const l = levelOf(m.avg);
-          return (
-            <li key={m.label} className="flex h-full flex-1 flex-col items-center justify-end" title={`${m.label} · ${t(l.label)}`}>
-              <span className="mb-0.5 text-[11px] text-gray-500">{m.avg}</span>
-              <span
-                className={`block w-full rounded-md ${m === calm ? "ring-2 ring-emerald-500 ring-offset-1" : ""}`}
-                style={{ height: `${h(m.avg)}%`, background: l.color }}
-              />
-              <span className="mt-1 text-xs text-gray-600">{m.label}</span>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
   );
 }
