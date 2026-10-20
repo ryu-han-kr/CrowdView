@@ -73,7 +73,8 @@ export function SpotMap({
   return (
     <div className={className}>
       {legend && <MapLegend counts={counts} className="mb-2" />}
-      <div className="relative overflow-hidden rounded-3xl bg-slate-100">
+      {/* 시험용 표시 (QA 10/21 MAP-01): 지도에 넘긴 곳 수. 핀마다 data-place-id·data-level, 묶음은 data-cluster-ids */}
+      <div className="relative overflow-hidden rounded-3xl bg-slate-100" data-testid="spot-map" data-spot-count={shown.length}>
         {failed ? (
           <SketchMap spots={shown} onSelect={setSelected} />
         ) : (
@@ -110,7 +111,7 @@ function SpotCard({ spot, onClose }: { spot: MapSpot; onClose: () => void }) {
   );
   const cls = "flex min-w-0 flex-1 items-center gap-3";
   return (
-    <div className="absolute inset-x-3 bottom-3 z-10 flex items-center gap-2 rounded-3xl bg-white p-3 shadow-xl">
+    <div className="absolute inset-x-3 bottom-3 z-10 flex items-center gap-2 rounded-3xl bg-white p-3 shadow-xl" data-selected-id={spot.id}>
       {spot.external ? (
         <a href={spot.href} target="_blank" rel="noreferrer" className={cls}>
           {body}
@@ -192,7 +193,7 @@ function NaverSpots({
           position: new maps.LatLng(sp.lat, sp.lng),
           title: label,
           icon: {
-            content: `<div role="img" aria-label="${label.replace(/"/g, "&quot;")}" style="width:28px;height:28px;border-radius:9999px;background:#fff;border:3px solid ${pinColor(sp.score)};display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer">${sp.emoji ?? ""}</div>`,
+            content: `<div role="img" aria-label="${label.replace(/"/g, "&quot;")}" data-place-id="${sp.id}" data-level="${sp.score !== undefined ? levelOf(sp.score).key : "none"}" style="width:28px;height:28px;border-radius:9999px;background:#fff;border:3px solid ${pinColor(sp.score)};display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer">${sp.emoji ?? ""}</div>`,
             anchor: new maps.Point(14, 14),
           },
         });
@@ -211,7 +212,7 @@ function NaverSpots({
         position: new maps.LatLng(lat, lng),
         title: t("{n}곳", { n: g.length }),
         icon: {
-          content: `<div role="img" aria-label="${t("{n}곳", { n: g.length })}" style="width:${size}px;height:${size}px;border-radius:9999px;background:${fill};color:#fff;border:3px solid #fff;text-shadow:0 1px 2px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font:700 13px system-ui;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer">${g.length}</div>`,
+          content: `<div role="img" aria-label="${t("{n}곳", { n: g.length })}" data-cluster-ids="${g.map((x) => x.id).join(",")}" style="width:${size}px;height:${size}px;border-radius:9999px;background:${fill};color:#fff;border:3px solid #fff;text-shadow:0 1px 2px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font:700 13px system-ui;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer">${g.length}</div>`,
           anchor: new maps.Point(size / 2, size / 2),
         },
       });
@@ -248,7 +249,13 @@ function NaverSpots({
     const maps = window.naver?.maps;
     if (!map || !maps) return;
     const listener = maps.Event.addListener(map, "zoom_changed", () => drawRef.current());
-    return () => maps.Event.removeListener(listener);
+    // 지도 인증이 실패하면(키·도메인 문제) 그림 지도로 바뀌며 이 지도가 먼저 정리돼, 리스너를 지울 때 네이버 SDK가 오류를 던진다
+    // → 지도 화면 전체가 오류 화면이 되던 것 (10/21 고정 자료 시험에서 발견)
+    return () => {
+      try {
+        maps.Event.removeListener(listener);
+      } catch {}
+    };
   }, [ready]);
 
   return <div ref={el} className={`${heightClass} w-full`} />;
@@ -273,6 +280,8 @@ function SketchMap({ spots, onSelect }: { spots: MapSpot[]; onSelect: (id: strin
           stroke="white"
           strokeWidth={2}
           className="cursor-pointer"
+          data-place-id={s.id}
+          data-level={s.score !== undefined ? levelOf(s.score).key : "none"}
           onClick={() => onSelect(s.id)}
         />
       ))}

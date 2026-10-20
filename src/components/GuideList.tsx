@@ -9,6 +9,7 @@ import { currentPosition, distanceKm, type LatLng } from "@/lib/geo";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { FilterLayout, PickStar } from "./FilterLayout";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
+import { useUrlQuery } from "./useUrlQuery";
 import { Glyph } from "@/components/Glyph";
 
 export type Row = [id: string, kind: string, name: string, lat: number | null, lng: number | null, gu: string | null, img?: string | null];
@@ -51,7 +52,7 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
   const [kinds, setKinds] = useState<string[]>(["attraction"]);
   const [gus, setGus] = useState<string[]>([]);
   const [levels, setLevels] = useState<string[]>([]);
-  const [q, setQ] = useState("");
+  const [q, setQ] = useUrlQuery();
   const [me, setMe] = useState<LatLng | null>(null);
   const [view, setView] = useState<"list" | "map">("list");
   // 한산한 순: 그 동네(1km 안 서울 실시간 지역) 지금 단계가 낮은 곳부터. 맛집이면 '지금 덜 붐비는 맛집'

@@ -1,6 +1,7 @@
 // 공공데이터포털(apis.data.go.kr) 공통 호출. DATA_GO_KR_KEY 하나로 활용신청한 API를 모두 쓴다.
 import { apiOfPath, beforeCall, markExhausted } from "./api-quota";
 import { cached, shortHash } from "./cached";
+import { dataGoKrFixtureName, fixtureMode, loadFixture } from "./fixtures";
 
 const BASE = "https://apis.data.go.kr";
 const inflight = new Map<string, Promise<Item[]>>();
@@ -23,7 +24,14 @@ export async function dataGoKr(path: string, params: Record<string, string>, rev
     inflight.set(key, p);
     return p;
   }
-  return cached(`dg:${path}:${shortHash(JSON.stringify(params))}`, revalidate, () => fetchItems(path, params), (v) => v.length === 0);
+  // 고정 자료 모드는 상황마다 따로 저장 (시험에서 상황을 바꿔도 앞 상황 값이 남지 않게)
+  const fx = fixtureMode();
+  return cached(
+    `dg:${fx ? `fx-${fx}:` : ""}${path}:${shortHash(JSON.stringify(params))}`,
+    revalidate,
+    () => fetchItems(path, params),
+    (v) => v.length === 0,
+  );
 }
 
 // 공공데이터포털 게이트웨이는 한 키로 동시에 많이 부르면 응답을 늦춘다 (타임아웃).
@@ -48,13 +56,26 @@ function fetchItems(path: string, params: Record<string, string>): Promise<Item[
 }
 
 async function fetchItemsNow(path: string, params: Record<string, string>): Promise<Item[]> {
+  // 고정 자료 모드: tests/fixtures/<상황>/datagokr_<경로>.json 의 items. 파일이 없으면 키가 없을 때와 같게 실패
+  if (fixtureMode()) {
+    const fx = loadFixture<{ items: Item[] }>(dataGoKrFixtureName(path));
+    if (!fx) throw new Error(`${path}: 고정 자료 없음`);
+    return fx.items;
+  }
   const key = process.env.DATA_GO_KR_KEY;
   if (!key) throw new Error("DATA_GO_KR_KEY 미설정");
   // 하루 한도 집계·보호 (lib/api-quota.ts). 한도 90%면 QuotaError → 캐시의 마지막 데이터를 쓴다
   const api = apiOfPath(path);
   await beforeCall(api);
-  const qs = new URLSearchParams({ serviceKey: key, pageNo: "1", numOfRows: "100", ...params });
-  const res = await fetch(`${BASE}${path}?${qs}`, { signal: AbortSignal.timeout(8000) });
+  const qs = new URLSearchParams({
+    serviceKey: key,
+    pageNo: "1",
+    numOfRows: "100",
+    ...params,
+  });
+  const res = await fetch(`${BASE}${path}?${qs}`, {
+    signal: AbortSignal.timeout(8000),
+  });
   const text = await res.text();
   // 활용신청 전이면 403 + SERVICE_KEY_IS_NOT_REGISTERED_ERROR
   const errMsg = text.match(/"errMsg":\s*"([^"]+)"/)?.[1] ?? text.match(/<returnAuthMsg>([^<]+)</)?.[1];

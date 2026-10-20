@@ -6,9 +6,8 @@ import { SEOUL_AREAS } from "../seoul-areas";
 import { SEOUL_LEVEL_SCORE, getAllSeoulLive } from "../seoul-live";
 import { modelSnapshot } from "./model";
 import { fetchThemePark } from "./themeparks";
+import { fixtureMode } from "../fixtures";
 import { getSignals, type Signals } from "./signals";
-
-
 
 /**
  * 지역 실측 인구 → 명소 기준 인원. 서울시 인구는 주변 지역 전체(롯데월드면 잠실 관광특구 6만 명대)라
@@ -64,11 +63,12 @@ async function fetchSeoulCitydata(place: Place, s: Signals): Promise<CrowdSnapsh
 }
 
 export async function fetchSnapshot(place: Place): Promise<CrowdSnapshot> {
-  const key = process.env.SEOUL_OPENAPI_KEY;
+  // 고정 자료 모드(시험)에서는 키 없이도 서울시·공항 자리에 시험 자료를 쓴다
+  const key = process.env.SEOUL_OPENAPI_KEY ?? fixtureMode();
   // 날씨·공휴일·관광지 집중률·공항 승객 수로 예측 곡선을 보정한다
   const s = await getSignals(place);
   if (key && place.seoulArea) return fetchSeoulCitydata(place, s);
   if (place.themeparksId) return fetchThemePark(place, s);
-  if (process.env.DATA_GO_KR_KEY && place.airport) return fetchAirport(place, place.airport, s);
+  if ((process.env.DATA_GO_KR_KEY || fixtureMode()) && place.airport) return fetchAirport(place, place.airport, s);
   return modelSnapshot(place, new Date(), s);
 }

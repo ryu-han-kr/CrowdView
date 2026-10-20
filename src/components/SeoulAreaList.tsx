@@ -12,6 +12,7 @@ import { SEOUL_GROUPS, type SeoulGroup } from "@/lib/seoul-live";
 import { FilterLayout, PickStar } from "./FilterLayout";
 import { LevelBadge } from "./Level";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
+import { useUrlQuery } from "./useUrlQuery";
 import { Glyph } from "@/components/Glyph";
 
 export interface SeoulAreaRow {
@@ -44,7 +45,7 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
       setGeoError(t("위치를 쓸 수 없어요. 브라우저에서 위치 권한을 허용해 주세요."));
     }
   };
-  const [q, setQ] = useState("");
+  const [q, setQ] = useUrlQuery();
   const [view, setView] = useState<"list" | "map">("list");
   const list = useMemo(() => {
     const needle = q.trim().toLowerCase();
@@ -145,7 +146,12 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
             const g = SEOUL_GROUPS.find((x) => x.id === r.group);
             return (
               <li key={r.code} className="relative">
-                <Link href={`/seoul/${r.code}`} className="group block">
+                <Link
+                  href={`/seoul/${r.code}`}
+                  className="group block"
+                  data-place-id={`seoul-${r.code}`}
+                  data-level={r.score !== undefined ? levelOf(r.score).key : "none"}
+                >
                   <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100">
                     {r.img ? (
                       <Image

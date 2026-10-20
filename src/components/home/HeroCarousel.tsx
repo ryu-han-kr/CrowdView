@@ -104,7 +104,6 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
             <Link
               key={`${s.id}-${k}`}
               href={s.href}
-              aria-label={s.title}
               aria-hidden={!current}
               tabIndex={current ? 0 : -1}
               className={`relative block aspect-[16/10] w-[var(--w)] shrink-0 overflow-hidden rounded-2xl bg-gray-200 transition-opacity duration-300 md:aspect-[21/9] md:rounded-3xl ${

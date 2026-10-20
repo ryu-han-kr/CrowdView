@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "floor": "T1 단기주차장 지상층",
+      "parking": 1200,
+      "parkingarea": 3000,
+      "datetm": "20261021101500"
+    },
+    {
+      "floor": "T1 장기주차장",
+      "parking": 9000,
+      "parkingarea": 10000,
+      "datetm": "20261021101500"
+    },
+    {
+      "floor": "T2 단기주차장 지하1층",
+      "parking": 500,
+      "parkingarea": 2000,
+      "datetm": "20261021101500"
+    }
+  ]
+}

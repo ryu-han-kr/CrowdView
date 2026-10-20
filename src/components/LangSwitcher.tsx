@@ -32,7 +32,8 @@ export function LangSwitcher({ compact = false }: { compact?: boolean }) {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label={t("언어 선택")}
+        // 읽어 주는 이름 = 보이는 언어 이름 + '언어 선택' (보이는 글자가 이름에 들어가야 음성 명령으로도 누를 수 있다)
+        aria-label={`${LANG_LABEL[lang]} · ${t("언어 선택")}`}
         className={`flex items-center gap-1.5 rounded-full border border-gray-200 bg-white font-medium text-gray-700 hover:bg-gray-50 ${
           compact ? "h-8 px-2.5 text-xs" : "h-9 px-3 text-sm"
         }`}

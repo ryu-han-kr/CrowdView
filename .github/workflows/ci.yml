@@ -28,6 +28,9 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    # 공공데이터 대신 tests/fixtures/normal 자료로 빌드·실행 → 화면 사이 숫자까지 비교 (e2e/fixtures.spec.ts)
+    env:
+      DATA_FIXTURES: normal
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

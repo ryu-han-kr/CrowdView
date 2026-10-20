@@ -73,8 +73,7 @@ function cleanKind(p: GuidePlace): GuideKind | null {
 // 관광공사 서울 자료 (scripts/seoul-data/tour.mjs): [contentid, 종류(12 관광지·14 문화시설·28 레포츠·38 쇼핑·39 음식점), 이름, 위도, 경도, 작은 사진, 큰 사진, 주소]
 type TourRow = [string, number, string, number, number, string, string, string];
 const TOUR = tour as TourRow[];
-const norm = (s: string) =>
-  s.replace(/\(.*?\)|\[.*?\]|\s|·|서울/g, "").toLowerCase();
+const norm = (s: string) => s.replace(/\(.*?\)|\[.*?\]|\s|·|서울/g, "").toLowerCase();
 
 /**
  * Visit Seoul 장소에 사진이 없어서, 이름이 같거나(포함) 200m 안에서 이름이 겹치는 관광공사 장소의 사진을 붙인다.
@@ -82,20 +81,13 @@ const norm = (s: string) =>
  */
 function matchTour(p: GuidePlace): TourRow | undefined {
   const name = norm(p.t.ko?.n ?? "");
-  if (name.length < 2 || p.lat === undefined || p.lng === undefined)
-    return undefined;
+  if (name.length < 2 || p.lat === undefined || p.lng === undefined) return undefined;
   let best: { row: TourRow; km: number } | undefined;
   for (const r of TOUR) {
     const rn = norm(r[2]);
-    const km = distanceKm(
-      { lat: p.lat, lng: p.lng! },
-      { lat: r[3], lng: r[4] },
-    );
+    const km = distanceKm({ lat: p.lat, lng: p.lng! }, { lat: r[3], lng: r[4] });
     const same = rn === name && km < 1;
-    const overlap =
-      km < 0.2 &&
-      Math.min(rn.length, name.length) >= 3 &&
-      (rn.includes(name) || name.includes(rn));
+    const overlap = km < 0.2 && Math.min(rn.length, name.length) >= 3 && (rn.includes(name) || name.includes(rn));
     if ((same || overlap) && (!best || km < best.km)) best = { row: r, km };
   }
   return best?.row;
@@ -105,9 +97,7 @@ const cleaned = (guide as GuidePlace[]).flatMap((p) => {
   const kind = cleanKind(p);
   if (!kind) return [];
   const hit = matchTour(p);
-  return [
-    { ...p, kind, ...(hit && { img: hit[5], imgL: hit[6], tourId: hit[0] }) },
-  ];
+  return [{ ...p, kind, ...(hit && { img: hit[5], imgL: hit[6], tourId: hit[0] }) }];
 });
 
 // 가이드에 없는 관광공사 서울 관광지·문화시설(사진 있는 곳)은 명소로 더한다 (QA: '명소라고 할 곳이 더 있을 텐데')
@@ -120,29 +110,23 @@ const dupOfGuide = (r: TourRow) =>
     const a = norm(p.t.ko?.n ?? "");
     const b = norm(r[2]);
     return (
-      Math.min(a.length, b.length) >= 2 &&
-      (a.includes(b) || b.includes(a)) &&
-      distanceKm({ lat: p.lat, lng: p.lng }, { lat: r[3], lng: r[4] }) < 0.3
+      Math.min(a.length, b.length) >= 2 && (a.includes(b) || b.includes(a)) && distanceKm({ lat: p.lat, lng: p.lng }, { lat: r[3], lng: r[4] }) < 0.3
     );
   });
-const extra: GuidePlace[] = TOUR.filter(
-  (r) =>
-    (r[1] === 12 || r[1] === 14) &&
-    !used.has(r[0]) &&
-    !NOT_PLACE.test(r[2]) &&
-    !dupOfGuide(r),
-).map((r) => ({
-  id: `kt-${r[0]}`,
-  kind: r[1] === 12 && NATURE.test(r[2]) ? "nature" : "attraction",
-  gu: r[7].match(/서울(?:특별시)?\s+(\S+구)/)?.[1],
-  lat: r[3],
-  lng: r[4],
-  exact: true,
-  img: r[5],
-  imgL: r[6],
-  tourId: r[0],
-  t: { ko: { n: r[2], a: r[7], url: "" } },
-}));
+const extra: GuidePlace[] = TOUR.filter((r) => (r[1] === 12 || r[1] === 14) && !used.has(r[0]) && !NOT_PLACE.test(r[2]) && !dupOfGuide(r)).map(
+  (r) => ({
+    id: `kt-${r[0]}`,
+    kind: r[1] === 12 && NATURE.test(r[2]) ? "nature" : "attraction",
+    gu: r[7].match(/서울(?:특별시)?\s+(\S+구)/)?.[1],
+    lat: r[3],
+    lng: r[4],
+    exact: true,
+    img: r[5],
+    imgL: r[6],
+    tourId: r[0],
+    t: { ko: { n: r[2], a: r[7], url: "" } },
+  }),
+);
 
 /**
  * 같은 곳 한 번만 (QA 10/21: 경교장 등 90곳이 두 번 보임 — 원본 자료에 같은 id가 두 번, 또는 다른 id로 같은 이름·좌표).
@@ -151,8 +135,7 @@ const extra: GuidePlace[] = TOUR.filter(
 export function dedupeGuide(list: GuidePlace[]): GuidePlace[] {
   const out: GuidePlace[] = [];
   const ids = new Set<string>();
-  const nameOf = (p: GuidePlace) =>
-    norm(p.t.ko?.n ?? Object.values(p.t)[0]?.n ?? "");
+  const nameOf = (p: GuidePlace) => norm(p.t.ko?.n ?? Object.values(p.t)[0]?.n ?? "");
   for (const p of [...list].sort((a, b) => Number(!!b.img) - Number(!!a.img))) {
     if (ids.has(p.id)) continue;
     const n = nameOf(p);
@@ -162,8 +145,7 @@ export function dedupeGuide(list: GuidePlace[]): GuidePlace[] {
         nameOf(q) === n &&
         p.lat !== undefined &&
         q.lat !== undefined &&
-        distanceKm({ lat: p.lat, lng: p.lng! }, { lat: q.lat, lng: q.lng! }) <
-          0.2,
+        distanceKm({ lat: p.lat, lng: p.lng! }, { lat: q.lat, lng: q.lng! }) < 0.2,
     );
     if (same) continue;
     ids.add(p.id);
@@ -186,13 +168,7 @@ const PHOTO_SPOTS: {
   img: string;
   imgL: string;
 }[] = [
-  ...GUIDE.filter(
-    (g) =>
-      g.img &&
-      g.lat &&
-      g.lng &&
-      (g.kind === "attraction" || g.kind === "nature"),
-  ).map((g) => ({
+  ...GUIDE.filter((g) => g.img && g.lat && g.lng && (g.kind === "attraction" || g.kind === "nature")).map((g) => ({
     name: norm(g.t.ko?.n ?? ""),
     lat: g.lat!,
     lng: g.lng!,
@@ -215,25 +191,15 @@ const PHOTO_SPOTS: {
     imgL: l.img,
   })),
 ];
-export function photoNear(
-  p: LatLng & { name?: string },
-  maxKm = 0.6,
-  large = false,
-): string | undefined {
-  const key = p.name
-    ? norm(p.name.replace(/관광특구|역$|일대|거리$|공원$/g, ""))
-    : "";
+export function photoNear(p: LatLng & { name?: string }, maxKm = 0.6, large = false): string | undefined {
+  const key = p.name ? norm(p.name.replace(/관광특구|역$|일대|거리$|공원$/g, "")) : "";
   type Hit = { s: (typeof PHOTO_SPOTS)[number]; km: number };
   let byName: Hit | undefined;
   let best: Hit | undefined;
   for (const s of PHOTO_SPOTS) {
     const km = distanceKm(p, s);
     // 이름이 겹치면 짧은(= 그 장소 자체에 가까운) 이름을 고른다 (경복궁 > 경복궁 돌담길)
-    if (
-      km < 1.5 &&
-      (s.name === key || (key.length >= 3 && s.name.includes(key))) &&
-      (!byName || s.name.length < byName.s.name.length)
-    )
+    if (km < 1.5 && (s.name === key || (key.length >= 3 && s.name.includes(key))) && (!byName || s.name.length < byName.s.name.length))
       byName = { s, km };
     if (km < maxKm && (!best || km < best.km)) best = { s, km };
   }
@@ -244,16 +210,8 @@ export function photoNear(
 export const GUIDE_SYNCED_AT = (meta as { syncedAt: string }).syncedAt;
 
 /** 그 언어 글이 없으면 영어 → 한국어 → 아무거나 */
-export function guideText(
-  p: GuidePlace,
-  lang: Lang,
-): { text: GuideText; lang: Lang } {
-  for (const l of [
-    lang,
-    "en",
-    "ko",
-    ...(Object.keys(p.t) as Lang[]),
-  ] as Lang[]) {
+export function guideText(p: GuidePlace, lang: Lang): { text: GuideText; lang: Lang } {
+  for (const l of [lang, "en", "ko", ...(Object.keys(p.t) as Lang[])] as Lang[]) {
     const text = p.t[l];
     if (text) return { text, lang: l };
   }
@@ -309,13 +267,7 @@ export interface Reservation {
 export const RESERVATIONS = reservations as Reservation[];
 
 /** 가까운 순 (최대 n개, 반경 km 안) */
-export function nearest<T>(
-  items: T[],
-  at: LatLng,
-  pos: (x: T) => LatLng | undefined,
-  n = 5,
-  radiusKm = 1.5,
-): { item: T; km: number }[] {
+export function nearest<T>(items: T[], at: LatLng, pos: (x: T) => LatLng | undefined, n = 5, radiusKm = 1.5): { item: T; km: number }[] {
   const out: { item: T; km: number }[] = [];
   for (const item of items) {
     const p = pos(item);
@@ -327,10 +279,7 @@ export function nearest<T>(
 }
 
 /** 가장 가까운 서울시 실시간 지역 (1km 안) — 이 동네 지금 혼잡도 */
-export function areaNear(
-  at: LatLng,
-  maxKm = 1,
-): (SeoulArea & { km: number }) | undefined {
+export function areaNear(at: LatLng, maxKm = 1): (SeoulArea & { km: number }) | undefined {
   let best: (SeoulArea & { km: number }) | undefined;
   for (const a of SEOUL_AREAS) {
     const km = distanceKm(at, a);
