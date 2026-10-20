@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { kv } from "./cache";
 
 /** 버킷별 1분 허용 횟수 */
-export const LIMITS = { route: 20, share: 10, alerts: 30, me: 60, log: 10, admin: 30, report: 6 } as const;
+export const LIMITS = { route: 20, share: 10, alerts: 30, me: 60, log: 10, admin: 30, report: 6, pay: 5 } as const;
 export type Bucket = keyof typeof LIMITS;
 
 export function clientIp(req: Request): string {
@@ -23,4 +23,19 @@ export async function rateLimit(req: Request, bucket: Bucket): Promise<NextRespo
   }
   const retry = 60 - Math.floor((Date.now() / 1000) % 60);
   return NextResponse.json({ error: "요청이 너무 많아요. 잠시 뒤 다시 시도해 주세요." }, { status: 429, headers: { "retry-after": String(retry) } });
+}
+
+/**
+ * 하루 한도 (KST 날짜별, Redis INCR). 1분 제한을 피해 천천히 오래 보내는 경우까지 막는다.
+ * who: 보통 IP, 로그인 기능은 회원 id. 허용이면 null, 넘었으면 429
+ */
+export async function dailyLimit(bucket: string, who: string, max: number): Promise<NextResponse | null> {
+  const day = new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
+  try {
+    const n = await kv.incr(`rld:${bucket}:${who}:${day}`, 26 * 3600);
+    if (n <= max) return null;
+  } catch {
+    return null;
+  }
+  return NextResponse.json({ error: "오늘은 더 할 수 없어요. 내일 다시 시도해 주세요." }, { status: 429 });
 }

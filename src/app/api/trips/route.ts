@@ -40,6 +40,9 @@ export async function POST(req: Request) {
   const place = body.placeId ? tripPlace(body.placeId) : undefined;
   if (!place || !validDate(body.date)) return errorJson("잘못된 요청");
   if (!body.subscription?.endpoint || !body.subscription.keys?.p256dh) return errorJson("알림 권한이 필요해요");
+  // 회원당 30개까지 (매일 아침 날짜마다 예측을 다시 계산한다)
+  const [{ n }] = await sql<{ n: number }>("select count(*)::int as n from trip_watch where user_id = $1", [user.id]);
+  if (n >= 30) return errorJson("여행 날짜는 30개까지 저장할 수 있어요");
   await savePushSubscription(user.id, body.subscription, body.lang ?? "ko");
   // 저장할 때의 예측 단계를 기준으로 둔다 (그 뒤로 바뀌면 알림)
   const { level } = await tripForecast(place, body.date);

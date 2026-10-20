@@ -22,5 +22,6 @@ export async function POST(req: Request) {
   const user = await currentUser(req.headers).catch(() => null);
   const result = await saveReport(body.placeId, clientIp(req), level, wait, user?.id);
   if (result === "dup") return NextResponse.json({ error: "이 장소는 30분 뒤에 다시 알려 주세요" }, { status: 429 });
+  if (result === "full") return NextResponse.json({ error: "지금은 제보가 많아요. 잠시 뒤에 다시 알려 주세요" }, { status: 429 });
   return NextResponse.json(await recentReports(body.placeId));
 }

@@ -4,6 +4,7 @@ import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { headers } from "next/headers";
 import { pool } from "./db";
+import { kv } from "./cache";
 
 const SITE = process.env.BETTER_AUTH_URL ?? "https://crowdview.app";
 
@@ -65,7 +66,25 @@ export const auth = betterAuth({
   socialProviders: providers,
   // 결제대행사·카드사 심사용 계정만 이메일·비밀번호로 로그인 (가입은 막고, 계정은 scripts/review-account.ts로 만들고 지운다)
   emailAndPassword: { enabled: true, disableSignUp: true, minPasswordLength: 12 },
-  account: { accountLinking: { enabled: true, trustedProviders: ["kakao", "naver", "google"] } },
+  // 같은 이메일 계정 잇기는 이메일이 확인된 경우만 (예전엔 카카오·네이버도 '믿는 곳'이라 확인 안 된 이메일로도 이어졌다 →
+  // 남의 이메일을 적은 계정으로 그 사람 계정(운영자 포함)에 들어갈 수 있는 구멍). 구글은 항상 확인된 이메일만 준다
+  account: { accountLinking: { enabled: true, trustedProviders: ["google"] } },
+  // 로그인 시도 제한: 서버가 여러 대라 메모리 대신 Redis에 센다. 심사용 비밀번호 로그인은 1분에 5번
+  rateLimit: {
+    enabled: true,
+    window: 60,
+    max: 60,
+    customRules: { "/sign-in/email": { window: 60, max: 5 }, "/sign-in/social": { window: 60, max: 10 } },
+    // 창(window)마다 키를 나눠 INCR 한 번으로 세고 판정 (동시에 몰려도 정확). Redis 장애면 막지 않는다
+    customStorage: {
+      consume: async (key, rule) => {
+        const slot = Math.floor(Date.now() / 1000 / rule.window);
+        const n = await kv.incr(`authrl:${key}:${slot}`, rule.window + 5).catch(() => 0);
+        if (n <= rule.max) return { allowed: true, retryAfter: null };
+        return { allowed: false, retryAfter: rule.window - (Math.floor(Date.now() / 1000) % rule.window) };
+      },
+    },
+  },
   // 마이페이지 '회원 탈퇴' (찜·알림·구독은 DB에서 함께 지워지고, 결제 기록은 법정 보관을 위해 user_id만 비운다)
   user: {
     deleteUser: {

@@ -14,7 +14,9 @@ export async function POST(req: Request) {
   const body = (await req.json().catch(() => ({}))) as { message?: string; stack?: string; url?: string };
   const message = String(body.message ?? "").slice(0, 300);
   if (!message || NOISE.test(message) || NOISE.test(String(body.stack ?? ""))) return NextResponse.json({ ok: true, ignored: true });
-  await kv.incr(`clienterr:${kst().date}`, 8 * 86_400).catch(() => 0);
+  const today = await kv.incr(`clienterr:${kst().date}`, 8 * 86_400).catch(() => 0);
+  // 하루 30건이 넘으면 세기만 한다 (누가 일부러 보내 운영 알림 채널을 도배하지 못하게)
+  if (today > 30) return NextResponse.json({ ok: true, muted: true });
   await opsAlert(`브라우저 오류: ${message.slice(0, 120)}`, {
     url: String(body.url ?? "").slice(0, 200),
     stack: String(body.stack ?? "").slice(0, 800),
