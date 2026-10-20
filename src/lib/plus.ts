@@ -1,14 +1,16 @@
 // CrowdView Plus 구독: 카드 등록(토스 빌링키) → 첫 달 결제 → 다음 결제일(next_charge_at)에 수집기가 결제 → 해지·환불·만료.
+// 1개월 이용권(status 'pass'): 토스 일반 결제창 → 서버 승인 → 한 달 이용, 자동 갱신 없음 (자동결제 계약 전에도 팔 수 있다)
 // 돈이 오가는 판단(결제 성공 여부, 금액)은 항상 토스가 돌려준 값(또는 다시 조회한 값)으로만 한다.
 import { pushToUser } from "./alerts";
 import { PLUS } from "./business";
 import { pool, sql } from "./db";
 import { isDeliverable, mailEnabled, sendMail } from "./mail";
 import { opsAlert } from "./ops";
-import { cancelPayment, chargeBillingKey, customerKeyOf, getPaymentByOrder, issueBillingKey, TossError, tossEnabled, type TossPayment } from "./toss";
+import { kv } from "./cache";
+import { cancelPayment, chargeBillingKey, confirmPayment, customerKeyOf, getPaymentByOrder, issueBillingKey, TossError, tossEnabled, type TossPayment } from "./toss";
 
 export interface PlusState {
-  status: "none" | "active" | "canceled" | "past_due" | "expired";
+  status: "none" | "active" | "canceled" | "past_due" | "expired" | "pass";
   /** 이용 가능 (해지·결제 실패라도 기간이 남았으면 true) */
   active: boolean;
   periodEnd?: string;
@@ -28,6 +30,9 @@ interface SubRow {
 }
 
 const ORDER_NAME = `${PLUS.name} 월 이용권`;
+const PASS_ORDER_NAME = `${PLUS.name} 1개월 이용권`;
+/** 이용권 결제창을 연 뒤 승인까지 기다리는 시간 (주문 번호의 주인을 이 동안 기억) */
+const PASS_ORDER_TTL = 60 * 60;
 /** 결제 실패 후 다시 시도하는 간격과 횟수 */
 const RETRY_HOURS = 24;
 const MAX_RETRIES = 3;
@@ -122,6 +127,49 @@ export async function subscribe(userId: string, authKey: string, customerKey: st
        next_charge_at = $4, next_payment_id = null, canceled_at = null, updated_at = now()`,
     [userId, billingKey, customerKey, end],
   );
+  return getPlus(userId);
+}
+
+/**
+ * 1개월 이용권 결제창 열기 전: 주문 번호를 만들고 누구 주문인지 Redis에 1시간 기억한다 (승인 때 남의 주문을 쓰지 못하게).
+ * 자동결제로 이용 중이면 막는다 (두 번 내지 않게)
+ */
+export async function startPass(userId: string): Promise<{ orderId: string; orderName: string; amount: number; customerKey: string }> {
+  const cur = await getPlus(userId);
+  if (cur.active && cur.status === "active") throw new Error("이미 매달 자동결제로 Plus를 이용 중이에요");
+  const orderId = newPaymentId(userId).replace(/^plus_/, "pass_");
+  await kv.set(`passorder:${orderId}`, userId, PASS_ORDER_TTL);
+  return { orderId, orderName: PASS_ORDER_NAME, amount: PLUS.priceKrw, customerKey: customerKeyOf(userId) };
+}
+
+/**
+ * 1개월 이용권 승인: 결제창에서 돌아온 값을 토스에 승인 요청 → 한 달 이용 (이용 중이면 남은 기간 뒤로 이어 붙임).
+ * 결과를 모르는 오류(시간 초과 등)면 주문 번호로 다시 조회해 결제됐는지 확인한다
+ */
+export async function confirmPass(userId: string, paymentKey: string, orderId: string, amount: number): Promise<PlusState> {
+  if ((await kv.get(`passorder:${orderId}`).catch(() => null)) !== userId) throw new Error("주문 정보가 이 계정과 맞지 않아요. 다시 시도해 주세요.");
+  if (amount !== PLUS.priceKrw) throw new Error("결제 금액이 맞지 않아요");
+  let p: TossPayment | undefined;
+  try {
+    p = confirmPaid(await confirmPayment(paymentKey, orderId, amount));
+  } catch (e) {
+    if (e instanceof TossError) throw e;
+    const found = await getPaymentByOrder(orderId).catch(() => undefined);
+    if (found?.status !== "DONE") throw new Error("결제 결과를 확인하지 못했어요. 잠시 뒤 마이페이지에서 확인해 주세요.");
+    p = confirmPaid(found);
+  }
+  const cur = await getPlus(userId);
+  const start = new Date(p.approvedAt ?? Date.now());
+  const base = cur.active && cur.periodEnd ? new Date(cur.periodEnd) : start;
+  const end = addMonth(base);
+  await recordPaid(userId, p, base, end);
+  await sql(
+    `insert into plus_subscription (user_id, status, current_period_end) values ($1, 'pass', $2)
+     on conflict (user_id) do update set status = 'pass', billing_key = null, current_period_end = $2,
+       next_charge_at = null, next_payment_id = null, canceled_at = null, updated_at = now()`,
+    [userId, end],
+  );
+  await kv.set(`passorder:${orderId}`, "", 1).catch(() => {});
   return getPlus(userId);
 }
 
@@ -232,7 +280,7 @@ async function expire(userId: string) {
 export async function expireEnded(): Promise<number> {
   if (!pool) return 0;
   const rows = await sql<{ user_id: string }>(
-    "select user_id from plus_subscription where status in ('canceled', 'past_due') and current_period_end < now() - interval '3 days'",
+    "select user_id from plus_subscription where status in ('canceled', 'past_due', 'pass') and current_period_end < now() - interval '3 days'",
   );
   for (const r of rows) await expire(r.user_id);
   return rows.length;

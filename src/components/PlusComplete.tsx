@@ -3,9 +3,12 @@
 import Link from "@/i18n/link";
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/i18n/client";
-import { subscribePlus } from "@/lib/plus-browser";
+import { confirmPassPayment, subscribePlus } from "@/lib/plus-browser";
 
-/** 결제 마무리: 토스 카드 등록창에서 돌아온 authKey로 첫 달을 결제한다 (실패·취소면 ?code=…&message=…) */
+/**
+ * 결제 마무리: 자동결제는 카드 등록창에서 돌아온 authKey로 첫 달 결제, 1개월 이용권은 결제창에서 돌아온 paymentKey를 승인
+ * (실패·취소면 ?code=…&message=…)
+ */
 export function PlusComplete() {
   const { t } = useI18n();
   const [state, setState] = useState<"working" | "done" | "error">("working");
@@ -18,6 +21,20 @@ export function PlusComplete() {
     const q = new URLSearchParams(location.search);
     const authKey = q.get("authKey");
     const customerKey = q.get("customerKey");
+    const paymentKey = q.get("paymentKey");
+    const orderId = q.get("orderId");
+    const amount = Number(q.get("amount"));
+    if (!q.get("code") && paymentKey && orderId && amount) {
+      // 새로고침해도 같은 결제를 두 번 승인 요청하지 않게 주소에서 지운다 (서버도 같은 주문 번호면 토스가 처음 결과를 돌려준다)
+      history.replaceState(null, "", location.pathname);
+      confirmPassPayment(paymentKey, orderId, amount)
+        .then(() => setState("done"))
+        .catch((e) => {
+          setMessage(e instanceof Error ? e.message : String(e));
+          setState("error");
+        });
+      return;
+    }
     if (q.get("code") || !authKey || !customerKey) {
       setMessage(q.get("message") ?? t("카드 등록이 취소됐어요"));
       return setState("error");

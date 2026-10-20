@@ -87,3 +87,11 @@ export function cancelPayment(paymentKey: string, reason: string, amount?: numbe
     ...(amount !== undefined && { cancelAmount: amount }),
   });
 }
+
+/**
+ * 일반 결제 승인 (1개월 이용권). 결제창에서 돌아온 paymentKey·orderId·amount를 서버에서 토스에 확인받아야 결제가 끝난다.
+ * 같은 주문 번호로 다시 보내면 토스가 처음 결과를 돌려준다 (두 번 결제되지 않게)
+ */
+export function confirmPayment(paymentKey: string, orderId: string, amount: number) {
+  return call<TossPayment>("POST", "/payments/confirm", { paymentKey, orderId, amount }, `confirm_${orderId}`);
+}

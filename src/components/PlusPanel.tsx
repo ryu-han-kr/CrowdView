@@ -44,13 +44,23 @@ export function PlusPanel() {
       {plus.active ? (
         <>
           <p className="font-bold text-indigo-800">
-            CrowdView Plus · {plus.status === "canceled" ? t("해지됨 ({date}까지 이용)", { date: end }) : t("다음 결제일 {date}", { date: end })}
+            CrowdView Plus ·{" "}
+            {plus.status === "pass"
+              ? t("1개월 이용권 ({date}까지)", { date: end })
+              : plus.status === "canceled"
+                ? t("해지됨 ({date}까지 이용)", { date: end })
+                : t("다음 결제일 {date}", { date: end })}
           </p>
           <div className="mt-2 flex flex-wrap gap-3 text-xs font-semibold">
             {plus.status === "active" && (
               <button disabled={busy} onClick={() => setAsking("cancel")} className="text-gray-600 underline">
                 {t("정기결제 해지")}
               </button>
+            )}
+            {plus.status === "pass" && (
+              <Link href="/pricing?extend=1" className="text-indigo-700 underline">
+                {t("1개월 더 이어서 결제")}
+              </Link>
             )}
             {plus.refundable && (
               <button disabled={busy} onClick={() => setAsking("refund")} className="text-red-600 underline">
