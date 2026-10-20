@@ -47,7 +47,7 @@ export function WeekForecast({ week, month, year, calmestDate }: { week: DayBar[
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold">{t("이번 주")}</h2>
-          <p className="mt-0.5 text-xs text-gray-500">{t("하루 중 가장 붐빌 때 기준 · 공휴일·날씨·관광공사 예측 반영")}</p>
+          <p className="mt-0.5 text-sm text-gray-500">{t("하루 중 가장 붐빌 때 기준 · 공휴일·날씨·관광공사 예측 반영")}</p>
         </div>
         <button
           onClick={() => setMore(more ? null : "month")}
@@ -71,18 +71,18 @@ export function WeekForecast({ week, month, year, calmestDate }: { week: DayBar[
                 aria-pressed={on}
                 className="flex w-full flex-col items-center"
               >
-                <span className={`flex h-20 w-full items-end rounded-lg ${on ? "bg-indigo-50" : "bg-gray-50"}`}>
+                <span className={`flex h-24 w-full items-end rounded-lg ${on ? "bg-indigo-50" : "bg-gray-50"}`}>
                   <span
                     className={`block w-full rounded-lg transition-opacity ${on ? "ring-2 ring-gray-900 ring-offset-1" : "opacity-80"}`}
                     style={{ height: `${Math.max(8, w.peakScore)}%`, background: l.color }}
                   />
                 </span>
                 <span
-                  className={`mt-1.5 text-xs ${on ? "font-bold text-gray-900" : w.date === calmestDate ? "font-bold text-emerald-600" : "font-medium"}`}
+                  className={`mt-1.5 text-sm ${on ? "font-bold text-gray-900" : w.date === calmestDate ? "font-bold text-emerald-600" : "font-medium"}`}
                 >
                   {w.short}
                 </span>
-                <span className="text-[10px] leading-tight" style={{ color: l.color }}>
+                <span className="text-xs leading-tight font-semibold" style={{ color: l.color }}>
                   {t(l.label)}
                 </span>
               </button>
@@ -92,14 +92,14 @@ export function WeekForecast({ week, month, year, calmestDate }: { week: DayBar[
       </ul>
 
       {/* 고른 날 */}
-      <div className="mt-3 rounded-2xl bg-gray-50 px-4 py-3 text-sm">
+      <div className="mt-3 rounded-2xl bg-gray-50 px-4 py-3 text-[15px] leading-relaxed">
         <p>
           <b>{d.long}</b> · {t("가장 붐빌 때 {hour}", { hour: d.peakLabel })} · <b style={{ color: lv.color }}>{t(lv.label)}</b>
           {d.date === calmestDate && (
             <span className="ml-1.5 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-700">{t("이번 주 가장 한산")}</span>
           )}
         </p>
-        {d.reasons.length > 0 && <p className="mt-1 text-xs text-gray-600">{d.reasons.join(" · ")}</p>}
+        {d.reasons.length > 0 && <p className="mt-1 text-sm text-gray-600">{d.reasons.join(" · ")}</p>}
       </div>
 
       {more && (
@@ -119,7 +119,7 @@ export function WeekForecast({ week, month, year, calmestDate }: { week: DayBar[
 
           {more === "month" ? (
             <div className="mx-auto mt-3 max-w-sm">
-              <div className="grid grid-cols-7 gap-1 text-center text-[10px] text-gray-400">
+              <div className="grid grid-cols-7 gap-1 text-center text-xs text-gray-500">
                 {dows.map((x, i) => (
                   <span key={i}>{x}</span>
                 ))}
@@ -134,7 +134,7 @@ export function WeekForecast({ week, month, year, calmestDate }: { week: DayBar[
                     <span
                       key={c.date}
                       title={`${c.date} · ${t(l.label)}`}
-                      className="flex aspect-square flex-col items-center justify-center rounded-lg text-[11px] font-semibold"
+                      className="flex aspect-square flex-col items-center justify-center rounded-lg text-sm font-semibold"
                       style={{ background: `${l.color}26`, color: "#111827" }}
                     >
                       {c.day}
@@ -169,12 +169,12 @@ export function UpcomingHours({ hours, bestHour }: { hours: { hour: number; labe
         return (
           <li
             key={h.hour}
-            className={`flex shrink-0 flex-col items-center rounded-xl px-2.5 py-1.5 ${best ? "ring-2 ring-emerald-500" : ""}`}
+            className={`flex shrink-0 flex-col items-center rounded-xl px-3 py-2 ${best ? "ring-2 ring-emerald-500" : ""}`}
             style={{ background: `${l.color}1f` }}
             title={t(l.label)}
           >
-            <span className="text-[11px] font-semibold text-gray-700">{h.label}</span>
-            <span className="text-[11px] font-bold" style={{ color: l.color }}>
+            <span className="text-sm font-semibold text-gray-800">{h.label}</span>
+            <span className="text-[13px] font-bold" style={{ color: l.color }}>
               {best ? <Glyph e="★" className="mr-0.5 h-3 w-3 text-amber-400" /> : null}
               {t(l.label)}
             </span>
@@ -202,12 +202,12 @@ function YearView({ year }: { year: YearBar[] }) {
           const l = levelOf(m.avg);
           return (
             <li key={m.label} className="flex h-full flex-1 flex-col items-center justify-end" title={`${m.label} · ${t(l.label)}`}>
-              <span className="mb-0.5 text-[9px] text-gray-400">{m.avg}</span>
+              <span className="mb-0.5 text-[11px] text-gray-500">{m.avg}</span>
               <span
                 className={`block w-full rounded-md ${m === calm ? "ring-2 ring-emerald-500 ring-offset-1" : ""}`}
                 style={{ height: `${h(m.avg)}%`, background: l.color }}
               />
-              <span className="mt-1 text-[10px] text-gray-500">{m.label}</span>
+              <span className="mt-1 text-xs text-gray-600">{m.label}</span>
             </li>
           );
         })}

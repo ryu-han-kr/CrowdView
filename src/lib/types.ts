@@ -112,7 +112,7 @@ export interface HourPoint {
   forecast: boolean;
   /** 그 시간의 인원(또는 시간당 승객). kind: real 실측·공식 예보, pattern 월평균 패턴 기반, est 점수로 환산한 추정 */
   people?: number;
-  peopleKind?: "real" | "pattern" | "est";
+  peopleKind?: "real" | "pattern" | "est" | "area";
 }
 
 export interface CrowdSnapshot {
@@ -135,6 +135,11 @@ export interface CrowdSnapshot {
   paxHour?: boolean;
   /** 서울시 실시간 인구처럼 범위로만 주는 인원 [최소, 최대] */
   headcountRange?: [number, number];
+  /**
+   * 서울시 실시간 인구는 장소가 아니라 주변 지역(예: 잠실 관광특구) 전체 인원이다.
+   * 이때 headcount는 그 인원을 장소 크기로 줄인 '명소 기준' 추정이고, 지역 실측은 여기에 따로 둔다
+   */
+  area?: { name: string; range: [number, number] };
   /** 원천의 관측 시각 (서울시 'YYYY-MM-DD HH:mm', KST). 화면의 '○시 기준'은 이 값 */
   observedAt?: string;
   updatedAt: string;

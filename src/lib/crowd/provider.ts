@@ -11,6 +11,16 @@ import { getSignals, type Signals } from "./signals";
 
 
 /**
+ * 지역 실측 인구 → 명소 기준 인원. 서울시 인구는 주변 지역 전체(롯데월드면 잠실 관광특구 6만 명대)라
+ * 장소 수용 인원 ÷ 그 지역이 '매우 붐빔'일 때 인원(기준 마지막 단계)을 비율로 곱한다. 행사는 지역이 곧 행사장이라 그대로
+ */
+export function siteShare(place: Place): number {
+  const top = place.criteria?.unit === "명" ? place.criteria.steps[3] : undefined;
+  if (place.category === "event" || !top) return 1;
+  return Math.min(1, place.capacity / top);
+}
+
+/**
  * 서울시 실시간 도시데이터가 있는 장소: 서울 121곳 묶음(lib/seoul-live, 10분 캐시)에서 그 지역 값을 그대로 쓴다.
  * 장소 화면·서울 실시간 화면·홈이 같은 관측 시각의 같은 공식 단계를 보이게 (따로 부르면 시각이 달라 단계가 갈린다)
  */
@@ -19,7 +29,11 @@ async function fetchSeoulCitydata(place: Place, s: Signals): Promise<CrowdSnapsh
   const row = area && (await getAllSeoulLive())[area.code];
   if (!row || SEOUL_LEVEL_SCORE[row.level] === undefined) throw new Error(`seoul citydata: ${place.seoulArea} 없음`);
   const headcountRange: [number, number] = [row.min, row.max];
-  const headcount = Math.round((row.min + row.max) / 2);
+  const share = siteShare(place);
+  // 명소 기준 인원 (100명 단위). 지역 그대로 쓰는 행사장은 비율 1
+  const site = (n: number) => (share === 1 ? n : Math.round((n * share) / 100) * 100);
+  const headcount = site(Math.round((row.min + row.max) / 2));
+  const peopleKind = share === 1 ? "real" : "area";
   const score = row.score;
 
   // 시간대 곡선은 모델 곡선을 쓰고, 서울시 12시간 예측이 있는 시간은 공식 예보로 덮어쓴다
@@ -30,17 +44,17 @@ async function fetchSeoulCitydata(place: Place, s: Signals): Promise<CrowdSnapsh
     const point = hourly.find((p) => p.hour === h && p.forecast);
     if (!point) continue;
     point.score = f.score;
-    Object.assign(point, { people: Math.round((f.min + f.max) / 2), peopleKind: "real" });
+    Object.assign(point, { people: site(Math.round((f.min + f.max) / 2)), peopleKind });
   }
   const current = hourly.filter((p) => !p.forecast).at(-1);
-  if (current) Object.assign(current, { score, people: headcount, peopleKind: "real" });
+  if (current) Object.assign(current, { score, people: headcount, peopleKind });
   // 영업시간·휴무일은 장소 기준 (서울시 인구는 주변 지역 단위라 문을 닫아도 값이 나온다)
   return {
     ...base,
     score,
     open: base.open,
     headcount,
-    headcountRange,
+    ...(share === 1 ? { headcountRange } : { area: { name: area.name, range: headcountRange } }),
     officialLevel: row.level,
     observedAt: row.time,
     hourly,

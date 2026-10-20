@@ -13,6 +13,13 @@ const PTY: Record<number, string> = { 1: "비", 2: "비/눈", 3: "눈", 4: "소�
 const ICON = (sky?: number, pty?: number) => (pty ? (pty === 3 ? "🌨️" : "🌧️") : sky === 1 ? "☀️" : sky === 3 ? "⛅" : sky === 4 ? "☁️" : "🌡️");
 const AIR_COLOR = ["", "#10b981", "#84cc16", "#f97316", "#ef4444"];
 
+/** 날씨 카드를 누르면 자세한 예보로: 한국어 화면은 네이버 날씨, 외국어 화면은 구글 날씨 (장소 이름으로 검색) */
+export function weatherHref(lang: Lang, place?: Pick<Place, "name" | "region">): string {
+  if (lang === "ko") return `https://search.naver.com/search.naver?query=${encodeURIComponent(`${place?.name ?? "서울"} 날씨`)}`;
+  const name = place ? getT("en")(place.name) : "Seoul";
+  return `https://www.google.com/search?hl=${lang}&q=${encodeURIComponent(`${name} weather`)}`;
+}
+
 /** 지금 날씨(기상청 단기예보)와 미세먼지(에어코리아 실시간). place를 주면 고농도 미세먼지 예보·기상청 해설도 */
 export async function WeatherCard({ signals, lang, place }: { signals: Signals; lang: Lang; place?: Place }) {
   const t = getT(lang);
@@ -40,7 +47,13 @@ export async function WeatherCard({ signals, lang, place }: { signals: Signals; 
           })}
         </p>
       )}
-      <section className="card mt-3 flex items-center gap-3">
+      <a
+        href={weatherHref(lang, place)}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={t(lang === "ko" ? "네이버 날씨에서 자세히 보기" : "구글 날씨에서 자세히 보기")}
+        className="card mt-3 flex items-center gap-3 transition active:scale-[0.99] md:hover:ring-1 md:hover:ring-sky-200"
+      >
         {w && (
           <>
             <Glyph e={ICON(w.sky, w.pty)} className={`h-10 w-10 ${w.pty ? "text-sky-600" : w.sky === 1 ? "text-amber-400" : "text-sky-500"}`} />
@@ -65,7 +78,10 @@ export async function WeatherCard({ signals, lang, place }: { signals: Signals; 
             <p className="text-[11px] text-gray-500">{t("{name} 측정소", { name: stations.get(air.station) ?? air.station })}</p>
           </div>
         )}
-      </section>
+        <span aria-hidden className="shrink-0 self-center pl-1 text-xl text-gray-400">
+          ›
+        </span>
+      </a>
       {summary && (
         <div className="mt-2 rounded-2xl bg-gray-50 px-4 py-2.5 text-xs leading-relaxed text-gray-600">
           {summary.lines.map((l) => (

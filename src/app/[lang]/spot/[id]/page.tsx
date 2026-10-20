@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import spotImages from "@/data/korea/spot-images.json";
 import { notFound } from "next/navigation";
 import { CalmAlternatives } from "@/components/CalmAlternatives";
 import { LevelBadge } from "@/components/Level";
@@ -9,7 +9,6 @@ import { DEFAULT_LANG, type Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { distanceKm } from "@/lib/geo";
-import { canOptimize } from "@/lib/img";
 import { LANDMARKS, LANDMARK_KINDS, landmarkMapHref } from "@/lib/korea";
 import { LANDMARK_INFO } from "@/lib/landmark-info";
 import { PLACES, placeHref } from "@/lib/places";
@@ -18,6 +17,17 @@ import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { getAllSeoulLive } from "@/lib/seoul-live";
 import { KstNote } from "@/components/LocalTime";
 import { Glyph } from "@/components/Glyph";
+import { PhotoGallery } from "@/components/PhotoGallery";
+import { DailyForecastChart } from "@/components/DailyForecastChart";
+import { HourlyChart } from "@/components/HourlyChart";
+import spotKto from "@/data/korea/spot-kto.json";
+import { getConcentration } from "@/lib/crowd/signals";
+import { kst } from "@/lib/time";
+
+const SPOT_KTO = spotKto as Record<string, { areaCd: string; signguCd: string; name: string }>;
+
+// 명소마다 관광공사 사진 여러 장 (scripts/korea-data/gallery.mts)
+const SPOT_IMAGES = spotImages as Record<string, string[]>;
 
 // 대표 명소 66곳 상세 (외부 검토: 얇은 페이지 대량 생성 대신 고른 명소만). 소개·이용 정보는 한국관광공사 자료,
 // 혼잡도는 가까운 우리 장소·서울 실시간 지역이 있을 때만 붙인다 (없으면 없다고 쓴다)
@@ -61,6 +71,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
   if (!l) notFound();
   const info = LANDMARK_INFO[id];
   const name = l.n[lang] ?? l.n.ko;
+  const photos = [...new Set([l.img, ...(SPOT_IMAGES[id] ?? []), ...(info?.images ?? [])])];
   const kind = LANDMARK_KINDS.find((k) => k.id === l.kind)!;
   const paras = (info?.overview ?? "").split("\n").filter((x) => x.trim());
   const intro = paras.slice(0, 1).join("\n");
@@ -79,6 +90,21 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
       : area && seoul[area.code]
         ? { score: seoul[area.code].score, href: `/seoul/${area.code}`, label: area.name, open: true }
         : undefined;
+
+  // 관광공사 관광지 집중률 30일 예측 (scripts/korea-data/spot-kto.mts로 찾은 이름, 6시간 캐시)
+  const kto = SPOT_KTO[id];
+  const rates = kto ? await getConcentration(kto).catch(() => new Map<string, number>()) : new Map<string, number>();
+  const daily = [...rates.entries()]
+    .filter(([d]) => d >= kst().date)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .slice(0, 30)
+    .map(([date, value]) => ({ date, value }));
+  const weekday = (date: string) => new Intl.DateTimeFormat(lang, { weekday: "short", timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
+  // 가까운 우리 장소가 있으면 그곳의 오늘 시간대별 곡선
+  const near = place && crowd[place.id];
+  const nearHourly = near
+    ? { points: near.hourly, estimated: near.source === "model", unit: (place.criteria?.unit === "분" ? "분" : "명") as "명" | "분" }
+    : undefined;
 
   const others = LANDMARKS.filter((x) => x.region === l.region && x.id !== l.id)
     .sort((a, b) => distanceKm(a, l) - distanceKm(b, l))
@@ -102,7 +128,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
               "@type": "TouristAttraction",
               name,
               ...(info && { description: firstSentence(info.overview), address: info.addr }),
-              image: [l.img, ...(info?.images ?? [])].slice(0, 4),
+              image: photos.slice(0, 4),
               geo: { "@type": "GeoCoordinates", latitude: l.lat, longitude: l.lng },
               url: `${SITE}${lang === "ko" ? "" : `/${lang}`}/spot/${id}`,
               ...(info?.homepage && { sameAs: info.homepage }),
@@ -119,19 +145,14 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
         ← {t("지역 여행")}
       </Link>
 
-      <div className="relative mt-3 aspect-[16/9] overflow-hidden rounded-3xl bg-gray-100 md:aspect-[21/8]">
-        <Image
-          src={l.img}
-          alt={name}
-          fill
-          loading="eager"
-          fetchPriority="high"
-          sizes="(min-width: 768px) 960px, 100vw"
-          unoptimized={!canOptimize(l.img)}
-          className="object-cover"
-        />
-        <span className="absolute right-3 bottom-2 rounded bg-black/40 px-1.5 py-0.5 text-[10px] text-white">{t("사진 한국관광공사")}</span>
-      </div>
+      {/* 사진 여러 장을 옆으로 밀어 넘겨 본다 (관광공사 사진, 명소마다 5~12장) */}
+      <PhotoGallery
+        photos={photos}
+        alt={name}
+        credits={photos.map(() => t("사진 한국관광공사"))}
+        sizes="(min-width: 768px) 960px, 100vw"
+        className="mt-3 aspect-[4/3] rounded-3xl bg-gray-100 md:aspect-[21/8]"
+      />
 
       <p className="mt-4 text-xs font-medium text-gray-500">
         {t(l.region)} · <Glyph e={kind.emoji} /> {t(kind.label)}
@@ -142,6 +163,25 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
 
       <div className="mt-5 grid gap-5 md:grid-cols-[1fr_340px]">
         <div className="min-w-0">
+          {/* 그래프: 모든 명소에 같은 자리. 관광공사 30일 예측 → 가까운 측정 지점의 오늘 시간대별 (없으면 없다고 쓴다) */}
+          <section className="mb-6">
+            <h2 className="text-lg font-bold">{t("앞으로 30일 붐빔 예측")}</h2>
+            {daily.length > 1 ? (
+              <>
+                <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("한국관광공사 관광지 집중률 예측 · 그래프를 눌러 날짜별로 보기")}</p>
+                <DailyForecastChart days={daily} weekdays={daily.map((d) => weekday(d.date))} />
+              </>
+            ) : (
+              <p className="mt-1 text-sm text-gray-500">{t("관광공사 예측 자료가 아직 없는 곳이에요.")}</p>
+            )}
+          </section>
+          {nearHourly && (
+            <section className="mb-6">
+              <h2 className="text-lg font-bold">{t("오늘 시간대별")}</h2>
+              <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("가까운 측정 지점 {name} 기준", { name: live!.label })}</p>
+              <HourlyChart points={nearHourly.points} highlightHour={Math.floor(kst().hour)} estimated={nearHourly.estimated} unit={nearHourly.unit} />
+            </section>
+          )}
           {info?.overview && (
             <section>
               <h2 className="text-lg font-bold">{t("소개")}</h2>
@@ -161,15 +201,6 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
             </section>
           )}
 
-          {info && info.images.length > 1 && (
-            <div className="mt-5 grid grid-cols-3 gap-2">
-              {info.images.slice(0, 6).map((src) => (
-                <div key={src} className="relative aspect-square overflow-hidden rounded-xl bg-gray-100">
-                  <Image src={src} alt="" fill sizes="(min-width: 768px) 200px, 33vw" unoptimized={!canOptimize(src)} className="object-cover" />
-                </div>
-              ))}
-            </div>
-          )}
 
           <section className="mt-6">
             <h2 className="text-lg font-bold">{t("이용 정보")}</h2>

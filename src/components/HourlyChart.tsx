@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { AreaChart } from "@/components/charts/area-chart";
+import { Area } from "@/components/charts/area";
+import { useChart } from "@/components/charts/chart-context";
 import { useI18n } from "@/i18n/client";
 import { fmtMinutes, fmtPeople } from "@/i18n/patterns";
 import { formatHour } from "@/i18n/translate";
@@ -8,21 +11,84 @@ import { SHOW_DATA_LABELS } from "@/lib/format";
 import { LEVELS, levelOf } from "@/lib/levels";
 import type { HourPoint } from "@/lib/types";
 
-const W = 360;
-const H = 170;
-const PAD = { l: 8, r: 8, t: 12, b: 26 };
 const MEASURED = "#4f46e5";
 const FORECAST = "#a78bfa";
+const MARGIN = { top: 14, right: 12, bottom: 34, left: 12 };
 
 const PEOPLE_NOTE: Record<NonNullable<HourPoint["peopleKind"]>, string> = {
   real: "실측·공식 예보",
   pattern: "생활인구 패턴 기반",
   est: "추정",
+  area: "주변 실측 인구로 계산한 명소 기준 추정",
 };
 
+/** 시간 → 차트 x값 (Bklit 차트는 시간축이라 날짜로 바꿔 넣는다) */
+const hourDate = (h: number) => new Date(Date.UTC(2000, 0, 1, h));
+
+/** 고른 시간: 세로선 + 단계 색 점 */
+function Selected({ hour, score }: { hour: number; score: number }) {
+  const { xScale, yScale, innerHeight } = useChart();
+  const x = xScale(hourDate(hour));
+  const color = levelOf(score).color;
+  return (
+    <g pointerEvents="none">
+      <line x1={x} x2={x} y1={0} y2={innerHeight} stroke={color} strokeOpacity="0.5" strokeWidth="2" />
+      <circle cx={x} cy={yScale(score)} r="11" fill={color} fillOpacity="0.18" />
+      <circle cx={x} cy={yScale(score)} r="6" fill={color} stroke="#fff" strokeWidth="2.5" />
+    </g>
+  );
+}
+Selected.__isPostOverlay = true;
+
+/** 단계 경계선 (보통·혼잡·매우 혼잡) + 오른쪽 끝 단계 이름 */
+function LevelLines({ labels }: { labels: Record<number, string> }) {
+  const { yScale, innerWidth } = useChart();
+  return (
+    <g pointerEvents="none">
+      {LEVELS.slice(2).map((l) => (
+        <g key={l.key}>
+          <line x1={0} x2={innerWidth} y1={yScale(l.min)} y2={yScale(l.min)} stroke={l.color} strokeOpacity="0.35" strokeDasharray="3 5" />
+          <text x={innerWidth} y={yScale(l.min) - 4} textAnchor="end" fontSize="12" fontWeight="600" fill={l.color} fillOpacity="0.9">
+            {labels[l.key]}
+          </text>
+        </g>
+      ))}
+    </g>
+  );
+}
+
+/** 아래 시간 눈금(3시간마다) + '지금' 표시 */
+function HourAxis({ hours, nowIdx, nowLabel }: { hours: number[]; nowIdx: number; nowLabel: string }) {
+  const { xScale, innerHeight } = useChart();
+  const y = innerHeight + 22;
+  const nowX = nowIdx >= 0 ? xScale(hourDate(hours[nowIdx])) : null;
+  return (
+    <g pointerEvents="none">
+      {nowX !== null && <line x1={nowX} x2={nowX} y1={0} y2={innerHeight} stroke="#111827" strokeDasharray="3 3" strokeOpacity="0.45" />}
+      {hours.map((h, i) =>
+        h % 3 === 0 && (nowIdx < 0 || Math.abs(i - nowIdx) > 1) ? (
+          <text key={h} x={xScale(hourDate(h))} y={y} textAnchor="middle" fontSize="13" fill="#6b7280">
+            {h}
+          </text>
+        ) : null,
+      )}
+      {nowX !== null && (
+        <g>
+          <rect x={nowX - 22} y={y - 15} width="44" height="21" rx="10.5" fill="#111827" />
+          <text x={nowX} y={y} textAnchor="middle" fontSize="13" fontWeight="700" fill="#fff">
+            {nowLabel}
+          </text>
+        </g>
+      )}
+    </g>
+  );
+}
+HourAxis.__isPostOverlay = true;
+LevelLines.__isPostOverlay = true;
+
 /**
- * 시간대별 혼잡도. 실측은 실선+진한 영역, AI 예측은 점선+옅은 영역.
- * 시간을 누르면(또는 올리면) 단계·인원·이전 시간 대비 증감을 보여준다.
+ * 시간대별 혼잡도 (Bklit UI 영역 차트). 실측은 실선, AI 예측은 점선.
+ * 휴대폰: 그래프를 누르거나 옆으로 밀면 그 시간의 단계·인원이 위 칸에 나온다 (세로로 밀면 화면 스크롤)
  * estimated: 지난 시간도 실측이 아니라 예측 모델 값일 때
  */
 export function HourlyChart({
@@ -40,168 +106,118 @@ export function HourlyChart({
   const val = (n: number) => (unit === "분" ? fmtMinutes(n, t) : fmtPeople(n, t, lang));
   const nowIdx = points.findIndex((p) => p.hour === highlightHour);
   const [sel, setSel] = useState(nowIdx >= 0 ? nowIdx : points.reduce((m, p, i) => (p.score > points[m].score ? i : m), 0));
+  const data = useMemo(() => points.map((p) => ({ date: hourDate(p.hour), score: p.score })), [points]);
+  const levelLabels = useMemo(() => Object.fromEntries(LEVELS.map((l) => [l.key, t(l.label)])), [t]);
+  const touch = useRef<HTMLDivElement>(null);
+  const dragging = useRef(false);
+  // 손가락·마우스 위치 → 가장 가까운 시간 (차트 여백 제외)
+  const pick = (clientX: number) => {
+    const el = touch.current;
+    if (!el || points.length < 2) return;
+    const r = el.getBoundingClientRect();
+    // 글자 크기 설정(zoom)으로 화면 좌표와 CSS 크기가 다를 수 있어 여백도 같은 비율로
+    const k = el.offsetWidth ? r.width / el.offsetWidth : 1;
+    const f = (clientX - r.left - MARGIN.left * k) / (r.width - (MARGIN.left + MARGIN.right) * k);
+    setSel(Math.max(0, Math.min(points.length - 1, Math.round(f * (points.length - 1)))));
+  };
   if (points.length === 0) return null;
 
-  const x = (i: number) => PAD.l + (i * (W - PAD.l - PAD.r)) / Math.max(1, points.length - 1);
-  const y = (score: number) => PAD.t + (1 - Math.min(100, score) / 100) * (H - PAD.t - PAD.b);
-  const baseY = y(0);
-
-  // 실측 구간(예측 아님)과 예측 구간. 예측선은 마지막 실측점에서 이어진다
-  const lastMeasured = points.reduce((m, p, i) => (!p.forecast ? i : m), -1);
-  const measured = points.slice(0, lastMeasured + 1).map((p, i) => [x(i), y(p.score)] as const);
-  const fStart = Math.max(0, lastMeasured);
-  const forecast = points.slice(fStart).map((p, i) => [x(fStart + i), y(p.score)] as const);
-
-  const line = (pts: readonly (readonly [number, number])[]) => pts.map(([px, py], i) => `${i ? "L" : "M"}${px},${py}`).join(" ");
-  const area = (pts: readonly (readonly [number, number])[]) =>
-    pts.length > 1 ? `${line(pts)} L${pts.at(-1)![0]},${baseY} L${pts[0][0]},${baseY} Z` : "";
-
-  const p = points[sel];
+  // 실측 구간(예측 아님) 다음부터 점선
+  const lastMeasured = estimated ? 0 : Math.max(0, points.reduce((m, p, i) => (!p.forecast ? i : m), -1));
+  const p = points[Math.min(sel, points.length - 1)];
   const prev = points[sel - 1];
   const level = levelOf(p.score);
   const isMeasured = !p.forecast && !estimated;
   const delta =
     // 인원 증감은 같은 종류의 수치끼리만 (실측과 추정을 섞으면 엉뚱한 차이가 난다)
     prev && p.people !== undefined && prev.people !== undefined && (p.peopleKind === "est") === (prev.peopleKind === "est")
-      ? { text: `${p.people >= prev.people ? "+" : "−"}${val(Math.abs(p.people - prev.people))}`, up: p.people > prev.people }
+      ? { text: `${p.people >= prev.people ? "+" : "−"}${val(Math.abs(p.people - prev.people))}`, diff: p.people - prev.people }
       : prev
-        ? { text: `${p.score >= prev.score ? "+" : "−"}${t("{n}점", { n: Math.abs(p.score - prev.score) })}`, up: p.score > prev.score }
+        ? { text: `${p.score >= prev.score ? "+" : "−"}${t("{n}점", { n: Math.abs(p.score - prev.score) })}`, diff: p.score - prev.score }
         : null;
 
   return (
     <div>
       {/* 고른 시간 상세 */}
-      <div className="mb-3 flex items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3">
+      <div className="mb-2 flex items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3" aria-live="polite">
         <div className="min-w-0 flex-1">
-          <p className="text-xs text-gray-500">
-            {formatHour(p.hour, lang)} {sel === nowIdx ? `· ${t("지금")}` : ""} · {isMeasured ? t("실측") : t("AI 예측")}
+          <p className="text-sm text-gray-600">
+            <b className="text-gray-900">{formatHour(p.hour, lang)}</b> {sel === nowIdx ? `· ${t("지금")}` : ""} ·{" "}
+            {isMeasured ? t("실측") : t("AI 예측")}
           </p>
-          <p className="mt-0.5 text-lg font-bold" style={{ color: level.color }}>
+          <p className="mt-0.5 text-xl font-extrabold" style={{ color: level.color }}>
             {t(level.label)}
             {p.people !== undefined && (
-              <span className="ml-2 text-base font-semibold text-gray-900">
+              <span className="ml-2 text-lg font-bold text-gray-900">
                 {p.peopleKind === "est" ? t("약 {v}", { v: val(p.people) }) : val(p.people)}
               </span>
             )}
           </p>
           {p.peopleKind && SHOW_DATA_LABELS && (
-            <p className={`text-[11px] ${p.peopleKind === "est" ? "text-amber-600" : "text-gray-400"}`}>
+            <p className={`text-xs ${p.peopleKind === "est" ? "text-amber-600" : "text-gray-500"}`}>
               {t("인원")}: {t(PEOPLE_NOTE[p.peopleKind])}
             </p>
           )}
         </div>
         {delta && (
           <div className="shrink-0 text-right">
-            <p className="text-[11px] text-gray-500">{t("{h} 대비", { h: formatHour(prev!.hour, lang) })}</p>
-            <p className={`text-sm font-bold ${delta.up ? "text-red-500" : "text-emerald-600"}`}>
-              {delta.up ? "↑" : "↓"} {delta.text}
+            <p className="text-xs text-gray-500">{t("{h} 대비", { h: formatHour(prev!.hour, lang) })}</p>
+            <p className={`text-base font-bold ${delta.diff > 0 ? "text-red-500" : delta.diff < 0 ? "text-emerald-600" : "text-gray-500"}`}>
+              {delta.diff > 0 ? "↑" : delta.diff < 0 ? "↓" : "→"} {delta.text}
             </p>
           </div>
         )}
       </div>
 
-      <svg viewBox={`0 0 ${W} ${H}`} className="block w-full touch-none select-none" role="img" aria-label={t("시간대별 혼잡도 그래프")}>
-        <defs>
-          <linearGradient id="hc-measured" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor={MEASURED} stopOpacity="0.32" />
-            <stop offset="100%" stopColor={MEASURED} stopOpacity="0.02" />
-          </linearGradient>
-          <linearGradient id="hc-forecast" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor={FORECAST} stopOpacity="0.22" />
-            <stop offset="100%" stopColor={FORECAST} stopOpacity="0.02" />
-          </linearGradient>
-        </defs>
-
-        {/* 단계 경계선 (보통·혼잡·매우 혼잡) */}
-        {LEVELS.slice(2).map((l) => (
-          <g key={l.key}>
-            <line x1={PAD.l} x2={W - PAD.r} y1={y(l.min)} y2={y(l.min)} stroke={l.color} strokeOpacity="0.25" strokeDasharray="2 4" />
-            <text x={W - PAD.r} y={y(l.min) - 3} textAnchor="end" fontSize="8" fill={l.color} fillOpacity="0.8">
-              {t(l.label)}
-            </text>
-          </g>
-        ))}
-
-        <path d={area(forecast)} fill="url(#hc-forecast)" />
-        <path d={area(measured)} fill={estimated ? "url(#hc-forecast)" : "url(#hc-measured)"} />
-        <path d={line(forecast)} fill="none" stroke={FORECAST} strokeWidth="2" strokeDasharray="5 4" strokeLinecap="round" />
-        <path
-          d={line(measured)}
-          fill="none"
-          stroke={estimated ? FORECAST : MEASURED}
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeDasharray={estimated ? "5 4" : undefined}
-        />
-
-        {/* 지금: 세로 점선 */}
-        {nowIdx >= 0 && <line x1={x(nowIdx)} x2={x(nowIdx)} y1={PAD.t} y2={baseY} stroke="#111827" strokeDasharray="3 3" strokeOpacity="0.5" />}
-
-        {/* 점 */}
-        {points.map((pt, i) => (
-          <circle
-            key={pt.hour}
-            cx={x(i)}
-            cy={y(pt.score)}
-            r={i === sel ? 5 : 2.5}
-            fill={i === sel ? levelOf(pt.score).color : "#fff"}
-            stroke={levelOf(pt.score).color}
-            strokeWidth={i === sel ? 2.5 : 1.5}
+      <div role="img" aria-label={t("시간대별 혼잡도 그래프")} className="relative select-none">
+        <AreaChart data={data} yMax={100} margin={MARGIN} aspectRatio="16 / 10" animationDuration={700}>
+          <LevelLines labels={levelLabels} />
+          <Area
+            dataKey="score"
+            fill={estimated ? FORECAST : MEASURED}
+            stroke={estimated ? FORECAST : MEASURED}
+            strokeWidth={3}
+            fillOpacity={0.28}
+            dashFromIndex={lastMeasured}
+            dashArray="6,5"
           />
-        ))}
+          <HourAxis hours={points.map((x) => x.hour)} nowIdx={nowIdx} nowLabel={t("지금")} />
+          <Selected hour={p.hour} score={p.score} />
+        </AreaChart>
+        {/* 누르기·밀기 영역: 가로로 밀면 시간이 바뀌고, 세로로 밀면 화면이 스크롤된다 */}
+        <div
+          ref={touch}
+          className="absolute inset-0 z-10 cursor-pointer"
+          style={{ touchAction: "pan-y" }}
+          // 누르는 순간엔 고르지 않는다: 세로로 밀어 스크롤하면 브라우저가 pointercancel을 보내 그대로 둔다
+          onPointerDown={(e) => {
+            dragging.current = true;
+            if (e.pointerType === "mouse") pick(e.clientX);
+          }}
+          onPointerMove={(e) => (dragging.current || e.pointerType === "mouse") && pick(e.clientX)}
+          onPointerUp={(e) => {
+            if (dragging.current) pick(e.clientX);
+            dragging.current = false;
+          }}
+          onPointerCancel={() => (dragging.current = false)}
+          onPointerLeave={() => (dragging.current = false)}
+        />
+      </div>
 
-        {/* 시간 눈금 */}
-        {points.map((pt, i) =>
-          pt.hour % 3 === 0 ? (
-            <text key={`t${pt.hour}`} x={x(i)} y={H - 12} textAnchor="middle" fontSize="9" fill="#9ca3af">
-              {pt.hour}
-            </text>
-          ) : null,
-        )}
-
-        {/* 지금 라벨: 그래프 아래, 시간 눈금 자리에 진하게 */}
-        {nowIdx >= 0 && (
-          <g>
-            <rect x={x(nowIdx) - 17} y={H - 24} width="34" height="16" rx="8" fill="#111827" />
-            <text x={x(nowIdx)} y={H - 12.5} textAnchor="middle" fontSize="9" fontWeight="700" fill="#fff">
-              {t("지금")}
-            </text>
-          </g>
-        )}
-
-        {/* 누르기 영역 */}
-        {points.map((pt, i) => (
-          <rect
-            key={`hit${pt.hour}`}
-            x={x(i) - (W - PAD.l - PAD.r) / (points.length - 1) / 2}
-            y={0}
-            width={(W - PAD.l - PAD.r) / (points.length - 1)}
-            height={H}
-            fill="transparent"
-            className="cursor-pointer"
-            onPointerEnter={(e) => e.pointerType === "mouse" && setSel(i)}
-            onPointerDown={() => setSel(i)}
-          >
-            <title>{`${formatHour(pt.hour, lang)} ${t(levelOf(pt.score).label)}`}</title>
-          </rect>
-        ))}
-      </svg>
-
-      <div className="mt-1 flex gap-4 text-[11px] text-gray-500">
+      <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-600">
         <span className="flex items-center gap-1.5">
-          <svg width="18" height="6">
-            <line x1="0" x2="18" y1="3" y2="3" stroke={estimated ? FORECAST : MEASURED} strokeWidth="2.5" strokeDasharray={estimated ? "5 4" : undefined} />
+          <svg width="20" height="6" aria-hidden>
+            <line x1="0" x2="20" y1="3" y2="3" stroke={estimated ? FORECAST : MEASURED} strokeWidth="3" strokeDasharray={estimated ? "5 4" : undefined} />
           </svg>
           {estimated ? t("지난 시간 (추정)") : t("실측")}
         </span>
         <span className="flex items-center gap-1.5">
-          <svg width="18" height="6">
-            <line x1="0" x2="18" y1="3" y2="3" stroke={FORECAST} strokeWidth="2" strokeDasharray="5 4" />
+          <svg width="20" height="6" aria-hidden>
+            <line x1="0" x2="20" y1="3" y2="3" stroke={estimated ? FORECAST : MEASURED} strokeWidth="3" strokeDasharray="5 4" />
           </svg>
           {t("AI 예측")}
         </span>
-        <span className="ml-auto text-gray-400">{t("시간을 눌러 자세히")}</span>
+        <span className="ml-auto text-gray-500">{t("시간을 눌러 자세히")}</span>
       </div>
     </div>
   );

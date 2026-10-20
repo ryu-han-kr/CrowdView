@@ -124,6 +124,10 @@ export function MySettings() {
           <span>{t("화면 테마")}</span>
           <ThemePicker />
         </li>
+        <li className="flex items-center justify-between gap-3 px-4 py-3">
+          <span>{t("글자 크기")}</span>
+          <FontSizePicker />
+        </li>
         <li className="flex items-center justify-between px-4 py-3">
           <span>{t("혼잡 알림")}</span>
           <a href="#alerts" className="text-xs font-semibold text-indigo-600">
@@ -147,6 +151,42 @@ export function MySettings() {
         </li>
       </ul>
     </section>
+  );
+}
+
+/** 글자 크기: 보통 · 크게(112%) · 아주 크게(125%). html[data-font]와 localStorage(cv:font). 그래프·숫자까지 함께 커진다 (globals.css) */
+function FontSizePicker() {
+  const { t } = useI18n();
+  const [size, setSize] = useState<"m" | "l" | "xl">("m");
+  useEffect(() => {
+    try {
+      const v = localStorage.getItem("cv:font");
+      if (v === "l" || v === "xl") setSize(v);
+    } catch {}
+  }, []);
+  const pick = (v: "m" | "l" | "xl") => {
+    setSize(v);
+    try {
+      if (v === "m") localStorage.removeItem("cv:font");
+      else localStorage.setItem("cv:font", v);
+    } catch {}
+    if (v === "m") delete document.documentElement.dataset.font;
+    else document.documentElement.dataset.font = v;
+  };
+  return (
+    <div className="flex rounded-full bg-gray-100 p-0.5 font-semibold" suppressHydrationWarning>
+      {(["m", "l", "xl"] as const).map((v) => (
+        <button
+          key={v}
+          onClick={() => pick(v)}
+          aria-pressed={size === v}
+          aria-label={t(v === "m" ? "보통" : v === "l" ? "크게" : "아주 크게")}
+          className={`min-h-8 rounded-full px-3 py-1 ${v === "m" ? "text-xs" : v === "l" ? "text-sm" : "text-base"} ${size === v ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+        >
+          {t("가")}
+        </button>
+      ))}
+    </div>
   );
 }
 
