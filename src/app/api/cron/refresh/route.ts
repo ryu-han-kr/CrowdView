@@ -9,12 +9,14 @@ import { addDays, kst } from "@/lib/time";
 import { PLACES } from "@/lib/places";
 import { summarizeDay } from "@/lib/crowd/history";
 import { checkTripWatches } from "@/lib/trip-watch";
+import { flushReports } from "@/lib/crowd-report";
 
 // Vercel Cron(vercel.json, 10분마다, GET)이 Authorization: Bearer CRON_SECRET 헤더로 호출한다.
 // 다른 클라우드로 옮기면 그쪽 스케줄러가 같은 헤더를 붙여 GET 또는 POST로 부르면 된다
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET;
-  if (secret && req.headers.get("authorization") !== `Bearer ${secret}`) {
+  // 운영에서 비밀값이 빠지면 막는다 (누구나 수집·결제 실행을 부를 수 있게 되므로). 로컬은 비밀값 없이 실행 가능
+  if ((secret || process.env.VERCEL_ENV === "production") && req.headers.get("authorization") !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
   const refreshed = await refreshAll();
@@ -33,6 +35,8 @@ export async function GET(req: Request) {
   const summarized = daily
     ? (await Promise.all(PLACES.map((p) => summarizeDay(p.id, addDays(now.date, -1)).catch(() => false)))).filter(Boolean).length
     : 0;
+  // 어제 방문자 제보를 DB에 한 번에 (정확도 점검용)
+  const reports = daily ? await flushReports(addDays(now.date, -1)).catch(async (e) => (await opsAlert("제보 저장 실패", e), 0)) : 0;
   // 여행 날짜 알림 (Plus): 아침 9시 첫 수집 때 한 번 (새벽에 깨우지 않게)
   const morning = Math.floor(now.hour) === 9 && (now.hour % 1) * 60 < 10;
   const trips = morning ? await checkTripWatches().catch(async (e) => (await opsAlert("여행 날짜 알림 실패", e), 0)) : 0;
@@ -54,7 +58,7 @@ export async function GET(req: Request) {
     );
   // 실시간 원본이 하나도 안 들어오면(전부 예측값) 원본 API·키 장애일 가능성이 크다
   if (refreshed.length && refreshed.every((r) => r.source === "model")) await opsAlert(`실시간 수집 전체 실패 (${refreshed.length}곳 모두 예측값)`);
-  return NextResponse.json({ refreshed, alerts, charged, expired, notices, scored, summarized, trips });
+  return NextResponse.json({ refreshed, alerts, charged, expired, notices, scored, summarized, trips, reports });
 }
 
 export const POST = GET;

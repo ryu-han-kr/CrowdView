@@ -12,5 +12,6 @@ export const isAdminEmail = (email?: string | null) => !!email && ADMINS.include
 export async function currentAdmin(reqHeaders?: Headers) {
   if (!ADMINS.length) return null;
   const user = await currentUser(reqHeaders);
-  return user && isAdminEmail(user.email) ? user : null;
+  // 이메일이 확인된 계정만 (이메일 칸만 같게 만든 다른 로그인 수단 계정은 운영자가 아니다)
+  return user && user.emailVerified && isAdminEmail(user.email) ? user : null;
 }

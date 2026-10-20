@@ -33,6 +33,9 @@ export async function POST(req: Request) {
   const body = (await req.json().catch(() => ({}))) as { placeId?: string; kind?: string; subscription?: PushSub; lang?: string };
   if (!body.placeId || !alertTarget(body.placeId) || !KINDS.includes(body.kind as (typeof KINDS)[number])) return errorJson("잘못된 요청");
   if (!body.subscription?.endpoint || !body.subscription.keys?.p256dh) return errorJson("알림 권한이 필요해요");
+  // 회원당 30개까지 (알림 점검이 회원 수 × 알림 수만큼 돈다)
+  const [{ n }] = await sql<{ n: number }>("select count(*)::int as n from crowd_alert where user_id = $1", [user.id]);
+  if (n >= 30) return errorJson("알림은 30개까지 켤 수 있어요");
   await savePushSubscription(user.id, body.subscription, body.lang ?? "ko");
   await sql("insert into crowd_alert (user_id, place_id, kind) values ($1, $2, $3) on conflict do nothing", [user.id, body.placeId, body.kind]);
   await markAlertsExist();

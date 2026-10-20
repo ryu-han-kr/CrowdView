@@ -1,5 +1,6 @@
 // Plus 구독: GET은 카드 등록창에 쓸 토스 고객 키, POST는 카드 등록창에서 돌아온 authKey로 빌링키 발급 → 첫 달 결제
 import { NextResponse } from "next/server";
+import { dailyLimit, rateLimit } from "@/lib/ratelimit";
 import { opsAlert } from "@/lib/ops";
 import { checkoutCustomerKey, subscribe } from "@/lib/plus";
 import { errorJson, requireUser, unauthorized, withPlusCookie } from "@/lib/plus-http";
@@ -13,9 +14,14 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
+  // 결제 요청 제한: 남의 카드를 돌려 보는 시도(카드 테스트)와 실수로 여러 번 누르는 것을 막는다
+  const limited = await rateLimit(req, "pay");
+  if (limited) return limited;
   if (!tossEnabled) return NextResponse.json({ error: "결제 준비 중이에요" }, { status: 503 });
   const user = await requireUser(req);
   if (!user) return unauthorized();
+  const daily = await dailyLimit("subscribe", user.id, 5);
+  if (daily) return daily;
   const { authKey, customerKey } = (await req.json().catch(() => ({}))) as { authKey?: string; customerKey?: string };
   if (!authKey || typeof authKey !== "string" || !customerKey || typeof customerKey !== "string") return errorJson("카드 등록 정보가 없어요");
   try {
