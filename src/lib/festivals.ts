@@ -237,7 +237,7 @@ export async function getFestival(id: string): Promise<Festival | undefined> {
 }
 
 /** 그날 시군구별 외지인+외국인 방문객 (데이터랩, 과거 날짜라 바뀌지 않아 30일 캐시) */
-async function visitorsOn(date: string): Promise<DayVisitors> {
+export async function visitorsOn(date: string): Promise<DayVisitors> {
   const ymd = date.replaceAll("-", "");
   const rows = await dataGoKr(
     "/B551011/DataLabService/locgoRegnVisitrDDList",
@@ -255,19 +255,20 @@ async function visitorsOn(date: string): Promise<DayVisitors> {
   return map;
 }
 
-type DayVisitors = Map<string, { name: string; visitors: number }>;
+export type DayVisitors = Map<string, { name: string; visitors: number }>;
 
-/** 축제 시군구의 그날 방문객. 데이터랩에 코드가 없으면 예전 행정구역 코드로 찾는다 */
-function visitorsOf(day: DayVisitors, f: Festival) {
-  const code = f.signguCode!;
+/** 시군구의 그날 방문객. 그날 자료에 코드가 없으면(작년 자료는 옛 행정구역 코드) 예전 코드·같은 이름으로 찾는다 */
+export function regionVisitorsOf(day: DayVisitors, code: string, name?: string) {
   const direct = day.get(code);
   if (direct) return direct;
   if (LEGACY_SIGNGU[code]) return day.get(LEGACY_SIGNGU[code]);
   const prefixes = LEGACY_SIDO[code.slice(0, 2)];
-  if (!prefixes || !f.signguName) return undefined;
-  for (const [c, v] of day) if (prefixes.includes(c.slice(0, 2)) && v.name === f.signguName) return v;
+  if (!prefixes || !name) return undefined;
+  for (const [c, v] of day) if (prefixes.includes(c.slice(0, 2)) && v.name === name) return v;
   return undefined;
 }
+
+const visitorsOf = (day: DayVisitors, f: Festival) => regionVisitorsOf(day, f.signguCode!, f.signguName);
 
 /** 한 달 넘게 이어지는 상설·장기 행사 (축제처럼 특정일에 몰리지 않아 혼잡 예측을 하지 않는다) */
 export const isLongRunning = (f: Festival) => Date.parse(f.end) - Date.parse(f.start) > 31 * 86_400_000;

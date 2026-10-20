@@ -29,6 +29,7 @@ import { spotForecast } from "@/lib/spot-model";
 import spotKto from "@/data/korea/spot-kto.json";
 import { getConcentration } from "@/lib/crowd/signals";
 import { kst } from "@/lib/time";
+import { compactNumber } from "@/lib/format";
 
 const SPOT_KTO = spotKto as Record<string, { areaCd: string; signguCd: string; name: string }>;
 
@@ -257,6 +258,39 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
               }))}
             />
           </section>
+
+          {/* 작년 이맘때 시군구 방문객 (관광공사 데이터랩, 외지인·외국인, 작년 같은 요일) — 실제 숫자 */}
+          {model.lastYear && model.lastYear.days.length > 1 && (() => {
+            const days = model.lastYear.days;
+            const max = Math.max(...days.map((d) => d.visitors));
+            const avg = Math.round(days.reduce((a, d) => a + d.visitors, 0) / days.length);
+            const top = days.reduce((a, d) => (d.visitors > a.visitors ? d : a), days[0]);
+            return (
+              <section className="mt-8">
+                <h2 className="text-lg font-bold">{t("작년 이맘때 {region} 방문객", { region: t(model.lastYear.region) })}</h2>
+                <p className="mt-0.5 text-sm text-gray-500">{t("관광공사 데이터랩 · 다른 지역에서 온 사람과 외국인, 작년 같은 요일")}</p>
+                <p className="mt-2 text-[15px]">
+                  {t("하루 평균 약 {n}명, {day}이 가장 많았어요 (약 {m}명).", {
+                    n: compactNumber(avg, lang),
+                    day: new Intl.DateTimeFormat(lang, { weekday: "long", timeZone: "UTC" }).format(new Date(`${top.date}T00:00:00Z`)),
+                    m: compactNumber(top.visitors, lang),
+                  })}
+                </p>
+                <ul className="mt-3 flex h-32 items-end gap-1.5">
+                  {days.map((d) => (
+                    <li key={d.date} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end">
+                      <span className="mb-1 text-[11px] text-gray-600 tabular-nums">{compactNumber(d.visitors, lang)}</span>
+                      <span
+                        className="block w-full rounded-lg"
+                        style={{ height: `${Math.max(8, (d.visitors / max) * 100)}%`, background: d === top ? "#6366f1" : "#c7d2fe" }}
+                      />
+                      <span className="mt-1 text-xs text-gray-600">{weekday(d.date)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })()}
 
           <section className="mt-8">
             <h2 className="text-lg font-bold">{t("앞으로 30일 붐빔 예측")}</h2>

@@ -7,6 +7,7 @@ import type { Landmark, LandmarkKind } from "./korea";
 import { LANDMARK_INFO } from "./landmark-info";
 import { closedToday, parseTodayHours } from "./place-info";
 import { addDays, kst } from "./time";
+import { lastYearVisitors, spotRegion } from "./region-visitors";
 import type { CrowdSnapshot, HourPoint, Place } from "./types";
 
 const SPOT_KTO = spotKto as Record<string, NonNullable<Place["kto"]>>;
@@ -56,11 +57,24 @@ export interface SpotForecast {
   /** 오늘부터 7일, 운영 시간의 시간마다 예측 (주간 히트맵) */
   week: { date: string; points: HourPoint[]; closed: boolean }[];
   signals: Signals;
+  /** 작년 같은 요일 그 시군구 방문객 (앞으로 7일, 데이터랩) */
+  lastYear?: { region: string; days: { date: string; visitors: number }[] };
 }
 
 export async function spotForecast(l: Landmark): Promise<SpotForecast> {
   const place = spotPlace(l);
   const signals = await getSignals(place).catch(() => ({}) as Signals);
+  // 시군구 방문객(작년 같은 요일, 앞으로 30일). 관광공사 집중률이 없는 명소는 이것으로 날마다 붐빔을 보정한다
+  const region = spotRegion(l.id);
+  const today0 = kst().date;
+  const visitors = region
+    ? await lastYearVisitors(
+        region.code,
+        Array.from({ length: 30 }, (_, i) => addDays(today0, i)),
+        region.name,
+      ).catch(() => new Map<string, number>())
+    : new Map<string, number>();
+  if (!signals.concentration?.size && visitors.size) signals.concentration = visitors;
   const now = modelSnapshot(place, new Date(), signals);
   const today = kst().date;
   const week = Array.from({ length: 7 }, (_, i) => {
@@ -72,5 +86,8 @@ export async function spotForecast(l: Landmark): Promise<SpotForecast> {
     const points = closed ? [] : forecastForDate(p, date, signals).filter((x) => x.hour >= p.hours[0] && x.hour < Math.min(24, p.hours[1]));
     return { date, points, closed };
   });
-  return { place, now, week, signals };
+  const lastYear = region && visitors.size
+    ? { region: region.name, days: week.map((d) => ({ date: d.date, visitors: visitors.get(d.date) ?? 0 })).filter((d) => d.visitors > 0) }
+    : undefined;
+  return { place, now, week, signals, lastYear };
 }
