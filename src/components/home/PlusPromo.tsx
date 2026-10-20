@@ -33,7 +33,7 @@ export function PlusPromo({ t, price }: { t: T; price: string }) {
       <div className="flex items-end justify-between">
         <h2 className="text-lg font-bold md:text-xl">
           {t("CrowdView Plus")}
-          <span className="ml-2 text-sm font-normal text-gray-500">{t("월 {n}원으로 더 편한 여행", { n: price })}</span>
+          <span className="ml-2 text-sm font-normal text-gray-500">{t("1개월 {n}원으로 더 편한 여행", { n: price })}</span>
         </h2>
       </div>
       <ul className="no-scrollbar -mx-5 mt-3 flex snap-x scroll-px-5 gap-3 overflow-x-auto px-5 md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:scroll-px-0 md:px-0">

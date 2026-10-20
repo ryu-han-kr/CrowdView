@@ -111,7 +111,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     img: pick2.img,
     tag: "Plus",
     title: t("붐비기 전에 알려 드려요"),
-    sub: t("광고 제거 · 혼잡 알림 · 맞춤 코스 추천 — 월 {n}원", { n: PLUS.priceKrw.toLocaleString() }),
+    sub: t("광고 제거 · 혼잡 알림 · 맞춤 코스 추천 — 1개월 {n}원", { n: PLUS.priceKrw.toLocaleString() }),
   };
   const routeSlide: HeroSlide = { id: "route", href: "/route", img: "/places/namsan.jpg", tag: t("추천 코스"), title: t("붐비는 시간을 피해 도는 코스"), sub: t("지하철 이동시간과 식사 시간까지 맞춰 드려요") };
   const ko = lang === "ko";

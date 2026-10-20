@@ -2389,4 +2389,8 @@ export default {
   "1개월 {n}원": ["₩{n} for 1 month", "1か月 {n}ウォン", "1个月 {n}韩元", "1個月 {n}韓元"],
   "이번 주 시간대별 예상 혼잡 · 초록 칸이 한산해요": ["Expected crowds by time this week · green cells are quiet", "今週の時間帯別予想混雑・緑のマスがすいています", "本周各时段预计拥挤 · 绿色格子人少", "本週各時段預計擁擠 · 綠色格子人少"],
   시: ["h", "時", "点", "點"],
+  "CrowdView는 무료로 쓸 수 있어요. Plus는 광고 제거와 혼잡 알림을 1개월 {price}원에 제공해요.": ["CrowdView is free. Plus adds ad-free viewing and crowd alerts for ₩{price} per month.","CrowdViewは無料で使えます。Plusは広告非表示と混雑通知を1か月{price}ウォンで提供します。","CrowdView可免费使用。Plus以1个月{price}韩元提供去广告和拥挤提醒。","CrowdView可免費使用。Plus以1個月{price}韓元提供去廣告與擁擠提醒。"],
+  "광고 제거 · 혼잡 알림 · 맞춤 코스 추천 — 1개월 {n}원": ["No ads · crowd alerts · custom routes — ₩{n} for 1 month","広告非表示・混雑通知・おすすめコース — 1か月{n}ウォン","去广告 · 拥挤提醒 · 定制路线 — 1个月{n}韩元","去廣告 · 擁擠提醒 · 客製路線 — 1個月{n}韓元"],
+  "1개월 {n}원으로 더 편한 여행": ["A smoother trip for ₩{n} a month","1か月{n}ウォンでもっと快適な旅","1个月{n}韩元，旅行更轻松","1個月{n}韓元，旅行更輕鬆"],
+  "전체 시간표 · 붐비면 다시 짜기 · 1개월 3,900원": ["Full schedule · re-plan when crowded · ₩3,900 for 1 month","全日程・混んだら再作成・1か月3,900ウォン","完整行程 · 拥挤时重新规划 · 1个月3,900韩元","完整行程 · 擁擠時重新規劃 · 1個月3,900韓元"],
 };

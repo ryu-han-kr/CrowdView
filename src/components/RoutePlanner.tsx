@@ -581,7 +581,7 @@ export function RouteResult({
           <p className="flex items-center gap-1 text-sm font-bold">
             <Glyph e="🔒" className="h-4 w-4" /> {t("나머지 {n}곳은 Plus에서 볼 수 있어요", { n: locked })}
           </p>
-          <p className="text-xs text-white/80">{t("전체 시간표 · 붐비면 다시 짜기 · 월 3,900원")}</p>
+          <p className="text-xs text-white/80">{t("전체 시간표 · 붐비면 다시 짜기 · 1개월 3,900원")}</p>
         </Link>
       )}
       <p className="mt-4 text-[11px] leading-relaxed text-gray-400">
