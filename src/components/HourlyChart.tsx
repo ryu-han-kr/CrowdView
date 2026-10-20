@@ -11,7 +11,8 @@ import { SHOW_DATA_LABELS } from "@/lib/format";
 import { LEVELS, levelOf } from "@/lib/levels";
 import type { HourPoint } from "@/lib/types";
 
-const MARGIN = { top: 14, right: 12, bottom: 34, left: 12 };
+// 왼쪽 58px는 단계 이름 칸 (그래프 선과 글씨가 겹치지 않게 그림 밖에 둔다)
+const MARGIN = { top: 8, right: 10, bottom: 34, left: 58 };
 
 const PEOPLE_NOTE: Record<NonNullable<HourPoint["peopleKind"]>, string> = {
   real: "실측·공식 예보",
@@ -61,19 +62,26 @@ export function LevelGradients({ id }: { id: string }) {
   );
 }
 
-/** 단계 이름을 왼쪽 끝에 옅게 (오른쪽은 '지금' 점·예측선과 겹쳐서) (경계선 없이, 색 그라데이션이 단계를 보여 준다) */
+/**
+ * 단계 이름: 그래프 왼쪽 바깥 칸에, 각 단계 띠의 가운데 높이로 (선과 겹치지 않게).
+ * 띠 경계는 옅은 가로줄, 이름 옆 작은 색 막대로 어느 높이가 어느 단계인지 보이게
+ */
 function LevelLines({ labels }: { labels: Record<number, string> }) {
   const { yScale, innerWidth } = useChart();
   return (
     <g pointerEvents="none">
-      {LEVELS.slice(1).map((l) => (
-        <g key={l.key}>
-          <line x1={0} x2={innerWidth} y1={yScale(l.min)} y2={yScale(l.min)} stroke="#e5e7eb" strokeWidth="1" />
-          <text x={2} y={yScale(l.min) - 4} textAnchor="start" fontSize="11" fontWeight="600" fill={l.color} fillOpacity="0.75">
-            {labels[l.key]}
-          </text>
-        </g>
-      ))}
+      {LEVELS.map((l, i) => {
+        const top = LEVELS[i + 1]?.min ?? 100;
+        return (
+          <g key={l.key}>
+            {i > 0 && <line x1={0} x2={innerWidth} y1={yScale(l.min)} y2={yScale(l.min)} stroke="#eef0f3" strokeWidth="1" />}
+            <rect x={-6} y={yScale(top) + 1} width={3} height={Math.max(1, yScale(l.min) - yScale(top) - 2)} rx={1.5} fill={l.color} />
+            <text x={-10} y={yScale((l.min + top) / 2) + 4} textAnchor="end" fontSize="11" fontWeight="700" fill={l.color}>
+              {labels[l.key]}
+            </text>
+          </g>
+        );
+      })}
     </g>
   );
 }
@@ -196,7 +204,7 @@ export function HourlyChart({
       </div>
 
       <div role="img" aria-label={t("시간대별 혼잡도 그래프")} className="relative select-none">
-        <AreaChart data={data} yMax={100} margin={MARGIN} aspectRatio="16 / 10" animationDuration={700}>
+        <AreaChart data={data} yMax={100} margin={MARGIN} aspectRatio="16 / 9" animationDuration={700}>
           <LevelGradients id={gid} />
           <LevelLines labels={levelLabels} />
           <Area
