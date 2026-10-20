@@ -54,9 +54,9 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
           <section className="rounded-3xl bg-gradient-to-br from-indigo-600 to-violet-600 p-5 text-white">
             <p className="text-sm font-semibold text-white/80">{PLUS.name}</p>
             <p className="mt-1 text-3xl font-extrabold">{t("월 {n}원", { n: price })}</p>
-            <p className="mt-1 text-xs text-white/80">{t("부가세 포함 · 매달 자동 결제 · 언제든 해지")}</p>
+            <p className="mt-1 text-xs text-white/80">{t("부가세 포함 · 1개월 이용권 또는 매달 자동결제")}</p>
             {/* 결제대행사·카드사 심사: 상품 페이지에 서비스 제공 기간을 명확히 */}
-            <p className="mt-1 text-xs font-semibold text-white">{t("이용 기간: 결제한 날부터 1개월 (매달 같은 날 자동 갱신)")}</p>
+            <p className="mt-1 text-xs font-semibold text-white">{t("이용 기간: 결제한 날부터 1개월 (자동결제를 고르면 매달 같은 날 갱신)")}</p>
             <PlusCheckoutButton className="mt-5 w-full" />
           </section>
         </div>
@@ -87,8 +87,9 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
         <section className="mt-8 rounded-2xl bg-gray-50 p-4 text-xs leading-relaxed text-gray-600">
           <p className="font-bold text-gray-800">{t("결제 전에 꼭 확인하세요")}</p>
           <ul className="mt-2 list-disc space-y-1 pl-4">
-            <li>{t("결제한 날부터 1개월마다 같은 날 {price}원이 자동 결제돼요.", { price })}</li>
-            <li>{t("마이페이지에서 언제든 해지할 수 있고, 해지해도 남은 기간은 계속 쓸 수 있어요.")}</li>
+            <li>{t("1개월 이용권은 {price}원을 한 번만 결제하고, 자동으로 다시 결제되지 않아요.", { price })}</li>
+            <li>{t("매달 자동결제는 결제한 날부터 1개월마다 같은 날 {price}원이 결제돼요.", { price })}</li>
+            <li>{t("자동결제는 마이페이지에서 언제든 해지할 수 있고, 해지해도 남은 기간은 계속 쓸 수 있어요.")}</li>
             <li>{t("결제 후 7일 안에 유료 기능을 쓰지 않았다면 전액 환불해 드려요.")}</li>
             <li>{t("결제는 토스페이먼츠가 처리하며 CrowdView는 카드번호를 저장하지 않아요.")}</li>
           </ul>
