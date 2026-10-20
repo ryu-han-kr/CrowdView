@@ -88,16 +88,25 @@ async function translateMissing(names: string[], lang: Lang): Promise<Map<string
   return out;
 }
 
+/**
+ * 파파고를 부를 수 있는 곳: 운영 배포만 (로컬에서 꼭 필요하면 TRANSLATE_FORCE=1).
+ * Preview 배포(PR마다 빌드)는 메모리 캐시라 저장된 번역이 하나도 없어, 빌드 한 번에 모든 이름을 새로 번역했다.
+ * 그 사용량은 운영 한도 계산에도 잡히지 않았다 (10/21 확인). Preview는 원문으로 보인다
+ */
+const canTranslate = () => process.env.VERCEL_ENV === "production" || process.env.TRANSLATE_FORCE === "1";
+
 /** 한국어 이름들 → 번역 Map (번역 못 한 것은 원문). ko면 그대로 */
 export async function translateNames(texts: (string | undefined)[], lang: Lang): Promise<Map<string, string>> {
   const out = new Map<string, string>();
   const uniq = [...new Set(texts.filter((s): s is string => !!s && HANGUL.test(s)))];
   if (lang === "ko" || uniq.length === 0) return out;
 
-  const cached = await kv.mget(uniq.map((s) => cacheKey(lang, s))).catch(() => uniq.map(() => null));
+  // Redis를 못 읽으면(한도 초과·장애) 전부 '번역 없음'으로 보고 다시 번역하지 않는다 — 원문으로 둔다 (10/19 한도 초과 때 이렇게 새어 나갔다)
+  const cached = await kv.mget(uniq.map((s) => cacheKey(lang, s))).catch(() => null);
+  if (!cached) return out;
   const missing: string[] = [];
   uniq.forEach((s, i) => (cached[i] ? out.set(s, cached[i]!) : missing.push(s)));
-  if (missing.length === 0 || Date.now() < disabledUntil) return out;
+  if (missing.length === 0 || Date.now() < disabledUntil || !canTranslate()) return out;
 
   // 1) 이 서버에서 이미 번역 중인 이름은 그 결과를 기다린다
   const waiting = missing.filter((s) => inflight.has(cacheKey(lang, s)));
