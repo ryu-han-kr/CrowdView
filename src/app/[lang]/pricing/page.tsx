@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     lang: (await params).lang,
     path: "/pricing",
     title: t("요금 안내"),
-    description: t("CrowdView는 무료로 쓸 수 있어요. Plus는 광고 제거와 혼잡 알림을 월 {price}원에 제공해요.", {
+    description: t("CrowdView는 무료로 쓸 수 있어요. Plus는 광고 제거와 혼잡 알림을 1개월 {price}원에 제공해요.", {
       price: PLUS.priceKrw.toLocaleString(),
     }),
   });
