@@ -3,6 +3,7 @@
 //   대표 명소(landmarks.json) → src/data/korea/spot-images.json  ({ [명소 id]: [url, …] })
 // 순서: ① 그 콘텐츠의 관광공사 사진(detailImage2) ② 모자라면 이름으로 검색(searchKeyword2)한 같은 곳의 대표 사진·사진 묶음
 // 실행: npx tsx scripts/korea-data/gallery.mts  (DATA_GO_KR_KEY, 호출 약 250건 · 개발 계정 하루 1,000건 안)
+//       ONLY=hongdae,gimhae 처럼 주면 그 곳만 다시 모으고 나머지는 지난 결과 그대로
 import fs from "node:fs";
 import path from "node:path";
 import { PLACES } from "../../src/lib/places.ts";
@@ -61,7 +62,8 @@ async function collect(name: string, cid: string | undefined, keywords: string[]
 
 // 키워드 검색에 쓸 이름 (관광공사 등록 이름이 다른 곳). 앞에서부터 찾아 5장이 될 때까지
 const KEYWORD: Record<string, string[]> = {
-  hongdae: ["홍대 걷고싶은거리", "홍대", "홍익대학교"],
+  // '홍대'만으로 찾으면 '나이키 홍대점' 같은 가게 사진이 섞여 정확한 이름만
+  hongdae: ["홍대걷고싶은거리", "홍대 걷고싶은거리"],
   "seoul-fireworks": ["여의도한강공원", "서울세계불꽃축제"],
   "caribbean-bay": ["캐리비안베이", "캐리비안 베이"],
   "splas-resom": ["스플라스", "리솜"],
@@ -78,13 +80,22 @@ const KEYWORD: Record<string, string[]> = {
   gimhae: ["김해국제공항", "김해공항"],
 };
 
-// 관광공사 사진이 없는 곳: 위키미디어 공용에서 받아 public/places에 둔 사진 (대표 사진과 같은 작성자·라이선스라 장소의 imageCredit으로 표기)
+// 관광공사 사진이 없는 곳: 위키미디어 공용에서 받아 public/places에 둔 사진 (사진마다 출처는 src/data/korea/photo-credits.json)
 const LOCAL: Record<string, string[]> = {
-  "caribbean-bay": [2, 3, 4, 5].map((i) => `/places/caribbean-bay-${i}.jpg`), // 박은영, CC BY 4.0
+  "caribbean-bay": [2, 3, 4, 5].map((i) => `/places/caribbean-bay-${i}.jpg`),
+  gimhae: [2, 3, 4, 5].map((i) => `/places/gimhae-${i}.jpg`),
 };
+
+const ONLY = process.env.ONLY?.split(",");
+const prevPlaces = JSON.parse(fs.readFileSync(path.join("src", "data", "korea", "place-images.json"), "utf8")) as Record<string, string[]>;
+const prevSpots = JSON.parse(fs.readFileSync(path.join("src", "data", "korea", "spot-images.json"), "utf8")) as Record<string, string[]>;
 
 const places: Record<string, string[]> = {};
 for (const p of PLACES) {
+  if (ONLY && !ONLY.includes(p.id) && prevPlaces[p.id]) {
+    places[p.id] = prevPlaces[p.id];
+    continue;
+  }
   if (LOCAL[p.id]) {
     places[p.id] = LOCAL[p.id];
     continue;
@@ -101,7 +112,8 @@ const landmarks = JSON.parse(fs.readFileSync(path.join("src", "data", "korea", "
   n: { ko: string };
 }[];
 const spots: Record<string, string[]> = {};
-for (const l of landmarks) spots[l.id] = await collect(l.n.ko, l.cid, KEYWORD[l.id] ?? [l.n.ko], https(l.img));
+for (const l of landmarks)
+  spots[l.id] = ONLY && !ONLY.includes(l.id) ? (prevSpots[l.id] ?? []) : await collect(l.n.ko, l.cid, KEYWORD[l.id] ?? [l.n.ko], https(l.img));
 fs.writeFileSync(path.join("src", "data", "korea", "spot-images.json"), JSON.stringify(spots));
 
 const short = [...Object.entries(places), ...Object.entries(spots)].filter(([, v]) => v.length < MIN).map(([k, v]) => `${k}(${v.length})`);

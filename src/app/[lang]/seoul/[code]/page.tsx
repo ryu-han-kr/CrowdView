@@ -23,6 +23,7 @@ import Image from "next/image";
 import { canOptimize } from "@/lib/img";
 import { KstNote } from "@/components/LocalTime";
 import { Glyph } from "@/components/Glyph";
+import { SeoulPeopleProfile } from "@/components/VisitorProfile";
 
 export const revalidate = 600;
 
@@ -68,7 +69,6 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
   // 이 지역 사진: 800m 안 가이드 명소의 관광공사 사진 (서울시 데이터에는 사진이 없다)
   const heroImg = photoNear(area, 0.8, true);
   const people = (min: number, max: number) => t("{min}~{max}명", { min: compactNumber(min, lang), max: compactNumber(max, lang) });
-  const maxAge = live?.profile ? Math.max(...live.profile.ages, 1) : 1;
 
   return (
     <main className="px-5 pt-4 pb-10 md:px-0 md:pt-8">
@@ -197,38 +197,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
             </section>
           )}
 
-          {live?.profile && (
-            <section className="mt-4 rounded-3xl border border-gray-100 p-4">
-              <h2 className="text-sm font-bold">{t("지금 이곳에 있는 사람들")}</h2>
-              <div className="mt-3 flex h-3 overflow-hidden rounded-full">
-                <div className="bg-sky-400" style={{ width: `${live.profile.male}%` }} />
-                <div className="bg-pink-400" style={{ width: `${live.profile.female}%` }} />
-              </div>
-              <p className="mt-1 flex justify-between text-xs text-gray-600">
-                <span>
-                  {t("남성")} {live.profile.male}%
-                </span>
-                <span>
-                  {t("여성")} {live.profile.female}%
-                </span>
-              </p>
-              <ul className="mt-4 flex h-24 items-end gap-1.5">
-                {live.profile.ages.map((v, i) => (
-                  <li key={i} className="flex flex-1 flex-col items-center gap-1">
-                    <span className="text-[10px] text-gray-500">{Math.round(v)}%</span>
-                    <span className="w-full rounded-t bg-indigo-400" style={{ height: `${Math.max(4, (v / maxAge) * 56)}px` }} />
-                    <span className="text-[10px] text-gray-500">{i === 0 ? "0-9" : i === 7 ? "70+" : `${i}0s`}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-3 text-xs text-gray-600">
-                {t("이 동네에 사는 사람 {r}% · 다른 곳에서 온 사람 {v}%", {
-                  r: Math.round(live.profile.resident),
-                  v: Math.round(100 - live.profile.resident),
-                })}
-              </p>
-            </section>
-          )}
+          {live?.profile && <SeoulPeopleProfile profile={live.profile} lang={lang} />}
           {(() => {
             const toilets = nearest(TOILETS, area, (x) => ({ lat: x[1], lng: x[2] }), 50, 0.8).length;
             const spots = nearest(GUIDE, area, (g) => (g.lat && g.lng ? { lat: g.lat, lng: g.lng } : undefined), 6, 1);

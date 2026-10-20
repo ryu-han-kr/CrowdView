@@ -1,5 +1,6 @@
 import { makeT, type T } from "../i18n/translate";
 import placeKto from "../data/korea/place-kto.json";
+import photoCredits from "../data/korea/photo-credits.json";
 import type { Place } from "./types";
 
 /** 사진 경로: public/places/{id}.jpg (한국관광공사). 관광공사 사진이 없는 곳은 위키미디어 공용 사진(출처 표시), 그것도 없으면 색 배경 */
@@ -18,6 +19,21 @@ const LEISURE_CREDITS: Record<string, Place["imageCredit"]> = {
 };
 
 /** 놀이공원·워터파크·스키장 공통 기본값 (피크 13:30, 실데이터 없음) */
+// 스키장 관광공사 콘텐츠 ID (레포츠)
+const SKI_KTO: Record<string, number> = {
+  yongpyong: 131634,
+  high1: 131869,
+  vivaldi: 131301,
+  phoenix: 131300,
+  konjiam: 646762,
+  muju: 131123,
+  "welli-hilli": 131299,
+  oakvalley: 131878,
+  alpensia: 898016,
+};
+
+const PHOTO_CREDITS = photoCredits as Record<string, { author: string; license: string; url: string }>;
+
 const PLACE_KTO = placeKto as Record<string, NonNullable<Place["kto"]>>;
 
 function leisure(
@@ -46,8 +62,6 @@ function leisure(
       basis: "입장객 수 (추정, 수용 인원 기준)",
       provisional: true,
     },
-    // 관광공사 관광지 집중률 이름 (scripts/korea-data/spot-kto.mts) → 예측 모델이 30일 집중률로 날마다 보정
-    ...(PLACE_KTO[id] && { kto: PLACE_KTO[id] }),
     ...o,
     image: NO_PHOTO.has(id) ? undefined : `/places/${id}.jpg`,
     ...(LEISURE_CREDITS[id] && { imageCredit: LEISURE_CREDITS[id] }),
@@ -55,7 +69,7 @@ function leisure(
 }
 
 // 샘플 장소 데이터. 이벤트 일정은 예시이며 실제 일정과 다를 수 있음.
-export const PLACES: Place[] = [
+const BASE_PLACES: Place[] = [
   {
     id: "lotteworld",
     name: "롯데월드 어드벤처",
@@ -225,6 +239,7 @@ export const PLACES: Place[] = [
     seoulArea: "홍대 관광특구",
     outdoor: 0.5,
     kto: { areaCd: "11", signguCd: "11440", name: "홍대" },
+    ktoContent: { id: 3082405, type: 12 },
     image: "/places/hongdae.jpg",
     imageCredit: { author: "lumoplank", license: "CC0", url: "https://commons.wikimedia.org/wiki/File:Hongdae,_Seoul-_Part_II_-_Hongdae2237.jpg" },
     midRegion: { land: "11B00000", temp: "11B10101" },
@@ -703,14 +718,30 @@ export const PLACES: Place[] = [
         season: [12, 3],
         tags: ["스키", "스노보드", "겨울"],
         description: `${description} 보통 12월~3월에 운영해요.`,
+        // 관광공사 레포츠(28) 콘텐츠: 운영 시간·사진·소개 (scripts/korea-data에서 이름으로 찾은 ID)
+        ktoContent: { id: SKI_KTO[id], type: 28 },
       }),
     ),
   ],
 ];
 
+// 관광공사 관광지 집중률 이름 (scripts/korea-data/spot-kto.mts → place-kto.json)이 있으면 붙인다 → 예측 모델이 30일 집중률로 날마다 보정.
+// 행사는 열리는 곳(부산불꽃축제 → 광안리해수욕장)의 집중률
+export const PLACES: Place[] = BASE_PLACES.map((p) => (p.kto || !PLACE_KTO[p.id] ? p : { ...p, kto: PLACE_KTO[p.id] }));
+
 /** 사진 출처 한 줄 (예: 사진 한국관광공사, 사진 Kimhs5400 · CC BY 4.0) */
 export function imageCreditText(p: Place, t: T = makeT(undefined)): string {
   return p.imageCredit ? t("사진 {author} · {license}", { author: p.imageCredit.author, license: p.imageCredit.license }) : t("사진 한국관광공사");
+}
+
+/**
+ * 사진 여러 장 넘겨 보기의 장마다 출처: 관광공사 주소 → 한국관광공사, 우리가 받아 둔 위키미디어 사진 → 그 작성자·라이선스,
+ * 그 밖(대표 사진) → 장소의 출처
+ */
+export function photoCreditText(src: string, p: Place, t: T = makeT(undefined)): string {
+  if (src.startsWith("https://tong.visitkorea.or.kr/")) return t("사진 한국관광공사");
+  const c = PHOTO_CREDITS[src];
+  return c ? t("사진 {author} · {license}", { author: c.author, license: c.license }) : imageCreditText(p, t);
 }
 
 /** 공항은 공항 탭 상세로, 나머지는 장소 상세로 */

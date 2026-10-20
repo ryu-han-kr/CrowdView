@@ -56,3 +56,55 @@ export function VisitorProfile({ pop, lang }: { pop: LocalPop; lang: Lang }) {
     </section>
   );
 }
+
+/**
+ * 서울시 실시간 도시데이터의 지금 있는 사람들: 성별·연령대·사는 사람/온 사람 비율 (서울 실시간 지역 화면·서울 장소 상세)
+ * areaName: 장소 상세에서는 "주변 ○○" 기준이라고 밝힌다
+ */
+export function SeoulPeopleProfile({
+  profile,
+  lang,
+  areaName,
+  className = "mt-4 rounded-3xl border border-gray-100 p-4",
+}: {
+  profile: { male: number; female: number; ages: number[]; resident: number };
+  lang: Lang;
+  areaName?: string;
+  className?: string;
+}) {
+  const t = getT(lang);
+  const maxAge = Math.max(...profile.ages, 1);
+  return (
+    <section className={className}>
+      <h2 className="text-sm font-bold">{t("지금 이곳에 있는 사람들")}</h2>
+      {areaName && <p className="mt-0.5 text-xs text-gray-500">{t("서울시 실시간 도시데이터 · 주변 {area} 기준", { area: t(areaName) })}</p>}
+      <div className="mt-3 flex h-3 overflow-hidden rounded-full">
+        <div className="bg-sky-400" style={{ width: `${profile.male}%` }} />
+        <div className="bg-pink-400" style={{ width: `${profile.female}%` }} />
+      </div>
+      <p className="mt-1 flex justify-between text-xs text-gray-600">
+        <span>
+          {t("남성")} {profile.male}%
+        </span>
+        <span>
+          {t("여성")} {profile.female}%
+        </span>
+      </p>
+      <ul className="mt-4 flex h-24 items-end gap-1.5">
+        {profile.ages.map((v, i) => (
+          <li key={i} className="flex flex-1 flex-col items-center gap-1">
+            <span className="text-[10px] text-gray-500">{Math.round(v)}%</span>
+            <span className="w-full rounded-t bg-indigo-400" style={{ height: `${Math.max(4, (v / maxAge) * 56)}px` }} />
+            <span className="text-[10px] text-gray-500">{i === 0 ? "0-9" : i === 7 ? "70+" : `${i}0s`}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 text-xs text-gray-600">
+        {t("이 동네에 사는 사람 {r}% · 다른 곳에서 온 사람 {v}%", {
+          r: Math.round(profile.resident),
+          v: Math.round(100 - profile.resident),
+        })}
+      </p>
+    </section>
+  );
+}

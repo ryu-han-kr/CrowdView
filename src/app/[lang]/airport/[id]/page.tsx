@@ -1,4 +1,3 @@
-import Image from "next/image";
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import Link from "@/i18n/link";
@@ -18,7 +17,9 @@ import { getAirportPaxDays, getArrivals, getParking, getParkingFees, getParkingZ
 import { getHistory } from "@/lib/crowd/history";
 import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
-import { PLACES, getPlace, imageCreditText } from "@/lib/places";
+import { PLACES, getPlace, photoCreditText } from "@/lib/places";
+import { PhotoGallery } from "@/components/PhotoGallery";
+import placeImages from "@/data/korea/place-images.json";
 import { kst } from "@/lib/time";
 import { DEFAULT_LANG, type Lang } from "@/i18n/config";
 import { fmtAge, fmtMinutes, fmtPeople, trParking, trZone } from "@/i18n/patterns";
@@ -63,6 +64,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
   const t = getT(lang);
   const place = getPlace(id);
   if (!place || place.category !== "airport") notFound();
+  const photos = [...new Set([...(place.image ? [place.image] : []), ...((placeImages as Record<string, string[]>)[place.id] ?? [])])];
 
   const [crowd, paxDays, parking, history, fees, signals, arrivals, zones2] = await Promise.all([
     getCrowd(id),
@@ -91,21 +93,15 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
       {/* PC: 왼쪽(사진·지금·날씨) 고정 + 오른쪽(파트 탭) */}
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-10">
         <div className="lg:sticky lg:top-24 lg:self-start">
-          {place.image && (
-            <div className="relative mt-3 h-40 overflow-hidden rounded-3xl bg-gray-100">
-              <Image
-                src={place.image}
-                alt={t(place.name)}
-                fill
-                loading="eager"
-                fetchPriority="high"
-                sizes="(max-width: 448px) 100vw, 448px"
-                className="object-cover"
-              />
-              <span className="absolute right-2 bottom-2 rounded bg-black/35 px-1.5 py-0.5 text-[10px] text-white/90">
-                {imageCreditText(place, t)}
-              </span>
-            </div>
+          {/* 사진 여러 장 옆으로 넘겨 보기 (장소 상세와 같은 방식) */}
+          {photos.length > 0 && (
+            <PhotoGallery
+              photos={photos}
+              alt={t(place.name)}
+              credits={photos.map((src) => photoCreditText(src, place, t))}
+              sizes="(max-width: 448px) 100vw, 448px"
+              className="mt-3 h-48 rounded-3xl bg-gray-100 md:h-56"
+            />
           )}
 
           <header className="mt-3 flex items-center gap-3">
