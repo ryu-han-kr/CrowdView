@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import { AreaChart } from "@/components/charts/area-chart";
 import { Area } from "@/components/charts/area";
 import { useChart } from "@/components/charts/chart-context";
@@ -11,8 +11,6 @@ import { SHOW_DATA_LABELS } from "@/lib/format";
 import { LEVELS, levelOf } from "@/lib/levels";
 import type { HourPoint } from "@/lib/types";
 
-const MEASURED = "#4f46e5";
-const FORECAST = "#a78bfa";
 const MARGIN = { top: 14, right: 12, bottom: 34, left: 12 };
 
 const PEOPLE_NOTE: Record<NonNullable<HourPoint["peopleKind"]>, string> = {
@@ -40,15 +38,38 @@ function Selected({ hour, score }: { hour: number; score: number }) {
 }
 Selected.__isPostOverlay = true;
 
-/** 단계 경계선 (보통·혼잡·매우 혼잡) + 오른쪽 끝 단계 이름 */
+/**
+ * 혼잡 단계 색 그라데이션: 선과 아래 면이 높이(혼잡 지수)에 따라 초록 → 노랑 → 주황 → 빨강으로 물든다.
+ * 높이 기준(userSpaceOnUse)이라 같은 높이는 어느 시간이든 같은 색
+ */
+export function LevelGradients({ id }: { id: string }) {
+  const { yScale } = useChart();
+  const stops = LEVELS.map((l) => ({ off: l.min === 0 ? 0 : (l.min + 10) / 100, color: l.color }));
+  return (
+    <defs>
+      <linearGradient id={`${id}-stroke`} gradientUnits="userSpaceOnUse" x1="0" x2="0" y1={yScale(0)} y2={yScale(100)}>
+        {stops.map((s) => (
+          <stop key={s.off} offset={s.off} stopColor={s.color} />
+        ))}
+      </linearGradient>
+      <linearGradient id={`${id}-fill`} gradientUnits="userSpaceOnUse" x1="0" x2="0" y1={yScale(0)} y2={yScale(100)}>
+        {stops.map((s) => (
+          <stop key={s.off} offset={s.off} stopColor={s.color} stopOpacity={0.06 + s.off * 0.34} />
+        ))}
+      </linearGradient>
+    </defs>
+  );
+}
+
+/** 단계 이름을 왼쪽 끝에 옅게 (오른쪽은 '지금' 점·예측선과 겹쳐서) (경계선 없이, 색 그라데이션이 단계를 보여 준다) */
 function LevelLines({ labels }: { labels: Record<number, string> }) {
   const { yScale, innerWidth } = useChart();
   return (
     <g pointerEvents="none">
-      {LEVELS.slice(2).map((l) => (
+      {LEVELS.slice(1).map((l) => (
         <g key={l.key}>
-          <line x1={0} x2={innerWidth} y1={yScale(l.min)} y2={yScale(l.min)} stroke={l.color} strokeOpacity="0.35" strokeDasharray="3 5" />
-          <text x={innerWidth} y={yScale(l.min) - 4} textAnchor="end" fontSize="12" fontWeight="600" fill={l.color} fillOpacity="0.9">
+          <line x1={0} x2={innerWidth} y1={yScale(l.min)} y2={yScale(l.min)} stroke="#e5e7eb" strokeWidth="1" />
+          <text x={2} y={yScale(l.min) - 4} textAnchor="start" fontSize="11" fontWeight="600" fill={l.color} fillOpacity="0.75">
             {labels[l.key]}
           </text>
         </g>
@@ -108,6 +129,7 @@ export function HourlyChart({
   const [sel, setSel] = useState(nowIdx >= 0 ? nowIdx : points.reduce((m, p, i) => (p.score > points[m].score ? i : m), 0));
   const data = useMemo(() => points.map((p) => ({ date: hourDate(p.hour), score: p.score })), [points]);
   const levelLabels = useMemo(() => Object.fromEntries(LEVELS.map((l) => [l.key, t(l.label)])), [t]);
+  const gid = `hc${useId().replace(/:/g, "")}`;
   const touch = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
   // 손가락·마우스 위치 → 가장 가까운 시간 (차트 여백 제외)
@@ -175,11 +197,12 @@ export function HourlyChart({
 
       <div role="img" aria-label={t("시간대별 혼잡도 그래프")} className="relative select-none">
         <AreaChart data={data} yMax={100} margin={MARGIN} aspectRatio="16 / 10" animationDuration={700}>
+          <LevelGradients id={gid} />
           <LevelLines labels={levelLabels} />
           <Area
             dataKey="score"
-            fill={estimated ? FORECAST : MEASURED}
-            stroke={estimated ? FORECAST : MEASURED}
+            fill={`url(#${gid}-fill)`}
+            stroke={`url(#${gid}-stroke)`}
             strokeWidth={3}
             fillOpacity={0.28}
             dashFromIndex={lastMeasured}
@@ -211,13 +234,13 @@ export function HourlyChart({
       <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-600">
         <span className="flex items-center gap-1.5">
           <svg width="20" height="6" aria-hidden>
-            <line x1="0" x2="20" y1="3" y2="3" stroke={estimated ? FORECAST : MEASURED} strokeWidth="3" strokeDasharray={estimated ? "5 4" : undefined} />
+            <line x1="0" x2="20" y1="3" y2="3" stroke="#6b7280" strokeWidth="3" strokeDasharray={estimated ? "5 4" : undefined} />
           </svg>
           {estimated ? t("지난 시간 (추정)") : t("실측")}
         </span>
         <span className="flex items-center gap-1.5">
           <svg width="20" height="6" aria-hidden>
-            <line x1="0" x2="20" y1="3" y2="3" stroke={estimated ? FORECAST : MEASURED} strokeWidth="3" strokeDasharray="5 4" />
+            <line x1="0" x2="20" y1="3" y2="3" stroke="#6b7280" strokeWidth="3" strokeDasharray="5 4" />
           </svg>
           {t("AI 예측")}
         </span>

@@ -82,7 +82,7 @@ export function parseTodayHours(text: string, date = kst().date): [number, numbe
   return fallback;
 }
 
-function closedToday(rest: string, date = kst().date): boolean {
+export function closedToday(rest: string, date = kst().date): boolean {
   const day = new Date(`${date}T00:00:00Z`).getUTCDay();
   return new RegExp(`매주\\s*${WEEKDAYS[day]}요일`).test(rest);
 }
