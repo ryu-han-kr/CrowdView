@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import { AreaChart } from "@/components/charts/area-chart";
 import { Area } from "@/components/charts/area";
 import { useChart } from "@/components/charts/chart-context";
 import { useI18n } from "@/i18n/client";
 import { levelOf } from "@/lib/levels";
+import { LevelGradients } from "@/components/HourlyChart";
 
 const MARGIN = { top: 12, right: 12, bottom: 30, left: 12 };
 const day = (date: string) => new Date(`${date}T00:00:00Z`);
@@ -50,6 +51,7 @@ export function DailyForecastChart({ days, weekdays }: { days: { date: string; v
   const top = days.reduce((m, d, i) => (d.value > days[m].value ? i : m), 0);
   const calm = days.reduce((m, d, i) => (d.value < days[m].value ? i : m), 0);
   const [sel, setSel] = useState(0);
+  const gid = `dfc${useId().replace(/:/g, "")}`;
   const touch = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
   const data = useMemo(() => days.map((d) => ({ date: day(d.date), value: d.value })), [days]);
@@ -89,7 +91,8 @@ export function DailyForecastChart({ days, weekdays }: { days: { date: string; v
       </div>
       <div role="img" aria-label={t("앞으로 30일 붐빔 예측 그래프")} className="relative select-none">
         <AreaChart data={data} xDataKey="date" yMax={100} margin={MARGIN} aspectRatio="16 / 9" animationDuration={700}>
-          <Area dataKey="value" fill="#4f46e5" stroke="#4f46e5" strokeWidth={3} fillOpacity={0.25} />
+          <LevelGradients id={gid} />
+          <Area dataKey="value" fill={`url(#${gid}-fill)`} stroke={`url(#${gid}-stroke)`} strokeWidth={3} />
           <DayAxis dates={days.map((x) => x.date)} />
           <Selected date={d.date} value={d.value} />
         </AreaChart>

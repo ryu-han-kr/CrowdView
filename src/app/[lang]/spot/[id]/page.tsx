@@ -20,6 +20,11 @@ import { Glyph } from "@/components/Glyph";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { DailyForecastChart } from "@/components/DailyForecastChart";
 import { HourlyChart } from "@/components/HourlyChart";
+import { CrowdGauge } from "@/components/CrowdGauge";
+import { WeekHeatmap } from "@/components/WeekHeatmap";
+import { DataTag } from "@/components/DataTag";
+import { levelOf } from "@/lib/levels";
+import { spotForecast } from "@/lib/spot-model";
 import spotKto from "@/data/korea/spot-kto.json";
 import { getConcentration } from "@/lib/crowd/signals";
 import { kst } from "@/lib/time";
@@ -106,6 +111,12 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
     ? { points: near.hourly, estimated: near.source === "model", unit: (place.criteria?.unit === "분" ? "분" : "명") as "명" | "분" }
     : undefined;
 
+  // 예측 모델 (근처 실시간이 없어도 모든 명소에 지금 추정·오늘 곡선·이번 주 히트맵)
+  const model = await spotForecast(l);
+  const nowScore = live ? live.score : model.now.score;
+  const nowOpen = live ? live.open : model.now.open;
+  const nowLevel = levelOf(nowScore);
+
   const others = LANDMARKS.filter((x) => x.region === l.region && x.id !== l.id)
     .sort((a, b) => distanceKm(a, l) - distanceKm(b, l))
     .slice(0, 6);
@@ -163,6 +174,21 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
 
       <div className="mt-5 grid gap-5 md:grid-cols-[1fr_340px]">
         <div className="min-w-0">
+          {/* 지금 혼잡도: 근처 실시간이 있으면 그 값, 없으면 예측 모델 추정 (모든 명소 같은 자리, 휴대폰에서 맨 위) */}
+          <section className="mb-6 flex items-center gap-4 rounded-3xl px-4 py-3.5" style={{ background: `${nowLevel.color}14` }}>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-gray-600">{t("지금 혼잡도")}</p>
+              <p className="text-[28px] leading-tight font-extrabold" style={{ color: nowOpen ? nowLevel.color : "#6b7280" }}>
+                {nowOpen ? t(nowLevel.label) : t("운영 시간 아님")}
+                {!live && nowOpen && <DataTag className="text-xs" />}
+              </p>
+              <p className="mt-0.5 text-sm text-gray-600">
+                {live ? t("가까운 측정 지점 {name} 기준", { name: live.label }) : t("요일·시간·날씨·관광공사 예측으로 본 CrowdView 추정")}
+              </p>
+            </div>
+            <CrowdGauge score={nowScore} closed={!nowOpen} size={112} />
+          </section>
+
           {/* 그래프: 모든 명소에 같은 자리. 관광공사 30일 예측 → 가까운 측정 지점의 오늘 시간대별 (없으면 없다고 쓴다) */}
           <section className="mb-6">
             <h2 className="text-lg font-bold">{t("앞으로 30일 붐빔 예측")}</h2>
@@ -175,13 +201,36 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
               <p className="mt-1 text-sm text-gray-500">{t("관광공사 예측 자료가 아직 없는 곳이에요.")}</p>
             )}
           </section>
-          {nearHourly && (
-            <section className="mb-6">
-              <h2 className="text-lg font-bold">{t("오늘 시간대별")}</h2>
-              <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("가까운 측정 지점 {name} 기준", { name: live!.label })}</p>
+          <section className="mb-6">
+            <h2 className="text-lg font-bold">
+              {t("오늘 시간대별")}
+              {!nearHourly && <DataTag />}
+            </h2>
+            <p className="mt-0.5 mb-3 text-sm text-gray-500">
+              {nearHourly ? t("가까운 측정 지점 {name} 기준", { name: live!.label }) : t("요일·시간·날씨·관광공사 예측으로 본 CrowdView 추정")}
+            </p>
+            {nearHourly ? (
               <HourlyChart points={nearHourly.points} highlightHour={Math.floor(kst().hour)} estimated={nearHourly.estimated} unit={nearHourly.unit} />
-            </section>
-          )}
+            ) : (
+              <HourlyChart points={model.now.hourly} highlightHour={Math.floor(kst().hour)} estimated />
+            )}
+          </section>
+          <section className="mb-6">
+            <h2 className="text-lg font-bold">
+              {t("언제 가면 한산할까")}
+              <DataTag />
+            </h2>
+            <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("이번 주 시간마다 예상 혼잡 · 칸을 누르면 자세히")}</p>
+            <WeekHeatmap
+              nowHour={kst().hour}
+              days={model.week.map((d, i) => ({
+                date: d.date,
+                label: i === 0 ? t("오늘") : i === 1 ? t("내일") : weekday(d.date),
+                closed: d.closed,
+                hours: d.points.map((p) => ({ hour: p.hour, score: p.score })),
+              }))}
+            />
+          </section>
           {info?.overview && (
             <section>
               <h2 className="text-lg font-bold">{t("소개")}</h2>
@@ -242,11 +291,14 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
                 <LevelBadge score={live.score} closed={!live.open} />
               </Link>
             ) : (
-              <p className="mt-2 text-sm text-gray-500">{t("이곳은 아직 실시간 혼잡도 자료가 없어요.")}</p>
+              <p className="mt-2 flex items-center justify-between gap-2 text-sm text-gray-600">
+                {t("실시간 자료가 없어 예측으로 보여 드려요")}
+                <LevelBadge score={nowScore} closed={!nowOpen} />
+              </p>
             )}
           </section>
-          {live?.open && (
-            <CalmAlternatives lat={l.lat} lng={l.lng} score={live.score} selfId={place ? place.id : `seoul-${area!.code}`} lang={lang} />
+          {nowOpen && (
+            <CalmAlternatives lat={l.lat} lng={l.lng} score={nowScore} selfId={place ? place.id : area ? `seoul-${area.code}` : `spot-${l.id}`} lang={lang} />
           )}
 
           <a

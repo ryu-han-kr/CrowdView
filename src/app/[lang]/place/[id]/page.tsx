@@ -13,7 +13,9 @@ import { getSignals } from "@/lib/crowd/signals";
 import { getCrowd } from "@/lib/crowd/service";
 import { siteShare } from "@/lib/crowd/provider";
 import { levelOf } from "@/lib/levels";
-import { getLivePlace, isOngoingEvent } from "@/lib/place-info";
+import { closedToday, getLivePlace, isOngoingEvent } from "@/lib/place-info";
+import { CrowdGauge } from "@/components/CrowdGauge";
+import { WeekHeatmap } from "@/components/WeekHeatmap";
 import { PLACES, placeHref } from "@/lib/places";
 import { daysUntil, formatClock, kst } from "@/lib/time";
 import type { Lang } from "@/i18n/config";
@@ -245,6 +247,17 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
       return { name, rides, avg: Math.round(rides.reduce((a, z) => a + (z.waitMin ?? 0), 0) / rides.length) };
     })
     .sort((a, b) => b.avg - a.avg);
+  // 이번 주 × 시간: 오늘은 실측이 섞인 곡선, 다른 날은 예측. 운영 시간만, 정기 휴무일은 비움
+  const heatDays = week.map((d, i) => {
+    const closed = (i === 0 && !!place.info?.closedToday) || (i > 0 && !!place.info?.restText && closedToday(place.info.restText, d.date));
+    const pts = i === 0 ? hourly : forecastForDate(place, d.date, signals);
+    return {
+      date: d.date,
+      label: shortDay(d.date, t, lang),
+      closed,
+      hours: closed ? [] : pts.filter((p) => p.hour >= place.hours[0] && p.hour < Math.min(24, place.hours[1])).map((p) => ({ hour: p.hour, score: p.score })),
+    };
+  });
   const dday = place.eventDate ? daysUntil(place.eventDate) : null;
   const eventForecast = place.eventDate && dday !== null && dday > 0 ? forecastForDate(place, place.eventDate) : null;
   const eventPeak = eventForecast && [...eventForecast].sort((a, b) => b.score - a.score)[0];
@@ -357,6 +370,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   )}
                 </p>
               </div>
+              {/* 계기판: 혼잡 지수만큼 눈금이 차고 단계 색으로 물든다 */}
+              {!beforeEvent && <CrowdGauge score={crowd.score} closed={!isOpen} size={120} />}
             </div>
             {crowd.area && isOpen && !beforeEvent && (
               <p className="mt-2 text-sm text-gray-600">
@@ -515,6 +530,13 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 unit={place.criteria?.unit === "분" ? "분" : "명"}
               />
             </div>
+          </section>
+
+          {/* 이번 주 × 시간 히트맵: 언제 가면 한산한지 한눈에 */}
+          <section className="mt-8">
+            <h2 className="text-lg font-bold">{t("언제 가면 한산할까")}</h2>
+            <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("이번 주 시간마다 예상 혼잡 · 칸을 누르면 자세히")}</p>
+            <WeekHeatmap days={heatDays} nowHour={now.hour} />
           </section>
 
           {/* 이번 주 (막대를 누르면 그날) + 더보기: 30일·12개월 */}
