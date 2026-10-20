@@ -112,7 +112,7 @@ async function getWeather(place: Place): Promise<Map<string, Weather>> {
   return map;
 }
 
-async function getConcentration(kto: NonNullable<Place["kto"]>): Promise<Map<string, number>> {
+export async function getConcentration(kto: NonNullable<Place["kto"]>): Promise<Map<string, number>> {
   const items = await dataGoKr(
     "/B551011/TatsCnctrRateService/tatsCnctrRatedList",
     { areaCd: kto.areaCd, signguCd: kto.signguCd, tAtsNm: kto.name, MobileOS: "WEB", MobileApp: "CrowdView", _type: "json" },

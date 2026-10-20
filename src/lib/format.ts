@@ -22,7 +22,7 @@ export function compactNumber(n: number, lang: Lang = DEFAULT_LANG): string {
 
 /**
  * 화면에 보여줄 인원.
- * - 서울시: 범위로 주므로 범위 그대로 (예: 6.6만~6.8만명)
+ * - 서울시: 명소는 주변 지역 실측을 장소 크기로 줄인 추정(약 2.3만명), 행사장처럼 지역이 곧 장소면 범위 그대로 (6.6만~6.8만명)
  * - 인천공항: 출국장 대기 인원 실측
  * - 그 외(예측 모델, 한국공항공사 단계값): 수용 인원 × 혼잡도로 계산한 추정치. 라벨이 꺼져 있으면 숨긴다
  */
@@ -34,6 +34,8 @@ export function headcountInfo(
   const n = (v: number) => compactNumber(v, lang);
   if (!c.open) return null;
   if (c.source === "seoul-citydata") {
+    // 명소 기준으로 줄인 인원 (주변 지역 실측은 상세 화면에 따로)
+    if (c.area) return { text: t("약 {n}명", { n: n(c.headcount) }), kind: "추정" };
     return {
       text: c.headcountRange
         ? t("{min}~{max}명", { min: n(c.headcountRange[0]), max: n(c.headcountRange[1]) })

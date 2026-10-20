@@ -11,6 +11,7 @@ import { UpcomingHours, WeekForecast } from "@/components/PlaceForecast";
 import { getHistory, type HistoryPoint } from "@/lib/crowd/history";
 import { getSignals } from "@/lib/crowd/signals";
 import { getCrowd } from "@/lib/crowd/service";
+import { siteShare } from "@/lib/crowd/provider";
 import { levelOf } from "@/lib/levels";
 import { getLivePlace, isOngoingEvent } from "@/lib/place-info";
 import { PLACES, placeHref } from "@/lib/places";
@@ -33,7 +34,7 @@ import { AlertButtons } from "@/components/AlertButtons";
 import { CalmAlternatives } from "@/components/CalmAlternatives";
 import { pushEnabled } from "@/lib/alerts";
 import { authEnabled } from "@/lib/auth";
-import { headcountInfo, isEstimated } from "@/lib/format";
+import { compactNumber, headcountInfo, isEstimated } from "@/lib/format";
 import { translateNames } from "@/lib/name-translate";
 import { getRelatedPlaces } from "@/lib/related-places";
 import { locateByName } from "@/lib/related-geo";
@@ -75,14 +76,22 @@ function dayName(date: string, t: T, lang: Lang): string {
   return weekday(date, lang, "long");
 }
 
-/** 예측 곡선의 지난 시간을 실측 기록으로 바꾼다. withPeople: 기록의 인원이 실제 인원일 때 */
-function withRecordedHours(points: HourPoint[], records: HistoryPoint[], withPeople: boolean): HourPoint[] {
+/**
+ * 예측 곡선의 지난 시간을 실측 기록으로 바꾼다. people: 기록의 인원을 화면 인원으로 (실제 인원일 때만, 아니면 undefined)
+ * kind: 그 인원의 종류 (서울시 주변 지역 실측을 명소 기준으로 줄였으면 "area")
+ */
+function withRecordedHours(
+  points: HourPoint[],
+  records: HistoryPoint[],
+  people: ((n: number) => number) | undefined,
+  kind: HourPoint["peopleKind"] = "real",
+): HourPoint[] {
   const byHour = new Map<number, HistoryPoint>();
   for (const r of records) byHour.set(Math.floor(kst(new Date(r.t)).hour), r);
   return points.map((p) => {
     const r = !p.forecast ? byHour.get(p.hour) : undefined;
     if (!r) return p;
-    return withPeople ? { ...p, score: r.score, people: r.headcount, peopleKind: "real" } : { ...p, score: r.score };
+    return people ? { ...p, score: r.score, people: people(r.headcount), peopleKind: kind } : { ...p, score: r.score };
   });
 }
 
@@ -153,7 +162,15 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
       return { ...r, km: at?.km, href: at?.href, score: area ? seoulNow[area.a.code].score : undefined };
     });
   // 오늘 지난 시간은 10분마다 쌓은 실측 기록으로 채운다 (시간마다 마지막 기록)
-  const hourly = withRecordedHours(crowd.hourly, today.points, crowd.source !== "model" && place.criteria?.unit === "명");
+  // 서울시 명소: 10/20 이전 기록은 주변 지역 인원 그대로라, 장소 수용 인원보다 한참 크면 명소 기준으로 줄인다
+  const share = siteShare(place);
+  const recordPeople = (n: number) => (crowd.area && n > place.capacity * 1.5 ? Math.round((n * share) / 100) * 100 : n);
+  const hourly = withRecordedHours(
+    crowd.hourly,
+    today.points,
+    crowd.source !== "model" && place.criteria?.unit === "명" ? recordPeople : undefined,
+    crowd.area ? "area" : "real",
+  );
   const week = weekForecast(place, signals);
   const calmest = week.reduce((a, b) => (b.peakScore < a.peakScore ? b : a));
   const todayPeak = week[0];
@@ -245,16 +262,18 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
       {/* 모바일: 한 줄로 쌓기 / PC: 왼쪽(지금·언제 갈까) 고정 + 오른쪽(그래프·정보) */}
       <div className="relative -mt-6 px-5 md:mt-8 md:px-0 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-10">
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <p className="text-xs font-medium text-gray-500">
-            {t(CATEGORY_LABEL[place.category])} · {t(place.region)}
-          </p>
-          <div className="flex items-center justify-between gap-3">
-            <h1 className="mt-1 text-2xl font-bold md:text-3xl">{t(place.name)}</h1>
+          {/* 제목 묶음: 분류·지역 칩 → 이름 → 한 줄 소개 → 요약 상자 (모바일에서 글 크기·간격을 한 단계로 맞춤) */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">{t(CATEGORY_LABEL[place.category])}</span>
+            <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600">{t(place.region)}</span>
+          </div>
+          <div className="mt-2 flex items-center justify-between gap-3">
+            <h1 className="text-[26px] leading-tight font-extrabold tracking-tight md:text-3xl">{t(place.name)}</h1>
             <FavoriteButton placeId={place.id} className="hidden shrink-0 md:inline-flex" />
           </div>
-          <p className="mt-2 text-sm leading-relaxed text-gray-600">{t(place.description)}</p>
+          <p className="mt-2 text-[15px] leading-7 text-gray-600">{t(place.description)}</p>
           {/* 한 문장 요약: 사람과 AI 검색이 바로 인용할 수 있게 (단계·출처·기준 시각) */}
-          <p className="mt-2 text-[13px] leading-relaxed text-gray-800">
+          <p className="mt-3 rounded-2xl bg-gray-50 px-4 py-3 text-[15px] leading-7 text-gray-800">
             {beforeEvent
               ? t("{name}은(는) {date}에 열려요. 아직 행사 전이라 지금 혼잡도 대신 행사 당일 예측을 보여드려요.", {
                   name: t(place.name),
@@ -280,12 +299,12 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           <section className="mt-4 rounded-3xl px-4 py-3.5" style={{ background: `${level.color}14` }}>
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs font-medium text-gray-500">{beforeEvent ? t("행사 정보") : t("지금 혼잡도")}</p>
-                <p className="text-2xl font-extrabold" style={beforeEvent ? undefined : { color: level.color }}>
+                <p className="text-sm font-semibold text-gray-600">{beforeEvent ? t("행사 정보") : t("지금 혼잡도")}</p>
+                <p className="text-[28px] leading-tight font-extrabold" style={beforeEvent ? undefined : { color: level.color }}>
                   {beforeEvent ? `${t("행사 전")} · D-${dday}` : t(level.label)}
                   {!beforeEvent && isOpen && isEstimated(crowd) && <DataTag className="text-xs" />}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="mt-0.5 text-base text-gray-700">
                   {beforeEvent ? (
                     t("아직 행사가 열리지 않았어요. 행사 당일 예상 혼잡은 아래에서 확인하세요.")
                   ) : isOpen ? (
@@ -307,7 +326,17 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 </p>
               </div>
             </div>
-            <p className={`mt-2 text-[11px] ${crowd.stale ? "font-semibold text-amber-600" : "text-gray-400"}`}>
+            {crowd.area && isOpen && !beforeEvent && (
+              <p className="mt-2 text-sm text-gray-600">
+                {t("주변 {area} 전체 {min}~{max}명", {
+                  area: t(crowd.area.name),
+                  min: compactNumber(crowd.area.range[0], lang),
+                  max: compactNumber(crowd.area.range[1], lang),
+                })}{" "}
+                <span className="text-xs text-gray-500">· {t("서울시 실측")}</span>
+              </p>
+            )}
+            <p className={`mt-2 text-xs ${crowd.stale ? "font-semibold text-amber-600" : "text-gray-400"}`}>
               {t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}
               {crowd.stale && <> · {t("갱신 지연")}</>} · {t(SOURCE_LABEL[crowd.source])}
             </p>
@@ -338,7 +367,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             {todayReasons.length > 0 && (
               <div className="mt-2.5 flex flex-wrap gap-1.5">
                 {todayReasons.map((r) => (
-                  <span key={r.k} className="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] text-gray-600">
+                  <span key={r.k} className="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
                     {trReason(r, t)}
                   </span>
                 ))}
@@ -361,7 +390,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   </li>
                 ))}
               </ul>
-              <p className="mt-2 text-[11px] text-gray-400">Powered by ThemeParks.wiki · {t("5분 단위 갱신")}</p>
+              <p className="mt-2 text-xs text-gray-400">Powered by ThemeParks.wiki · {t("5분 단위 갱신")}</p>
             </section>
           )}
 
@@ -458,7 +487,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                         <span className="min-w-0 truncate text-sm font-semibold">{relatedNames.get(r.name) ?? r.name}</span>
                         {r.score !== undefined && <LevelBadge score={r.score} />}
                       </span>
-                      <span className="block truncate text-[11px] text-gray-500">
+                      <span className="block truncate text-xs text-gray-500">
                         {t(r.category.split(" > ")[0])} · {relatedNames.get(r.region) ?? r.region}
                         {r.km !== undefined && <b className="text-gray-700"> · {t("여기서 {km}km", { km: r.km.toFixed(1) })}</b>}
                       </span>
@@ -485,7 +514,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   );
                 })}
               </ul>
-              <p className="mt-2 text-[11px] text-gray-400">{t("한국관광공사 관광지별 연관 관광지 (티맵 이동 데이터)")}</p>
+              <p className="mt-2 text-xs text-gray-400">{t("한국관광공사 관광지별 연관 관광지 (티맵 이동 데이터)")}</p>
             </section>
           )}
 
@@ -571,7 +600,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 </span>
               ))}
             </div>
-            {lang !== "ko" && <p className="pt-1 text-[11px] text-gray-400">{t("운영 시간·휴무·문의·주소는 한국어 원문이에요.")}</p>}
+            {lang !== "ko" && <p className="pt-1 text-xs text-gray-400">{t("운영 시간·휴무·문의·주소는 한국어 원문이에요.")}</p>}
           </section>
         </div>
       </div>

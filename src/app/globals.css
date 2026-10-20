@@ -208,3 +208,50 @@ html[data-plus="1"] [data-plus-promo] {
   background: var(--color-gray-50);
   padding: 0.625rem 0.75rem;
 }
+
+/* 글자 크기 설정(마이 > 설정): 화면 전체를 비율로 키운다. px로 정한 작은 글씨·그래프 글자까지 같이 커지게 zoom을 쓴다 */
+html[data-font="l"] body {
+  zoom: 1.12;
+}
+html[data-font="xl"] body {
+  zoom: 1.25;
+}
+
+/* 차트 (Bklit UI, src/components/charts): 우리 색(인디고)에 맞춘 토큰. 다크 모드는 dark.css가 회색 변수를 뒤집어 따라온다 */
+:root {
+  --foreground: var(--color-gray-900);
+  --muted-foreground: var(--color-gray-500);
+  --chart-1: #4f46e5;
+  --chart-2: #a78bfa;
+  --chart-3: #f59e0b;
+  --chart-4: #10b981;
+  --chart-5: #ef4444;
+  --chart-background: var(--surface, #fff);
+  --chart-foreground: var(--color-gray-900);
+  --chart-foreground-muted: var(--color-gray-500);
+  --chart-line-primary: var(--chart-1);
+  --chart-line-secondary: var(--chart-2);
+  --chart-crosshair: var(--color-gray-400);
+  --chart-grid: var(--color-gray-200);
+  --chart-brush-border: var(--chart-grid);
+  --chart-tooltip-background: var(--surface, #fff);
+  --chart-tooltip-foreground: var(--color-gray-900);
+  --chart-tooltip-muted: var(--color-gray-500);
+  --chart-marker-background: var(--color-gray-50);
+  --chart-marker-border: var(--color-gray-200);
+  --chart-marker-foreground: var(--color-gray-700);
+  --chart-marker-badge-background: var(--color-gray-900);
+  --chart-marker-badge-foreground: #fff;
+  --chart-label: var(--color-gray-500);
+  --chart-indicator-color: var(--color-gray-400);
+  --chart-indicator-secondary-color: var(--color-gray-300);
+  --chart-segment-background: var(--color-indigo-50);
+  --chart-segment-line: var(--color-indigo-300);
+}
+
+@theme inline {
+  --color-chart-tooltip-background: var(--chart-tooltip-background);
+  --color-chart-tooltip-foreground: var(--chart-tooltip-foreground);
+  --color-chart-tooltip-muted: var(--chart-tooltip-muted);
+  --color-chart-label: var(--chart-label);
+}

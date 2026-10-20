@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { canOptimize } from "@/lib/img";
+import { useEffect, useState } from "react";
+import { PhotoGallery } from "@/components/PhotoGallery";
 import { useI18n } from "@/i18n/client";
 import { imageCreditText } from "@/lib/places";
 import { useFavorites } from "@/lib/prefs";
@@ -29,10 +28,7 @@ export function PlaceHero({ place, gallery = [] }: { place: Place; gallery?: str
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const photos = [...(place.image ? [place.image] : []), ...gallery];
-  const [idx, setIdx] = useState(0);
-  const touchX = useRef<number | null>(null);
-  const go = (i: number) => setIdx(((i % photos.length) + photos.length) % photos.length);
+  const photos = [...new Set([...(place.image ? [place.image] : []), ...gallery])];
   const progress = Math.min(1, y / (HERO_HEIGHT - 64));
   const fav = isFavorite(place.id);
 
@@ -73,57 +69,17 @@ export function PlaceHero({ place, gallery = [] }: { place: Place; gallery?: str
       >
         {photos.length ? (
           <>
-            <div
-              className="absolute inset-0 flex transition-transform duration-500 ease-out"
-              style={{ transform: `translateX(-${idx * 100}%)` }}
-              onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
-              onTouchEnd={(e) => {
-                if (touchX.current === null) return;
-                const dx = e.changedTouches[0].clientX - touchX.current;
-                touchX.current = null;
-                if (Math.abs(dx) > 40) go(idx + (dx < 0 ? 1 : -1));
-              }}
-            >
-              {photos.map((src, i) => (
-                <div key={src} className="relative h-full w-full shrink-0 overflow-hidden">
-                  <Image
-                    src={src}
-                    alt={i === 0 ? t(place.name) : ""}
-                    fill
-                    loading={i === 0 ? "eager" : "lazy"}
-                    fetchPriority={i === 0 ? "high" : "auto"}
-                    sizes="(min-width: 768px) 1100px, 100vw"
-                    unoptimized={!canOptimize(src)}
-                    className="object-cover will-change-transform"
-                    style={i === 0 ? { transform: `translateY(${y * 0.3}px) scale(${1 + progress * 0.08})` } : undefined}
-                  />
-                </div>
-              ))}
-            </div>
+            <PhotoGallery
+              photos={photos}
+              alt={t(place.name)}
+              className="absolute inset-0"
+              credits={photos.map((src) => (src.startsWith("https://tong.visitkorea.or.kr/") ? t("사진 한국관광공사") : imageCreditText(place, t)))}
+              imageStyle={{ transform: `translateY(${y * 0.3}px) scale(${1 + progress * 0.08})` }}
+              counterClassName="top-16 right-4 md:top-4"
+              bottomClassName="bottom-9 md:bottom-4"
+            />
             {/* 상단 버튼이 사진 위에서도 보이도록 */}
             <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/30 to-transparent" />
-            <span className="absolute right-3 bottom-8 rounded bg-black/35 px-1.5 py-0.5 text-[10px] text-white/90">
-              {idx === 0 ? imageCreditText(place, t) : t("사진 한국관광공사")}
-            </span>
-            {photos.length > 1 && (
-              <>
-                <span className="absolute top-16 right-4 rounded-full bg-black/45 px-2.5 py-0.5 text-[11px] font-semibold text-white md:top-4">
-                  {idx + 1} / {photos.length}
-                </span>
-                {(["prev", "next"] as const).map((d) => (
-                  <button
-                    key={d}
-                    onClick={() => go(idx + (d === "next" ? 1 : -1))}
-                    aria-label={t(d === "next" ? "다음" : "이전")}
-                    className={`absolute top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-900 shadow md:flex ${
-                      d === "prev" ? "left-4" : "right-4"
-                    }`}
-                  >
-                    {d === "next" ? "›" : "‹"}
-                  </button>
-                ))}
-              </>
-            )}
           </>
         ) : (
           <span
@@ -136,7 +92,7 @@ export function PlaceHero({ place, gallery = [] }: { place: Place; gallery?: str
             <Glyph e={place.emoji} className="h-[1em] w-[1em] text-white drop-shadow" />
           </span>
         )}
-        <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-white to-transparent md:hidden" />
       </div>
     </>
   );

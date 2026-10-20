@@ -1,4 +1,5 @@
 import { makeT, type T } from "../i18n/translate";
+import placeKto from "../data/korea/place-kto.json";
 import type { Place } from "./types";
 
 /** 사진 경로: public/places/{id}.jpg (한국관광공사). 관광공사 사진이 없는 곳은 위키미디어 공용 사진(출처 표시), 그것도 없으면 색 배경 */
@@ -17,6 +18,8 @@ const LEISURE_CREDITS: Record<string, Place["imageCredit"]> = {
 };
 
 /** 놀이공원·워터파크·스키장 공통 기본값 (피크 13:30, 실데이터 없음) */
+const PLACE_KTO = placeKto as Record<string, NonNullable<Place["kto"]>>;
+
 function leisure(
   id: string,
   name: string,
@@ -36,6 +39,15 @@ function leisure(
     lat,
     lng,
     peakHour: 13.5,
+    // 기준이 따로 없는 곳(대기시간 원천이 없는 곳)도 화면·그래프가 같은 모양이 되게: 수용 인원의 20·40·60·80%를 단계 경계로 한 입장객 추정
+    criteria: {
+      unit: "명",
+      steps: [0.2, 0.4, 0.6, 0.8].map((r) => Math.round((o.capacity * r) / 100) * 100) as [number, number, number, number],
+      basis: "입장객 수 (추정, 수용 인원 기준)",
+      provisional: true,
+    },
+    // 관광공사 관광지 집중률 이름 (scripts/korea-data/spot-kto.mts) → 예측 모델이 30일 집중률로 날마다 보정
+    ...(PLACE_KTO[id] && { kto: PLACE_KTO[id] }),
     ...o,
     image: NO_PHOTO.has(id) ? undefined : `/places/${id}.jpg`,
     ...(LEISURE_CREDITS[id] && { imageCredit: LEISURE_CREDITS[id] }),
