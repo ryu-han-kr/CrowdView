@@ -26,7 +26,7 @@ import { CATEGORY_LABEL } from "@/lib/types";
 import { DataTag } from "@/components/DataTag";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { JudgementCard } from "@/components/JudgementCard";
-import { VisitorProfile } from "@/components/VisitorProfile";
+import { SeoulPeopleProfile, VisitorProfile } from "@/components/VisitorProfile";
 import { WeatherCard } from "@/components/WeatherCard";
 import { InlineAd } from "@/components/AdUnit";
 import { FaqBlock } from "@/components/FaqBlock";
@@ -162,6 +162,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           .sort((x, y) => x.km - y.km)[0];
       return { ...r, km: at?.km, href: at?.href, score: area ? seoulNow[area.a.code].score : undefined };
     });
+  const seoulCode = place.seoulArea ? SEOUL_AREAS.find((a) => a.name === place.seoulArea)?.code : undefined;
+  const seoulProfile = seoulCode ? seoulNow[seoulCode]?.profile : undefined;
   // 오늘 지난 시간은 10분마다 쌓은 실측 기록으로 채운다 (시간마다 마지막 기록)
   // 서울시 명소: 10/20 이전 기록은 주변 지역 인원 그대로라, 장소 수용 인원보다 한참 크면 명소 기준으로 줄인다
   const share = siteShare(place);
@@ -537,6 +539,10 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           </section>
 
           {signals.localPop && <VisitorProfile pop={signals.localPop} lang={lang} />}
+          {/* 서울 장소: 주변 지역의 지금 성별·연령 (서울시 실시간) */}
+          {!signals.localPop && seoulProfile && (
+            <SeoulPeopleProfile profile={seoulProfile} lang={lang} areaName={place.seoulArea} className="mt-8 rounded-3xl border border-gray-100 p-4" />
+          )}
 
           <JudgementCard place={place} crowd={crowd} signals={signals} lang={lang} />
           <StayLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} at={place} className="mt-6" />

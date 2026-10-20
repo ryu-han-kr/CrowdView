@@ -53,6 +53,36 @@ const ALIAS: Record<string, string[]> = {
   "german-village": ["독일마을"],
   "gunsan-time": ["시간여행마을", "근대역사박물관"],
   "donggung-wolji": ["동궁과월지", "동궁과 월지"],
+  // 2026-10-20 빈칸 채우기: 관광공사 집중률 목록의 이름
+  wolmido: ["월미도"],
+  "sejong-arboretum": ["국립세종수목원"],
+  "sejong-lake": ["세종호수공원 일원", "세종호수공원"],
+  gyeongpo: ["강릉 경포해수욕장", "경포해수욕장"],
+  gungnamji: ["서동공원과 궁남지"],
+  taehwagang: ["태화강국가정원", "태화강 국가정원", "태화강"],
+  hallasan: ["한라산국립공원", "한라산", "1100고지습지"],
+  hyeopjae: ["협재해수욕장", "협재"],
+  // 같은 단지 안이라 그 단지의 집중률로 대신하는 곳 (데이터 점검 문서에 표시)
+  ddp: ["동대문역사문화공원"],
+  "busan-fireworks": ["광안리해수욕장"],
+  "lantern-festival": ["청계광장"],
+  "caribbean-bay": ["에버랜드"],
+  "california-beach": ["경주월드 어뮤즈먼트"],
+  yongpyong: ["모나용평"],
+  high1: ["하이원리조트"],
+  phoenix: ["휘닉스 평창"],
+  konjiam: ["곤지암리조트"],
+  muju: ["무주덕유산리조트 스키장"],
+  "welli-hilli": ["웰리힐리파크 스노우파크"],
+  oakvalley: ["오크밸리스키장"],
+  alpensia: ["알펜시아 리조트"],
+};
+// 관광공사 콘텐츠의 법정동 코드가 이 API의 시군구 코드와 다른 곳 (인천 중구, 세종, 울산 중구, 제주)
+const CODE: Record<string, { areaCd: string; signguCd: string }> = {
+  wolmido: { areaCd: "28", signguCd: "28110" },
+  "sejong-arboretum": { areaCd: "36", signguCd: "36110" },
+  "sejong-lake": { areaCd: "36", signguCd: "36110" },
+  taehwagang: { areaCd: "31", signguCd: "31110" },
 };
 
 const placeTargets = PLACES.filter((p) => !p.kto && p.ktoContent && p.category !== "airport").map((p) => ({
@@ -70,13 +100,17 @@ async function match(targets: typeof landmarks, file: string) {
 const out: Record<string, { areaCd: string; signguCd: string; name: string }> = {};
 const missing: string[] = [];
 for (const l of targets) {
-  const [c] = await call("KorService2", "detailCommon2", { contentId: l.cid });
-  if (!c?.lDongRegnCd) {
-    missing.push(`${l.n.ko}(코드 없음)`);
-    continue;
+  let areaCd: string, signguCd: string;
+  if (CODE[l.id]) ({ areaCd, signguCd } = CODE[l.id]);
+  else {
+    const [c] = await call("KorService2", "detailCommon2", { contentId: l.cid });
+    if (!c?.lDongRegnCd) {
+      missing.push(`${l.n.ko}(코드 없음)`);
+      continue;
+    }
+    areaCd = c.lDongRegnCd;
+    signguCd = `${c.lDongRegnCd}${c.lDongSignguCd}`;
   }
-  const areaCd = c.lDongRegnCd;
-  const signguCd = `${c.lDongRegnCd}${c.lDongSignguCd}`;
   if (!listCache.has(signguCd)) {
     const rows = await call("TatsCnctrRateService", "tatsCnctrRatedList", { areaCd, signguCd, numOfRows: "5000" });
     listCache.set(signguCd, [...new Set(rows.map((r) => r.tAtsNm))]);
@@ -93,7 +127,10 @@ for (const l of targets) {
     console.log(`${l.n.ko} → ${hit}`);
   } else missing.push(l.n.ko);
 }
-fs.writeFileSync(path.join("src", "data", "korea", file), JSON.stringify(out));
+// 장소 쪽은 이미 이어진 곳(kto 있음)을 다시 찾지 않으므로 지난 결과에 더한다
+const target = path.join("src", "data", "korea", file);
+const prev = file === "place-kto.json" && fs.existsSync(target) ? JSON.parse(fs.readFileSync(target, "utf8")) : {};
+fs.writeFileSync(target, JSON.stringify({ ...prev, ...out }));
 console.log(`${file} 완료 ${Object.keys(out).length}/${targets.length} · 없음: ${missing.join(", ")}`);
 }
 await match(landmarks, "spot-kto.json");

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import { useI18n } from "@/i18n/client";
-import { imageCreditText } from "@/lib/places";
+import { photoCreditText } from "@/lib/places";
 import { useFavorites } from "@/lib/prefs";
 import type { Place } from "@/lib/types";
 import { Glyph } from "@/components/Glyph";
@@ -73,7 +73,7 @@ export function PlaceHero({ place, gallery = [] }: { place: Place; gallery?: str
               photos={photos}
               alt={t(place.name)}
               className="absolute inset-0"
-              credits={photos.map((src) => (src.startsWith("https://tong.visitkorea.or.kr/") ? t("사진 한국관광공사") : imageCreditText(place, t)))}
+              credits={photos.map((src) => photoCreditText(src, place, t))}
               imageStyle={{ transform: `translateY(${y * 0.3}px) scale(${1 + progress * 0.08})` }}
               counterClassName="top-16 right-4 md:top-4"
               bottomClassName="bottom-9 md:bottom-4"

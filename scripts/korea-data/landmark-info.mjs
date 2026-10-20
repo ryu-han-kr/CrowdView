@@ -50,7 +50,12 @@ const clean = (s) =>
     .replace(/[ \t]+/g, " ")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
-const firstUrl = (s) => String(s ?? "").match(/https?:\/\/[^\s"'<>]+/)?.[0];
+// 주소 앞에 https://가 없는 곳도 있다 (예: www.hahoe.or.kr)
+const firstUrl = (s) => {
+  const t = String(s ?? "");
+  const bare = t.match(/^\s*(www\.[^\s"'<>]+)/)?.[1];
+  return t.match(/https?:\/\/[^\s"'<>]+/)?.[0] ?? (bare && `https://${bare}`);
+};
 
 const landmarks = JSON.parse(fs.readFileSync(path.join("src", "data", "korea", "landmarks.json"), "utf8"));
 const out = {};
@@ -62,7 +67,7 @@ for (const l of landmarks) {
   }
   const [intro] = await call("detailIntro2", { contentId: l.cid, contentTypeId: String(common.contenttypeid) });
   const images = await call("detailImage2", { contentId: l.cid, imageYN: "Y" });
-  // 이용시간·쉬는날 필드 이름이 종류마다 다르다 (관광지 12 / 문화시설 14 / 레포츠 28)
+  // 이용시간·쉬는날·문의 필드 이름이 종류마다 다르다 (관광지 12 / 문화시설 14 / 레포츠 28 / 쇼핑 38)
   const pick = (...keys) => clean(keys.map((k) => intro?.[k]).find((v) => v && String(v).trim()));
   out[l.id] = {
     // '◎ 한류의 매력…' 같은 덧붙인 홍보 문단은 뺀다
@@ -70,11 +75,12 @@ for (const l of landmarks) {
       .split(/\n?\s*◎/)[0]
       .trim(),
     addr: [clean(common.addr1), clean(common.addr2)].filter(Boolean).join(" "),
-    tel: clean(common.tel) || undefined,
+    // 대표 전화는 detailCommon2에 비어 있는 곳이 많아 소개 정보의 문의처(infocenter*)를 먼저
+    tel: pick("infocenter", "infocenterculture", "infocenterleports", "infocentershopping") || clean(common.tel) || undefined,
     homepage: firstUrl(common.homepage),
-    usetime: pick("usetime", "usetimeculture", "usetimeleports") || undefined,
-    restdate: pick("restdate", "restdateculture", "restdateleports") || undefined,
-    parking: pick("parking", "parkingculture", "parkingleports") || undefined,
+    usetime: pick("usetime", "usetimeculture", "usetimeleports", "opentime") || undefined,
+    restdate: pick("restdate", "restdateculture", "restdateleports", "restdateshopping") || undefined,
+    parking: pick("parking", "parkingculture", "parkingleports", "parkingshopping", "parkingfee") || undefined,
     images: images
       .map((i) => String(i.originimgurl ?? "").replace(/^http:/, "https:"))
       .filter((u) => u.startsWith("https://tong.visitkorea.or.kr/"))
@@ -82,5 +88,12 @@ for (const l of landmarks) {
   };
   console.log(`${l.n.ko}: 개요 ${out[l.id].overview.length}자, 사진 ${out[l.id].images.length}`);
 }
-fs.writeFileSync(path.join("src", "data", "korea", "landmark-info.json"), JSON.stringify(out));
+// 이번에 못 받은 칸(호출 실패·한도 초과)은 지난 값을 그대로 둔다
+const file = path.join("src", "data", "korea", "landmark-info.json");
+const prev = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : {};
+for (const [id, v] of Object.entries(prev)) {
+  if (!out[id]) out[id] = v;
+  else for (const [k, val] of Object.entries(v)) if (out[id][k] === undefined || out[id][k] === "" || (Array.isArray(val) && !out[id][k]?.length)) out[id][k] = val;
+}
+fs.writeFileSync(file, JSON.stringify(out));
 console.log(`완료 ${Object.keys(out).length}/${landmarks.length}`);

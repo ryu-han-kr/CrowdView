@@ -993,6 +993,7 @@ const dict: Dict = {
   "매직랜드": "Magic Land",
   "유러피언 어드벤처": "European Adventure",
   "주토피아": "Zootopia",
+  "서울시 실시간 도시데이터 · 주변 {area} 기준": "Seoul real-time city data · {area} area",
   "롯데월드 어드벤처": "Lotte World Adventure",
   "에버랜드": "Everland",
   "서울랜드": "Seoul Land",
