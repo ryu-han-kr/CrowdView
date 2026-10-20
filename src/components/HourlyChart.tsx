@@ -153,11 +153,15 @@ export function HourlyChart({
               </span>
             )}
           </p>
-          {p.peopleKind && SHOW_DATA_LABELS && (
-            <p className={`text-xs ${p.peopleKind === "est" ? "text-amber-600" : "text-gray-500"}`}>
-              {t("인원")}: {t(PEOPLE_NOTE[p.peopleKind])}
-            </p>
-          )}
+          <p className="text-xs text-gray-500">
+            {t("혼잡 지수 {n}", { n: p.score })}
+            {p.peopleKind && SHOW_DATA_LABELS && (
+              <span className={p.peopleKind === "est" ? "text-amber-600" : undefined}>
+                {" "}
+                · {t("인원")}: {t(PEOPLE_NOTE[p.peopleKind])}
+              </span>
+            )}
+          </p>
         </div>
         {delta && (
           <div className="shrink-0 text-right">

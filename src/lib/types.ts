@@ -104,6 +104,8 @@ export interface Zone {
   waitMin?: number;
   people?: number;
   hours?: string;
+  /** 놀이공원 구역 (에버랜드 '매직랜드' 등) */
+  area?: string;
 }
 
 export interface HourPoint {

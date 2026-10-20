@@ -38,7 +38,8 @@ export async function recordHistory(snap: CrowdSnapshot): Promise<void> {
     t: snap.updatedAt,
     score: snap.score,
     headcount: snap.headcount,
-    zones: snap.zones?.map((z) => [z.id, z.score, z.waitMin ?? null, z.people ?? null]),
+    // 기록은 대기 긴 8곳만 (구역별 보기용 전체 목록은 화면 캐시에만)
+    zones: snap.zones?.slice(0, 8).map((z) => [z.id, z.score, z.waitMin ?? null, z.people ?? null]),
   });
   await kv.set(key(snap.placeId, date), JSON.stringify(day), KEEP_SECONDS).catch(() => {});
 }
@@ -48,4 +49,34 @@ export async function getHistory(placeId: string, days = 2): Promise<{ date: str
   const today = kst().date;
   const dates = Array.from({ length: days }, (_, i) => addDays(today, i - days + 1));
   return Promise.all(dates.map(async (date) => ({ date, points: await readDay(placeId, date) })));
+}
+
+// ── 하루 요약: 실측 기록(8일 보관)을 하루 한 번 [날짜, 가장 붐빌 때, 평균]으로 줄여 1년 넘게 둔다.
+// 요일별·월별 평균을 예측 대신 실측으로 보여 주려고 (레퍼런스: Queue-Times 통계)
+const SUM_KEEP_SECONDS = 400 * 24 * 60 * 60;
+const sumKey = (placeId: string) => `daysum:${placeId}`;
+
+/** [YYYY-MM-DD, 가장 붐빌 때 점수, 평균 점수] */
+export type DaySummary = [string, number, number];
+
+export async function getDaySummaries(placeId: string): Promise<DaySummary[]> {
+  try {
+    const raw = await kv.get(sumKey(placeId));
+    return raw ? (JSON.parse(raw) as DaySummary[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+/** 어제 기록을 요약해 붙인다 (이미 있으면 건너뜀). 붙였으면 true */
+export async function summarizeDay(placeId: string, date: string): Promise<boolean> {
+  const points = await readDay(placeId, date);
+  // 운영 시간 기록이 너무 적으면(수집 장애 등) 평균이 왜곡돼 남기지 않는다
+  if (points.length < 12) return false;
+  const list = await getDaySummaries(placeId);
+  if (list.some(([d]) => d === date)) return false;
+  const scores = points.map((p) => p.score);
+  list.push([date, Math.max(...scores), Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)]);
+  await kv.set(sumKey(placeId), JSON.stringify(list.slice(-400)), SUM_KEEP_SECONDS);
+  return true;
 }
