@@ -220,7 +220,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
               {t("언제 가면 한산할까")}
               <DataTag />
             </h2>
-            <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("이번 주 시간마다 예상 혼잡 · 칸을 누르면 자세히")}</p>
+            <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("날마다 운영 시간 색 띠 · 띠를 누르거나 밀면 그 시간 예상 혼잡")}</p>
             <WeekHeatmap
               nowHour={kst().hour}
               days={model.week.map((d, i) => ({

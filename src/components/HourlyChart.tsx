@@ -175,12 +175,12 @@ export function HourlyChart({
               </span>
             )}
           </p>
+          {/* 인원이 있으면 인원의 출처를, 없을 때만 혼잡 지수를 (점수로 판단하지 않게) */}
           <p className="text-xs text-gray-500">
-            {t("혼잡 지수 {n}", { n: p.score })}
+            {p.people === undefined && t("혼잡 지수 {n}", { n: p.score })}
             {p.peopleKind && SHOW_DATA_LABELS && (
               <span className={p.peopleKind === "est" ? "text-amber-600" : undefined}>
-                {" "}
-                · {t("인원")}: {t(PEOPLE_NOTE[p.peopleKind])}
+                {t("인원")}: {t(PEOPLE_NOTE[p.peopleKind])}
               </span>
             )}
           </p>
