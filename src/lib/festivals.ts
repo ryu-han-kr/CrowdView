@@ -210,6 +210,18 @@ async function seoulFestivals(): Promise<Festival[]> {
     });
 }
 
+export type FestivalStatus = "upcoming" | "ongoing" | "ended";
+
+/**
+ * 축제 상태 (한국 날짜 기준, 시작일·종료일 당일 포함). 홈·축제 목록·지도·상세가 모두 이 함수 하나를 쓴다
+ * (QA 10/21 EVENT-01·02·03: 화면마다 따로 계산하면 자정 무렵 서로 다르게 보인다)
+ */
+export function festivalStatus(f: { start: string; end: string }, today = kst().date): FestivalStatus {
+  if (today < f.start) return "upcoming";
+  if (today > f.end) return "ended";
+  return "ongoing";
+}
+
 /** 진행 중이거나 앞으로 days일 안에 시작하는 축제 (시작일 순) */
 export async function getFestivals(days = 60): Promise<Festival[]> {
   const today = kst().date;
@@ -222,7 +234,7 @@ export async function getFestivals(days = 60): Promise<Festival[]> {
   ];
   const seen = new Set<string>();
   return all
-    .filter((f) => f.end >= today && f.start <= until)
+    .filter((f) => festivalStatus(f, today) !== "ended" && f.start <= until)
     .filter((f) => {
       const k = norm(f.title) || f.title;
       if (seen.has(k)) return false;

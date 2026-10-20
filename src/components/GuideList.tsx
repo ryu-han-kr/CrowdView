@@ -45,6 +45,8 @@ const LEVEL_SCORE: Record<string, number> = {
 export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Record<string, number> }) {
   const { t, lang } = useI18n();
   const [rows, setRows] = useState<Row[] | null>(initial ?? null);
+  // 불러오기 실패를 '0곳'으로 보이지 않게 따로 둔다 (QA 10/21 EXP-S02: 명소가 없는 지역으로 오해)
+  const [failed, setFailed] = useState(false);
   const [live, setLive] = useState<Record<string, string>>({});
   const [kinds, setKinds] = useState<string[]>(["attraction"]);
   const [gus, setGus] = useState<string[]>([]);
@@ -57,9 +59,15 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
 
   useEffect(() => {
     fetch(`/data/guide-${lang}.json`)
-      .then((r) => r.json())
-      .then(setRows)
-      .catch(() => setRows([]));
+      .then((r) => {
+        if (!r.ok) throw new Error(String(r.status));
+        return r.json();
+      })
+      .then((rows: Row[]) => {
+        setFailed(false);
+        setRows(rows);
+      })
+      .catch(() => setFailed(true));
     // 서울 121곳 지금 단계 (CDN 5분 캐시)
     fetch("/api/public/crowd")
       .then((r) => r.json())
@@ -158,10 +166,13 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
         },
       ]}
     >
-      {!rows ? (
+      {failed && (!rows || list.length === 0) ? (
+        <p className="mt-6 text-sm font-semibold text-red-600">{t("데이터를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.")}</p>
+      ) : !rows ? (
         <p className="mt-6 text-sm text-gray-500">{t("불러오는 중…")}</p>
       ) : (
         <>
+          {failed && <p className="mt-4 text-xs font-semibold text-red-600 md:mt-0">{t("데이터를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.")}</p>}
           <div className="mt-4 flex items-center justify-between md:mt-0">
             <p className="text-sm text-gray-500">{t("{n}곳", { n: list.length })}</p>
             <div className="flex items-center gap-2">

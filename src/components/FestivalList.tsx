@@ -2,7 +2,7 @@
 
 import Link from "@/i18n/link";
 import { useEffect, useState } from "react";
-import { FESTIVAL_CATEGORIES, isLongRunning, type Festival, type FestivalCategory, type FestivalCrowd } from "@/lib/festivals";
+import { FESTIVAL_CATEGORIES, festivalStatus, isLongRunning, type Festival, type FestivalCategory, type FestivalCrowd } from "@/lib/festivals";
 import { useI18n } from "@/i18n/client";
 import { fmtPeople, trRegion } from "@/i18n/patterns";
 import { compactNumber } from "@/lib/format";
@@ -23,7 +23,7 @@ export function FestivalList({
   liveAreas,
   names = {},
   hrefs,
-  today,
+  today: serverToday,
 }: {
   festivals: Festival[];
   crowds: Record<string, FestivalCrowd | null>;
@@ -39,6 +39,10 @@ export function FestivalList({
   const { t, lang } = useI18n();
   const tr = (ko: string) => names[ko] ?? ko;
   const reg = (ko: string) => names[ko] ?? trRegion(ko, t);
+  // 캐시된 페이지(최대 1시간)가 자정을 넘겨도 끝난 축제가 '진행 중'으로 남지 않게 브라우저의 한국 날짜로 다시 계산 (EVENT-07)
+  const [today, setToday] = useState(serverToday);
+  useEffect(() => setToday(new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10)), []);
+  festivals = festivals.filter((f) => festivalStatus(f, today) !== "ended");
   const [region, setRegion] = useState("전체");
   const [category, setCategory] = useState<FestivalCategory | "all">("all");
   // 축제 상세의 종류 링크(?type=food)로 들어오면 그 종류를 고른 채로 연다 (ISR 페이지라 클라이언트에서 읽는다)
@@ -50,8 +54,8 @@ export function FestivalList({
   const inRegion = festivals.filter((f) => region === "전체" || f.region.startsWith(region));
   const list = inRegion.filter((f) => category === "all" || f.category === category);
   const cats = FESTIVAL_CATEGORIES.filter((c) => inRegion.some((f) => f.category === c.id));
-  const ongoing = list.filter((f) => f.start <= today && !isLongRunning(f));
-  const upcoming = list.filter((f) => f.start > today && !isLongRunning(f));
+  const ongoing = list.filter((f) => festivalStatus(f, today) === "ongoing" && !isLongRunning(f));
+  const upcoming = list.filter((f) => festivalStatus(f, today) === "upcoming" && !isLongRunning(f));
   const longRunning = list.filter(isLongRunning);
 
   return (

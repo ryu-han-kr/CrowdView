@@ -83,6 +83,20 @@ export async function getAirportPaxDays(place: Place): Promise<PaxDay[]> {
   }
 }
 
+/**
+ * 주차 수치 정리 (QA 10/21 AIR-S02): 음수·숫자 아님은 0, 주차 대수는 전체 면수를 넘지 않게, 점유율 0~100%.
+ * 빈자리 = 전체 - 주차 대수. 전체 면수가 0이면(센서 없음) 점유율 0으로 두고 화면에서 빈자리를 숨긴다
+ */
+export function parkingNumbers(occupiedRaw: unknown, totalRaw: unknown): { occupied: number; total: number; free: number; rate: number } {
+  const n = (v: unknown) => {
+    const x = Number(v);
+    return Number.isFinite(x) && x > 0 ? Math.round(x) : 0;
+  };
+  const total = n(totalRaw);
+  const occupied = Math.min(n(occupiedRaw), total);
+  return { occupied, total, free: total - occupied, rate: total > 0 ? Math.round((occupied / total) * 100) : 0 };
+}
+
 // 인천공항 주차 정보 (data.go.kr 15095047): 터미널별 주차장·층의 주차 대수와 전체 면수
 async function incheonParking(place: Place): Promise<ParkingLot[]> {
   const terminal = place.airport === "ICN1" ? "T1" : "T2";
@@ -90,14 +104,13 @@ async function incheonParking(place: Place): Promise<ParkingLot[]> {
   return rows
     .filter((r) => String(r.floor).startsWith(terminal))
     .map((r) => {
-      const occupied = Number(r.parking ?? 0);
-      const total = Number(r.parkingarea ?? 0);
+      const { occupied, total, rate } = parkingNumbers(r.parking, r.parkingarea);
       const t = String(r.datetm ?? "");
       return {
         name: String(r.floor).replace(`${terminal} `, "").replace(/(지하|지상)/, " $1"),
         status: "",
-        rate: total > 0 ? Math.min(100, Math.round((occupied / total) * 100)) : 0,
-        occupied: Math.min(occupied, total),
+        rate,
+        occupied,
         total,
         updatedAt: t.length >= 12 ? `${t.slice(8, 10)}:${t.slice(10, 12)}` : "",
       };
@@ -141,12 +154,11 @@ export async function getParking(place: Place): Promise<ParkingLot[]> {
   try {
     const rows = await dataGoKr("/B551178/parking-congestion/info", { schAirportCode: place.airport, type: "json" }, 5 * 60);
     return rows.map((r) => {
-      const occupied = Number(r.parkingOccupiedSpace ?? 0);
-      const total = Number(r.parkingTotalSpace ?? 0);
+      const { occupied, total, rate } = parkingNumbers(r.parkingOccupiedSpace, r.parkingTotalSpace);
       return {
         name: String(r.parkingAirportCodeName),
         status: String(r.parkingCongestion ?? ""),
-        rate: total > 0 ? Math.min(100, Math.round((occupied / total) * 100)) : 0,
+        rate,
         occupied,
         total,
         updatedAt: `${r.sysGetdate ?? ""} ${String(r.sysGettime ?? "").slice(0, 5)}`.trim(),

@@ -277,8 +277,19 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                                   />
                                 </div>
                                 <p className="mt-1.5 text-[11px] text-gray-500">
-                                  {t("빈자리")} <b>{t("{n}면", { n: Math.max(0, lot.total - lot.occupied).toLocaleString() })}</b> ·{" "}
-                                  {lot.occupied.toLocaleString()} / {t("{n}면", { n: lot.total.toLocaleString() })} ({lot.rate}%) ·{" "}
+                                  {/* 전체 면수가 없으면(센서 자료 없음) 빈자리를 지어내지 않고, 빈자리 0이면 '만차' (AIR-S02) */}
+                                  {lot.total === 0 ? (
+                                    <>{t("면수 자료 없음")} · </>
+                                  ) : lot.total - lot.occupied <= 0 ? (
+                                    <>
+                                      <b className="text-red-600">{t("만차")}</b> · {lot.occupied.toLocaleString()} / {t("{n}면", { n: lot.total.toLocaleString() })} ·{" "}
+                                    </>
+                                  ) : (
+                                    <>
+                                      {t("빈자리")} <b>{t("{n}면", { n: (lot.total - lot.occupied).toLocaleString() })}</b> · {lot.occupied.toLocaleString()} /{" "}
+                                      {t("{n}면", { n: lot.total.toLocaleString() })} ({lot.rate}%) ·{" "}
+                                    </>
+                                  )}
                                   {t("{time} 기준", { time: lot.updatedAt })}
                                 </p>
                               </li>

@@ -2397,4 +2397,8 @@ export default {
   "작년 이맘때 {region} 방문객": ["Visitors to {region} this time last year","昨年の今ごろの{region}の訪問者","去年此时{region}的游客","去年此時{region}的遊客"],
   "관광공사 데이터랩 · 다른 지역에서 온 사람과 외국인, 작년 같은 요일": ["KTO DataLab · visitors from other regions and abroad, same weekday last year","観光公社データラボ・他地域からの訪問者と外国人、昨年の同じ曜日","观光公社数据实验室 · 外地游客与外国人，去年同一星期","觀光公社數據實驗室 · 外地遊客與外國人，去年同一星期"],
   "하루 평균 약 {n}명, {day}이 가장 많았어요 (약 {m}명).": ["About {n} a day on average; {day} was the busiest (about {m}).","1日平均約{n}人、{day}が最も多かったです（約{m}人）。","日均约{n}人，{day}最多（约{m}人）。","日均約{n}人，{day}最多（約{m}人）。"],
+  "다만 그때도 ‘{level}’ 예상이라 한산하다는 뜻은 아니에요.": ["Even then it's expected to be ‘{level}’, so it won't be quiet.","ただしその時間も「{level}」の見込みで、空いているわけではありません。","不过那时仍预计为“{level}”，并不算空闲。","不過那時仍預計為「{level}」，並不算空閒。"],
+  "면수 자료 없음": ["No space count","台数データなし","无车位数据","無車位資料"],
+  "만차": ["Full","満車","已满","已滿"],
+  "데이터를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.": ["Couldn't load the data. Please refresh in a moment.","データを読み込めませんでした。しばらくしてから再読み込みしてください。","无法加载数据，请稍后刷新。","無法載入資料，請稍後重新整理。"],
 };

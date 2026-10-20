@@ -6,7 +6,7 @@ import { getSktCongestion } from "@/lib/skt";
 import { notFound } from "next/navigation";
 import { DataTag } from "@/components/DataTag";
 import { LevelBadge } from "@/components/Level";
-import { FESTIVAL_CATEGORIES, FESTIVAL_STEPS, getFestival, getFestivalCrowd, getFestivalLive, isLongRunning, seoulAreaOf } from "@/lib/festivals";
+import { FESTIVAL_CATEGORIES, FESTIVAL_STEPS, festivalStatus, getFestival, getFestivalCrowd, getFestivalLive, isLongRunning, seoulAreaOf } from "@/lib/festivals";
 import { compactNumber } from "@/lib/format";
 import { LEVELS, levelOf } from "@/lib/levels";
 import { daysUntil, kst } from "@/lib/time";
@@ -63,7 +63,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
   const translated = names.has(f.title);
   const today = kst().date;
   const dday = daysUntil(f.start);
-  const ongoing = f.start <= today && f.end >= today;
+  const ongoing = festivalStatus(f, today) === "ongoing";
   const level = crowd && levelOf(crowd.score);
   const cat = FESTIVAL_CATEGORIES.find((c) => c.id === f.category)!;
   const mapUrl = `https://map.naver.com/p/search/${encodeURIComponent(`${f.title} ${f.region}`)}`;
