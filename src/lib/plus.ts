@@ -162,7 +162,15 @@ export async function confirmPass(userId: string, paymentKey: string, orderId: s
   const start = new Date(p.approvedAt ?? Date.now());
   const base = cur.active && cur.periodEnd ? new Date(cur.periodEnd) : start;
   const end = addMonth(base);
-  await recordPaid(userId, p, base, end);
+  // 같은 주문을 두 번 승인 처리하지 않는다 (QA 10/21 PLUS-04: 두 번 눌림·재시도·시간 초과 뒤 조회가 겹치면 한 달이 두 번 붙을 수 있었다).
+  // 결제 기록(주문 번호가 키)을 먼저 넣은 요청만 기간을 늘리고, 이미 있으면 지금 상태만 돌려준다
+  const claimed = await sql(
+    `insert into payment (id, user_id, amount, status, paid_at, period_start, period_end, payment_key, raw)
+     values ($1, $2, $3, 'paid', $4, $5, $6, $7, $8)
+     on conflict (id) do nothing returning id`,
+    [p.orderId, userId, p.totalAmount, new Date(p.approvedAt ?? Date.now()), base, end, p.paymentKey, JSON.stringify(p)],
+  );
+  if (!claimed.length) return getPlus(userId);
   await sql(
     `insert into plus_subscription (user_id, status, current_period_end) values ($1, 'pass', $2)
      on conflict (user_id) do update set status = 'pass', billing_key = null, current_period_end = $2,

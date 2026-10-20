@@ -3,7 +3,7 @@ import { MapExplorer, type ExploreSpot } from "@/components/map/MapExplorer";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { getAllCrowd } from "@/lib/crowd/service";
-import { festivalHref, getFestivalCrowd, getFestivals, isLongRunning } from "@/lib/festivals";
+import { festivalHref, festivalStatus, getFestivalCrowd, getFestivals, isLongRunning } from "@/lib/festivals";
 import { distanceKm, type LatLng } from "@/lib/geo";
 import { LANDMARKS, LANDMARK_KINDS, REGIONS, inRegion, landmarkLink } from "@/lib/korea";
 import { PLACES, placeHref } from "@/lib/places";
@@ -100,7 +100,7 @@ export default async function MapPage({ params }: { params: Promise<{ lang: stri
   const shownFestivals = festivals.filter((f) => f.lat && f.lng && !isLongRunning(f));
   const fcrowd = await Promise.all(shownFestivals.map((f) => (f.start <= soon ? getFestivalCrowd(f).catch(() => undefined) : undefined)));
   shownFestivals.forEach((f, i) => {
-    const on = f.start <= today && f.end >= today;
+    const on = festivalStatus(f, today) === "ongoing";
     spots.push({
       id: `fe-${f.id}`,
       theme: "festival",

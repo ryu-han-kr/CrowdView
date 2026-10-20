@@ -184,7 +184,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
             {nowOpen
               ? t("{name}의 지금 혼잡도는 ‘{level}’이에요.", { name, level: t(nowLevel.label) })
               : t("{name}은(는) 지금 운영 시간이 아니에요.", { name })}
-            {best && ` ${t("오늘 남은 운영 시간 중에는 {hour}쯤이 가장 한산할 것으로 보여요.", { hour: formatHour(best.hour, lang) })}`}
+            {best && ` ${t("오늘 남은 운영 시간 중에는 {hour}쯤이 가장 한산할 것으로 보여요.", { hour: formatHour(best.hour, lang) })}${levelOf(best.score).key >= 4 ? ` ${t("다만 그때도 ‘{level}’ 예상이라 한산하다는 뜻은 아니에요.", { level: t(levelOf(best.score).label) })}` : ""}`}
           </p>
           <KstNote className="mt-1" />
 

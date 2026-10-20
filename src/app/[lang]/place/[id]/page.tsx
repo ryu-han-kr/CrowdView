@@ -348,7 +348,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   })}
             {!beforeEvent &&
               best &&
-              ` ${t("오늘 남은 운영 시간 중에는 {hour}쯤이 가장 한산할 것으로 보여요.", { hour: formatHour(best.hour, lang) })}`}
+              ` ${t("오늘 남은 운영 시간 중에는 {hour}쯤이 가장 한산할 것으로 보여요.", { hour: formatHour(best.hour, lang) })}${levelOf(best.score).key >= 4 ? ` ${t("다만 그때도 ‘{level}’ 예상이라 한산하다는 뜻은 아니에요.", { level: t(levelOf(best.score).label) })}` : ""}`}
             {!beforeEvent && best && <LocalTime hour={best.hour} />}
           </p>
           <KstNote className="mt-1" />

@@ -4,7 +4,7 @@ import type { Lang } from "@/i18n/config";
 import type { T } from "@/i18n/translate";
 import { trRegion } from "@/i18n/patterns";
 import { getAllCrowd } from "./crowd/service";
-import { festivalHref, type Festival } from "./festivals";
+import { festivalHref, festivalStatus, type Festival } from "./festivals";
 import { LANDMARK_KINDS, landmarkLink, type Landmark } from "./korea";
 import { getAllSeoulLive } from "./seoul-live";
 import { daysUntil } from "./time";
@@ -40,7 +40,7 @@ export function festivalCard(f: Festival, t: T, today: string, names: Map<string
     emoji: "🎪",
     title: names.get(f.title) ?? f.title,
     sub: `${f.start.slice(5).replace("-", "/")}~${f.end.slice(5).replace("-", "/")} · ${names.get(f.region) ?? trRegion(f.region, t)}`,
-    badge: f.start <= today ? t("진행 중") : `D-${daysUntil(f.start)}`,
+    badge: festivalStatus(f, today) === "ongoing" ? t("진행 중") : `D-${daysUntil(f.start)}`,
     note: ratio && ratio >= 1.2 ? t("평소보다 {n}배 붐빔 예상", { n: ratio.toFixed(1) }) : undefined,
     lat: f.lat,
     lng: f.lng,
