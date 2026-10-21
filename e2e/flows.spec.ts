@@ -18,8 +18,13 @@ test("SEOUL-S01: 서울 실시간에서 '성수' 검색 → 성수카페거리 �
   const link = page.locator('a[href$="/seoul/POI068"]').filter({ visible: true }).first();
   await expect(link).toBeVisible();
   // 검색 결과에 성수와 상관없는 곳이 섞이지 않는다
-  const hrefs = await page.locator('a[href*="/seoul/POI"]').filter({ visible: true }).evaluateAll((as) => [...new Set(as.map((a) => a.getAttribute("href")))]);
-  expect(hrefs.length).toBeLessThan(10);
+  const visibleAreas = () =>
+    page
+      .locator('a[href*="/seoul/POI"]')
+      .filter({ visible: true })
+      .evaluateAll((as) => new Set(as.map((a) => a.getAttribute("href"))).size);
+  // 검색 결과가 걸러질 때까지 기다린다 (느린 기기에서는 입력 직후 아직 전체 목록)
+  await expect.poll(visibleAreas, { timeout: 10_000 }).toBeLessThan(10);
   await link.click();
   // 상세는 처음 그릴 때 서울시 자료를 받아 오느라 느릴 수 있다
   await expect(page).toHaveURL(/\/seoul\/POI068/, { timeout: 30_000 });

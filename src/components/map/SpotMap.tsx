@@ -5,7 +5,7 @@
 import Link from "@/i18n/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useI18n } from "@/i18n/client";
-import { LEVELS, levelOf } from "@/lib/levels";
+import { LEVELS, levelOf, deepOf } from "@/lib/levels";
 import { KEY_ID, loadSdk } from "@/lib/naver-map";
 import { LevelBadge } from "../Level";
 import { MapLegend } from "./MapLegend";
@@ -212,7 +212,7 @@ function NaverSpots({
         position: new maps.LatLng(lat, lng),
         title: t("{n}곳", { n: g.length }),
         icon: {
-          content: `<div role="img" aria-label="${t("{n}곳", { n: g.length })}" data-cluster-ids="${g.map((x) => x.id).join(",")}" style="width:${size}px;height:${size}px;border-radius:9999px;background:${fill};color:#fff;border:3px solid #fff;text-shadow:0 1px 2px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font:700 13px system-ui;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer">${g.length}</div>`,
+          content: `<div role="img" aria-label="${t("{n}곳", { n: g.length })}" data-cluster-ids="${g.map((x) => x.id).join(",")}" style="width:${size}px;height:${size}px;border-radius:9999px;background:${fill};color:${scored.length ? deepOf(pinColor(scored.reduce((a, x) => a + x.score!, 0) / scored.length)) : "#fff"};border:3px solid #fff;display:flex;align-items:center;justify-content:center;font:700 13px system-ui;box-shadow:0 2px 8px rgba(0,0,0,.3);cursor:pointer">${g.length}</div>`,
           anchor: new maps.Point(size / 2, size / 2),
         },
       });
