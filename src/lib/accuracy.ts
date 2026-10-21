@@ -3,6 +3,8 @@
 // ② 앞으로의 예측을 저장한다. 비교하는 예측은 3가지:
 //   official-1h / official-3h : 서울시 공식 12시간 예측의 1·3시간 뒤 값
 //   pattern-24h               : CrowdView 패턴 예측(가까운 역 요일×시간 승하차, lib/forecast)의 24시간 뒤 값
+//   naive-24h / median-24h    : 기준선 (외부 점검 P1-5). 지금 값을 그대로 24시간 뒤 예측 / 최근 4주 같은 요일·시각 실제 값의 중앙값.
+//                               패턴 예측이 기준선보다 낫지 않으면 기준선을 쓰는 게 맞다 — 같은 지표로 나란히 비교한다
 // 맞춤 기준은 화면과 같은 5단계 (levelOf) 일치, 오차는 점수(0~100) 차이의 절댓값
 import { kv } from "./cache";
 import { makePredictor, shapeNear } from "./forecast";
@@ -15,6 +17,8 @@ export const HORIZONS = [
   { id: "official-1h", hours: 1, label: "서울시 공식 예측 1시간 뒤" },
   { id: "official-3h", hours: 3, label: "서울시 공식 예측 3시간 뒤" },
   { id: "pattern-24h", hours: 24, label: "CrowdView 패턴 예측 24시간 뒤" },
+  { id: "naive-24h", hours: 24, label: "기준선: 지금 값 그대로 24시간 뒤" },
+  { id: "median-24h", hours: 24, label: "기준선: 최근 4주 같은 요일·시각 중앙값" },
 ] as const;
 export type HorizonId = (typeof HORIZONS)[number]["id"];
 
@@ -33,6 +37,16 @@ const KEEP_STAT = 60 * 86_400;
 const hourKey = (d: Date) => new Date(d.getTime() + 9 * 3600_000).toISOString().slice(0, 13);
 const predKey = (h: HorizonId, target: string) => `acc:p:${h}:${target}`;
 const statKey = (h: HorizonId, date: string) => `acc:d:${h}:${date}`;
+/** 지역별 실제 점수 (목표 시각별). 4주 중앙값 기준선용으로 30일 보관 */
+const actualKey = (target: string) => `acc:a:${target}`;
+const KEEP_ACTUAL = 30 * 86_400;
+/** 목표 시각 키에서 days일 전 같은 시각 키 */
+const daysBefore = (target: string, days: number) => new Date(Date.parse(`${target}:00:00Z`) - days * 86_400_000).toISOString().slice(0, 13);
+const median = (xs: number[]) => {
+  const v = [...xs].sort((a, b) => a - b);
+  const m = v.length >> 1;
+  return v.length % 2 ? v[m] : Math.round((v[m - 1] + v[m]) / 2);
+};
 
 type Live = Record<string, Omit<SeoulLive, "distance">>;
 
@@ -54,6 +68,10 @@ export async function trackAccuracy(live: Live, now = new Date()): Promise<numbe
     if (k < nowKey) byHour.set(k, [...(byHour.get(k) ?? []), c]);
   }
   for (const [target, group] of byHour) {
+    // 실제 값을 시각별로 남긴다 (같은 시각은 한 번만)
+    if (await kv.setNX(`acc:done:actual:${target}`, "1", KEEP_PRED).catch(() => false)) {
+      await kv.set(actualKey(target), JSON.stringify(Object.fromEntries(group.map((c) => [c, live[c].score]))), KEEP_ACTUAL).catch(() => {});
+    }
     for (const h of HORIZONS) {
       if (!(await kv.setNX(`acc:done:${h.id}:${target}`, "1", KEEP_PRED).catch(() => false))) continue;
       const raw = await kv.get(predKey(h.id, target)).catch(() => null);
@@ -76,12 +94,20 @@ export async function trackAccuracy(live: Live, now = new Date()): Promise<numbe
 
   // ② 새 예측 저장
   const target = (hours: number) => hourKey(new Date(now.getTime() + hours * 3600_000));
+  // 4주 중앙값 기준선: 목표 시각의 7·14·21·28일 전 실제 값 (2개 이상 있을 때만)
+  const past = await kv.mget([7, 14, 21, 28].map((d) => actualKey(daysBefore(target(24), d)))).catch(() => [] as (string | null)[]);
+  const pastMaps = past.filter((r): r is string => !!r).map((r) => JSON.parse(r) as Record<string, number>);
   for (const h of HORIZONS) {
     const tKey = target(h.hours);
     const preds: Record<string, number> = {};
     for (const code of codes) {
       const l = live[code];
-      if (h.id.startsWith("official")) {
+      if (h.id === "naive-24h") {
+        preds[code] = l.score;
+      } else if (h.id === "median-24h") {
+        const xs = pastMaps.map((m) => m[code]).filter((x): x is number => typeof x === "number");
+        if (xs.length >= 2) preds[code] = median(xs);
+      } else if (h.id.startsWith("official")) {
         const f = l.forecast.find((x) => seoulHour(x.time) === tKey);
         if (f) preds[code] = f.score;
       } else {

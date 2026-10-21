@@ -35,3 +35,21 @@ test("날짜별 통계를 읽는다", async () => {
     assert.equal(day.stats["official-1h"]?.absErr, 0);
   }
 });
+
+test("기준선: 지금 값 그대로 24시간 뒤, 4주 중앙값은 지난 기록이 2개 이상일 때만", async () => {
+  // 4주 동안 같은 요일 10시(KST) 실제 값을 쌓는다: 3/2(월)부터 7일 간격, 서울시 기준 10:35 → 목표 10시
+  for (const [i, s] of [20, 40, 60].entries()) {
+    const day = new Date(Date.UTC(2026, 2, 9 + i * 7));
+    const ymd = day.toISOString().slice(0, 10);
+    await trackAccuracy({ POI014: area(`${ymd} 10:35`, s, []) }, new Date(`${ymd}T02:05:00Z`));
+  }
+  // 3/29(일) 10:05 수집 → 3/30(월) 10시 목표 예측 저장: naive = 지금 값 70, median = 3/9·16·23 실제(20·40·60) 중앙값 40
+  await trackAccuracy({ POI014: area("2026-03-29 09:35", 70, []) }, new Date("2026-03-29T01:05:00Z"));
+  // 3/30 10:35 실제 40 → median-24h 정답, naive-24h(70)는 단계가 다르다
+  await trackAccuracy({ POI014: area("2026-03-30 10:35", 40, []) }, new Date("2026-03-30T02:05:00Z"));
+  const day = (await getAccuracy(400)).find((r) => r.date === "2026-03-30");
+  if (day) {
+    assert.equal(day.stats["median-24h"]?.absErr, 0);
+    assert.equal(day.stats["naive-24h"]?.absErr, 30);
+  }
+});
