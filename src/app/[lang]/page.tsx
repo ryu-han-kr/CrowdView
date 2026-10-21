@@ -17,7 +17,7 @@ import { translateNames } from "@/lib/name-translate";
 import { getLivePlaces } from "@/lib/place-info";
 import { placeHref } from "@/lib/places";
 import { getAllSeoulLive } from "@/lib/seoul-live";
-import { addDays, daysUntil, kst } from "@/lib/time";
+import { addDays, dateRange, daysUntil, kst } from "@/lib/time";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
@@ -91,7 +91,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       img: hotFestival.image!,
       tag: hotFestival.start <= today ? t("진행 중 축제") : `D-${daysUntil(hotFestival.start)}`,
       title: names.get(hotFestival.title) ?? hotFestival.title,
-      sub: `${hotFestival.start.replaceAll("-", ".")} ~ ${hotFestival.end.slice(5).replace("-", ".")} · ${names.get(hotFestival.region) ?? trRegion(hotFestival.region, t)}`,
+      sub: `${dateRange(hotFestival.start, hotFestival.end)} · ${names.get(hotFestival.region) ?? trRegion(hotFestival.region, t)}`,
     },
   ] as (HeroSlide | undefined)[]).filter((s): s is HeroSlide => !!s);
   const crowdSlides: HeroSlide[] = [

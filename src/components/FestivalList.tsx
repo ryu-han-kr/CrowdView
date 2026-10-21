@@ -11,7 +11,7 @@ import { DataTag } from "./DataTag";
 import { LevelBadge } from "./Level";
 import { Glyph } from "@/components/Glyph";
 
-const fmt = (d: string) => d.slice(5).replace("-", "/");
+import { dateRange, shortDate } from "@/lib/time";
 
 const EMOJI = Object.fromEntries(FESTIVAL_CATEGORIES.map((c) => [c.id, c.emoji])) as Record<FestivalCategory, string>;
 
@@ -128,8 +128,7 @@ export function FestivalList({
                             </span>
                           </div>
                           <p className="mt-0.5 truncate text-xs text-gray-500">
-                            {fmt(f.start)}
-                            {f.end !== f.start && ` ~ ${fmt(f.end)}`} · {reg(f.region)}
+                            {dateRange(f.start, f.end)} · {reg(f.region)}
                           </p>
                           <div className="mt-1.5 flex items-center gap-1.5 text-[11px] text-gray-500">
                             {live ? (
@@ -171,7 +170,7 @@ export function FestivalList({
                 <Link href={hrefs[f.id]} className="flex items-center justify-between gap-3 py-2.5 text-sm">
                   <span className="min-w-0 truncate">{tr(f.title)}</span>
                   <span className="shrink-0 text-xs text-gray-500">
-                    ~{fmt(f.end)} · {reg(f.region)}
+                    ~{shortDate(f.end)} · {reg(f.region)}
                   </span>
                 </Link>
               </li>
