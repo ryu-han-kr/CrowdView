@@ -11,6 +11,31 @@ import { summarizeDay } from "@/lib/crowd/history";
 import { checkTripWatches } from "@/lib/trip-watch";
 import { flushReports } from "@/lib/crowd-report";
 import { updateBiases } from "@/lib/crowd/bias";
+import { learnable, recordCalibration, type Sample } from "@/lib/crowd/calibration";
+import { expectedScore } from "@/lib/crowd/model";
+import { getSignals } from "@/lib/crowd/signals";
+import { getLivePlaces } from "@/lib/place-info";
+import { updateWeekRatios } from "@/lib/region-visitors";
+import type { CrowdResult } from "@/lib/types";
+
+/** 실측이 들어온 장소마다 '모델만 냈을 점수'·'보정한 모델 점수'·실제 점수 (lib/crowd/calibration) */
+async function calibrationSamples(crowd: Record<string, CrowdResult>): Promise<Sample[]> {
+  const places = (await getLivePlaces()).filter((p) => crowd[p.id] && learnable(crowd[p.id]));
+  return Promise.all(
+    places.map(async (place) => {
+      const s = await getSignals(place).catch(() => ({}) as Awaited<ReturnType<typeof getSignals>>);
+      const t = kst(new Date(crowd[place.id].updatedAt));
+      return {
+        place,
+        t,
+        holidays: s.holidays,
+        raw: expectedScore(place, t, { ...s, calib: undefined }),
+        cal: expectedScore(place, t, s),
+        actual: crowd[place.id].score,
+      };
+    }),
+  );
+}
 
 // Vercel Cron(vercel.json, 10분마다, GET)이 Authorization: Bearer CRON_SECRET 헤더로 호출한다.
 // 다른 클라우드로 옮기면 그쪽 스케줄러가 같은 헤더를 붙여 GET 또는 POST로 부르면 된다
@@ -32,6 +57,12 @@ export async function GET(req: Request) {
   // 예측 정확도: 매시 정각 첫 수집 때 채점·새 예측 저장 (서울 121곳, Redis)
   const hourly = (now.hour % 1) * 60 < 10;
   const scored = hourly ? await trackAccuracy(await getAllSeoulLive()).catch(async (e) => (await opsAlert("예측 정확도 기록 실패", e), 0)) : 0;
+  // 실측과 비교해 예측 모델 고치기: 매시 정각 첫 수집 때 실측 장소마다 모델 오차를 쌓고 보정 칸을 갱신 (Redis)
+  const calibrated = hourly
+    ? await recordCalibration(await calibrationSamples(await getAllCrowd())).catch(async (e) => (await opsAlert("모델 보정 기록 실패", e), 0))
+    : 0;
+  // 시군구 주말/평일 방문객 비 (데이터랩, 명소 예측의 주말 배율)
+  const weekRatios = daily ? await updateWeekRatios().catch(async (e) => (await opsAlert("주말 배율 계산 실패", e), 0)) : 0;
   // 어제 실측 기록을 하루 요약으로 (요일별·월별 실측 평균용, Redis)
   const summarized = daily
     ? (await Promise.all(PLACES.map((p) => summarizeDay(p.id, addDays(now.date, -1)).catch(() => false)))).filter(Boolean).length
@@ -61,7 +92,7 @@ export async function GET(req: Request) {
     );
   // 실시간 원본이 하나도 안 들어오면(전부 예측값) 원본 API·키 장애일 가능성이 크다
   if (refreshed.length && refreshed.every((r) => r.source === "model")) await opsAlert(`실시간 수집 전체 실패 (${refreshed.length}곳 모두 예측값)`);
-  return NextResponse.json({ refreshed, alerts, charged, expired, notices, scored, summarized, trips, reports, biased });
+  return NextResponse.json({ refreshed, alerts, charged, expired, notices, scored, calibrated, weekRatios, summarized, trips, reports, biased });
 }
 
 export const POST = GET;

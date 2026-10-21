@@ -58,13 +58,21 @@ export function inSeason(place: Place, date: string): boolean {
 const clamp = (v: number) => Math.max(0, Math.min(100, v));
 const pad2 = (n: number) => String(Math.floor(n)).padStart(2, "0");
 
+/** 실측 보정 칸 (lib/crowd/calibration): 주말·공휴일이면 뒤쪽 24칸 */
+export const cellOf = (t: KstParts, holidays?: Map<string, string>) =>
+  (t.day === 0 || t.day === 6 || holidays?.has(t.date) ? 24 : 0) + Math.floor(t.hour);
+
+/** 주말 배율: 그 지역 실제 주말/평일 방문객 비(데이터랩)가 있으면 평일 0.75에 곱한다. 없으면 1.2 (비 1.6) */
+export const weekendFactor = (ratio?: number) => (ratio ? Math.max(0.8, Math.min(1.8, 0.75 * ratio)) : 1.2);
+
 function dayFactor(place: Place, t: KstParts, s?: Signals): number {
   if (place.eventDate) {
     // 이벤트 당일엔 폭증, 그 외엔 평소 공원 수준
     return t.date >= place.eventDate && t.date <= (place.eventEndDate ?? place.eventDate) ? 1.15 : 0.3;
   }
-  if (s?.holidays?.has(t.date)) return 1.25;
-  if (t.day === 0 || t.day === 6) return 1.2;
+  const weekend = weekendFactor(s?.weekRatio);
+  if (s?.holidays?.has(t.date)) return Math.max(1.25, weekend * 1.05);
+  if (t.day === 0 || t.day === 6) return weekend;
   // 공휴일 전날 저녁·금요일 저녁은 조금 붐빈다
   if (t.hour >= 17 && (t.day === 5 || s?.holidays?.has(addDays(t.date, 1)))) return 1.05;
   return 0.75;
@@ -165,7 +173,8 @@ function expected(place: Place, t: KstParts, s?: Signals): Expected {
     airFactor(place, t.date, s) *
     concentrationFactor(s, t.date) *
     trendFactor(s, t.date) *
-    schoolFactor(place, t, s);
+    schoolFactor(place, t, s) *
+    (s?.calib?.[cellOf(t, s.holidays)] ?? 1);
   const pop = s?.localPop?.hourly;
   const eventDay = !!place.eventDate && t.date >= place.eventDate && t.date <= (place.eventEndDate ?? place.eventDate);
 

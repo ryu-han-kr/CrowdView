@@ -9,6 +9,7 @@ import type { Place } from "../types";
 import { getLocalPop, type LocalPop } from "./busan-pop";
 import { getSchoolOff, getSearchTrend } from "./extra-signals";
 import { getAirForecast, getAirNow, getMidWeather, type AirNow, type MidDay } from "./weather-air";
+import { getCalibration } from "./calibration";
 
 export interface Weather {
   tmp?: number; // 기온 °C
@@ -38,6 +39,10 @@ export interface Signals {
   searchTrend?: number;
   /** YYYY-MM-DD → 서울·경기 초등학교 표본 중 쉬는 학교 비율 (0~1) */
   schoolOff?: Map<string, number>;
+  /** 실측 보정 배율 48칸 (평일/주말 × 시, lib/crowd/calibration) */
+  calib?: number[];
+  /** 그 시군구의 주말/평일 방문객 비 (데이터랩, 작년 이맘때 6주) */
+  weekRatio?: number;
 }
 
 const HOUR = 3600;
@@ -138,7 +143,10 @@ export async function getAirportPax(place: Place): Promise<Map<string, number[]>
   const map = new Map<string, number[]>();
   if (place.airport === "ICN1" || place.airport === "ICN2") {
     const field = place.airport === "ICN1" ? "t1dgsum1" : "t2dgsum2";
-    for (const [sel, date] of [["0", today], ["1", addDays(today, 1)]] as const) {
+    for (const [sel, date] of [
+      ["0", today],
+      ["1", addDays(today, 1)],
+    ] as const) {
       const rows = await dataGoKr("/B551177/passgrAnncmt/getPassgrAnncmt", { selectdate: sel, type: "json" }, 30 * 60);
       const hours = Array<number>(24).fill(0);
       for (const r of rows) {
@@ -166,7 +174,7 @@ export async function getAirportPax(place: Place): Promise<Map<string, number[]>
 
 export async function getSignals(place: Place): Promise<Signals> {
   if (!process.env.DATA_GO_KR_KEY) return {};
-  const [holidays, weather, concentration, pax, localPop, midWeather, air, airForecast, searchTrend, schoolOff] = await Promise.allSettled([
+  const [holidays, weather, concentration, pax, localPop, midWeather, air, airForecast, searchTrend, schoolOff, calib] = await Promise.allSettled([
     getHolidays(),
     getWeather(place),
     place.kto ? getConcentration(place.kto) : Promise.resolve(undefined),
@@ -178,6 +186,7 @@ export async function getSignals(place: Place): Promise<Signals> {
     // 키가 있을 때만 (없으면 undefined)
     place.airport ? Promise.resolve(undefined) : getSearchTrend(place.name),
     getSchoolOff(),
+    getCalibration(place),
   ]);
   const ok = <T>(r: PromiseSettledResult<T>, name: string): T | undefined => {
     if (r.status === "fulfilled") return r.value;
@@ -195,5 +204,6 @@ export async function getSignals(place: Place): Promise<Signals> {
     airForecast: ok(airForecast, "airForecast"),
     searchTrend: ok(searchTrend, "searchTrend"),
     schoolOff: ok(schoolOff, "schoolOff"),
+    calib: ok(calib, "calib"),
   };
 }
