@@ -67,6 +67,7 @@ const SOURCE_LABEL: Record<CrowdResult["source"], string> = {
   "kac-airport": "한국공항공사 공항 혼잡도",
   "themeparks-wiki": "놀이기구 대기시간 · Powered by ThemeParks.wiki",
   "queue-times": "놀이기구 대기시간 · Powered by Queue-Times.com",
+  parking: "주차장 실시간 주차 × 평소 대비 (CrowdView 추정)",
   model: "CrowdView 추정 (요일·시간·날씨 패턴)",
 };
 
@@ -410,6 +411,25 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   max: compactNumber(crowd.area.range[1], lang),
                 })}{" "}
                 <span className="text-xs text-gray-600">· {t("서울시 실측")}</span>
+                {crowd.vsUsual !== undefined && (
+                  <span className="block">
+                    {Math.abs(crowd.vsUsual - 1) < 0.1
+                      ? t("평소 이 시간과 비슷해요")
+                      : t(crowd.vsUsual > 1 ? "평소 이 시간보다 {n}% 많아요" : "평소 이 시간보다 {n}% 적어요", {
+                          n: Math.round(Math.abs(crowd.vsUsual - 1) * 100),
+                        })}
+                  </span>
+                )}
+              </p>
+            )}
+            {crowd.parking && isOpen && !beforeEvent && (
+              <p className="mt-2 text-sm text-gray-600">
+                {t("{lot} {n}/{total}면 주차 중", {
+                  lot: t(crowd.parking.label),
+                  n: crowd.parking.occupied.toLocaleString(),
+                  total: crowd.parking.total.toLocaleString(),
+                })}{" "}
+                <span className="text-xs text-gray-600">· {t("공공데이터 실측")}</span>
                 {crowd.vsUsual !== undefined && (
                   <span className="block">
                     {Math.abs(crowd.vsUsual - 1) < 0.1

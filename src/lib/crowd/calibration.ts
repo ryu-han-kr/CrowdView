@@ -79,8 +79,8 @@ export async function getCalibration(place: Place): Promise<number[] | undefined
   return undefined;
 }
 
-/** 배울 수 있는 실측인지: 실측 원천 · 지역 안 시설 아님 · 운영 중 · 20분 안 */
-export const learnable = (c: CrowdResult) => c.source !== "model" && !c.area && c.open && c.ageMinutes <= 20;
+/** 배울 수 있는 실측인지: 실측 원천 · 지역 안 시설·주차 배율 장소 아님(점수가 모델에서 나와 순환) · 운영 중 · 20분 안 */
+export const learnable = (c: CrowdResult) => c.source !== "model" && c.source !== "parking" && !c.area && c.open && c.ageMinutes <= 20;
 
 export interface Sample {
   place: Place;

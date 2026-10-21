@@ -43,6 +43,8 @@ export const APIS: ApiInfo[] = [
   { id: "kto-tour", name: "관광공사 TourAPI(축제·운영시간)", prefix: "/B551011/KorService2/", dataset: "15101578", limit: 1000 },
   { id: "kto-related", name: "관광공사 연관 관광지", prefix: "/B551011/TarRlteTarService1/", dataset: "15128560", limit: 1000 },
   { id: "kto-datalab", name: "관광공사 데이터랩(지역 방문자)", prefix: "/B551011/DataLabService/", dataset: "15101972", limit: 1000 },
+  // 강원랜드 광장주차장 실시간 주차 (하이원 보조 지표). 개발계정 5,000/일, 요청 주소는 PARKING_HIGH1_URL (lib/crowd/parking)
+  { id: "parking-high1", name: "강원랜드 광장주차장 실시간 주차", dataset: "15168488", limit: 5000 },
   { id: "busan-pop", name: "부산시 생활인구", prefix: "/6260000/", limit: 1000, limitGuess: true },
   // 공공데이터포털 밖
   { id: "seoul-citydata", name: "서울시 실시간 도시데이터" },

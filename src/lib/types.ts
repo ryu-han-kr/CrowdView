@@ -127,7 +127,9 @@ export interface CrowdSnapshot {
   headcount: number;
   trend: "up" | "down" | "flat";
   hourly: HourPoint[];
-  source: "seoul-citydata" | "incheon-airport" | "kac-airport" | "themeparks-wiki" | "queue-times" | "model";
+  source: "seoul-citydata" | "incheon-airport" | "kac-airport" | "themeparks-wiki" | "queue-times" | "parking" | "model";
+  /** 주차장 실시간 주차 (lib/crowd/parking): 점수는 모델 × 평소 대비 주차 배율 */
+  parking?: { occupied: number; total: number; label: string };
   zones?: Zone[];
   /** 원천이 주는 공식 단계 (예: 서울시 '보통'). 장소 기준과 다를 수 있어 참고로 보여준다 */
   officialLevel?: string;

@@ -3,6 +3,11 @@
 export default {
   // ── 결제·해지·환불 확인 창 (components/ConfirmSheet.tsx)
   "처리 중…": ["Processing…", "処理中…", "处理中…", "處理中…"],
+  // 주차장 실시간 주차 (lib/crowd/parking, 하이원)
+  "{lot} {n}/{total}면 주차 중": ["{lot}: {n}/{total} spaces occupied","{lot} {n}/{total}面 駐車中","{lot} {n}/{total}个车位已停","{lot} {n}/{total}個車位已停"],
+  "공공데이터 실측": ["Public data, measured","公共データ実測","公共数据实测","公共資料實測"],
+  "강원랜드 광장주차장": ["Kangwon Land Plaza Parking","江原ランド広場駐車場","江原乐园广场停车场","江原樂園廣場停車場"],
+  "주차장 실시간 주차 × 평소 대비 (CrowdView 추정)": ["Live parking occupancy vs. usual (CrowdView estimate)","駐車場のリアルタイム駐車×平常比（CrowdView推定）","停车场实时车位 × 平时对比（CrowdView估算）","停車場即時車位 × 平時對比（CrowdView估算）"],
   "{name} 결제": ["{name} checkout", "{name} のお支払い", "{name} 付款", "{name} 付款"],
   "월 {price}원 (부가세 포함)": [
     "KRW {price}/month (VAT included)",

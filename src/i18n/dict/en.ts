@@ -3,6 +3,10 @@ import type { Dict } from "../translate";
 
 const dict: Dict = {
   "처리 중…": "Processing…",
+  "{lot} {n}/{total}면 주차 중": "{lot}: {n}/{total} spaces occupied",
+  "공공데이터 실측": "Public data, measured",
+  "강원랜드 광장주차장": "Kangwon Land Plaza Parking",
+  "주차장 실시간 주차 × 평소 대비 (CrowdView 추정)": "Live parking occupancy vs. usual (CrowdView estimate)",
   "{name} 결제": "{name} checkout",
   "월 {price}원 (부가세 포함)": "KRW {price}/month (VAT included)",
   "오늘 첫 달이 결제되고, 매달 오늘과 같은 날짜에 같은 카드로 자동 결제돼요": "The first month is charged today, then the same card is charged automatically on this date every month",
