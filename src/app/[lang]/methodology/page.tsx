@@ -74,7 +74,8 @@ const KO: Copy = {
   sources: [
     ["서울시 실시간 도시데이터", "서울 121곳 인구·12시간 예측", "10분"],
     ["인천국제공항공사 · 한국공항공사", "출국장 대기·혼잡, 주차, 승객 예고", "5~30분"],
-    ["ThemeParks.wiki", "에버랜드·롯데월드 놀이기구 대기", "2분"],
+    ["ThemeParks.wiki · Queue-Times(예비)", "에버랜드·레고랜드·캐리비안베이 놀이기구 대기", "2~5분"],
+    ["한국도로공사 · 서울시 도로 소통", "고속도로·서울 주변 도로 속도", "10분"],
     ["한국관광공사 TourAPI · 데이터랩 · 관광지 집중률", "축제 일정, 명소 사진·좌표, 지역 방문객, 30일 예측", "6시간~1주"],
     ["기상청 · 에어코리아 · 한국천문연구원", "날씨·미세먼지·공휴일", "1~12시간"],
     ["서울 열린데이터광장", "지하철 노선·역간 시간·역별 승하차, 화장실·와이파이·문화공간·Visit Seoul", "1주"],
@@ -139,7 +140,8 @@ const EN: Copy = {
   sources: [
     ["Seoul real-time city data", "Population and 12-hour forecast for 121 Seoul areas", "10 min"],
     ["Incheon International Airport · Korea Airports Corporation", "Departure waits, parking, passenger notices", "5–30 min"],
-    ["ThemeParks.wiki", "Everland and Lotte World ride waits", "2 min"],
+    ["ThemeParks.wiki · Queue-Times (backup)", "Everland, Legoland and Caribbean Bay ride waits", "2-5 min"],
+    ["Korea Expressway Corp. · Seoul road traffic", "Expressway and nearby Seoul road speeds", "10 min"],
     [
       "Korea Tourism Organization TourAPI · DataLab · concentration",
       "Festivals, landmark photos, regional visitors, 30-day forecast",

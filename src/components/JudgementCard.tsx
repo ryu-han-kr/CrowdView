@@ -14,6 +14,7 @@ const LIVE: Partial<Record<CrowdResult["source"], string>> = {
   "incheon-airport": "인천국제공항공사 출국장 대기시간·인원 (1분 단위)",
   "kac-airport": "한국공항공사 구간별 혼잡도 (체크인~탑승)",
   "themeparks-wiki": "놀이기구 대기시간 평균 (ThemeParks.wiki, 5분 단위)",
+  "queue-times": "놀이기구 대기시간 평균 (Queue-Times, 5분 단위)",
 };
 
 /** "이 혼잡도는 어떻게 판단하나요?" — 장소마다 실제로 쓰인 데이터와 보정 요소를 보여준다 */

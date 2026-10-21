@@ -6,7 +6,7 @@ export type DataGrade = "A" | "B" | "C";
 
 export function dataGrade(c: Pick<CrowdSnapshot, "source" | "area">): DataGrade {
   if (c.source === "model") return "C";
-  if (c.source === "themeparks-wiki" || c.area) return "B";
+  if (c.source === "themeparks-wiki" || c.source === "queue-times" || c.area) return "B";
   return "A";
 }
 

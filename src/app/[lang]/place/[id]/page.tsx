@@ -63,6 +63,7 @@ const SOURCE_LABEL: Record<CrowdResult["source"], string> = {
   "incheon-airport": "인천국제공항공사 출국장 혼잡도",
   "kac-airport": "한국공항공사 공항 혼잡도",
   "themeparks-wiki": "놀이기구 대기시간 · Powered by ThemeParks.wiki",
+  "queue-times": "놀이기구 대기시간 · Powered by Queue-Times.com",
   model: "CrowdView 추정 (요일·시간·날씨 패턴)",
 };
 
@@ -506,7 +507,16 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   </div>
                 </details>
               )}
-              <p className="mt-2 text-xs text-gray-500">Powered by ThemeParks.wiki · {t("5분 단위 갱신")}</p>
+              <p className="mt-2 text-xs text-gray-500">
+                {crowd.source === "queue-times" ? (
+                  <a href="https://queue-times.com/" target="_blank" rel="noopener" className="underline">
+                    Powered by Queue-Times.com
+                  </a>
+                ) : (
+                  "Powered by ThemeParks.wiki"
+                )}{" "}
+                · {t("5분 단위 갱신")}
+              </p>
             </section>
           )}
 
