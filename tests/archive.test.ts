@@ -52,3 +52,39 @@ test("R2 환경변수가 없으면 꺼져 있고 저장 수 0", async () => {
   assert.equal(archiveEnabled(), false);
   assert.equal(await archiveSnapshot({ everland: crowd }, seoul), 0);
 });
+
+// 하루 요약 (lib/archive-summary): 깨진 줄은 버리고, 장소 평균은 문 연 것만, 최대 시각은 KST, 서울 사람 수는 범위 가운데
+import { formatSummaryTable, parseArchiveLines, summarizeArchive } from "@/lib/archive-summary";
+
+test("요약: 장소는 문 연 스냅샷만 평균, 최대 시각 KST, 서울은 범위 가운데 값", () => {
+  const text = [
+    JSON.stringify({ kind: "place", at: "2026-10-22T01:00:00.000Z", placeId: "everland", score: 0, open: false }),
+    JSON.stringify({ kind: "place", at: "2026-10-22T03:00:00.000Z", placeId: "everland", score: 40, open: true, headcount: 10000 }),
+    JSON.stringify({ kind: "place", at: "2026-10-22T05:00:00.000Z", placeId: "everland", score: 80, open: true, headcount: 20000 }),
+    JSON.stringify({ kind: "seoul", at: "2026-10-22T03:00:00.000Z", code: "POI014", area: "강남역", score: 48, min: 30000, max: 32000 }),
+    JSON.stringify({ kind: "seoul", at: "2026-10-22T05:00:00.000Z", code: "POI014", area: "강남역", score: 60, min: 40000, max: 44000 }),
+    "",
+    "{깨진 줄",
+    JSON.stringify({ kind: "other", at: "x" }),
+  ].join("\n");
+  const lines = parseArchiveLines(text);
+  assert.equal(lines.length, 5);
+  const s = summarizeArchive(lines);
+  assert.equal(s.snapshots, 3);
+  assert.equal(s.from, "2026-10-22T01:00:00.000Z");
+  assert.equal(s.to, "2026-10-22T05:00:00.000Z");
+  const ev = s.places[0];
+  assert.equal(ev.id, "everland");
+  assert.deepEqual([ev.n, ev.openN, ev.avg, ev.max, ev.maxAt], [3, 2, 60, 80, "14:00"]);
+  assert.deepEqual(ev.people, { avg: 15000, max: 20000 });
+  const gn = s.seoul[0];
+  assert.deepEqual([gn.label, gn.n, gn.avg, gn.max, gn.maxAt], ["강남역", 2, 54, 60, "14:00"]);
+  assert.deepEqual(gn.people, { avg: 36500, max: 42000 });
+  const table = formatSummaryTable(s.places);
+  assert.match(table, /everland\s+2\/3\s+60\s+80\s+14:00\s+15,000\s+20,000/);
+});
+
+test("요약: 빈 입력", () => {
+  const s = summarizeArchive([]);
+  assert.deepEqual(s, { snapshots: 0, places: [], seoul: [] });
+});

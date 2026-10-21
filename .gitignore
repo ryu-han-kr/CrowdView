@@ -21,3 +21,6 @@ AGENTS.md
 
 # 사업자등록증 등 개인정보 문서 (커밋 금지)
 docs/*사업자등록증*
+
+# 보관 자료 내려받기 (scripts/archive/read.ts)
+/.archive/
