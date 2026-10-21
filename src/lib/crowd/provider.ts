@@ -7,6 +7,8 @@ import { SEOUL_LEVEL_SCORE, getAllSeoulLive } from "../seoul-live";
 import { modelSnapshot } from "./model";
 import { fetchThemePark } from "./themeparks";
 import { fixtureMode } from "../fixtures";
+import { updateBaseline } from "./baseline";
+import { valueFromScore, type LevelSteps } from "../levels";
 import { getSignals, type Signals } from "./signals";
 
 /**
@@ -29,16 +31,21 @@ async function fetchSeoulCitydata(place: Place, s: Signals): Promise<CrowdSnapsh
   if (!row || SEOUL_LEVEL_SCORE[row.level] === undefined) throw new Error(`seoul citydata: ${place.seoulArea} 없음`);
   const headcountRange: [number, number] = [row.min, row.max];
   const share = siteShare(place);
-  // 명소 기준 인원 (100명 단위). 지역 그대로 쓰는 행사장은 비율 1
-  const site = (n: number) => (share === 1 ? n : Math.round((n * share) / 100) * 100);
-  const headcount = site(Math.round((row.min + row.max) / 2));
-  const peopleKind = share === 1 ? "real" : "area";
-  const score = row.score;
-
-  // 시간대 곡선은 모델 곡선을 쓰고, 서울시 12시간 예측이 있는 시간은 공식 예보로 덮어쓴다
+  // 평소 이 요일·시간 대비 지금 지역 인구 (2주 넘게 쌓인 뒤부터 값이 나온다)
+  const vsUsual = await updateBaseline(place.id, (row.min + row.max) / 2).catch(() => undefined);
   const base = modelSnapshot(place, new Date(), s);
+  // 지역 안의 한 시설(롯데월드 ⊂ 잠실 관광특구): 지역 단계·인원을 그대로 쓰면 크게 부풀려진다 (지역 10만 명 > 시설 정원 3.5만).
+  // → 시설의 평소 하루(예측 모델: 요일·시간·날씨·관광공사 집중률) × 오늘 지역이 평소보다 붐비는 정도. 인원은 시설 정원 기준으로 환산
+  const inArea = share < 1;
+  const siteSteps: LevelSteps = [0.2, 0.4, 0.6, 0.8].map((r) => Math.round(place.capacity * r)) as LevelSteps;
+  const score = inArea ? Math.max(0, Math.min(100, Math.round(base.score * (vsUsual ?? 1)))) : row.score;
+  const site = (n: number) => (inArea ? Math.min(place.capacity, Math.round((n * share) / 100) * 100) : n);
+  const headcount = inArea ? Math.round(valueFromScore(score, siteSteps) / 100) * 100 : Math.round((row.min + row.max) / 2);
+  const peopleKind = inArea ? "est" : "real";
+
+  // 시간대 곡선은 모델 곡선을 쓰고, 서울시 12시간 예측이 있는 시간은 공식 예보로 덮어쓴다 (지역 안 시설은 모델 곡선 그대로)
   const hourly = base.hourly.map((p) => ({ ...p }));
-  for (const f of row.forecast) {
+  for (const f of inArea ? [] : row.forecast) {
     const h = Number(f.time.slice(11, 13));
     const point = hourly.find((p) => p.hour === h && p.forecast);
     if (!point) continue;
@@ -54,7 +61,9 @@ async function fetchSeoulCitydata(place: Place, s: Signals): Promise<CrowdSnapsh
     open: base.open,
     headcount,
     ...(share === 1 ? { headcountRange } : { area: { name: area.name, range: headcountRange } }),
-    officialLevel: row.level,
+    ...(vsUsual !== undefined && { vsUsual }),
+    // 지역 안 시설은 지역의 공식 단계를 시설 단계처럼 보이지 않게 뺀다
+    ...(!inArea && { officialLevel: row.level }),
     observedAt: row.time,
     hourly,
     source: "seoul-citydata",

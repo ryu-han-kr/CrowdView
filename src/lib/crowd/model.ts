@@ -121,6 +121,22 @@ function airFactor(place: Place, date: string, s?: Signals): number {
   return g === 4 ? 1 - 0.25 * outdoor : g === 3 ? 1 - 0.12 * outdoor : 1;
 }
 
+/** 네이버 검색 추이: 오늘부터 7일 동안만 (그 뒤는 알 수 없다) */
+function trendFactor(s: Signals | undefined, date: string): number {
+  if (!s?.searchTrend) return 1;
+  const today = kst().date;
+  return date >= today && date <= addDays(today, 6) ? s.searchTrend : 1;
+}
+
+/** 학교 쉬는 날(방학·재량휴업)의 평일: 가족 나들이 장소가 붐빈다 (주말·공휴일은 이미 dayFactor에) */
+const FAMILY: Partial<Record<Place["category"], number>> = { themepark: 0.35, waterpark: 0.35, ski: 0.3, landmark: 0.15 };
+function schoolFactor(place: Place, t: KstParts, s?: Signals): number {
+  const share = s?.schoolOff?.get(t.date);
+  const weight = FAMILY[place.category];
+  if (!share || !weight || t.day === 0 || t.day === 6 || s?.holidays?.has(t.date)) return 1;
+  return 1 + weight * share;
+}
+
 function concentrationFactor(s: Signals | undefined, date: string): number {
   const ratio = concentrationRatio(s, date);
   return ratio === undefined ? 1 : Math.max(0.7, Math.min(1.4, 0.5 + 0.5 * ratio));
@@ -143,7 +159,13 @@ function expected(place: Place, t: KstParts, s?: Signals): Expected {
   const pax = s?.pax?.get(t.date)?.[h];
   if (pax !== undefined && place.paxSteps) return { score: scoreFromValue(pax, place.paxSteps), people: pax, peopleKind: "real" };
 
-  const factors = dayFactor(place, t, s) * weatherFactor(place, t, s) * airFactor(place, t.date, s) * concentrationFactor(s, t.date);
+  const factors =
+    dayFactor(place, t, s) *
+    weatherFactor(place, t, s) *
+    airFactor(place, t.date, s) *
+    concentrationFactor(s, t.date) *
+    trendFactor(s, t.date) *
+    schoolFactor(place, t, s);
   const pop = s?.localPop?.hourly;
   const eventDay = !!place.eventDate && t.date >= place.eventDate && t.date <= (place.eventEndDate ?? place.eventDate);
 

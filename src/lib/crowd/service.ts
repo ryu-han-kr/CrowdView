@@ -9,6 +9,7 @@ import { getLivePlace, getLivePlaces } from "../place-info";
 import type { CrowdResult, CrowdSnapshot, Place } from "../types";
 import { recordHistory } from "./history";
 import { fetchSnapshot } from "./provider";
+import { withBias } from "./bias";
 import { modelSnapshot } from "./model";
 
 const FRESH_SECONDS = 15 * 60;
@@ -48,7 +49,8 @@ async function readCache(p: Place): Promise<CrowdSnapshot | null> {
 async function refresh(p: Place, previous: CrowdSnapshot | null): Promise<CrowdSnapshot> {
   let snap: CrowdSnapshot;
   try {
-    snap = await fetchSnapshot(p);
+    // 예측·추정 값은 방문자 제보로 본 장소별 보정을 더한다 (lib/crowd/bias)
+    snap = await withBias(await fetchSnapshot(p));
   } catch (err) {
     console.warn(`[crowd] ${p.id} fetch failed:`, err);
     if (previous) {

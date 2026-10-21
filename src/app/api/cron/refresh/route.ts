@@ -10,6 +10,7 @@ import { PLACES } from "@/lib/places";
 import { summarizeDay } from "@/lib/crowd/history";
 import { checkTripWatches } from "@/lib/trip-watch";
 import { flushReports } from "@/lib/crowd-report";
+import { updateBiases } from "@/lib/crowd/bias";
 
 // Vercel Cron(vercel.json, 10분마다, GET)이 Authorization: Bearer CRON_SECRET 헤더로 호출한다.
 // 다른 클라우드로 옮기면 그쪽 스케줄러가 같은 헤더를 붙여 GET 또는 POST로 부르면 된다
@@ -37,6 +38,8 @@ export async function GET(req: Request) {
     : 0;
   // 어제 방문자 제보를 DB에 한 번에 (정확도 점검용)
   const reports = daily ? await flushReports(addDays(now.date, -1)).catch(async (e) => (await opsAlert("제보 저장 실패", e), 0)) : 0;
+  // 제보로 장소별 보정값 다시 계산 (예측·추정 값에만 쓰인다)
+  const biased = daily ? await updateBiases(PLACES).catch(async (e) => (await opsAlert("제보 보정 계산 실패", e), 0)) : 0;
   // 여행 날짜 알림 (Plus): 아침 9시 첫 수집 때 한 번 (새벽에 깨우지 않게)
   const morning = Math.floor(now.hour) === 9 && (now.hour % 1) * 60 < 10;
   const trips = morning ? await checkTripWatches().catch(async (e) => (await opsAlert("여행 날짜 알림 실패", e), 0)) : 0;
@@ -58,7 +61,7 @@ export async function GET(req: Request) {
     );
   // 실시간 원본이 하나도 안 들어오면(전부 예측값) 원본 API·키 장애일 가능성이 크다
   if (refreshed.length && refreshed.every((r) => r.source === "model")) await opsAlert(`실시간 수집 전체 실패 (${refreshed.length}곳 모두 예측값)`);
-  return NextResponse.json({ refreshed, alerts, charged, expired, notices, scored, summarized, trips, reports });
+  return NextResponse.json({ refreshed, alerts, charged, expired, notices, scored, summarized, trips, reports, biased });
 }
 
 export const POST = GET;
