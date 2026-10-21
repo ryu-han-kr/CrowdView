@@ -107,7 +107,7 @@ export function BottomNav() {
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
                 className={`flex h-16 flex-col items-center justify-center gap-0.5 text-[11px] font-medium ${
-                  active ? "text-indigo-600" : "text-gray-500"
+                  active ? "text-indigo-600" : "text-gray-600"
                 }`}
               >
                 <span

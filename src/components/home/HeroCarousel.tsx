@@ -128,7 +128,8 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
               <div className="absolute inset-y-0 left-0 flex max-w-[85%] flex-col justify-end p-5 pb-9 text-white md:max-w-[60%] md:justify-center md:px-16 md:py-10">
                 {(s.tag || s.live) && (
                   <span className="mb-2 flex w-fit items-stretch overflow-hidden rounded-md text-[11px] font-bold md:text-xs">
-                    {s.live && <span className="bg-red-600 px-2 py-0.5 text-white">LIVE</span>}
+                    {/* 옆에 흐리게 보이는 배너(opacity 60%)에서는 빨간 바탕 글자 대비가 모자라 가운데 배너에만 */}
+                    {s.live && current && <span className="bg-red-700 px-2 py-0.5 text-white">LIVE</span>}
                     {s.tag && <span className={`px-2 py-0.5 ${s.live ? "bg-black/60 text-white" : "bg-white text-gray-900"}`}>{s.tag}</span>}
                   </span>
                 )}
