@@ -1,4 +1,4 @@
-// 대표 명소(66곳) 혼잡 추정: 근처에 실시간 원천이 없는 명소도 장소와 같은 예측 모델(요일·시간·공휴일·날씨·관광공사 집중률)로
+// 대표 명소(117곳) 혼잡 추정: 근처에 실시간 원천이 없는 명소도 장소와 같은 예측 모델(요일·시간·공휴일·날씨·관광공사 집중률)로
 // 지금 혼잡과 시간대 곡선을 만든다. 화면에는 항상 '추정'으로 표시한다.
 import spotKto from "@/data/korea/spot-kto.json";
 import { forecastForDate, modelSnapshot } from "./crowd/model";

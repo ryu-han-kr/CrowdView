@@ -31,7 +31,7 @@ export function MapExplorer({ spots: base, regions, subtitle }: { spots: Explore
   const { t, lang } = useI18n();
   const [theme, setTheme] = useState<ThemeId | "all">("all");
   const [region, setRegion] = useState<string>("all");
-  // 전국 명소 디렉터리(관광공사 1,856곳)는 브라우저에서 받는다. 혼잡은 가까운(1km 안) 실시간 장소·서울 지역 값
+  // 전국 명소 디렉터리(관광공사 1,852곳)는 브라우저에서 받는다. 혼잡은 가까운(1km 안) 실시간 장소·서울 지역 값
   const [directory, setDirectory] = useState<ExploreSpot[]>([]);
   useEffect(() => {
     const live = base.filter((s) => (s.theme === "live" || s.theme === "seoul") && s.score !== undefined);

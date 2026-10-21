@@ -94,7 +94,7 @@ export default async function MapPage({ params }: { params: Promise<{ lang: stri
       img: l.img,
     });
   }
-  // 전국 명소 디렉터리(1,856곳)는 화면에서 /data/spots.json 으로 받는다 (HTML을 가볍게)
+  // 전국 명소 디렉터리(1,852곳)는 화면에서 /data/spots.json 으로 받는다 (HTML을 가볍게)
   // 축제: 앞으로 2주 안에 열리는 곳은 작년 방문객 기준 예상 혼잡 (그 뒤는 회색)
   const soon = addDays(today, 14);
   const shownFestivals = festivals.filter((f) => f.lat && f.lng && !isLongRunning(f));

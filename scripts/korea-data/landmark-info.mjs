@@ -1,4 +1,4 @@
-// 대표 명소 66곳 상세 → src/data/korea/landmark-info.json ({ [id]: { overview, addr, tel, homepage, usetime, restdate, parking, images } })
+// 대표 명소 117곳 상세 → src/data/korea/landmark-info.json ({ [id]: { overview, addr, tel, homepage, usetime, restdate, parking, images } })
 // 한국관광공사 TourAPI KorService2: detailCommon2(개요·주소) + detailIntro2(이용시간·쉬는날) + detailImage2(사진). 실행당 호출 약 200건
 // 사용: node scripts/korea-data/landmark-info.mjs  (DATA_GO_KR_KEY: .env.local 또는 환경변수). landmarks.mjs 다음에 실행
 import fs from "node:fs";
@@ -59,7 +59,11 @@ const firstUrl = (s) => {
 
 const landmarks = JSON.parse(fs.readFileSync(path.join("src", "data", "korea", "landmarks.json"), "utf8"));
 const out = {};
+// ONLY_NEW=1: 지난 결과가 있는 곳은 부르지 않는다 (아래에서 지난 결과를 합친다)
+const infoFile = path.join("src", "data", "korea", "landmark-info.json");
+const done = process.env.ONLY_NEW && fs.existsSync(infoFile) ? JSON.parse(fs.readFileSync(infoFile, "utf8")) : {};
 for (const l of landmarks) {
+  if (done[l.id]) continue;
   const [common] = await call("detailCommon2", { contentId: l.cid });
   if (!common) {
     console.warn(`없음: ${l.n.ko}`);

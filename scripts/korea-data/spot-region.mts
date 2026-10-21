@@ -1,4 +1,4 @@
-// 대표 명소 66곳 → 관광공사 데이터랩 시군구 코드 (src/data/korea/spot-region.json: { [명소 id]: { code, name } })
+// 대표 명소 117곳 → 관광공사 데이터랩 시군구 코드 (src/data/korea/spot-region.json: { [명소 id]: { code, name } })
 // 데이터랩 '지역별 방문자 수'(locgoRegnVisitrDDList)로 작년 같은 시기 그 시군구 방문객을 보려고. 주소의 시도·시군구 이름으로 맞춘다
 // 실행: npx tsx scripts/korea-data/spot-region.mts  (호출 1건)
 import fs from "node:fs";
