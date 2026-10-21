@@ -59,7 +59,7 @@ async function probe(p: (typeof PROBES)[number]): Promise<ProbeResult> {
   const key = process.env[p.env];
   if (!key) return { configured: false };
   try {
-    const res = await fetch(p.url(key), { signal: AbortSignal.timeout(10_000) });
+    const res = await fetch(p.url(key), { signal: AbortSignal.timeout(15_000) });
     const body = await res.text();
     const sample = body.replaceAll(key, "***").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
     return { configured: true, ok: p.ok(res.status, body), status: res.status, sample, fields: firstItemFields(body) };
