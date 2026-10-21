@@ -53,7 +53,7 @@ export default async function SeoulPage({ params }: { params: Promise<{ lang: st
       </p>
       <SeoulAreaList rows={rows} names={names} />
       <InlineAd className="mt-6" />
-      <p className="mt-6 text-center text-[11px] text-gray-400">
+      <p className="mt-6 text-center text-[11px] text-gray-500">
         {t("서울시 실시간 도시데이터 (통신사 기지국 기반 추정 인구)")}
         {time && ` · ${t("{time} 기준", { time: time.slice(11) })}`}
       </p>

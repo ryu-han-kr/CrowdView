@@ -55,7 +55,7 @@ export function AlertsList({ enabled }: { enabled: boolean }) {
         )}
       </div>
       {rows === null ? (
-        <p className="mt-2 text-sm text-gray-400">{t("불러오는 중…")}</p>
+        <p className="mt-2 text-sm text-gray-500">{t("불러오는 중…")}</p>
       ) : rows.length ? (
         <ul className="mt-2 card divide-y divide-gray-100 p-0">
           {rows.map((r) => (

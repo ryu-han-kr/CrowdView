@@ -8,7 +8,7 @@ import { DataTag } from "@/components/DataTag";
 import { LevelBadge } from "@/components/Level";
 import { FESTIVAL_CATEGORIES, FESTIVAL_STEPS, festivalStatus, getFestival, getFestivalCrowd, getFestivalLive, isLongRunning, seoulAreaOf } from "@/lib/festivals";
 import { compactNumber } from "@/lib/format";
-import { LEVELS, levelOf } from "@/lib/levels";
+import { LEVELS, levelOf, inkOf } from "@/lib/levels";
 import { daysUntil, kst } from "@/lib/time";
 import type { Lang } from "@/i18n/config";
 import { fmtPeople, trRegion } from "@/i18n/patterns";
@@ -121,7 +121,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
               <h1 className="text-2xl font-bold md:text-3xl">{tr(f.title)}</h1>
               <KstNote className="mt-1" />
               {lang !== "ko" && (
-                <p className="mt-1 text-xs text-gray-400">
+                <p className="mt-1 text-xs text-gray-500">
                   {translated
                     ? `${f.title} · ${t("이름·장소는 Papago 자동 번역이에요. 요금은 한국어 원문이에요.")}`
                     : t("축제 이름·장소·요금은 주최 측 원문(한국어)이에요.")}
@@ -159,10 +159,10 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
           {live && (
             <section className="mb-4 rounded-3xl p-5" style={{ background: `${levelOf(live.score).color}14` }}>
               <p className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
-                <span className="rounded bg-emerald-600 px-1.5 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
+                <span className="rounded bg-emerald-700 px-1.5 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
                 {t("지금 {area} 일대", { area: tr(live.area) })}
               </p>
-              <p className="mt-1 text-2xl font-extrabold" style={{ color: levelOf(live.score).color }}>
+              <p className="mt-1 text-2xl font-extrabold" style={{ color: inkOf(levelOf(live.score).color) }}>
                 {t(levelOf(live.score).label)}
                 <span className="ml-2 text-base font-semibold text-gray-900">
                   {t("{min}~{max}명", { min: compactNumber(live.min, lang), max: compactNumber(live.max, lang) })}
@@ -173,7 +173,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
                   {live.forecast.slice(0, 8).map((p) => (
                     <li key={p.time} className="w-16 shrink-0 rounded-xl bg-white/80 py-1.5 text-center">
                       <p className="text-[10px] text-gray-500">{formatHour(Number(p.time.slice(11, 13)), lang)}</p>
-                      <p className="text-xs font-bold" style={{ color: levelOf(p.score).color }}>
+                      <p className="text-xs font-bold" style={{ color: inkOf(levelOf(p.score).color) }}>
                         {t(levelOf(p.score).label)}
                       </p>
                       <p className="text-[10px] text-gray-500">{compactNumber(Math.round((p.min + p.max) / 2), lang)}</p>
@@ -181,7 +181,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
                   ))}
                 </ul>
               )}
-              <p className="mt-2 text-[11px] text-gray-400">
+              <p className="mt-2 text-[11px] text-gray-500">
                 {t("서울시 실시간 도시데이터")} · {t("서울시 단계 ‘{level}’", { level: t(live.level) })} · {t("{time} 기준", { time: live.time })} ·{" "}
                 {t("축제 장소에서 {m}m 떨어진 실시간 지역", { m: live.distance })}
               </p>
@@ -190,13 +190,13 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
           {skt && (
             <section className="mb-4 rounded-3xl p-5" style={{ background: `${levelOf(skt.score).color}14` }}>
               <p className="text-xs font-medium text-gray-500">
-                <span className="mr-1 rounded bg-emerald-600 px-1 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
+                <span className="mr-1 rounded bg-emerald-700 px-1 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
                 {t("지금 {area} 일대", { area: skt.poiName })}
               </p>
-              <p className="mt-1 text-2xl font-extrabold" style={{ color: levelOf(skt.score).color }}>
+              <p className="mt-1 text-2xl font-extrabold" style={{ color: inkOf(levelOf(skt.score).color) }}>
                 {t(levelOf(skt.score).label)}
               </p>
-              <p className="mt-2 text-[11px] text-gray-400">
+              <p className="mt-2 text-[11px] text-gray-500">
                 {t("SK텔레콤 장소 혼잡도")} {skt.time && `· ${t("{time} 기준", { time: skt.time.slice(11) })}`}
               </p>
             </section>
@@ -213,7 +213,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
             </p>
             {crowd && level ? (
               <>
-                <p className="mt-1 text-2xl font-extrabold" style={{ color: level.color }}>
+                <p className="mt-1 text-2xl font-extrabold" style={{ color: inkOf(level.color) }}>
                   {t(level.label)}
                 </p>
                 <p className="mt-1 text-sm text-gray-700">
@@ -260,14 +260,14 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
               </ul>
               <div className="mt-3 flex overflow-hidden rounded-lg text-center text-[10px] leading-tight">
                 {LEVELS.map((l, i) => (
-                  <div key={l.key} className="flex-1 py-1.5" style={{ background: `${l.color}1f`, color: l.color }}>
+                  <div key={l.key} className="flex-1 py-1.5" style={{ background: `${l.color}1f`, color: inkOf(l.color) }}>
                     <b>{t(l.label)}</b>
                     <br />
                     {i === 0 ? `~${pct(FESTIVAL_STEPS[0])}` : i === 4 ? `${pct(FESTIVAL_STEPS[3])}+` : `~${pct(FESTIVAL_STEPS[i])}`}
                   </div>
                 ))}
               </div>
-              <p className="mt-2 text-[11px] text-gray-400">{t("출처: 한국관광공사 데이터랩 (이동통신 방문자, 시군구 일별)")}</p>
+              <p className="mt-2 text-[11px] text-gray-500">{t("출처: 한국관광공사 데이터랩 (이동통신 방문자, 시군구 일별)")}</p>
             </section>
           )}
 
@@ -286,7 +286,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex gap-3">
-      <dt className="w-14 shrink-0 text-gray-400">{label}</dt>
+      <dt className="w-14 shrink-0 text-gray-500">{label}</dt>
       <dd className="min-w-0 flex-1">{children}</dd>
     </div>
   );

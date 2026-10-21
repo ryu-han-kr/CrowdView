@@ -24,7 +24,7 @@ import { HourlyChart } from "@/components/HourlyChart";
 import { CrowdGauge } from "@/components/CrowdGauge";
 import { WeekHeatmap } from "@/components/WeekHeatmap";
 import { DataTag } from "@/components/DataTag";
-import { levelOf } from "@/lib/levels";
+import { levelOf, inkOf } from "@/lib/levels";
 import { spotForecast } from "@/lib/spot-model";
 import spotKto from "@/data/korea/spot-kto.json";
 import { getConcentration } from "@/lib/crowd/signals";
@@ -193,7 +193,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-gray-600">{t("지금 혼잡도")}</p>
-                <p className="text-[28px] leading-tight font-extrabold" style={{ color: nowOpen ? nowLevel.color : "#6b7280" }}>
+                <p className="text-[28px] leading-tight font-extrabold" style={{ color: nowOpen ? inkOf(nowLevel.color) : "#4b5563" }}>
                   {nowOpen ? t(nowLevel.label) : t("운영 시간 아님")}
                   {!live && nowOpen && <DataTag className="text-xs" />}
                 </p>
@@ -201,7 +201,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
               </div>
               <CrowdGauge score={nowScore} closed={!nowOpen} size={120} />
             </div>
-            <p className="mt-2 text-xs text-gray-400">
+            <p className="mt-2 text-xs text-gray-500">
               {live ? (
                 <Link href={live.href} className="underline">
                   {t("가까운 측정 지점 {name} 기준", { name: live.label })} ›
@@ -333,7 +333,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
                   <li key={o.id}>
                     <Link href={`/spot/${o.id}`} className="flex items-center justify-between px-4 py-3 text-sm hover:bg-gray-50">
                       <span className="truncate font-semibold">{o.n[lang] ?? o.n.ko}</span>
-                      <span className="shrink-0 text-xs text-gray-400">{t("{km}km", { km: distanceKm(o, l).toFixed(0) })}</span>
+                      <span className="shrink-0 text-xs text-gray-500">{t("{km}km", { km: distanceKm(o, l).toFixed(0) })}</span>
                     </Link>
                   </li>
                 ))}
@@ -348,7 +348,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
               .filter((r): r is [string, string] => !!r[1])
               .map(([k, v]) => (
                 <div key={k} className="flex gap-3">
-                  <span className="w-16 shrink-0 text-gray-400">{k}</span>
+                  <span className="w-16 shrink-0 text-gray-500">{k}</span>
                   <span lang="ko" className="min-w-0 whitespace-pre-line text-gray-800">
                     {v}
                   </span>
@@ -356,13 +356,13 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
               ))}
             {info?.homepage && (
               <div className="flex gap-3">
-                <span className="w-16 shrink-0 text-gray-400">{t("홈페이지")}</span>
+                <span className="w-16 shrink-0 text-gray-500">{t("홈페이지")}</span>
                 <a href={info.homepage} target="_blank" rel="noopener noreferrer" className="min-w-0 truncate text-indigo-600 underline">
                   {info.homepage.replace(/^https?:\/\//, "").replace(/\/$/, "")}
                 </a>
               </div>
             )}
-            <p className="pt-1 text-xs text-gray-400">{t("자료: 한국관광공사. 방문 전 공식 안내를 확인하세요.")}</p>
+            <p className="pt-1 text-xs text-gray-500">{t("자료: 한국관광공사. 방문 전 공식 안내를 확인하세요.")}</p>
           </section>
         </div>
       </div>

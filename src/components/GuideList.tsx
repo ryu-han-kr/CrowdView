@@ -183,7 +183,7 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
                     <button
                       key={String(c)}
                       onClick={() => setCalmFirst(c)}
-                      className={`min-h-8 rounded-full px-3 py-1.5 ${calmFirst === c ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+                      className={`min-h-8 rounded-full px-3 py-1.5 ${calmFirst === c ? "bg-white text-gray-900 shadow-sm" : "text-gray-600"}`}
                     >
                       {c ? t("한산한 순") : t("기본순")}
                     </button>
@@ -265,7 +265,7 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
                   );
                 })}
               </ul>
-              {list.length > 120 && <p className="mt-3 text-center text-xs text-gray-400">{t("이름이나 구로 더 좁혀 보세요")}</p>}
+              {list.length > 120 && <p className="mt-3 text-center text-xs text-gray-500">{t("이름이나 구로 더 좁혀 보세요")}</p>}
             </>
           )}
         </>

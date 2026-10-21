@@ -12,7 +12,7 @@ import { getDaySummaries, getHistory, type HistoryPoint } from "@/lib/crowd/hist
 import { getSignals } from "@/lib/crowd/signals";
 import { getCrowd } from "@/lib/crowd/service";
 import { siteShare } from "@/lib/crowd/provider";
-import { levelOf, valueFromScore } from "@/lib/levels";
+import { levelOf, valueFromScore, inkOf } from "@/lib/levels";
 import { closedToday, getLivePlace, isOngoingEvent } from "@/lib/place-info";
 import { CrowdGauge } from "@/components/CrowdGauge";
 import { WeekHeatmap } from "@/components/WeekHeatmap";
@@ -359,7 +359,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-gray-600">{beforeEvent ? t("행사 정보") : t("지금 혼잡도")}</p>
-                <p className="text-[28px] leading-tight font-extrabold" style={beforeEvent ? undefined : { color: level.color }}>
+                <p className="text-[28px] leading-tight font-extrabold" style={beforeEvent ? undefined : { color: inkOf(level.color) }}>
                   {beforeEvent ? `${t("행사 전")} · D-${dday}` : t(level.label)}
                   {!beforeEvent && isOpen && isEstimated(crowd) && <DataTag className="text-xs" />}
                 </p>
@@ -394,10 +394,10 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   min: compactNumber(crowd.area.range[0], lang),
                   max: compactNumber(crowd.area.range[1], lang),
                 })}{" "}
-                <span className="text-xs text-gray-500">· {t("서울시 실측")}</span>
+                <span className="text-xs text-gray-600">· {t("서울시 실측")}</span>
               </p>
             )}
-            <p className={`mt-2 text-xs ${crowd.stale ? "font-semibold text-amber-600" : "text-gray-400"}`}>
+            <p className={`mt-2 text-xs ${crowd.stale ? "font-semibold text-amber-700" : "text-gray-600"}`}>
               {t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}
               {crowd.stale && <> · {t("갱신 지연")}</>} · {t(SOURCE_LABEL[crowd.source])}
             </p>
@@ -420,7 +420,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               <p className="mt-1.5 text-xl leading-snug font-extrabold text-emerald-700">
                 <Glyph e="★" className="mr-1 h-5 w-5 text-amber-400" />
                 {t("{hour}쯤 가면 가장 한산해요", { hour: formatHour(best.hour, lang) })}
-                <span className="ml-1.5 align-middle text-sm font-semibold" style={{ color: levelOf(best.score).color }}>
+                <span className="ml-1.5 align-middle text-sm font-semibold" style={{ color: inkOf(levelOf(best.score).color) }}>
                   {t("예상 {level}", { level: t(levelOf(best.score).label) })}
                 </span>
               </p>
@@ -466,7 +466,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               {areas.length > 1 && (
                 <details className="group mt-3 rounded-2xl border border-gray-100">
                   <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-sm font-semibold">
-                    {t("구역별로 보기")} <span className="text-gray-400 group-open:rotate-90">›</span>
+                    {t("구역별로 보기")} <span className="text-gray-500 group-open:rotate-90">›</span>
                   </summary>
                   <div className="divide-y divide-gray-100 border-t border-gray-100">
                     {areas.map((a) => (
@@ -485,7 +485,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   </div>
                 </details>
               )}
-              <p className="mt-2 text-xs text-gray-400">Powered by ThemeParks.wiki · {t("5분 단위 갱신")}</p>
+              <p className="mt-2 text-xs text-gray-500">Powered by ThemeParks.wiki · {t("5분 단위 갱신")}</p>
             </section>
           )}
 
@@ -520,7 +520,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                     {t("최대 {hour} 전후", { hour: formatHour(eventPeak.hour, lang) })}{" "}
                     <b>{fmtPeople(Math.round((place.capacity * eventPeak.score) / 100), t, lang)}</b>
                     <DataTag className="text-amber-300!" /> {t("예상")} ·{" "}
-                    <span style={{ color: levelOf(eventPeak.score).color }}>{levelOf(eventPeak.score).label}</span>
+                    <span style={{ color: inkOf(levelOf(eventPeak.score).color) }}>{levelOf(eventPeak.score).label}</span>
                   </p>
                   <div className="mt-4 rounded-2xl bg-white p-3 text-gray-900">
                     <HourlyChart points={eventForecast} />
@@ -630,7 +630,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   );
                 })}
               </ul>
-              <p className="mt-2 text-xs text-gray-400">{t("한국관광공사 관광지별 연관 관광지 (티맵 이동 데이터)")}</p>
+              <p className="mt-2 text-xs text-gray-500">{t("한국관광공사 관광지별 연관 관광지 (티맵 이동 데이터)")}</p>
             </section>
           )}
 
@@ -676,14 +676,14 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           <section className="mt-8 mb-8 space-y-3 text-sm">
             <h2 className="text-lg font-bold">{t("정보")}</h2>
             <div className="flex gap-3">
-              <span className="w-14 shrink-0 text-gray-400">{t("운영")}</span>
+              <span className="w-14 shrink-0 text-gray-500">{t("운영")}</span>
               <div className="min-w-0">
                 <p>
                   {place.info?.closedToday
                     ? t("오늘 휴무")
                     : t("오늘 {from} ~ {to}", { from: formatClock(place.hours[0]), to: formatClock(place.hours[1]) })}
                   {!place.info?.closedToday && <LocalTime hour={place.hours[0]} to={place.hours[1]} />}{" "}
-                  <span className={isOpen ? "text-emerald-600" : "text-gray-400"}>
+                  <span className={isOpen ? "text-emerald-600" : "text-gray-500"}>
                     {isOpen ? `· ${t("운영 중")}` : `· ${t(crowd.offSeason ? "시즌 아님" : "운영 종료")}`}
                   </span>
                   {!place.info?.hoursVerified && <DataTag kind="임의" />}
@@ -695,18 +695,18 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             </div>
             {place.info?.restText && (
               <div className="flex gap-3">
-                <span className="w-14 shrink-0 text-gray-400">{t("휴무")}</span>
+                <span className="w-14 shrink-0 text-gray-500">{t("휴무")}</span>
                 <span className="text-xs leading-relaxed text-gray-600">{trInfo(place.info.restText)}</span>
               </div>
             )}
             {place.info?.infocenter && (
               <div className="flex gap-3">
-                <span className="w-14 shrink-0 text-gray-400">{t("문의")}</span>
+                <span className="w-14 shrink-0 text-gray-500">{t("문의")}</span>
                 <span>{place.info.infocenter}</span>
               </div>
             )}
             <div className="flex gap-3">
-              <span className="w-14 shrink-0 text-gray-400">{t("주소")}</span>
+              <span className="w-14 shrink-0 text-gray-500">{t("주소")}</span>
               <span>{place.address}</span>
             </div>
             <div className="flex flex-wrap gap-1.5 pt-1">
@@ -716,7 +716,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 </span>
               ))}
             </div>
-            {lang !== "ko" && <p className="pt-1 text-xs text-gray-400">{t("운영 시간·휴무·문의·주소는 한국어 원문이에요.")}</p>}
+            {lang !== "ko" && <p className="pt-1 text-xs text-gray-500">{t("운영 시간·휴무·문의·주소는 한국어 원문이에요.")}</p>}
           </section>
 
         </div>

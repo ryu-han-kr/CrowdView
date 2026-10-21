@@ -60,7 +60,7 @@ export function ExploreView({
           {regions.map((r) => (
             <button key={r.id} onClick={() => choose(r.id)} className={chip(r.id === region)}>
               {t(r.id)}
-              <span className="ml-1 text-xs opacity-60">{r.landmarks.length + r.festivals.length}</span>
+              <span className="ml-1 text-xs opacity-80">{r.landmarks.length + r.festivals.length}</span>
             </button>
           ))}
         </div>

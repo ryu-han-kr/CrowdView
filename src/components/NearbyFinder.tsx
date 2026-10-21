@@ -215,7 +215,7 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
                 </span>
                 <span className="shrink-0 text-right text-xs">
                   <b>{x.km < 1 ? `${Math.round(x.km * 1000)}m` : `${x.km.toFixed(1)}km`}</b>
-                  <span className="block text-gray-400">{t("도보 {n}분", { n: Math.max(1, Math.round((x.km * 1.3 * 60) / 4.5)) })}</span>
+                  <span className="block text-gray-500">{t("도보 {n}분", { n: Math.max(1, Math.round((x.km * 1.3 * 60) / 4.5)) })}</span>
                 </span>
               </>
             );
@@ -245,7 +245,7 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
           })}
         </ul>
       )}
-      <p className="mt-4 text-[11px] text-gray-400">
+      <p className="mt-4 text-[11px] text-gray-500">
         {t("서울시 공중화장실·공공와이파이·문화공간·공공서비스예약, Visit Seoul (서울 열린데이터광장, 주 1회 갱신)")}
       </p>
     </div>

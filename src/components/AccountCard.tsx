@@ -63,7 +63,7 @@ function Inner({ plusSlot }: { plusSlot?: React.ReactNode }) {
             </button>
           </span>
         ) : (
-          <button onClick={() => setConfirming(true)} className="text-[11px] text-gray-400 underline">
+          <button onClick={() => setConfirming(true)} className="text-[11px] text-gray-500 underline">
             {t("회원 탈퇴")}
           </button>
         )}

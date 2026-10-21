@@ -103,7 +103,7 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
               <button
                 key={s}
                 onClick={() => (s === "near" && !me ? useNearby() : setSort(s))}
-                className={`min-h-8 rounded-full px-3 py-1.5 ${sort === s ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+                className={`min-h-8 rounded-full px-3 py-1.5 ${sort === s ? "bg-white text-gray-900 shadow-sm" : "text-gray-600"}`}
               >
                 {s === "busy" ? (
                   t("붐비는 순")

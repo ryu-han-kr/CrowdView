@@ -57,7 +57,7 @@ export function FilterLayout({
 
   const search = (
     <label className="flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-2.5">
-      <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2}>
+      <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-gray-500" fill="none" stroke="currentColor" strokeWidth={2}>
         <path d="m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z" />
       </svg>
       <input
@@ -65,10 +65,10 @@ export function FilterLayout({
         onChange={(e) => onQuery(e.target.value)}
         placeholder={placeholder}
         enterKeyHint="search"
-        className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
+        className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-gray-500"
       />
       {query && (
-        <button onClick={() => onQuery("")} aria-label={t("검색어 지우기")} className="text-gray-400">
+        <button onClick={() => onQuery("")} aria-label={t("검색어 지우기")} className="text-gray-500">
           <Glyph e="✕" className="h-4 w-4" />
         </button>
       )}
@@ -137,7 +137,7 @@ export function FilterLayout({
                         {o.emoji && <Glyph e={o.emoji} className="mr-1 h-[1em] w-[1em]" />}
                         {o.label}
                       </span>
-                      {o.count !== undefined && <span className="text-xs text-gray-400">{o.count}</span>}
+                      {o.count !== undefined && <span className="text-xs text-gray-600">{o.count}</span>}
                     </label>
                   </li>
                 );
@@ -167,7 +167,7 @@ export function FilterLayout({
                   <button key={o.id} onClick={() => toggle(g, o.id)} className={chip(g.selected.includes(o.id))}>
                     {o.emoji && <Glyph e={o.emoji} className="mr-1 h-[1em] w-[1em]" />}
                     {o.label}
-                    {o.count !== undefined && <span className="ml-1 text-xs opacity-60">{o.count}</span>}
+                    {o.count !== undefined && <span className="ml-1 text-xs opacity-80">{o.count}</span>}
                   </button>
                 ))}
               </div>
@@ -193,7 +193,7 @@ function PicksBox({ picks, remove, clear }: { picks: Pick[]; remove: (id: string
           <Glyph e="⭐" className="h-4 w-4 text-amber-400" /> {t("담은 곳 {n}곳", { n: picks.length })}
         </p>
         {picks.length > 0 && (
-          <button onClick={clear} className="text-xs font-semibold text-gray-400">
+          <button onClick={clear} className="text-xs font-semibold text-gray-500">
             {t("비우기")}
           </button>
         )}
@@ -205,7 +205,7 @@ function PicksBox({ picks, remove, clear }: { picks: Pick[]; remove: (id: string
               <Link href={p.href} className="min-w-0 flex-1 truncate hover:text-indigo-600">
                 {p.label}
               </Link>
-              <button onClick={() => remove(p.id)} aria-label={t("빼기")} className="text-xs text-gray-400">
+              <button onClick={() => remove(p.id)} aria-label={t("빼기")} className="text-xs text-gray-500">
                 <Glyph e="✕" className="h-4 w-4" />
               </button>
             </li>

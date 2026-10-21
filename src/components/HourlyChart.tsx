@@ -8,7 +8,7 @@ import { useI18n } from "@/i18n/client";
 import { fmtMinutes, fmtPeople } from "@/i18n/patterns";
 import { formatHour } from "@/i18n/translate";
 import { SHOW_DATA_LABELS } from "@/lib/format";
-import { LEVELS, levelOf } from "@/lib/levels";
+import { LEVELS, levelOf, inkOf } from "@/lib/levels";
 import type { HourPoint } from "@/lib/types";
 
 // 왼쪽 58px는 단계 이름 칸 (그래프 선과 글씨가 겹치지 않게 그림 밖에 둔다)
@@ -175,7 +175,7 @@ export function HourlyChart({
             <b className="text-gray-900">{formatHour(p.hour, lang)}</b> {sel === nowIdx ? `· ${t("지금")}` : ""} ·{" "}
             {isMeasured ? t("실측") : t("AI 예측")}
           </p>
-          <p className="mt-0.5 text-xl font-extrabold" style={{ color: level.color }}>
+          <p className="mt-0.5 text-xl font-extrabold" style={{ color: inkOf(level.color) }}>
             {t(level.label)}
             {p.people !== undefined && (
               <span className="ml-2 text-lg font-bold text-gray-900">
@@ -196,7 +196,7 @@ export function HourlyChart({
         {delta && (
           <div className="shrink-0 text-right">
             <p className="text-xs text-gray-500">{t("{h} 대비", { h: formatHour(prev!.hour, lang) })}</p>
-            <p className={`text-base font-bold ${delta.diff > 0 ? "text-red-500" : delta.diff < 0 ? "text-emerald-600" : "text-gray-500"}`}>
+            <p className={`text-base font-bold ${delta.diff > 0 ? "text-red-600" : delta.diff < 0 ? "text-emerald-600" : "text-gray-500"}`}>
               {delta.diff > 0 ? "↑" : delta.diff < 0 ? "↓" : "→"} {delta.text}
             </p>
           </div>

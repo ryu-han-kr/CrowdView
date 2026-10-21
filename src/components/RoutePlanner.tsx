@@ -8,7 +8,7 @@ import { RouteMap } from "./map/RouteMap";
 import { useI18n } from "@/i18n/client";
 import { LocalTime } from "./LocalTime";
 import { currentPosition, kakaoDirections, type LatLng, type Transport } from "@/lib/geo";
-import { levelOf } from "@/lib/levels";
+import { levelOf, inkOf } from "@/lib/levels";
 import { usePicks, usePlans } from "@/lib/prefs";
 import { INTERESTS, type Interest, type RoutePlan } from "@/lib/route";
 import { LevelBadge } from "./Level";
@@ -457,7 +457,7 @@ export function RouteResult({
             <LocalTime hour={(plan.stops[0].arrive - plan.stops[0].travelMin) / 60} to={plan.endMin / 60} dayOffset={planDay} />
           </p>
           <p className="text-sm text-gray-600">
-            {t("평균 예상 혼잡")} <b style={{ color: levelOf(plan.avgScore).color }}>{t(levelOf(plan.avgScore).label)}</b>
+            {t("평균 예상 혼잡")} <b style={{ color: inkOf(levelOf(plan.avgScore).color) }}>{t(levelOf(plan.avgScore).label)}</b>
             {saved > 5 && <> · {t("가장 붐빌 때보다 {n}점 한산", { n: saved })}</>}
           </p>
         </div>
@@ -517,7 +517,7 @@ export function RouteResult({
                   {s.img ? (
                     <Image src={s.img} alt="" fill sizes="64px" unoptimized={!canOptimize(s.img)} className="object-cover" />
                   ) : (
-                    <span className="flex h-full items-center justify-center text-gray-400">
+                    <span className="flex h-full items-center justify-center text-gray-500">
                       <Glyph e={s.meal ? "🍽️" : "📍"} className="h-6 w-6" />
                     </span>
                   )}
@@ -557,7 +557,7 @@ export function RouteResult({
                 {!s.meal && (
                   <span className="flex shrink-0 flex-col items-end gap-0.5">
                     <LevelBadge score={s.score} />
-                    {s.predicted && <span className="text-[10px] text-gray-400">{t("패턴 예측")}</span>}
+                    {s.predicted && <span className="text-[10px] text-gray-500">{t("패턴 예측")}</span>}
                   </span>
                 )}
               </Link>
@@ -584,7 +584,7 @@ export function RouteResult({
           <p className="text-xs text-white/80">{t("전체 시간표 · 붐비면 다시 짜기 · 1개월 3,900원")}</p>
         </Link>
       )}
-      <p className="mt-4 text-[11px] leading-relaxed text-gray-400">
+      <p className="mt-4 text-[11px] leading-relaxed text-gray-500">
         {t(
           "예상 혼잡은 서울시 실시간 도시데이터와 CrowdView 예측이에요. 이동시간은 서울시 지하철 역간 소요시간과 걷는 거리로 어림한 값이라 실제와 다를 수 있어요. 식사는 서울 여행 가이드 맛집 중 가까운 곳이에요.",
         )}

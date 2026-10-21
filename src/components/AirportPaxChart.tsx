@@ -28,7 +28,7 @@ export function AirportPaxChart({
   const { t, lang } = useI18n();
   const [gate, setGate] = useState<string>("전체");
   const day = days.find((d) => d.date === date);
-  if (!day) return <p className="text-sm text-gray-400">{t("시간대별 승객 정보를 불러오지 못했어요.")}</p>;
+  if (!day) return <p className="text-sm text-gray-500">{t("시간대별 승객 정보를 불러오지 못했어요.")}</p>;
 
   const gateNames = Object.keys(day.hours[0]?.gates ?? {});
   const value = (h: PaxDay["hours"][number]) => (gate === "전체" ? h.total : (h.gates?.[gate] ?? 0));
@@ -107,14 +107,14 @@ export function AirportPaxChart({
           );
         })}
       </div>
-      <div className="mt-1 flex gap-[3px] text-[10px] text-gray-400">
+      <div className="mt-1 flex gap-[3px] text-[10px] text-gray-500">
         {hours.map((h) => (
           <span key={h.hour} className="flex-1 text-center">
             {h.hour % 3 === 0 ? h.hour : ""}
           </span>
         ))}
       </div>
-      <p className="mt-2 text-[11px] text-gray-400">
+      <p className="mt-2 text-[11px] text-gray-500">
         {day.kind === "recorded" ? t("그날 받아 둔 공항공사 예고치") : t("공항공사 시간대별 출발 승객 예고·예상치")} ·{" "}
         {t("막대 색은 시간당 승객 수 기준 혼잡도")}
       </p>

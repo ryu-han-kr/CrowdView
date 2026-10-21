@@ -53,7 +53,7 @@ export default async function ExplorePage({ params }: { params: Promise<{ lang: 
         spotCounts={Object.fromEntries(REGIONS.map((r) => [r.id, (spots as SpotRow[]).filter((s) => s[2] === r.id).length]))}
       />
       <InlineAd className="mt-8" />
-      <p className="mt-6 text-center text-[11px] text-gray-400">{t("사진·위치: 한국관광공사 TourAPI · 축제: 한국관광공사·서울시 · 혼잡도: 서울시 실시간 도시데이터·CrowdView 예측")}</p>
+      <p className="mt-6 text-center text-[11px] text-gray-500">{t("사진·위치: 한국관광공사 TourAPI · 축제: 한국관광공사·서울시 · 혼잡도: 서울시 실시간 도시데이터·CrowdView 예측")}</p>
     </main>
   );
 }

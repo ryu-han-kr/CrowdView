@@ -77,7 +77,7 @@ export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
           })}
         </nav>
         <span className="ml-auto" aria-hidden />
-        <p className="hidden text-xs whitespace-nowrap text-gray-400 2xl:block">{t("실시간 혼잡도 · AI 예측")}</p>
+        <p className="hidden text-xs whitespace-nowrap text-gray-500 2xl:block">{t("실시간 혼잡도 · AI 예측")}</p>
         {/* 오른쪽 버튼은 줄어들지 않게 (좁은 화면에서 '한국어'·'로그인'이 두 줄로 꺾이던 것) — 모자라면 메뉴 쪽이 옆으로 밀린다 */}
         <div className="flex shrink-0 items-center gap-2 whitespace-nowrap">
           <LangSwitcher />
@@ -102,7 +102,7 @@ export function BottomNav() {
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
                 className={`flex h-16 flex-col items-center justify-center gap-0.5 text-[11px] font-medium ${
-                  active ? "text-indigo-600" : "text-gray-400"
+                  active ? "text-indigo-600" : "text-gray-500"
                 }`}
               >
                 <span className={`flex h-8 w-14 items-center justify-center rounded-full transition-colors ${active ? "bg-indigo-50" : ""}`}>

@@ -78,7 +78,7 @@ export async function WeatherCard({ signals, lang, place }: { signals: Signals; 
             <p className="text-[11px] text-gray-500">{t("{name} 측정소", { name: stations.get(air.station) ?? air.station })}</p>
           </div>
         )}
-        <span aria-hidden className="shrink-0 self-center pl-1 text-xl text-gray-400">
+        <span aria-hidden className="shrink-0 self-center pl-1 text-xl text-gray-500">
           ›
         </span>
       </a>
@@ -87,7 +87,7 @@ export async function WeatherCard({ signals, lang, place }: { signals: Signals; 
           {summary.lines.map((l) => (
             <p key={l}>{l}</p>
           ))}
-          <p className="mt-1 text-[11px] text-gray-400">기상청 통보문 · {summary.issued} 발표</p>
+          <p className="mt-1 text-[11px] text-gray-500">기상청 통보문 · {summary.issued} 발표</p>
         </div>
       )}
     </>

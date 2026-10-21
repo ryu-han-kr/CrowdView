@@ -62,7 +62,7 @@ export default async function MePage({ params }: { params: Promise<{ lang: strin
         </p>
       </Link>
 
-      <p className="mb-6 text-center text-[11px] leading-relaxed text-gray-400">
+      <p className="mb-6 text-center text-[11px] leading-relaxed text-gray-500">
         {t("혼잡도: 서울시, 인천국제공항공사, 한국공항공사, 한국관광공사, 기상청 (공공데이터포털)")}
         <br />
         {t("놀이기구 대기시간: Powered by ThemeParks.wiki · 운영 시간·행사 일정: 한국관광공사 TourAPI")}

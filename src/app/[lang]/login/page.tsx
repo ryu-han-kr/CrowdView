@@ -37,7 +37,7 @@ export default async function LoginPage({
             <ReviewLoginForm />
           </div>
         )}
-        <p className="mt-6 text-center text-[11px] leading-relaxed text-gray-400">
+        <p className="mt-6 text-center text-[11px] leading-relaxed text-gray-500">
           {t("시작하면")}{" "}
           <Link href="/terms" className="underline">
             {t("이용약관")}

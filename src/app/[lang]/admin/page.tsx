@@ -61,7 +61,7 @@ export default async function AdminPage() {
               ))}
               {!subs.length && (
                 <tr>
-                  <td colSpan={6} className="px-3 py-6 text-center text-gray-400">
+                  <td colSpan={6} className="px-3 py-6 text-center text-gray-500">
                     아직 구독자가 없어요
                   </td>
                 </tr>
@@ -95,14 +95,14 @@ export default async function AdminPage() {
                   </td>
                   <td className="px-3 py-2 text-right">{p.amount.toLocaleString()}</td>
                   <td className="px-3 py-2 text-right">{p.cancelled_amount ? p.cancelled_amount.toLocaleString() : ""}</td>
-                  <td className="px-3 py-2 font-mono text-[11px] text-gray-400">{p.id}</td>
+                  <td className="px-3 py-2 font-mono text-[11px] text-gray-500">{p.id}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </section>
-      <p className="mt-6 text-[11px] text-gray-400">환불은 토스페이먼츠에서 실제로 처리되고, 처리할 때마다 디스코드 운영 채널에 기록이 남아요.</p>
+      <p className="mt-6 text-[11px] text-gray-500">환불은 토스페이먼츠에서 실제로 처리되고, 처리할 때마다 디스코드 운영 채널에 기록이 남아요.</p>
     </main>
   );
 }
