@@ -60,7 +60,7 @@ export function PhotoGallery({
           <div key={src} className="relative h-full w-full shrink-0 snap-center overflow-hidden" aria-label={`${i + 1} / ${photos.length}`}>
             <Image
               src={src}
-              alt={i === 0 ? alt : `${alt} ${i + 1}`}
+              alt={photos.length > 1 ? `${alt} ${t("사진")} ${i + 1}/${photos.length}` : alt}
               fill
               loading={i === 0 ? "eager" : "lazy"}
               fetchPriority={i === 0 ? "high" : "auto"}

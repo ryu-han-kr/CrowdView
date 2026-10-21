@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     lang,
     path: `/festival/${id}`,
     title: t("{name} 혼잡도·일정", { name: title }),
-    description: t("{name} ({start}~{end}, {region}) 예상 혼잡도와 일정, 장소, 날씨", { name: title, start: f.start, end: f.end, region }),
+    description: t("{name} ({start}~{end}, {region}) 예상 혼잡도와 일정, 장소", { name: title, start: f.start, end: f.end, region }),
     image: f.image,
   });
 }

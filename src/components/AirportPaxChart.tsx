@@ -26,11 +26,13 @@ export function AirportPaxChart({
 }) {
   const [date, setDate] = useState(days.find((d) => d.date === today)?.date ?? days[0]?.date);
   const { t, lang } = useI18n();
-  const [gate, setGate] = useState<string>("전체");
+  const [gatePick, setGate] = useState<string>("전체");
   const day = days.find((d) => d.date === date);
   if (!day) return <p className="text-sm text-gray-500">{t("시간대별 승객 정보를 불러오지 못했어요.")}</p>;
 
-  const gateNames = Object.keys(day.hours[0]?.gates ?? {});
+  // 그날 승객이 0명인 출국장(운영 안 하는 곳)은 버튼에서 뺀다
+  const gateNames = Object.keys(day.hours[0]?.gates ?? {}).filter((g) => day.hours.some((h) => (h.gates?.[g] ?? 0) > 0));
+  const gate = gatePick === "전체" || gateNames.includes(gatePick) ? gatePick : "전체";
   const value = (h: PaxDay["hours"][number]) => (gate === "전체" ? h.total : (h.gates?.[gate] ?? 0));
   // 출국장 하나를 볼 때는 공항 기준을 출국장 수로 나눠 색을 매긴다
   const div = gate === "전체" ? 1 : Math.max(1, gateNames.length);

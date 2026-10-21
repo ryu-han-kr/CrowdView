@@ -155,6 +155,20 @@ function stationOf(subwayInfo) {
 {
   const rows = await fetchAll("mgisToiletPoi");
   const has = (v) => !!String(v ?? "").replace(/\|/g, "").trim();
+  // 운영 시간: 괄호 짝부터 맞추고(닫는 괄호만 남은 건 지우고 안 닫힌 건 닫는다) "정시(06:00~24:00)" → "06:00~24:00"
+  // (예전엔 앞뒤 괄호만 잘라 "상시(24시간", "07:00~21:00) 기타"처럼 깨졌다)
+  const hoursText = (h) => {
+    let open = 0;
+    let s = "";
+    for (const c of h) {
+      if (c === ")") {
+        if (!open) continue;
+        open--;
+      } else if (c === "(") open++;
+      s += c;
+    }
+    return (s + ")".repeat(open)).replace(/정시\(([^()]*)\)/g, "$1").trim();
+  };
   const out = rows
     .map((r) => {
       const lat = num(r.COORD_Y);
@@ -163,7 +177,7 @@ function stationOf(subwayInfo) {
       const hours = clean(r.VALUE_02).replace(/\|/g, " ").trim();
       const flags =
         (/24시간/.test(hours) ? 1 : 0) | (has(r.VALUE_05) ? 2 : 0) | (has(r.VALUE_06) ? 4 : 0) | (has(r.VALUE_07) ? 8 : 0) | (/민간/.test(r.VALUE_01) ? 16 : 0);
-      return [clean(r.CONTS_NAME), lat, lng, flags, hours.replace(/^정시\(|\)$/g, ""), clean(r.VALUE_03).replace(/\|/g, " ").trim(), clean(r.GU_NAME)];
+      return [clean(r.CONTS_NAME), lat, lng, flags, hoursText(hours), clean(r.VALUE_03).replace(/\|/g, " ").trim(), clean(r.GU_NAME)];
     })
     .filter(Boolean);
   write("toilets.json", out);

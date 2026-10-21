@@ -117,7 +117,7 @@ const dict: Dict = {
   "전국 축제 일정 · 혼잡 예측": "Korea festival calendar · Crowd forecast",
   "이번 달 전국 축제 일정과 지역·종류별 목록, 작년 방문객으로 본 예상 혼잡도": "This month's festivals across Korea by region and type, with crowd forecasts from last year's visitors",
   "{name} 혼잡도·일정": "{name} crowd forecast & dates",
-  "{name} ({start}~{end}, {region}) 예상 혼잡도와 일정, 장소, 날씨": "{name} ({start}–{end}, {region}): expected crowds, schedule, venue and weather",
+  "{name} ({start}~{end}, {region}) 예상 혼잡도와 일정, 장소": "{name} ({start}–{end}, {region}): expected crowds, schedule and venue",
   "실시간 혼잡도": "Live crowd levels",
   "실시간 인구": "Live population",
   "인천공항 출국장 혼잡도": "Incheon Airport departure crowd",
@@ -1229,6 +1229,11 @@ const dict: Dict = {
   "스키장": "Ski resorts",
   "시즌 아님": "Off season",
   "운영 중 물놀이 시설 평균 대기시간": "Average wait at open water rides",
+  "이번 주 중 덜 붐빔": "Least busy this week",
+  "앞으로 30일은 날마다 비슷해요.": "The next 30 days look about the same every day.",
+  "요일마다 비슷해요.": "Every day of the week looks about the same.",
+  "날마다 비슷해요": "About the same every day",
+  "단계는 장소마다 평소 인구와 비교한 서울시 기준이에요 · 인원이 많아도 '원활'일 수 있어요": "Levels follow Seoul's rating against each area's usual crowd · a big crowd can still read 'Smooth'",
 };
 
 export default dict;
