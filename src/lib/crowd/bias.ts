@@ -53,7 +53,7 @@ export async function updateBiases(places: Place[]): Promise<number> {
 
 /** 예측·추정 값에만 보정을 더한다 (실측 원천은 그대로) */
 export async function withBias(snap: CrowdSnapshot): Promise<CrowdSnapshot> {
-  if (snap.source !== "model" && !snap.area) return snap;
+  if (snap.source !== "model" && snap.source !== "parking" && !snap.area) return snap;
   const shift = Number(await kv.get(`bias:${snap.placeId}`).catch(() => null)) || 0;
   if (!shift) return snap;
   const clamp = (n: number) => Math.max(0, Math.min(100, Math.round(n + shift)));

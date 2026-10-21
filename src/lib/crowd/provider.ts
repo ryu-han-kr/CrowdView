@@ -10,6 +10,32 @@ import { fixtureMode } from "../fixtures";
 import { updateBaseline } from "./baseline";
 import { valueFromScore, type LevelSteps } from "../levels";
 import { getSignals, type Signals } from "./signals";
+import { PARKING_LOTS, getParkingNow } from "./parking";
+
+/**
+ * 주차장 실시간 주차가 있는 장소(하이원 스키장 ← 강원랜드 광장주차장): 리프트 대기 원천이 없어
+ * '모델의 평소 하루 × 지금 주차된 차 수가 평소 이 요일·시간 대비 몇 배'로 본다 (롯데월드의 지역 인구 × 평소 대비와 같은 방식).
+ * 주차 자료를 못 받으면 모델만
+ */
+async function fetchParking(place: Place, s: Signals): Promise<CrowdSnapshot> {
+  const base = modelSnapshot(place, new Date(), s);
+  const lot = PARKING_LOTS[place.id];
+  const parking = await getParkingNow(place);
+  if (!parking || !lot) return base;
+  const vsUsual = await updateBaseline(place.id, parking.occupied).catch(() => undefined);
+  const score = Math.max(0, Math.min(100, Math.round(base.score * (vsUsual ?? 1))));
+  const current = base.hourly.filter((p) => !p.forecast).at(-1);
+  if (current) Object.assign(current, { score, people: sitePeople(place, score), peopleKind: "est" as const });
+  return {
+    ...base,
+    score,
+    headcount: sitePeople(place, score),
+    parking: { occupied: parking.occupied, total: parking.total, label: lot.label },
+    ...(vsUsual !== undefined && { vsUsual }),
+    observedAt: parking.at,
+    source: "parking",
+  };
+}
 
 /**
  * 지역 실측 인구 → 명소 기준 인원. 서울시 인구는 주변 지역 전체(롯데월드면 잠실 관광특구 6만 명대)라
@@ -87,5 +113,6 @@ export async function fetchSnapshot(place: Place): Promise<CrowdSnapshot> {
   if (key && place.seoulArea) return fetchSeoulCitydata(place, s);
   if (place.themeparksId || place.queueTimesId) return fetchThemePark(place, s);
   if ((process.env.DATA_GO_KR_KEY || fixtureMode()) && place.airport) return fetchAirport(place, place.airport, s);
+  if (PARKING_LOTS[place.id]) return fetchParking(place, s);
   return modelSnapshot(place, new Date(), s);
 }
