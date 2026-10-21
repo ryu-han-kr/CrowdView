@@ -53,7 +53,7 @@ export function VisitorProfile({ pop, lang }: { pop: LocalPop; lang: Lang }) {
       )}
 
       {aTotal > 0 && <AgeBars ages={pop.ages.map((x) => ({ label: x.label, pct: pct(x.value, aTotal) }))} t={t} />}
-      <p className="mt-3 text-[11px] text-gray-400">{t("실시간이 아닌 월 평균이에요. 시간대 그래프는 이 패턴을 바탕으로 계산해요.")}</p>
+      <p className="mt-3 text-[11px] text-gray-500">{t("실시간이 아닌 월 평균이에요. 시간대 그래프는 이 패턴을 바탕으로 계산해요.")}</p>
     </section>
   );
 }

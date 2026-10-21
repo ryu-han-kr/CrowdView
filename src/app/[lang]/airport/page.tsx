@@ -78,14 +78,14 @@ export default async function AirportListPage({ params }: { params: Promise<{ la
                     <b>{t("주차장")}</b> {t("빈자리")} <b className="text-sky-700">{t("{n}면", { n: freeSpaces.toLocaleString() })}</b>
                     {fullLots > 0 && <span className="text-red-500"> · {t("{n}곳 만차 임박", { n: fullLots })}</span>}
                   </span>
-                  <span className="text-gray-400">›</span>
+                  <span className="text-gray-500">›</span>
                 </Link>
               )}
             </li>
           );
         })}
       </ul>
-      <p className="mt-4 mb-6 text-center text-[11px] text-gray-400">
+      <p className="mt-4 mb-6 text-center text-[11px] text-gray-500">
         {t("출처: 인천국제공항공사, 한국공항공사 (공공데이터포털)")}
       </p>
     </main>

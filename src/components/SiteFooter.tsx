@@ -28,8 +28,8 @@ export function SiteFooter({ lang, className = "" }: { lang: Lang; className?: s
       <p>
         {t("고객센터")} {t(B.phone)} · {t(B.email)}
       </p>
-      <p className="mt-2 text-gray-400">{t("혼잡도 정보는 공공데이터와 예측 모델로 만든 참고 정보로, 실제와 다를 수 있어요.")}</p>
-      <p className="mt-1 text-gray-400">© 2026 {B.serviceName}</p>
+      <p className="mt-2 text-gray-500">{t("혼잡도 정보는 공공데이터와 예측 모델로 만든 참고 정보로, 실제와 다를 수 있어요.")}</p>
+      <p className="mt-1 text-gray-500">© 2026 {B.serviceName}</p>
     </footer>
   );
 }

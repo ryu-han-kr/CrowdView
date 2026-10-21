@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@/i18n/client";
-import { LEVELS, levelOf } from "@/lib/levels";
+import { deepOf, LEVELS, levelOf } from "@/lib/levels";
 
 export interface HeatDay {
   date: string;
@@ -65,7 +65,7 @@ export function WeekHeatmap({ days, nowHour }: { days: HeatDay[]; nowHour: numbe
                       <td
                         key={b}
                         className="rounded-lg py-2 text-[11px] font-bold whitespace-nowrap"
-                        style={{ background: l.color, color: "#fff", opacity: past ? 0.3 : 1 }}
+                        style={{ background: l.color, color: deepOf(l.color), opacity: past ? 0.3 : 1 }}
                       >
                         {t(l.label)}
                       </td>

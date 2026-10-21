@@ -92,7 +92,7 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
     <>
       <StickyBar id="places" className="-mx-5 mt-8 scroll-mt-16 px-5 pt-3 pb-3 md:mx-0 md:mt-10 md:px-0">
         <label className="flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-3">
-          <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2}>
+          <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-gray-500" fill="none" stroke="currentColor" strokeWidth={2}>
             <circle cx="11" cy="11" r="7" />
             <path d="m20 20-3.5-3.5" strokeLinecap="round" />
           </svg>
@@ -100,11 +100,11 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("장소·지역 검색 (예: 홍대, 공항)")}
-            className="min-w-0 flex-1 bg-transparent text-[15px] outline-none placeholder:text-gray-400"
+            className="min-w-0 flex-1 bg-transparent text-[15px] outline-none placeholder:text-gray-500"
             enterKeyHint="search"
           />
           {query && (
-            <button onClick={() => setQuery("")} aria-label={t("검색어 지우기")} className="text-gray-400">
+            <button onClick={() => setQuery("")} aria-label={t("검색어 지우기")} className="text-gray-500">
               <Glyph e="✕" className="h-4 w-4" />
             </button>
           )}
@@ -146,7 +146,7 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
                   <button
                     key={s}
                     onClick={() => setSort(s)}
-                    className={`rounded-full px-3 py-1 ${sort === s ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+                    className={`rounded-full px-3 py-1 ${sort === s ? "bg-white text-gray-900 shadow-sm" : "text-gray-600"}`}
                   >
                     {s === "calm" ? t("한산한 순") : t("붐비는 순")}
                   </button>

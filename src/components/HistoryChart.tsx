@@ -76,7 +76,7 @@ export function HistoryChart({
             className="absolute inset-y-0 border-l border-dashed border-gray-300"
             style={{ left: `${((Date.parse(`${d.date}T00:00:00+09:00`) - start) / span) * 100}%` }}
           >
-            <span className="absolute -top-4 -translate-x-1/2 text-[10px] text-gray-400">{d.date.slice(5).replace("-", "/")}</span>
+            <span className="absolute -top-4 -translate-x-1/2 text-[10px] text-gray-500">{d.date.slice(5).replace("-", "/")}</span>
           </div>
         ))}
         {series.map((p) => (
@@ -92,11 +92,11 @@ export function HistoryChart({
           />
         ))}
       </div>
-      <div className="mt-1 flex justify-between text-[10px] text-gray-400">
+      <div className="mt-1 flex justify-between text-[10px] text-gray-500">
         <span>{days[0].date.slice(5).replace("-", "/")} 00:00</span>
         <span>{t("지금")}</span>
       </div>
-      <p className="mt-2 text-[11px] text-gray-400">{t("실시간 데이터를 받은 시각마다 기록 · 총 {n}건", { n: series.length })}</p>
+      <p className="mt-2 text-[11px] text-gray-500">{t("실시간 데이터를 받은 시각마다 기록 · 총 {n}건", { n: series.length })}</p>
     </div>
   );
 }

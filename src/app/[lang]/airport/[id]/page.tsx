@@ -139,7 +139,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                 </p>
               </div>
             </div>
-            <p className={`mt-2 text-[11px] ${crowd.stale ? "font-semibold text-amber-600" : "text-gray-400"}`}>
+            <p className={`mt-2 text-[11px] ${crowd.stale ? "font-semibold text-amber-700" : "text-gray-600"}`}>
               {crowd.source === "model"
                 ? t("실시간 데이터를 받지 못해 예측값을 보여드려요")
                 : `${t(SOURCE_LABEL[crowd.source] ?? "")} · ${t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}`}
@@ -167,7 +167,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                               <div className="min-w-0 flex-1">
                                 <p className="text-sm font-semibold">{trZone(z.label, t)}</p>
                                 {z.hours && (
-                                  <p className="text-[11px] text-gray-400">
+                                  <p className="text-[11px] text-gray-500">
                                     {t("운영")} {z.hours}
                                   </p>
                                 )}
@@ -175,7 +175,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                               {z.waitMin !== undefined && (
                                 <span className="text-right text-sm">
                                   <b>{fmtMinutes(z.waitMin, t)}</b>
-                                  <span className="block text-[11px] text-gray-400">{t("{n} 대기", { n: fmtPeople(z.people ?? 0, t, lang) })}</span>
+                                  <span className="block text-[11px] text-gray-500">{t("{n} 대기", { n: fmtPeople(z.people ?? 0, t, lang) })}</span>
                                 </span>
                               )}
                               <LevelBadge score={z.score} />
@@ -219,7 +219,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                                   </li>
                                 ))}
                               </ul>
-                              <p className="mt-2 text-[11px] text-gray-400">{t("인천국제공항공사 입국장 현황 (20분 주기)")}</p>
+                              <p className="mt-2 text-[11px] text-gray-500">{t("인천국제공항공사 입국장 현황 (20분 주기)")}</p>
                             </>
                           ) : (
                             <Empty>{t("지금 앞뒤 2시간 안에 도착하는 항공편 정보가 없어요.")}</Empty>
@@ -315,7 +315,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                                     <b className={pct < 10 ? "text-red-500" : pct < 25 ? "text-orange-500" : "text-emerald-600"}>
                                       {t("{n}면", { n: z.free.toLocaleString() })}
                                     </b>
-                                    <span className="text-[11px] text-gray-400"> / {z.total.toLocaleString()}</span>
+                                    <span className="text-[11px] text-gray-500"> / {z.total.toLocaleString()}</span>
                                   </p>
                                 </li>
                               );
@@ -339,7 +339,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                               </ul>
                             </div>
                           ))}
-                          <p className="mt-2 text-[11px] text-gray-400">
+                          <p className="mt-2 text-[11px] text-gray-500">
                             {t("인천국제공항공사 요금 기준. 요금 코드에 주차장 이름이 없어 공지된 단기·장기 요금과 맞는 항목만 보여줘요.")}
                             {lang !== "ko" && ` ${t("요금 설명은 공항공사 원문(한국어)이에요.")}`}
                           </p>

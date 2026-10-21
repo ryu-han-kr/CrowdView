@@ -19,6 +19,30 @@ export const LEVELS: Level[] = [
   { key: 5, label: "매우 혼잡", desc: "방문 비추천", color: "#ef4444", min: 80 },
 ];
 
+/**
+ * 글자색 (QA 10/21 접근성: 단계 색을 그대로 글자에 쓰면 흰 바탕·옅은 바탕에서 대비가 1.8~2.8로 읽기 어렵다).
+ * ink = 같은 색 계열의 진한 색 (흰·옅은 바탕 위 글자, 대비 4.5 이상), deep = 단계 색으로 칠한 칸 위 글자 (흰 글자 대신)
+ */
+const INK: Record<string, string> = {
+  "#10b981": "#047857",
+  "#84cc16": "#4d7c0f",
+  "#eab308": "#854d0e",
+  "#f97316": "#c2410c",
+  "#ef4444": "#b91c1c",
+  "#6366f1": "#4338ca",
+  "#9ca3af": "#4b5563",
+  "#6b7280": "#4b5563",
+};
+const DEEP: Record<string, string> = {
+  "#10b981": "#022c22",
+  "#84cc16": "#1a2e05",
+  "#eab308": "#422006",
+  "#f97316": "#431407",
+  "#ef4444": "#000000",
+};
+export const inkOf = (color: string) => INK[color.toLowerCase()] ?? color;
+export const deepOf = (color: string) => DEEP[color.toLowerCase()] ?? "#111827";
+
 export function levelOf(score: number): Level {
   for (let i = LEVELS.length - 1; i >= 0; i--) {
     if (score >= LEVELS[i].min) return LEVELS[i];

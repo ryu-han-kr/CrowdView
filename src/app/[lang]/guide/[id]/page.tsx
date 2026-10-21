@@ -8,7 +8,7 @@ import { FaqBlock } from "@/components/FaqBlock";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { compactNumber } from "@/lib/format";
-import { levelOf } from "@/lib/levels";
+import { levelOf, inkOf } from "@/lib/levels";
 import { translateNames } from "@/lib/name-translate";
 import { GUIDE, GUIDE_KINDS, TOILETS, TOILET_FLAG, areaNear, getGuidePlace, guideText, nearest } from "@/lib/seoul-guide";
 import { getAllSeoulLive } from "@/lib/seoul-live";
@@ -100,7 +100,7 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
       <h1 className="mt-1 text-2xl font-bold md:text-3xl">{trName ?? text.n}</h1>
       {trName && <p className="mt-0.5 text-sm text-gray-500">{text.n}</p>}
       <KstNote className="mt-1" />
-      {textLang !== lang && <p className="mt-1 text-xs text-gray-400">{t("이 장소는 선택한 언어 글이 없어 다른 언어로 보여드려요.")}</p>}
+      {textLang !== lang && <p className="mt-1 text-xs text-gray-500">{t("이 장소는 선택한 언어 글이 없어 다른 언어로 보여드려요.")}</p>}
       {p.imgL && (
         <div className="relative mt-4 aspect-[16/9] overflow-hidden rounded-3xl bg-gray-100 md:aspect-[21/8]">
           <Image
@@ -122,10 +122,10 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
           {live && area && (
             <Link href={`/seoul/${area.code}`} className="block rounded-3xl px-4 py-3.5" style={{ background: `${levelOf(live.score).color}14` }}>
               <p className="text-xs font-medium text-gray-500">{t("이 동네 지금 ({area})", { area: areaName! })}</p>
-              <p className="text-xl font-extrabold" style={{ color: levelOf(live.score).color }}>
+              <p className="text-xl font-extrabold" style={{ color: inkOf(levelOf(live.score).color) }}>
                 {t(live.level)} · {people(live.min, live.max)}
               </p>
-              <p className="mt-1 text-[11px] text-gray-400">
+              <p className="mt-1 text-[11px] text-gray-500">
                 {t("서울시 실시간 도시데이터")} · {t("{time} 기준", { time: live.time.slice(11) })}
               </p>
             </Link>
@@ -135,7 +135,7 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
               .filter(([, v]) => v)
               .map(([k, v]) => (
                 <div key={k} className="flex gap-3">
-                  <dt className="w-16 shrink-0 text-gray-400">{k}</dt>
+                  <dt className="w-16 shrink-0 text-gray-500">{k}</dt>
                   <dd className="min-w-0 whitespace-pre-line text-gray-700">{v}</dd>
                 </div>
               ))}
@@ -163,7 +163,7 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
             )}
           </div>
           {at && !p.exact && (
-            <p className="mt-2 text-[11px] text-gray-400">{t("위치는 가까운 지하철역({station}) 기준이에요.", { station: p.station ?? "" })}</p>
+            <p className="mt-2 text-[11px] text-gray-500">{t("위치는 가까운 지하철역({station}) 기준이에요.", { station: p.station ?? "" })}</p>
           )}
         </div>
 
@@ -237,7 +237,7 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
           ...(text.sub ? [{ q: t("{name} 어떻게 가나요?", { name: text.n }), a: text.sub.split("\n")[0] }] : []),
         ]}
       />
-      <p className="mt-8 text-center text-[11px] text-gray-400">
+      <p className="mt-8 text-center text-[11px] text-gray-500">
         {p.id.startsWith("kt-") ? t("정보: 한국관광공사") : t("정보: Visit Seoul (서울관광재단, 서울 열린데이터광장)")}
       </p>
     </main>

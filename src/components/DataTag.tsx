@@ -9,7 +9,7 @@ export function DataTag({ kind = "추정", className = "" }: { kind?: DataKind; 
   if (!SHOW_DATA_LABELS) return null;
   return (
     <span
-      className={`ml-1 inline-block align-middle text-[10px] font-semibold ${kind === "임의" ? "text-violet-500" : "text-amber-600"} ${className}`}
+      className={`ml-1 inline-block align-middle text-[10px] font-semibold ${kind === "임의" ? "text-violet-700" : "text-amber-700"} ${className}`}
       title={kind === "임의" ? t("직접 넣은 샘플 값이에요") : t("실데이터가 아닌 계산·예측 값이에요")}
     >
       ({t(kind)})

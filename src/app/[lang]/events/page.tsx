@@ -61,7 +61,7 @@ export default async function EventsPage({ params }: { params: Promise<{ lang: s
         names={names}
       />
       <InlineAd className="mt-6" />
-      <p className="mt-6 text-center text-[11px] text-gray-400">
+      <p className="mt-6 text-center text-[11px] text-gray-500">
         {t("일정: 한국관광공사 TourAPI, 서울시 문화행사 정보 · 실시간: 서울시 실시간 도시데이터 · 혼잡 예측: 한국관광공사 데이터랩(이동통신 방문자)")}
       </p>
     </main>

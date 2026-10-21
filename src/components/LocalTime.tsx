@@ -49,7 +49,7 @@ export function LocalTime({ hour, to, dayOffset = 0 }: { hour: number; to?: numb
   if (!zone) return null;
   const base = dayOffset * 1440;
   const time = localLabel(zone, base + hour * 60) + (to === undefined ? "" : `–${localLabel(zone, base + to * 60)}`);
-  return <span className="text-gray-400"> ({t("내 시간 {time}", { time })})</span>;
+  return <span className="text-gray-500"> ({t("내 시간 {time}", { time })})</span>;
 }
 
 /** 시각이 많은 화면 위에 한 줄: "이 페이지의 시각은 한국 시간(KST)이에요 · 한국 지금 14:05 · 내 시간(뉴욕) 01:05" */

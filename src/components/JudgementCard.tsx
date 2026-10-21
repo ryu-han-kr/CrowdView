@@ -1,6 +1,6 @@
 import { OUTDOOR } from "@/lib/crowd/model";
 import type { Signals } from "@/lib/crowd/signals";
-import { LEVELS } from "@/lib/levels";
+import { LEVELS, inkOf } from "@/lib/levels";
 import { compactNumber } from "@/lib/format";
 import { DataTag } from "./DataTag";
 import { formatClock } from "@/lib/time";
@@ -82,7 +82,7 @@ export function JudgementCard({
     <details className="group mt-8 rounded-2xl border border-gray-100 p-4">
       <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-bold">
         {t("이 혼잡도는 어떻게 판단하나요?")}
-        <span className="text-gray-400 transition-transform group-open:rotate-180">⌄</span>
+        <span className="text-gray-500 transition-transform group-open:rotate-180">⌄</span>
       </summary>
       <ul className="mt-3 space-y-2.5">
         {items.map((i) => (
@@ -107,7 +107,7 @@ export function JudgementCard({
             ].map(([official, i]) => {
               const l = LEVELS[i as number];
               return (
-                <div key={official} className="flex-1 py-1.5" style={{ background: `${l.color}1f`, color: l.color }}>
+                <div key={official} className="flex-1 py-1.5" style={{ background: `${l.color}1f`, color: inkOf(l.color) }}>
                   <b>{t(official as string)}</b>
                   <br />→ {t(l.label)}
                 </div>
@@ -131,7 +131,7 @@ export function JudgementCard({
               const fmt = (v: number) => (unit === "명" ? compactNumber(v, lang) : `${v}`);
               const range = i === 0 ? `~${fmt(steps[0])}` : i === 4 ? `${fmt(steps[3])}+` : `${fmt(steps[i - 1])}~${fmt(steps[i])}`;
               return (
-                <div key={l.key} className="flex-1 py-1.5" style={{ background: `${l.color}1f`, color: l.color }}>
+                <div key={l.key} className="flex-1 py-1.5" style={{ background: `${l.color}1f`, color: inkOf(l.color) }}>
                   <b>{t(l.label)}</b>
                   <br />
                   {range}
@@ -142,7 +142,7 @@ export function JudgementCard({
           </div>
         </div>
       )}
-      <p className="mt-2 text-[11px] text-gray-400">
+      <p className="mt-2 text-[11px] text-gray-500">
         {t("실제 수치를 이 기준에 대어 단계를 정해요. ● 실제 데이터로 반영 중 · ○ 데이터 없음")}
         {place.criteria?.provisional && ` · ${t("기준은 데이터가 쌓이면 조정해요")}`}
       </p>

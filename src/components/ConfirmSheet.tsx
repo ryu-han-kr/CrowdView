@@ -37,7 +37,7 @@ export function ConfirmSheet({
           <ul className="space-y-1.5">
             {lines.map((l) => (
               <li key={l} className="flex gap-2">
-                <span className="text-gray-400">·</span>
+                <span className="text-gray-500">·</span>
                 <span>{l}</span>
               </li>
             ))}

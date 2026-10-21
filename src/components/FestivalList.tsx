@@ -70,7 +70,7 @@ export function FestivalList({
             }`}
           >
             {s === "전체" ? t("전체") : t(s)}
-            <span className="ml-1 text-xs opacity-60">
+            <span className="ml-1 text-xs opacity-90">
               {s === "전체" ? festivals.length : festivals.filter((f) => f.region.startsWith(s)).length}
             </span>
           </button>
@@ -87,7 +87,7 @@ export function FestivalList({
           >
             {c.emoji && <Glyph e={c.emoji} className="mr-1 h-[1em] w-[1em]" />}
             {t(c.label)}
-            <span className="ml-1 text-xs opacity-60">{c.id === "all" ? inRegion.length : inRegion.filter((f) => f.category === c.id).length}</span>
+            <span className="ml-1 text-xs opacity-90">{c.id === "all" ? inRegion.length : inRegion.filter((f) => f.category === c.id).length}</span>
           </button>
         ))}
       </div>
@@ -99,7 +99,7 @@ export function FestivalList({
           sec.items.length > 0 && (
             <section key={sec.title} className="mt-6">
               <h2 className="text-lg font-bold">
-                {sec.title} <span className="text-sm font-medium text-gray-400">{sec.items.length}</span>
+                {sec.title} <span className="text-sm font-medium text-gray-500">{sec.items.length}</span>
               </h2>
               <ul className="mt-3 grid gap-3 md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))]">
                 {sec.items.map((f) => {
@@ -135,7 +135,7 @@ export function FestivalList({
                             {live ? (
                               <>
                                 <LevelBadge score={live.score} />
-                                <span className="rounded bg-emerald-600 px-1 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
+                                <span className="rounded bg-emerald-700 px-1 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
                                 <span>{t("{min}~{max}명", { min: compactNumber(live.min, lang), max: compactNumber(live.max, lang) })}</span>
                               </>
                             ) : c ? (
@@ -145,7 +145,7 @@ export function FestivalList({
                                 <span>{t("작년 {pct}%", { pct: `${c.ratio >= 1 ? "+" : ""}${Math.round((c.ratio - 1) * 100)}` })}</span>
                               </>
                             ) : (
-                              <span className="text-gray-400">
+                              <span className="text-gray-500">
                                 {liveAreas[f.id] ? t("시작하면 실시간 ({area})", { area: tr(liveAreas[f.id]) }) : t("혼잡 예측 준비 중")}
                               </span>
                             )}
@@ -162,7 +162,7 @@ export function FestivalList({
       {longRunning.length > 0 && (
         <details className="mt-6 rounded-2xl border border-gray-100 p-4">
           <summary className="cursor-pointer text-sm font-bold">
-            {t("상설·장기 행사")} <span className="font-medium text-gray-400">{longRunning.length}</span>
+            {t("상설·장기 행사")} <span className="font-medium text-gray-500">{longRunning.length}</span>
             <span className="ml-2 text-xs font-normal text-gray-500">{t("한 달 넘게 이어지는 공연·전시·투어")}</span>
           </summary>
           <ul className="mt-3 divide-y divide-gray-100">

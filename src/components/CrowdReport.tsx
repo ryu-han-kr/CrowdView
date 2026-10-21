@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
-import { LEVELS } from "@/lib/levels";
+import { LEVELS, deepOf, inkOf } from "@/lib/levels";
 import { Glyph } from "@/components/Glyph";
 
 interface Summary {
@@ -84,7 +84,7 @@ export function CrowdReport({ placeId, askWait = false }: { placeId: string; ask
                 onClick={() => setLevel(l.key)}
                 aria-pressed={level === l.key}
                 className={`min-h-11 rounded-xl px-1 text-[13px] font-bold ${level === l.key ? "text-white" : ""}`}
-                style={level === l.key ? { background: l.color } : { background: `${l.color}1f`, color: l.color }}
+                style={level === l.key ? { background: l.color, color: deepOf(l.color) } : { background: `${l.color}1f`, color: inkOf(l.color) }}
               >
                 {t(l.label)}
               </button>

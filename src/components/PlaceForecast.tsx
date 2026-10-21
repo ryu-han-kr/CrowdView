@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useI18n } from "@/i18n/client";
-import { levelOf } from "@/lib/levels";
+import { levelOf, inkOf } from "@/lib/levels";
 import { Glyph } from "@/components/Glyph";
 import { TripWatchButton } from "@/components/TripWatchButton";
 
@@ -188,7 +188,7 @@ export function WeekForecast({
           )}
         </p>
         <p className="mt-0.5 text-xl font-extrabold">
-          <span style={{ color: lv.color }}>{t(lv.label)}</span>
+          <span style={{ color: inkOf(lv.color) }}>{t(lv.label)}</span>
           {d.people && <span className="ml-2 text-lg font-bold text-gray-900">{d.people}</span>}
         </p>
         {d.reasons.length > 0 && <p className="mt-1 text-sm text-gray-600">{d.reasons.join(" · ")}</p>}
@@ -216,7 +216,7 @@ export function WeekForecast({
                 key={k}
                 onClick={() => setMore(k)}
                 aria-pressed={more === k}
-                className={`min-h-8 flex-1 rounded-full px-2 py-1.5 ${more === k ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+                className={`min-h-8 flex-1 rounded-full px-2 py-1.5 ${more === k ? "bg-white text-gray-900 shadow-sm" : "text-gray-600"}`}
               >
                 {k === "month" ? t("앞으로 30일") : t("요일별")}
               </button>
@@ -263,7 +263,7 @@ export function WeekForecast({
                 <div className="mt-3 rounded-2xl bg-gray-50 px-4 py-3 text-[15px] leading-relaxed">
                   <p>
                     <b>{m.long}</b> · {t("가장 붐빌 때 {hour}", { hour: m.peakLabel })} ·{" "}
-                    <b style={{ color: levelOf(m.peakScore).color }}>{t(levelOf(m.peakScore).label)}</b>
+                    <b style={{ color: inkOf(levelOf(m.peakScore).color) }}>{t(levelOf(m.peakScore).label)}</b>
                     {m.people && <b className="ml-1.5 text-gray-900">{m.people}</b>}
                   </p>
                   <p className="mt-1 text-sm text-gray-600">{m.reasons.length ? m.reasons.join(" · ") : t("평소 요일·계절 패턴 그대로예요")}</p>
@@ -278,7 +278,7 @@ export function WeekForecast({
                 {t("{calm}요일이 가장 한산하고, {busy}요일이 가장 붐벼요.", { calm: wdCalm.label, busy: wdBusy.label })}
               </p>
               <div className="mt-3 rounded-2xl bg-gray-50 px-4 py-2.5 text-[15px]" aria-live="polite">
-                <b>{w.label}</b> · <b style={{ color: levelOf(w.avg).color }}>{t(levelOf(w.avg).label)}</b>
+                <b>{w.label}</b> · <b style={{ color: inkOf(levelOf(w.avg).color) }}>{t(levelOf(w.avg).label)}</b>
                 {w.people && <b className="ml-1.5 text-gray-900">{w.people}</b>}
                 <span className="ml-1 text-sm text-gray-500">({t("운영 시간 평균")})</span>
               </div>
@@ -296,7 +296,7 @@ export function WeekForecast({
               />
             </div>
           )}
-          <p className="mt-3 text-[11px] text-gray-400">
+          <p className="mt-3 text-[11px] text-gray-500">
             {more === "month"
               ? t("요일·공휴일·계절 패턴으로 본 CrowdView 추정이에요 (가장 붐빌 때 기준).")
               : weekdaysReal
@@ -343,7 +343,7 @@ export function MonthCalendar({ year }: { year: YearBar[] }) {
           );
         })}
       </ul>
-      <p className="mt-2 text-[11px] text-gray-400">{t("운영 시간 평균 혼잡으로 본 CrowdView 추정이에요 (요일·공휴일·계절 패턴).")}</p>
+      <p className="mt-2 text-[11px] text-gray-500">{t("운영 시간 평균 혼잡으로 본 CrowdView 추정이에요 (요일·공휴일·계절 패턴).")}</p>
     </div>
   );
 }
@@ -364,7 +364,7 @@ export function UpcomingHours({ hours, bestHour }: { hours: { hour: number; labe
             title={t(l.label)}
           >
             <span className="text-sm font-semibold text-gray-800">{h.label}</span>
-            <span className="text-[13px] font-bold" style={{ color: l.color }}>
+            <span className="text-[13px] font-bold" style={{ color: inkOf(l.color) }}>
               {best ? <Glyph e="★" className="mr-0.5 h-3 w-3 text-amber-400" /> : null}
               {t(l.label)}
             </span>

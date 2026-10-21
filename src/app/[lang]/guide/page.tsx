@@ -59,10 +59,10 @@ export default async function GuidePage({ params }: { params: Promise<{ lang: st
               </li>
             ))}
           </ul>
-          {lang !== "ko" && <p className="mt-2 text-[11px] text-gray-400">{t("체험 예약 정보는 서울시 원문(한국어)이에요.")}</p>}
+          {lang !== "ko" && <p className="mt-2 text-[11px] text-gray-500">{t("체험 예약 정보는 서울시 원문(한국어)이에요.")}</p>}
         </section>
       )}
-      <p className="mt-8 text-center text-[11px] text-gray-400">
+      <p className="mt-8 text-center text-[11px] text-gray-500">
         {t("Visit Seoul · 서울시 공공서비스예약 (서울 열린데이터광장, 주 1회 갱신). 위치는 가까운 지하철역 기준이에요.")}
       </p>
     </main>

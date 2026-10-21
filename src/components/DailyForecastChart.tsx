@@ -5,7 +5,7 @@ import { AreaChart } from "@/components/charts/area-chart";
 import { Area } from "@/components/charts/area";
 import { useChart } from "@/components/charts/chart-context";
 import { useI18n } from "@/i18n/client";
-import { levelOf } from "@/lib/levels";
+import { levelOf, inkOf } from "@/lib/levels";
 import { LevelGradients } from "@/components/HourlyChart";
 
 const MARGIN = { top: 12, right: 12, bottom: 30, left: 12 };
@@ -76,7 +76,7 @@ export function DailyForecastChart({ days, weekdays }: { days: { date: string; v
           <p className="text-sm text-gray-600">
             <b className="text-gray-900">{label(sel)}</b> · {t("관광공사 예측")}
           </p>
-          <p className="mt-0.5 text-xl font-extrabold" style={{ color: lv.color }}>
+          <p className="mt-0.5 text-xl font-extrabold" style={{ color: inkOf(lv.color) }}>
             {t(lv.label)} <span className="text-lg font-bold text-gray-900">{Math.round(d.value)}%</span>
           </p>
         </div>
@@ -84,7 +84,7 @@ export function DailyForecastChart({ days, weekdays }: { days: { date: string; v
           <p className="text-emerald-600">
             {t("가장 한산")} <b>{label(calm)}</b>
           </p>
-          <p className="text-red-500">
+          <p className="text-red-600">
             {t("가장 붐빔")} <b>{label(top)}</b>
           </p>
         </div>

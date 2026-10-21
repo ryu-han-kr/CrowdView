@@ -20,7 +20,7 @@ export function AdRail({ side, slot = AD_SLOTS.rail }: { side: "left" | "right";
         format="vertical"
         style={{ width: 160, height: 600 }}
         fallback={
-          <div className="flex h-[600px] flex-col items-center justify-center gap-1 rounded-2xl border border-dashed border-gray-200 bg-gray-50 text-center text-xs text-gray-400">
+          <div className="flex h-[600px] flex-col items-center justify-center gap-1 rounded-2xl border border-dashed border-gray-200 bg-gray-50 text-center text-xs text-gray-500">
             <span className="font-semibold">{t("광고 영역")}</span>
             <span>160 × 600</span>
           </div>

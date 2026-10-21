@@ -86,7 +86,7 @@ export function MapExplorer({ spots: base, regions, subtitle }: { spots: Explore
         {THEMES.map((th) => (
           <button key={th.id} onClick={() => setTheme(th.id)} aria-pressed={theme === th.id} className={chip(theme === th.id)}>
             <Glyph e={th.emoji} /> {t(th.label)}
-            <span className="opacity-60">{th.id === "all" ? spots.length : spots.filter((s) => s.theme === th.id).length}</span>
+            <span className="opacity-80">{th.id === "all" ? spots.length : spots.filter((s) => s.theme === th.id).length}</span>
           </button>
         ))}
       </div>
@@ -99,7 +99,7 @@ export function MapExplorer({ spots: base, regions, subtitle }: { spots: Explore
           .filter((r) => regionCount(r) > 0)
           .map((r) => (
             <button key={r} onClick={() => setRegion(r)} aria-pressed={region === r} className={chip(region === r)}>
-              {t(r)} <span className="opacity-60">{regionCount(r)}</span>
+              {t(r)} <span className="opacity-80">{regionCount(r)}</span>
             </button>
           ))}
       </div>

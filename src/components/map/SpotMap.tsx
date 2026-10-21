@@ -40,7 +40,7 @@ export function ViewToggle({ view, onChange }: { view: "list" | "map"; onChange:
           key={v}
           onClick={() => onChange(v)}
           aria-pressed={view === v}
-          className={`min-h-8 rounded-full px-3 py-1.5 ${view === v ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+          className={`min-h-8 rounded-full px-3 py-1.5 ${view === v ? "bg-white text-gray-900 shadow-sm" : "text-gray-600"}`}
         >
           <Glyph e={v === "list" ? "☰" : "🗺️"} /> {v === "list" ? t("목록") : t("지도")}
         </button>
@@ -121,7 +121,7 @@ function SpotCard({ spot, onClose }: { spot: MapSpot; onClose: () => void }) {
           {body}
         </Link>
       )}
-      <button onClick={onClose} aria-label="close" className="px-1 text-gray-400">
+      <button onClick={onClose} aria-label="close" className="px-1 text-gray-500">
         <Glyph e="✕" className="h-4 w-4" />
       </button>
     </div>

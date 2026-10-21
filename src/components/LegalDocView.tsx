@@ -23,7 +23,7 @@ export function LegalDocView({ doc, lang }: { doc: LegalDoc; lang: Lang }) {
               {s.body.map((p, i) =>
                 p.startsWith("- ") ? (
                   <p key={i} className="flex gap-2 pl-1">
-                    <span className="text-gray-400">•</span>
+                    <span className="text-gray-500">•</span>
                     <span>{p.slice(2)}</span>
                   </p>
                 ) : (

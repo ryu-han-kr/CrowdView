@@ -13,7 +13,7 @@ import { getT } from "@/i18n/server";
 import { breadcrumbLd, jsonLd, pageMeta, SITE } from "@/lib/seo";
 import { DEFAULT_LANG, localePath } from "@/i18n/config";
 import { compactNumber } from "@/lib/format";
-import { levelOf } from "@/lib/levels";
+import { levelOf, inkOf } from "@/lib/levels";
 import { translateNames } from "@/lib/name-translate";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { SEOUL_GROUPS, getSeoulAreaExtra, getSeoulAreaLive, seoulGroup } from "@/lib/seoul-live";
@@ -131,15 +131,15 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
         <div>
           {live && level ? (
             <section className="rounded-3xl px-4 py-3.5" style={{ background: `${level.color}14` }}>
-              <p className="text-xs font-medium text-gray-500">{t("지금 인구")}</p>
-              <p className="text-2xl font-extrabold" style={{ color: level.color }}>
+              <p className="text-xs font-medium text-gray-600">{t("지금 인구")}</p>
+              <p className="text-2xl font-extrabold" style={{ color: inkOf(level.color) }}>
                 {people(live.min, live.max)}
               </p>
               <p className="mt-0.5 text-sm text-gray-600">
                 {t("서울시 단계")}: <b>{t(live.level)}</b>
               </p>
               {live.message && lang === "ko" && <p className="mt-2 text-xs leading-relaxed text-gray-600">{live.message}</p>}
-              <p className="mt-2 text-[11px] text-gray-400">{t("{time} 기준", { time: live.time.slice(11) })}</p>
+              <p className="mt-2 text-[11px] text-gray-600">{t("{time} 기준", { time: live.time.slice(11) })}</p>
             </section>
           ) : (
             <p className="empty-note">{t("지금은 서울시 데이터를 받지 못했어요. 잠시 후 다시 확인해 주세요.")}</p>
@@ -161,7 +161,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
                 <h2 className="flex items-center gap-1.5 text-sm font-bold">
                   <Glyph e="💳" className="h-4 w-4 text-indigo-500" /> {t("지금 가게들은")}
                 </h2>
-                <span className="text-xs font-bold" style={{ color: BUSY[extra.commerce.level] }}>
+                <span className="text-xs font-bold" style={{ color: inkOf(BUSY[extra.commerce.level] ?? "#6b7280") }}>
                   {t("상권 전체 '{level}'", { level: t(extra.commerce.level) })}
                 </span>
               </div>
@@ -172,13 +172,13 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
                     <li
                       key={c.name}
                       className="rounded-full px-2.5 py-1 text-[11px] font-semibold"
-                      style={{ color: BUSY[c.level] ?? "#6b7280", background: `${BUSY[c.level] ?? "#6b7280"}1a` }}
+                      style={{ color: inkOf(BUSY[c.level] ?? "#6b7280"), background: `${BUSY[c.level] ?? "#6b7280"}14` }}
                     >
                       {t(c.name)} · {t(c.level)}
                     </li>
                   ))}
               </ul>
-              <p className="mt-2 text-[11px] text-gray-400">{t("카드 결제 건수로 본 업종별 붐빔 (서울시 실시간 도시데이터)")}</p>
+              <p className="mt-2 text-[11px] text-gray-500">{t("카드 결제 건수로 본 업종별 붐빔 (서울시 실시간 도시데이터)")}</p>
               {(extra.road || extra.bikes) && (
                 <p className="mt-3 text-xs text-gray-600">
                   {extra.road && (
@@ -295,7 +295,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
           ]}
         />
       )}
-      <p className="mt-8 text-center text-[11px] text-gray-400">{t("서울시 실시간 도시데이터 (통신사 기지국 기반 추정 인구)")}</p>
+      <p className="mt-8 text-center text-[11px] text-gray-500">{t("서울시 실시간 도시데이터 (통신사 기지국 기반 추정 인구)")}</p>
     </main>
   );
 }

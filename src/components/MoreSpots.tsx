@@ -116,7 +116,7 @@ export function MoreSpots({ region, initial, counts }: { region: string; initial
         ))}
       </div>
       {!rows ? (
-        <p className="mt-4 text-sm text-gray-400">{t("불러오는 중…")}</p>
+        <p className="mt-4 text-sm text-gray-500">{t("불러오는 중…")}</p>
       ) : (
         <>
           <ul className="mt-4 grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 md:grid-cols-5 md:gap-x-4">
@@ -136,7 +136,7 @@ export function MoreSpots({ region, initial, counts }: { region: string; initial
           )}
         </>
       )}
-      <p className="mt-3 text-[11px] text-gray-400">{t("사진·정보: 한국관광공사 TourAPI (사진 있는 곳, 최근 갱신 순)")}</p>
+      <p className="mt-3 text-[11px] text-gray-500">{t("사진·정보: 한국관광공사 TourAPI (사진 있는 곳, 최근 갱신 순)")}</p>
     </section>
   );
 }

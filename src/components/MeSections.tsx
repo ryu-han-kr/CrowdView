@@ -52,7 +52,7 @@ export function SavedPlans() {
                 <button onClick={() => share(p.id)} aria-label={t("공유")} className="px-2 text-indigo-500">
                   {copied === p.id ? <span className="text-[11px] font-semibold">{t("복사됨")}</span> : <Glyph e="🔗" className="h-4 w-4" />}
                 </button>
-                <button onClick={() => remove(p.id)} aria-label={t("삭제")} className="px-2 text-gray-400">
+                <button onClick={() => remove(p.id)} aria-label={t("삭제")} className="px-2 text-gray-500">
                   <Glyph e="✕" className="h-4 w-4" />
                 </button>
               </li>
@@ -143,7 +143,7 @@ export function MySettings() {
         <li className="flex items-center justify-between px-4 py-3">
           <span className="min-w-0">
             {t("이 기기에 저장된 정보 지우기")}
-            <span className="block text-[11px] text-gray-400">{t("즐겨찾기·담은 곳·여행 계획·키워드 (로그인했다면 서버 것은 남아요)")}</span>
+            <span className="block text-[11px] text-gray-500">{t("즐겨찾기·담은 곳·여행 계획·키워드 (로그인했다면 서버 것은 남아요)")}</span>
           </span>
           <button onClick={clearLocal} className="shrink-0 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700">
             {done ? <Glyph e="✓" className="h-4 w-4" /> : t("지우기")}
@@ -181,7 +181,7 @@ function FontSizePicker() {
           onClick={() => pick(v)}
           aria-pressed={size === v}
           aria-label={t(v === "m" ? "보통" : v === "l" ? "크게" : "아주 크게")}
-          className={`min-h-8 rounded-full px-3 py-1 ${v === "m" ? "text-xs" : v === "l" ? "text-sm" : "text-base"} ${size === v ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+          className={`min-h-8 rounded-full px-3 py-1 ${v === "m" ? "text-xs" : v === "l" ? "text-sm" : "text-base"} ${size === v ? "bg-white text-gray-900 shadow-sm" : "text-gray-600"}`}
         >
           {t("가")}
         </button>
@@ -216,7 +216,7 @@ function ThemePicker() {
           key={v}
           onClick={() => pick(v)}
           aria-pressed={theme === v}
-          className={`min-h-8 rounded-full px-3 py-1.5 ${theme === v ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"}`}
+          className={`min-h-8 rounded-full px-3 py-1.5 ${theme === v ? "bg-white text-gray-900 shadow-sm" : "text-gray-600"}`}
         >
           {v === "auto" ? (
             t("자동")
