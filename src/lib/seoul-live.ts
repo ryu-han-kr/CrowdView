@@ -233,7 +233,19 @@ export interface SeoulAreaExtra {
     time: string;
     categories: { name: string; group: string; level: string }[];
   };
-  road?: { index: string; speed: number; message: string };
+  road?: {
+    index: string;
+    speed: number;
+    message: string;
+    /** "2026-10-21 14:15" */
+    time?: string;
+    /** 속도 자료가 있는 구간 수 */
+    links?: number;
+    /** 서행·정체 구간 비율 (0~1) */
+    slowShare?: number;
+    /** 서행·정체인 도로 중 가장 느린 3곳 (도로별 가장 느린 구간) */
+    slowest?: { road: string; speed: number }[];
+  };
   bikes?: number;
 }
 
@@ -254,6 +266,11 @@ export async function getSeoulAreaExtra(areaName: string): Promise<SeoulAreaExtr
       const c = (await res.json()).CITYDATA ?? {};
       const cm = c.LIVE_CMRCL_STTS;
       const road = c.ROAD_TRAFFIC_STTS?.AVG_ROAD_DATA;
+      const links = ((c.ROAD_TRAFFIC_STTS?.ROAD_TRAFFIC_STTS ?? []) as { ROAD_NM?: string; SPD?: number | string; IDX?: string }[])
+        .map((l) => ({ road: String(l.ROAD_NM ?? "").trim(), speed: Number(l.SPD), idx: String(l.IDX ?? "") }))
+        .filter((l) => l.speed > 0 && l.speed <= 200);
+      const slowByRoad = new Map<string, number>();
+      for (const l of links) if (l.road && l.idx !== "원활") slowByRoad.set(l.road, Math.min(slowByRoad.get(l.road) ?? Infinity, l.speed));
       const bikes = ((c.SBIKE_STTS ?? []) as Record<string, string>[]).reduce((s, b) => s + (Number(b.SBIKE_PARKING_CNT) || 0), 0);
       return {
         commerce: cm?.AREA_CMRCL_LVL
@@ -272,6 +289,13 @@ export async function getSeoulAreaExtra(areaName: string): Promise<SeoulAreaExtr
               index: road.ROAD_TRAFFIC_IDX,
               speed: Number(road.ROAD_TRAFFIC_SPD),
               message: road.ROAD_MSG,
+              time: road.ROAD_TRAFFIC_TIME ? String(road.ROAD_TRAFFIC_TIME) : undefined,
+              links: links.length,
+              slowShare: links.length ? Math.round((links.filter((l) => l.idx !== "원활").length / links.length) * 100) / 100 : undefined,
+              slowest: [...slowByRoad]
+                .sort((a, b) => a[1] - b[1])
+                .slice(0, 3)
+                .map(([r, speed]) => ({ road: r, speed: Math.round(speed) })),
             }
           : undefined,
         bikes: bikes || undefined,
