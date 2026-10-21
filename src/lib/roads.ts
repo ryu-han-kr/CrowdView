@@ -142,6 +142,8 @@ async function seoulLocal(p: LatLng): Promise<{ group?: RoadGroup; time?: string
 // ── 한국도로공사 (고속도로)
 export interface ExUnit {
   name: string;
+  /** 노선 이름 (예: 영동선) */
+  route?: string;
   lat: number;
   lng: number;
 }
@@ -154,21 +156,30 @@ export interface Conzone {
   speed: number;
 }
 
-/** 나들목·분기점 이름 비교용: 'IC', 'JC', '요금소', 괄호, 띄어쓰기를 뺀다 */
-export const icKey = (s: string) =>
-  s
-    .replace(/\(.*?\)/g, "")
-    .replace(/\s/g, "")
-    .replace(/(IC|JC|TG|나들목|분기점|요금소|영업소|톨게이트|휴게소)$/i, "");
+/**
+ * 나들목 이름 비교용: 'IC', '요금소', 괄호, 띄어쓰기를 뺀다.
+ * 분기점(JC)은 영업소가 아니라 좌표가 없고, '용인JC'를 '용인' 영업소(다른 노선, 15km 떨어짐)에 맞추면 틀리므로 undefined
+ */
+export const icKey = (s: string): string | undefined => {
+  const t = s.replace(/\(.*?\)/g, "").replace(/\s/g, "");
+  if (/(JC|분기점)$/i.test(t)) return undefined;
+  return t.replace(/(IC|TG|나들목|요금소|영업소|톨게이트)$/i, "") || undefined;
+};
 
-/** 순수 계산: 콘존 양 끝 나들목 중 좌표를 아는 곳이 장소에서 km 안인 콘존만 */
+/** 순수 계산: 콘존 양 끝 나들목 중 좌표를 아는 곳이 장소에서 km 안인 콘존만. 같은 노선의 영업소를 먼저, 없으면 이름만 같은 곳 */
 export function conzonesNear(units: ExUnit[], zones: Conzone[], p: LatLng, km = HIGHWAY_KM): Conzone[] {
   const at = new Map<string, ExUnit>();
-  for (const u of units) at.set(icKey(u.name), u);
+  for (const u of units) {
+    const k = icKey(u.name);
+    if (!k) continue;
+    if (u.route) at.set(`${u.route}|${k}`, u);
+    if (!at.has(`|${k}`)) at.set(`|${k}`, u);
+  }
   return zones.filter((z) =>
     z.name
       .split("-")
-      .map((end) => at.get(icKey(end)))
+      .map((end) => icKey(end))
+      .map((k) => k && (at.get(`${z.route}|${k}`) ?? at.get(`|${k}`)))
       .some((u) => u && distanceKm(p, u) < km),
   );
 }
@@ -213,12 +224,17 @@ async function exAll<T>(path: string): Promise<T[]> {
 /** 영업소(나들목) 좌표 590곳 — 거의 안 바뀌어 하루 한 번 */
 const exUnits = () =>
   cached(
-    "ex:units:v2",
+    "ex:units:v3",
     24 * 3600,
     async () => {
-      const list = await exAll<{ unitName?: string; xValue?: string; yValue?: string }>("locationinfo/locationinfoUnit");
+      const list = await exAll<{ unitName?: string; routeName?: string; xValue?: string; yValue?: string }>("locationinfo/locationinfoUnit");
       return list
-        .map((u) => ({ name: String(u.unitName ?? "").trim(), lat: Number(u.yValue), lng: Number(u.xValue) }))
+        .map((u) => ({
+          name: String(u.unitName ?? "").trim(),
+          route: u.routeName?.trim() || undefined,
+          lat: Number(u.yValue),
+          lng: Number(u.xValue),
+        }))
         .filter((u) => u.name && u.lat > 33 && u.lat < 39 && u.lng > 124 && u.lng < 132);
     },
     (v) => v.length === 0,
