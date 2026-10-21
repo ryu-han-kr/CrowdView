@@ -133,11 +133,14 @@ async function probe(p: Probe): Promise<ProbeResult> {
   }
 }
 
+/** 배포마다 새로 확인 (키를 바꾸고 다시 배포하면 바로 보이게) */
+const PROBE_KEY = `probe:keys:v4:${process.env.VERCEL_DEPLOYMENT_ID ?? process.env.VERCEL_GIT_COMMIT_SHA ?? "local"}`;
+
 /** 키별 확인 결과 (30분 동안 저장해 두고 다시 부르지 않는다) */
 export async function probeKeys(): Promise<Record<string, ProbeResult>> {
-  const saved = await kv.get("probe:keys:v4").catch(() => null);
+  const saved = await kv.get(PROBE_KEY).catch(() => null);
   if (saved) return JSON.parse(saved);
   const results = Object.fromEntries(await Promise.all(PROBES.map(async (p) => [p.id, await probe(p)] as const)));
-  await kv.set("probe:keys:v4", JSON.stringify(results), 30 * 60).catch(() => {});
+  await kv.set(PROBE_KEY, JSON.stringify(results), 30 * 60).catch(() => {});
   return results;
 }
