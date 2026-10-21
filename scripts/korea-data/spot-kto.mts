@@ -1,4 +1,4 @@
-// 대표 명소 66곳 → 한국관광공사 '관광지 집중률 예측'(TatsCnctrRateService)에 등록된 이름 찾기
+// 대표 명소 117곳 → 한국관광공사 '관광지 집중률 예측'(TatsCnctrRateService)에 등록된 이름 찾기
 //   → src/data/korea/spot-kto.json ({ [명소 id]: { areaCd, signguCd, name } })
 // 명소 상세에 '앞으로 30일 붐빔 예측' 그래프를 그리려고. 그 시군구의 관광지 목록에서 이름이 맞는 곳을 고른다 (없으면 빠짐)
 // 우리 장소 중 kto가 없는 곳(지방 놀이공원·워터파크·스키장 등)도 같은 방법으로 → src/data/korea/place-kto.json (예측 모델의 집중률 보정에 쓴다)
@@ -129,9 +129,18 @@ for (const l of targets) {
 }
 // 장소 쪽은 이미 이어진 곳(kto 있음)을 다시 찾지 않으므로 지난 결과에 더한다
 const target = path.join("src", "data", "korea", file);
-const prev = file === "place-kto.json" && fs.existsSync(target) ? JSON.parse(fs.readFileSync(target, "utf8")) : {};
+const prev = (file === "place-kto.json" || process.env.ONLY_NEW) && fs.existsSync(target) ? JSON.parse(fs.readFileSync(target, "utf8")) : {};
 fs.writeFileSync(target, JSON.stringify({ ...prev, ...out }));
 console.log(`${file} 완료 ${Object.keys(out).length}/${targets.length} · 없음: ${missing.join(", ")}`);
 }
-await match(landmarks, "spot-kto.json");
-await match(placeTargets, "place-kto.json");
+// ONLY_NEW=1: 명소는 지난 결과에 없는 곳만 찾아 더하고, 장소는 건너뛴다
+if (process.env.ONLY_NEW) {
+  const prevSpots = JSON.parse(fs.readFileSync(path.join("src", "data", "korea", "spot-kto.json"), "utf8")) as Record<string, unknown>;
+  await match(
+    landmarks.filter((l) => !prevSpots[l.id]),
+    "spot-kto.json",
+  );
+} else {
+  await match(landmarks, "spot-kto.json");
+  await match(placeTargets, "place-kto.json");
+}

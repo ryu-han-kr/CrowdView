@@ -1,7 +1,8 @@
 // 지역별 대표 관광지(랜드마크) → src/data/korea/landmarks.json
 // 고른 목록(아래 LIST, 이름 5개 언어)에 한국관광공사 TourAPI(KorService2 searchKeyword2)의 사진·좌표를 붙인다.
 // 외국어 TourAPI(EngService2 등)는 활용신청이 따로라 이름 번역은 목록에 직접 적었다.
-// 사용: node scripts/korea-data/landmarks.mjs   (DATA_GO_KR_KEY: .env.local 또는 환경변수). 실행당 호출 약 80건
+// 사용: node scripts/korea-data/landmarks.mjs   (DATA_GO_KR_KEY: .env.local 또는 환경변수). 실행당 호출 약 120건
+// ONLY_NEW=1 이면 landmarks.json에 이미 있는 곳은 다시 찾지 않고 그대로 둔다 (새로 넣은 곳만 호출)
 import fs from "node:fs";
 import path from "node:path";
 
@@ -86,6 +87,58 @@ const LIST = [
   ["hyeopjae", "제주", "sea", "협재해수욕장", "Hyeopjae Beach", "挟才海水浴場", "挟才海水浴场", "挾才海水浴場"],
   ["manjanggul", "제주", "nature", "만장굴", "Manjanggul Lava Tube", "万丈窟", "万丈窟", "萬丈窟"],
   ["seopjikoji", "제주", "sea", "섭지코지", "Seopjikoji", "涉地可支", "涉地可支", "涉地可支"],
+  // 10/21 추가: 유명 산(nature)·해수욕장(sea)·사찰(history)
+  ["bukhansan", "서울", "nature", "북한산국립공원", "Bukhansan National Park", "北漢山国立公園", "北汉山国立公园", "北漢山國立公園", "북한산"],
+  ["dobongsan", "서울", "nature", "도봉산", "Dobongsan Mountain", "道峰山", "道峰山", "道峰山"],
+  ["inwangsan", "서울", "nature", "인왕산", "Inwangsan Mountain", "仁王山", "仁王山", "仁王山"],
+  ["jirisan", "경남", "nature", "지리산국립공원", "Jirisan National Park", "智異山国立公園", "智异山国立公园", "智異山國立公園", "지리산 천왕봉", "250411"],
+  ["deogyusan", "전북", "nature", "덕유산국립공원", "Deogyusan National Park", "徳裕山国立公園", "德裕山国立公园", "德裕山國立公園", "덕유산", "126238"],
+  ["odaesan", "강원", "nature", "오대산국립공원", "Odaesan National Park", "五台山国立公園", "五台山国立公园", "五臺山國立公園", "오대산", "125591"],
+  ["sobaeksan", "충북", "nature", "소백산국립공원", "Sobaeksan National Park", "小白山国立公園", "小白山国立公园", "小白山國立公園", "소백산", "125813"],
+  ["chiaksan", "강원", "nature", "치악산국립공원", "Chiaksan National Park", "雉岳山国立公園", "雉岳山国立公园", "雉嶽山國立公園", "치악산", "125587"],
+  ["gyeryongsan", "충남", "nature", "계룡산국립공원", "Gyeryongsan National Park", "鶏龍山国立公園", "鸡龙山国立公园", "雞龍山國立公園", "계룡산", "125817"],
+  ["wolchulsan", "전남", "nature", "월출산국립공원", "Wolchulsan National Park", "月出山国立公園", "月出山国立公园", "月出山國立公園", "월출산"],
+  ["juwangsan", "경북", "nature", "주왕산국립공원", "Juwangsan National Park", "周王山国立公園", "周王山国立公园", "周王山國立公園", "주왕산"],
+  ["taebaeksan", "강원", "nature", "태백산국립공원", "Taebaeksan National Park", "太白山国立公園", "太白山国立公园", "太白山國立公園", "태백산"],
+  ["maisan", "전북", "nature", "마이산", "Maisan Mountain", "馬耳山", "马耳山", "馬耳山", "마이산", "126235"],
+  ["songjeong", "부산", "sea", "송정해수욕장", "Songjeong Beach", "松亭海水浴場", "松亭海水浴场", "松亭海水浴場"],
+  ["dadaepo", "부산", "sea", "다대포해수욕장", "Dadaepo Beach", "多大浦海水浴場", "多大浦海水浴场", "多大浦海水浴場"],
+  ["songdo-beach", "부산", "sea", "송도해수욕장", "Songdo Beach", "松島海水浴場", "松岛海水浴场", "松島海水浴場"],
+  ["eurwangni", "인천", "sea", "을왕리해수욕장", "Eurwangni Beach", "乙旺里海水浴場", "乙旺里海水浴场", "乙旺里海水浴場"],
+  ["sokcho-beach", "강원", "sea", "속초해수욕장", "Sokcho Beach", "束草海水浴場", "束草海水浴场", "束草海水浴場"],
+  ["naksan-beach", "강원", "sea", "낙산해수욕장", "Naksan Beach", "洛山海水浴場", "洛山海水浴场", "洛山海水浴場"],
+  ["mallipo", "충남", "sea", "만리포해수욕장", "Mallipo Beach", "万里浦海水浴場", "万里浦海水浴场", "萬里浦海水浴場"],
+  ["kkotji", "충남", "sea", "꽃지해수욕장", "Kkotji Beach", "コッチ海水浴場", "花地海水浴场", "花地海水浴場"],
+  ["byeonsan", "전북", "sea", "변산해수욕장", "Byeonsan Beach", "辺山海水浴場", "边山海水浴场", "邊山海水浴場"],
+  ["yeongildae", "경북", "sea", "영일대해수욕장", "Yeongildae Beach", "迎日台海水浴場", "迎日台海水浴场", "迎日臺海水浴場"],
+  ["hamdeok", "제주", "sea", "함덕해수욕장", "Hamdeok Beach", "咸徳海水浴場", "咸德海水浴场", "咸德海水浴場"],
+  ["woljeongri", "제주", "sea", "월정리해변", "Woljeong-ri Beach", "月汀里海辺", "月汀里海边", "月汀里海邊", "월정리"],
+  ["gwakji", "제주", "sea", "곽지해수욕장", "Gwakji Beach", "郭支海水浴場", "郭支海水浴场", "郭支海水浴場"],
+  ["iho-tewoo", "제주", "sea", "이호테우해수욕장", "Iho Tewoo Beach", "梨湖テウ海水浴場", "梨湖Tewoo海水浴场", "梨湖Tewoo海水浴場", "이호테우"],
+  ["jungmun-beach", "제주", "sea", "중문색달해수욕장", "Jungmun Saekdal Beach", "中文穡達海水浴場", "中文穑达海水浴场", "中文穡達海水浴場", "중문색달"],
+  ["jogyesa", "서울", "history", "조계사", "Jogyesa Temple", "曹渓寺", "曹溪寺", "曹溪寺"],
+  ["bongeunsa", "서울", "history", "봉은사", "Bongeunsa Temple", "奉恩寺", "奉恩寺", "奉恩寺"],
+  ["jeondeungsa", "인천", "history", "전등사", "Jeondeungsa Temple", "伝灯寺", "传灯寺", "傳燈寺"],
+  ["yongmunsa", "경기", "history", "양평 용문사", "Yongmunsa Temple (Yangpyeong)", "龍門寺（楊平）", "龙门寺（杨平）", "龍門寺（楊平）", "용문사"],
+  ["beomeosa", "부산", "history", "범어사", "Beomeosa Temple", "梵魚寺", "梵鱼寺", "梵魚寺"],
+  ["donghwasa", "대구", "history", "동화사", "Donghwasa Temple", "桐華寺", "桐华寺", "桐華寺"],
+  ["naksansa", "강원", "history", "낙산사", "Naksansa Temple", "洛山寺", "洛山寺", "洛山寺"],
+  ["woljeongsa", "강원", "history", "월정사", "Woljeongsa Temple", "月精寺", "月精寺", "月精寺", "월정사", "125772"],
+  ["guinsa", "충북", "history", "구인사", "Guinsa Temple", "救仁寺", "救仁寺", "救仁寺"],
+  ["magoksa", "충남", "history", "마곡사", "Magoksa Temple", "麻谷寺", "麻谷寺", "麻谷寺"],
+  ["sudeoksa", "충남", "history", "수덕사", "Sudeoksa Temple", "修徳寺", "修德寺", "修德寺"],
+  ["naesosa", "전북", "history", "내소사", "Naesosa Temple", "来蘇寺", "来苏寺", "來蘇寺"],
+  ["songgwangsa", "전남", "history", "송광사", "Songgwangsa Temple", "松広寺", "松广寺", "松廣寺"],
+  ["seonamsa", "전남", "history", "선암사", "Seonamsa Temple", "仙巌寺", "仙岩寺", "仙巖寺"],
+  ["hwaeomsa", "전남", "history", "화엄사", "Hwaeomsa Temple", "華厳寺", "华严寺", "華嚴寺"],
+  ["daeheungsa", "전남", "history", "대흥사", "Daeheungsa Temple", "大興寺", "大兴寺", "大興寺"],
+  ["baegyangsa", "전남", "history", "백양사", "Baegyangsa Temple", "白羊寺", "白羊寺", "白羊寺"],
+  ["buseoksa", "경북", "history", "부석사", "Buseoksa Temple", "浮石寺", "浮石寺", "浮石寺"],
+  ["jikjisa", "경북", "history", "직지사", "Jikjisa Temple", "直指寺", "直指寺", "直指寺"],
+  ["haeinsa", "경남", "history", "해인사", "Haeinsa Temple", "海印寺", "海印寺", "海印寺"],
+  ["tongdosa", "경남", "history", "통도사", "Tongdosa Temple", "通度寺", "通度寺", "通度寺"],
+  ["ssanggyesa", "경남", "history", "쌍계사", "Ssanggyesa Temple", "双磎寺", "双溪寺", "雙磎寺"],
+  ["boriam", "경남", "history", "남해 보리암", "Boriam Hermitage", "菩提庵", "菩提庵", "菩提庵", "보리암"],
 ];
 
 async function search(keyword) {
@@ -114,7 +167,13 @@ const TYPES = new Set(["12", "14", "28"]);
 const NOT_SPOT = /점$|호텔|리조트|수련원|묘지|공예|특산|도서관|전시관|카페|나이트워크|축제|체험관/;
 const out = [];
 const missing = [];
+const prevFile = path.join("src", "data", "korea", "landmarks.json");
+const prev = new Map(process.env.ONLY_NEW && fs.existsSync(prevFile) ? JSON.parse(fs.readFileSync(prevFile, "utf8")).map((l) => [l.id, l]) : []);
 for (const [id, region, kind, ko, en, ja, zhCN, zhTW, q, cid] of LIST) {
+  if (prev.has(id)) {
+    out.push({ ...prev.get(id), region, kind, n: { ko, en, ja, "zh-CN": zhCN, "zh-TW": zhTW } });
+    continue;
+  }
   const key = norm(q ?? ko);
   const found = await search(q ?? ko);
   const pinned = cid && found.find((r) => String(r.contentid) === cid);

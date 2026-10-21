@@ -38,7 +38,7 @@ const SPOT_KTO = spotKto as Record<string, { areaCd: string; signguCd: string; n
 // 명소마다 관광공사 사진 여러 장 (scripts/korea-data/gallery.mts)
 const SPOT_IMAGES = spotImages as Record<string, string[]>;
 
-// 대표 명소 66곳 상세 (외부 검토: 얇은 페이지 대량 생성 대신 고른 명소만). 소개·이용 정보는 한국관광공사 자료,
+// 대표 명소 117곳 상세 (외부 검토: 얇은 페이지 대량 생성 대신 고른 명소만). 소개·이용 정보는 한국관광공사 자료,
 // 혼잡도는 가까운 우리 장소·서울 실시간 지역이 있을 때만 붙인다 (없으면 없다고 쓴다)
 export const revalidate = 600;
 

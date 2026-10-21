@@ -95,7 +95,7 @@ test("장소 id는 하나뿐이고, 행사 장소는 시작일 ≤ 종료일", (
   }
 });
 
-test("명소 66곳 모두 데이터랩 시군구에 연결돼 있다", () => {
+test("명소 117곳 모두 데이터랩 시군구에 연결돼 있다", () => {
   const map = spotRegion as Record<string, { code: string; name: string }>;
   for (const l of landmarks as { id: string }[]) assert.ok(map[l.id]?.code?.match(/^\d{5}$/), l.id);
 });
