@@ -8,11 +8,11 @@ import { HourlyChart } from "@/components/HourlyChart";
 import { LevelBadge } from "@/components/Level";
 import { PlaceHero } from "@/components/PlaceHero";
 import { forecastForDate, forecastReasons, weekForecast } from "@/lib/crowd/model";
-import { MonthCalendar, UpcomingHours, WeekForecast } from "@/components/PlaceForecast";
+import { UpcomingHours, WeekForecast } from "@/components/PlaceForecast";
 import { getDaySummaries, getHistory, type HistoryPoint } from "@/lib/crowd/history";
 import { getSignals } from "@/lib/crowd/signals";
 import { getCrowd } from "@/lib/crowd/service";
-import { siteShare } from "@/lib/crowd/provider";
+import { sitePeople, siteShare } from "@/lib/crowd/provider";
 import { levelOf, valueFromScore, inkOf } from "@/lib/levels";
 import { closedToday, getLivePlace, isOngoingEvent } from "@/lib/place-info";
 import { CrowdGauge } from "@/components/CrowdGauge";
@@ -180,11 +180,17 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     crowd.area ? "area" : "real",
   );
   const week = weekForecast(place, signals);
-  // 예상 인원: 점수 대신 사람 수로 (기준 단위가 '분'인 놀이공원은 대기 분). 서울 명소는 주변 지역 인원을 명소 크기로 줄인다
+  // 예상 인원: 점수 대신 사람 수로 (기준 단위가 '분'인 놀이공원은 대기 분). 지역 안 시설(롯데월드)은 지금 인원과 같은 시설 정원 기준
   const steps = place.criteria?.steps;
   const unit = place.criteria?.unit;
   const peopleAt = (score: number) =>
-    steps ? (unit === "분" ? valueFromScore(score, steps) : Math.round((valueFromScore(score, steps) * (crowd.area ? share : 1)) / 100) * 100) : undefined;
+    steps
+      ? unit === "분"
+        ? valueFromScore(score, steps)
+        : crowd.area
+          ? sitePeople(place, score)
+          : Math.round(valueFromScore(score, steps) / 100) * 100
+      : undefined;
   const peopleText = (score: number) => {
     const v = peopleAt(score);
     if (v === undefined) return undefined;
@@ -242,23 +248,12 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
       const open = forecastForDate(place, d.date).filter((p) => p.hour >= place.hours[0] && p.hour < Math.min(24, place.hours[1]));
       if (open.length) modelByDow[dowOf(d.date)].push(open.reduce((a, p) => a + p.score, 0) / open.length);
     }
-  const weekdayBars = (weekdayReal ? realByDow : modelByDow).map((xs, w) => ({
-    label: new Intl.DateTimeFormat(lang, { weekday: "short", timeZone: "UTC" }).format(new Date(Date.UTC(2026, 0, 4 + w))),
-    avg: xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : 0,
-  })).map((b) => ({ ...b, people: b.avg ? peopleText(b.avg) : undefined, peopleShort: b.avg ? peopleShort(b.avg) : undefined }));
-  // 12개월: 가장 붐빌 때는 달마다 비슷하게 꽉 차서, 운영 시간 평균 혼잡으로 비교한다 (사흘에 하루씩 표본)
-  const byMonth = new Map<string, number[]>();
-  for (const [i, d] of long.entries()) {
-    if (i % 3) continue;
-    const open = forecastForDate(place, d.date).filter((p) => p.hour >= place.hours[0] && p.hour < Math.min(24, place.hours[1]));
-    if (!open.length) continue;
-    const mean = open.reduce((a, p) => a + p.score, 0) / open.length;
-    byMonth.set(d.date.slice(0, 7), [...(byMonth.get(d.date.slice(0, 7)) ?? []), mean]);
-  }
-  const yearBars = [...byMonth.entries()].slice(0, 12).map(([ym, xs]) => ({
-    label: new Intl.DateTimeFormat(lang, { month: "short", timeZone: "UTC" }).format(new Date(`${ym}-15T00:00:00Z`)),
-    avg: Math.round(xs.reduce((a, b) => a + b, 0) / xs.length),
-  })).map((b) => ({ ...b, people: peopleText(b.avg), peopleShort: peopleShort(b.avg) }));
+  const weekdayBars = (weekdayReal ? realByDow : modelByDow)
+    .map((xs, w) => ({
+      label: new Intl.DateTimeFormat(lang, { weekday: "short", timeZone: "UTC" }).format(new Date(Date.UTC(2026, 0, 4 + w))),
+      avg: xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : 0,
+    }))
+    .map((b) => ({ ...b, people: b.avg ? peopleText(b.avg) : undefined, peopleShort: b.avg ? peopleShort(b.avg) : undefined }));
   // 놀이기구 구역별 평균 대기 (구역을 아는 공원만)
   const areas = [...new Set((crowd.zones ?? []).map((z) => z.area).filter((a): a is string => !!a))]
     .map((name) => {
@@ -274,7 +269,11 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
       date: d.date,
       label: shortDay(d.date, t, lang),
       closed,
-      hours: closed ? [] : pts.filter((p) => p.hour >= place.hours[0] && p.hour < Math.min(24, place.hours[1])).map((p) => ({ hour: p.hour, score: p.score, people: peopleText(p.score) })),
+      hours: closed
+        ? []
+        : pts
+            .filter((p) => p.hour >= place.hours[0] && p.hour < Math.min(24, place.hours[1]))
+            .map((p) => ({ hour: p.hour, score: p.score, people: peopleText(p.score) })),
     };
   });
   const dday = place.eventDate ? daysUntil(place.eventDate) : null;
@@ -575,11 +574,6 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             <WeekHeatmap days={heatDays} nowHour={now.hour} />
           </section>
 
-          {/* 월별 (12개월): 달력처럼 색만 */}
-          <section className="mt-8">
-            <MonthCalendar year={yearBars} />
-          </section>
-
           {/* 이번 주 (막대를 훑으면 그날 예상 인원) + 더보기: 30일·요일별 */}
           <section className="mt-8">
             <WeekForecast
@@ -605,7 +599,12 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           {signals.localPop && <VisitorProfile pop={signals.localPop} lang={lang} />}
           {/* 서울 장소: 주변 지역의 지금 성별·연령 (서울시 실시간) */}
           {!signals.localPop && seoulProfile && (
-            <SeoulPeopleProfile profile={seoulProfile} lang={lang} areaName={place.seoulArea} className="mt-8 rounded-3xl border border-gray-100 p-4" />
+            <SeoulPeopleProfile
+              profile={seoulProfile}
+              lang={lang}
+              areaName={place.seoulArea}
+              className="mt-8 rounded-3xl border border-gray-100 p-4"
+            />
           )}
 
           <JudgementCard place={place} crowd={crowd} signals={signals} lang={lang} />
@@ -740,7 +739,6 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             </div>
             {lang !== "ko" && <p className="pt-1 text-xs text-gray-500">{t("운영 시간·휴무·문의·주소는 한국어 원문이에요.")}</p>}
           </section>
-
         </div>
       </div>
     </main>

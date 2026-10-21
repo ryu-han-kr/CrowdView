@@ -21,6 +21,12 @@ export function siteShare(place: Place): number {
   return Math.min(1, place.capacity / top);
 }
 
+/** 지역 안 시설의 점수 → 시설 인원 (정원의 20·40·60·80%가 단계 경계, 정원을 넘지 않게) */
+export function sitePeople(place: Place, score: number): number {
+  const steps = [0.2, 0.4, 0.6, 0.8].map((r) => Math.round(place.capacity * r)) as LevelSteps;
+  return Math.min(place.capacity, Math.round(valueFromScore(score, steps) / 100) * 100);
+}
+
 /**
  * 서울시 실시간 도시데이터가 있는 장소: 서울 121곳 묶음(lib/seoul-live, 10분 캐시)에서 그 지역 값을 그대로 쓴다.
  * 장소 화면·서울 실시간 화면·홈이 같은 관측 시각의 같은 공식 단계를 보이게 (따로 부르면 시각이 달라 단계가 갈린다)
@@ -37,14 +43,16 @@ async function fetchSeoulCitydata(place: Place, s: Signals): Promise<CrowdSnapsh
   // 지역 안의 한 시설(롯데월드 ⊂ 잠실 관광특구): 지역 단계·인원을 그대로 쓰면 크게 부풀려진다 (지역 10만 명 > 시설 정원 3.5만).
   // → 시설의 평소 하루(예측 모델: 요일·시간·날씨·관광공사 집중률) × 오늘 지역이 평소보다 붐비는 정도. 인원은 시설 정원 기준으로 환산
   const inArea = share < 1;
-  const siteSteps: LevelSteps = [0.2, 0.4, 0.6, 0.8].map((r) => Math.round(place.capacity * r)) as LevelSteps;
   const score = inArea ? Math.max(0, Math.min(100, Math.round(base.score * (vsUsual ?? 1)))) : row.score;
   const site = (n: number) => (inArea ? Math.min(place.capacity, Math.round((n * share) / 100) * 100) : n);
-  const headcount = inArea ? Math.round(valueFromScore(score, siteSteps) / 100) * 100 : Math.round((row.min + row.max) / 2);
+  const headcount = inArea ? sitePeople(place, score) : Math.round((row.min + row.max) / 2);
   const peopleKind = inArea ? "est" : "real";
 
   // 시간대 곡선은 모델 곡선을 쓰고, 서울시 12시간 예측이 있는 시간은 공식 예보로 덮어쓴다 (지역 안 시설은 모델 곡선 그대로)
-  const hourly = base.hourly.map((p) => ({ ...p }));
+  // 지역 안 시설은 모델 곡선의 인원도 지역 기준이라 시설 정원 기준으로 바꾼다 (지금 인원·주간 막대와 같은 기준)
+  const hourly = base.hourly.map((p) =>
+    inArea && p.people !== undefined ? { ...p, people: sitePeople(place, p.score), peopleKind: "est" as const } : { ...p },
+  );
   for (const f of inArea ? [] : row.forecast) {
     const h = Number(f.time.slice(11, 13));
     const point = hourly.find((p) => p.hour === h && p.forecast);
