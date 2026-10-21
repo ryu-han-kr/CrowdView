@@ -90,7 +90,9 @@ function ScrubBars({ items, sel, onSel, tall = false }: { items: BarItem[]; sel:
         const on = i === sel;
         return (
           <li key={it.key} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end">
-            <span className={`mb-1 text-[11px] whitespace-nowrap tabular-nums ${on ? "font-bold text-gray-900" : "text-gray-500"} ${many && !on ? "invisible" : ""}`}>
+            <span
+              className={`mb-1 text-[11px] whitespace-nowrap tabular-nums ${on ? "font-bold text-gray-900" : "text-gray-500"} ${many && !on ? "invisible" : ""}`}
+            >
               {it.top}
             </span>
             <span
@@ -305,45 +307,6 @@ export function WeekForecast({
           </p>
         </div>
       )}
-    </div>
-  );
-}
-
-/**
- * 월별 (앞으로 12개월): 달력처럼 12칸, 칸은 그 달 운영 시간 평균 단계의 색과 이름만.
- * 레퍼런스: Queue-Times "9월이 가장 한산(27%)"처럼 결론 한 줄
- */
-export function MonthCalendar({ year }: { year: YearBar[] }) {
-  const { t } = useI18n();
-  const valid = year.filter((m) => m.avg > 0);
-  if (!valid.length) return null;
-  const calm = valid.reduce((a, b) => (b.avg < a.avg ? b : a), valid[0]);
-  const busy = valid.reduce((a, b) => (b.avg > a.avg ? b : a), valid[0]);
-  return (
-    <div>
-      <h2 className="text-lg font-bold">{t("월별 혼잡도")}</h2>
-      <p className="mt-0.5 text-[15px] leading-relaxed text-gray-700">
-        {t("가장 한산한 달은 {calm}, 가장 붐비는 달은 {busy}이에요.", { calm: calm.label, busy: busy.label })}
-      </p>
-      {/* 달마다 차이가 작아 모두 같은 단계일 때가 많아서, 단계 색을 바탕으로 다른 달보다 붐빌수록 진하게 */}
-      <ul className="mt-3 grid grid-cols-4 gap-2">
-        {year.map((m) => {
-          const l = levelOf(m.avg);
-          const rel = busy.avg === calm.avg ? 0.6 : (m.avg - calm.avg) / (busy.avg - calm.avg);
-          const alpha = Math.round((0.25 + rel * 0.75) * 255)
-            .toString(16)
-            .padStart(2, "0");
-          return (
-            <li key={m.label} className="overflow-hidden rounded-xl border border-gray-100 text-center" title={m.people}>
-              <p className="bg-gray-50 py-1 text-xs font-semibold text-gray-600">{m.label}</p>
-              <p className="py-2.5 text-[13px] font-bold text-gray-900" style={{ background: m.avg ? `${l.color}${alpha}` : "#e5e7eb" }}>
-                {m === calm ? t("가장 한산") : m === busy ? t("가장 붐빔") : m.avg ? t(l.label) : "–"}
-              </p>
-            </li>
-          );
-        })}
-      </ul>
-      <p className="mt-2 text-[11px] text-gray-500">{t("운영 시간 평균 혼잡으로 본 CrowdView 추정이에요 (요일·공휴일·계절 패턴).")}</p>
     </div>
   );
 }
