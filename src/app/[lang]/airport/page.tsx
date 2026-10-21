@@ -76,7 +76,7 @@ export default async function AirportListPage({ params }: { params: Promise<{ la
                   <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-600 text-xs font-extrabold text-white">P</span>
                   <span className="flex-1">
                     <b>{t("주차장")}</b> {t("빈자리")} <b className="text-sky-700">{t("{n}면", { n: freeSpaces.toLocaleString() })}</b>
-                    {fullLots > 0 && <span className="text-red-500"> · {t("{n}곳 만차 임박", { n: fullLots })}</span>}
+                    {fullLots > 0 && <span className="text-red-700"> · {t("{n}곳 만차 임박", { n: fullLots })}</span>}
                   </span>
                   <span className="text-gray-500">›</span>
                 </Link>

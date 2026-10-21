@@ -6,6 +6,7 @@ import { AIR_GRADE } from "@/lib/crowd/weather-air";
 import { kst } from "@/lib/time";
 import type { Place } from "@/lib/types";
 import { getPm25High, getWeatherSummary } from "@/lib/weather-notes";
+import { inkOf } from "@/lib/levels";
 import { Glyph } from "@/components/Glyph";
 
 const SKY: Record<number, string> = { 1: "맑음", 3: "구름많음", 4: "흐림" };
@@ -71,7 +72,7 @@ export async function WeatherCard({ signals, lang, place }: { signals: Signals; 
         {air?.pm25Grade && (
           <div className="shrink-0 text-right">
             <p className="text-xs font-medium text-gray-600">{t("초미세먼지")}</p>
-            <p className="text-lg font-bold" style={{ color: AIR_COLOR[air.pm25Grade] }}>
+            <p className="text-lg font-bold" style={{ color: inkOf(AIR_COLOR[air.pm25Grade]) }}>
               {t(AIR_GRADE[air.pm25Grade])}
               {air.pm25 !== undefined && <span className="ml-1 text-xs font-semibold text-gray-700">{air.pm25}㎍</span>}
             </p>

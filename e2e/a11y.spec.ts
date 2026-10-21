@@ -23,7 +23,9 @@ const PAGES = [
 for (const path of PAGES) {
   test(`접근성: ${path}`, async ({ page }) => {
     await page.goto(path);
-    await page.waitForLoadState("networkidle");
+    // 운영 사이트는 광고·분석 요청이 계속 오가서 networkidle에 닿지 않는다 → 로드 후 잠깐 기다린다
+    await page.waitForLoadState("load");
+    await page.waitForTimeout(1500);
     const { violations } = await new AxeBuilder({ page }).analyze();
     const bad = violations.filter((v) => v.impact === "critical" || v.impact === "serious");
     // 실패하면 어떤 규칙이 몇 군데인지, 첫 요소가 무엇인지 보이게
