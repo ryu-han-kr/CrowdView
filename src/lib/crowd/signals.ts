@@ -47,8 +47,9 @@ export interface Signals {
 
 const HOUR = 3600;
 
-// 이번 달부터 3개월치 공휴일
-async function getHolidays(): Promise<Map<string, string>> {
+// 이번 달부터 3개월치 공휴일 (키가 없으면 빈 Map)
+export async function getHolidays(): Promise<Map<string, string>> {
+  if (!process.env.DATA_GO_KR_KEY) return new Map();
   const today = kst().date;
   const months = [0, 1, 2].map((i) => {
     const d = new Date(Date.UTC(Number(today.slice(0, 4)), Number(today.slice(5, 7)) - 1 + i, 1));

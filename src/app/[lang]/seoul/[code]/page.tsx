@@ -24,6 +24,11 @@ import { canOptimize } from "@/lib/img";
 import { KstNote } from "@/components/LocalTime";
 import { Glyph } from "@/components/Glyph";
 import { SeoulPeopleProfile } from "@/components/VisitorProfile";
+import { UsualBand } from "@/components/UsualBand";
+import { cellOf } from "@/lib/crowd/model";
+import { usualBand } from "@/lib/crowd/percentile";
+import { getHolidays } from "@/lib/crowd/signals";
+import { kst } from "@/lib/time";
 
 export const revalidate = 600;
 
@@ -54,12 +59,16 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
   const area = SEOUL_AREAS.find((a) => a.code === code);
   if (!area) notFound();
   // 서울시(KT 기반) + SK텔레콤 장소 혼잡도(키가 있을 때)를 함께 보여준다
-  const [live, names, skt, extra] = await Promise.all([
+  const [live, names, skt, extra, holidays] = await Promise.all([
     getSeoulAreaLive(area.code),
     translateNames([area.name], lang),
     getSktCongestion(area.name.replace(/\(.*?\)/g, ""), area.lat, area.lng),
     getSeoulAreaExtra(area.name),
+    getHolidays().catch(() => undefined),
   ]);
+  // 최근 4주 같은 평일/주말·같은 시간 분포에서 지금 인구가 어디쯤인지 (표본이 모자라면 없음)
+  const band = live ? await usualBand("seoul", area.code, Math.round((live.min + live.max) / 2)) : undefined;
+  const weekend = cellOf(kst(), holidays) >= 24;
   const BUSY: Record<string, string> = { 한산한: "#10b981", 보통: "#eab308", 분주한: "#f97316", 바쁜: "#ef4444" };
   const name = names.get(area.name) ?? area.name;
   // 숙소 검색어 (해외 사이트용 영어 이름, Papago 캐시)
@@ -138,6 +147,11 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
               <p className="mt-0.5 text-sm text-gray-600">
                 {t("서울시 단계")}: <b>{t(live.level)}</b>
               </p>
+              {band && (
+                <p className="mt-1 text-sm font-semibold">
+                  <UsualBand band={band.band} weekend={weekend} t={t} />
+                </p>
+              )}
               {live.message && lang === "ko" && <p className="mt-2 text-xs leading-relaxed text-gray-600">{live.message}</p>}
               <p className="mt-2 text-[11px] text-gray-600">{t("{time} 기준", { time: live.time.slice(11) })}</p>
             </section>

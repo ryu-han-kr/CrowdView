@@ -50,6 +50,9 @@ import Link from "@/i18n/link";
 import { KstNote, LocalTime } from "@/components/LocalTime";
 import { dataGrade, GRADE_LABEL } from "@/lib/data-grade";
 import { Glyph } from "@/components/Glyph";
+import { UsualBand } from "@/components/UsualBand";
+import { cellOf } from "@/lib/crowd/model";
+import { usualBand } from "@/lib/crowd/percentile";
 
 // ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 // 관광공사 사진 여러 장 (scripts/korea-data/place-images.mjs)
@@ -170,6 +173,15 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     });
   const seoulCode = place.seoulArea ? SEOUL_AREAS.find((a) => a.name === place.seoulArea)?.code : undefined;
   const seoulProfile = seoulCode ? seoulNow[seoulCode]?.profile : undefined;
+  // 백분위 혼잡지수: 서울시 지역 인원은 서울 쪽 분포, 놀이공원·공항 실측은 장소 점수 분포 (표본이 모자라면 없음)
+  const seoulRow = seoulCode ? seoulNow[seoulCode] : undefined;
+  const band =
+    crowd.source === "seoul-citydata" && seoulCode && seoulRow
+      ? await usualBand("seoul", seoulCode, Math.round((seoulRow.min + seoulRow.max) / 2))
+      : crowd.source !== "model"
+        ? await usualBand("place", place.id, crowd.score)
+        : undefined;
+  const weekend = cellOf(kst(), signals.holidays) >= 24;
   // 오늘 지난 시간은 10분마다 쌓은 실측 기록으로 채운다 (시간마다 마지막 기록)
   // 서울시 명소: 10/20 이전 기록은 주변 지역 인원 그대로라, 장소 수용 인원보다 한참 크면 명소 기준으로 줄인다
   const share = siteShare(place);
@@ -407,6 +419,12 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                         })}
                   </span>
                 )}
+              </p>
+            )}
+            {band && isOpen && !beforeEvent && (
+              <p className="mt-1 text-sm font-semibold">
+                {crowd.area && <span className="font-normal text-gray-600">{t("주변 지역은")} </span>}
+                <UsualBand band={band.band} weekend={weekend} t={t} />
               </p>
             )}
             <p className={`mt-2 text-xs ${crowd.stale ? "font-semibold text-amber-700" : "text-gray-600"}`}>

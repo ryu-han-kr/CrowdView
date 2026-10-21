@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "@/i18n/link";
 import type { Lang } from "@/i18n/config";
-import { HORIZONS, getAccuracy, type DayStat } from "@/lib/accuracy";
+import { HORIZONS, MIN_PICK_N, getAccuracy, getMethod24, type DayStat } from "@/lib/accuracy";
 import { pageMeta } from "@/lib/seo";
 import { getCalibrationStats } from "@/lib/crowd/calibration";
 import { PLACES } from "@/lib/places";
@@ -22,6 +22,8 @@ const COPY = {
       "median-24h": "기준선 · 최근 4주 같은 요일·시각 중앙값",
     },
     week: "최근 7일",
+    using:
+      "지금 24시간 뒤 예측(한산한 코스의 내일·주말 점수)에 쓰는 방법: {m}. 기준선이 최근 7일 단계 일치와 평균 오차를 둘 다 패턴 예측보다 잘 맞출 때만(비교 수 {n} 이상) 자동으로 바꿔요.",
     match: "단계 일치",
     err: "평균 오차",
     n: "비교 수",
@@ -49,6 +51,8 @@ const COPY = {
       "median-24h": "Baseline · median of the same weekday and hour, last 4 weeks",
     },
     week: "Last 7 days",
+    using:
+      "Method currently used for 24-hour-ahead forecasts (tomorrow/weekend scores in quiet routes): {m}. A baseline replaces the pattern forecast only when it beats it on both level match and mean error over the last 7 days (at least {n} comparisons).",
     match: "Level match",
     err: "Mean error",
     n: "Comparisons",
@@ -80,7 +84,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 export default async function AccuracyPage({ params }: { params: Promise<{ lang: string }> }) {
   const lang = (await params).lang as Lang;
   const c = lang === "ko" ? COPY.ko : COPY.en;
-  const [rows, calib] = await Promise.all([getAccuracy(14), getCalibrationStats(7)]);
+  const [rows, calib, { method }] = await Promise.all([getAccuracy(14), getCalibrationStats(7), getMethod24()]);
   const t = getT(lang);
   const calibRows = PLACES.filter((p) => calib[p.id]?.n).map((p) => ({ place: p, s: calib[p.id] }));
   const avg = (v: number, n: number) => `${(v / n).toFixed(1)}${c.pts}`;
@@ -107,6 +111,9 @@ export default async function AccuracyPage({ params }: { params: Promise<{ lang:
           );
         })}
       </ul>
+      <p className="mt-3 max-w-3xl text-xs leading-relaxed text-gray-600">
+        {c.using.replace("{m}", c.horizon[method]).replace("{n}", MIN_PICK_N.toLocaleString())}
+      </p>
 
       {any ? (
         <div className="mt-8 overflow-x-auto rounded-2xl border border-gray-100 bg-white">

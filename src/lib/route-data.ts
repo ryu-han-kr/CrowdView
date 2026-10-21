@@ -1,5 +1,6 @@
 // 추천 루트 후보 장소: 우리 장소(오늘 시간대별 예측) + 서울시 실시간 지역(서울시 12시간 예측).
 // 역 주변(인구밀집 지역)은 목적지가 아니라서 뺀다. 식사 장소는 서울 여행 가이드 맛집(정확한 좌표가 있는 곳)
+import { getMedianProfile, getMethod24, type MedianProfile, type Method24 } from "./accuracy";
 import { forecastForDate } from "./crowd/model";
 import { getAllCrowd } from "./crowd/service";
 import { makePredictor, shapeNear } from "./forecast";
@@ -32,15 +33,34 @@ const GROUP_STAY: Partial<Record<SeoulGroup, number>> = { heritage: 80, park: 60
 /** "YYYY-MM-DD HH:MM" → 오늘 0시부터 센 시 (내일 9시 = 33) */
 const absHour = (time: string) => daysUntil(time.slice(0, 10)) * 24 + Number(time.slice(11, 13));
 
+/** 12시간 뒤 예측에 쓰는 방법 (lib/accuracy가 최근 7일 채점으로 고른다) + 4주 중앙값 프로필 */
+interface Beyond {
+  method: Method24;
+  profile: MedianProfile;
+}
+async function getBeyond(): Promise<Beyond> {
+  const { method } = await getMethod24().catch(() => ({ method: "pattern-24h" as Method24 }));
+  return { method, profile: method === "median-24h" ? await getMedianProfile() : {} };
+}
+
 /**
  * 서울시 실시간 지역의 지금 + 12시간 예측 → 후보 (관심사·머무는 시간은 부르는 쪽이 정한다).
- * 그 뒤(내일·주말)는 가까운 지하철역의 요일·시간대 승하차 모양을 지금 점수에 맞춰 예측한다 (lib/forecast)
+ * 그 뒤(내일·주말)는 /accuracy 채점에서 고른 방법으로 예측한다: 기본은 가까운 지하철역의 요일·시간대 승하차 모양을 지금 점수에
+ * 맞춘 패턴 예측(lib/forecast). 기준선이 더 나으면 '지금 값 그대로' 또는 '4주 같은 요일·시 중앙값'(칸이 비면 패턴)
  */
-function seoulCandidate(a: (typeof SEOUL_AREAS)[number], live: Omit<SeoulLive, "distance">): Omit<Candidate, "interest" | "stay"> {
+function seoulCandidate(a: (typeof SEOUL_AREAS)[number], live: Omit<SeoulLive, "distance">, beyond: Beyond): Omit<Candidate, "interest" | "stay"> {
   const hourly: Record<number, number> = { [absHour(live.time)]: live.score };
   for (const f of live.forecast) hourly[absHour(f.time)] = f.score;
   const shape = shapeNear(a);
-  const predict = shape && makePredictor(shape, hourly, kst().day);
+  const today = kst().day;
+  const pattern = shape && makePredictor(shape, hourly, today);
+  const prof = beyond.profile[a.code];
+  const predict =
+    beyond.method === "naive-24h"
+      ? () => live.score
+      : beyond.method === "median-24h" && prof
+        ? (h: number) => prof[((today + Math.floor(h / 24)) % 7) * 24 + ((h % 24) + 24) % 24] ?? pattern?.(h) ?? live.score
+        : pattern;
   const img = photoNear(a);
   return {
     id: `seoul-${a.code}`,
@@ -74,7 +94,7 @@ const KIND_INTEREST: Record<string, Interest> = { attraction: "history", nature:
  * (가이드 장소의 혼잡은 1km 안 서울 실시간 지역 것을 빌려 쓰고, 없으면 보통으로 본다)
  */
 export async function getPickCandidates(ids: string[], all: Candidate[]): Promise<Candidate[]> {
-  const seoul = await getAllSeoulLive();
+  const [seoul, beyond] = await Promise.all([getAllSeoulLive(), getBeyond()]);
   const out: Candidate[] = [];
   for (const id of ids) {
     const hit = all.find((c) => c.id === id);
@@ -85,7 +105,7 @@ export async function getPickCandidates(ids: string[], all: Candidate[]): Promis
     if (id.startsWith("seoul-")) {
       const a = SEOUL_AREAS.find((x) => x.code === id.slice(6));
       const live = a && seoul[a.code];
-      if (a && live) out.push({ ...seoulCandidate(a, live), interest: "shopping", stay: 60, hours: [7, 23] });
+      if (a && live) out.push({ ...seoulCandidate(a, live, beyond), interest: "shopping", stay: 60, hours: [7, 23] });
       continue;
     }
     const g = getGuidePlace(id);
@@ -95,7 +115,7 @@ export async function getPickCandidates(ids: string[], all: Candidate[]): Promis
       .sort((x, y) => x.km - y.km)[0];
     const interest = KIND_INTEREST[g.kind] ?? "history";
     out.push({
-      ...(near ? seoulCandidate(near.a, seoul[near.a.code]) : { hourly: {}, now: 50, basis: "seoul" as const }),
+      ...(near ? seoulCandidate(near.a, seoul[near.a.code], beyond) : { hourly: {}, now: 50, basis: "seoul" as const }),
       id: g.id,
       name: g.t.ko?.n ?? g.id,
       href: `/guide/${g.id}`,
@@ -111,7 +131,7 @@ export async function getPickCandidates(ids: string[], all: Candidate[]): Promis
 }
 
 export async function getRouteCandidates(): Promise<Candidate[]> {
-  const [crowd, seoul] = await Promise.all([getAllCrowd(), getAllSeoulLive()]);
+  const [crowd, seoul, beyond] = await Promise.all([getAllCrowd(), getAllSeoulLive(), getBeyond()]);
   const out: Candidate[] = [];
 
   for (const p of PLACES) {
@@ -143,7 +163,7 @@ export async function getRouteCandidates(): Promise<Candidate[]> {
     if (!interest || !live) continue;
     // 우리 장소와 같은 곳이면 장소 쪽을 쓴다 (예: 경복궁, 홍대)
     if (PLACES.some((p) => p.seoulArea === a.name || distanceKm(p, a) < 0.3)) continue;
-    out.push({ ...seoulCandidate(a, live), interest, stay: GROUP_STAY[group] ?? 60, hours: DEFAULT_HOURS[interest] });
+    out.push({ ...seoulCandidate(a, live, beyond), interest, stay: GROUP_STAY[group] ?? 60, hours: DEFAULT_HOURS[interest] });
   }
   return out;
 }

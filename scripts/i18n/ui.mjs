@@ -2421,4 +2421,20 @@ export default {
   "평소 이 시간보다 {n}% 많아요": ["{n}% busier than usual for this time","いつものこの時間より{n}%多いです","比平时这个时间多{n}%","比平時這個時間多{n}%"],
   "평소 이 시간보다 {n}% 적어요": ["{n}% quieter than usual for this time","いつものこの時間より{n}%少ないです","比平时这个时间少{n}%","比平時這個時間少{n}%"],
   "시간대별 예상": ["Hourly outlook","時間帯別の予想","分时段预测","分時段預測"],
+  // #183·#182 때 빠진 번역
+  "{name} ({start}~{end}, {region}) 예상 혼잡도와 일정, 장소": ["{name} ({start}–{end}, {region}): expected crowds, schedule and venue","{name}({start}~{end}、{region})の予想混雑・日程・会場","{name}（{start}~{end}，{region}）预计拥挤度、日程与地点","{name}（{start}~{end}，{region}）預計擁擠度、日程與地點"],
+  "날마다 비슷해요": ["About the same every day","日ごとの差はほとんどありません","每天差不多","每天差不多"],
+  "이번 주 중 덜 붐빔": ["Least busy this week","今週の中では空いている","本周相对不挤","本週相對不擠"],
+  "앞으로 30일은 날마다 비슷해요.": ["The next 30 days look about the same every day.","今後30日は日ごとの差がほとんどありません。","未来30天每天差不多。","未來30天每天差不多。"],
+  "요일마다 비슷해요.": ["About the same on every weekday.","曜日ごとの差はほとんどありません。","每个星期几都差不多。","每個星期幾都差不多。"],
+  "단계는 장소마다 평소 인구와 비교한 서울시 기준이에요 · 인원이 많아도 '원활'일 수 있어요": ["Levels follow Seoul's per-area scale relative to its usual population · a large count can still be ‘quiet’","段階は場所ごとの平常人口と比べたソウル市基準です・人数が多くても「順調」のことがあります","等级是首尔市按各地点平时人口比较的标准 · 人数多也可能是“畅通”","等級是首爾市按各地點平時人口比較的標準 · 人數多也可能是「順暢」"],
+  // 백분위 혼잡지수 (components/UsualBand)
+  "평일": ["weekday","平日","平日","平日"],
+  "주말·공휴일": ["weekend/holiday","週末・祝日","周末/节假日","週末/國定假日"],
+  "주변 지역은": ["Surrounding area:","周辺エリアは","周边地区","周邊地區"],
+  "최근 4주 {day} 같은 시간보다 훨씬 붐벼요 · 상위 10%": ["Much busier than the same {day} hour over the last 4 weeks · top 10%","直近4週間の{day}同時間帯よりかなり混んでいます・上位10%","比最近4周{day}同一时段拥挤得多 · 前10%","比最近4週{day}同一時段擁擠得多 · 前10%"],
+  "최근 4주 {day} 같은 시간보다 붐벼요 · 상위 25%": ["Busier than the same {day} hour over the last 4 weeks · top 25%","直近4週間の{day}同時間帯より混んでいます・上位25%","比最近4周{day}同一时段更拥挤 · 前25%","比最近4週{day}同一時段更擁擠 · 前25%"],
+  "최근 4주 {day} 같은 시간과 비슷한 수준이에요": ["About the same as the usual {day} hour over the last 4 weeks","直近4週間の{day}同時間帯と同じくらいです","与最近4周{day}同一时段差不多","與最近4週{day}同一時段差不多"],
+  "최근 4주 {day} 같은 시간보다 한산해요 · 하위 25%": ["Quieter than the same {day} hour over the last 4 weeks · bottom 25%","直近4週間の{day}同時間帯より空いています・下位25%","比最近4周{day}同一时段更清闲 · 后25%","比最近4週{day}同一時段更清閒 · 後25%"],
+  "최근 4주 {day} 같은 시간보다 훨씬 한산해요 · 하위 10%": ["Much quieter than the same {day} hour over the last 4 weeks · bottom 10%","直近4週間の{day}同時間帯よりかなり空いています・下位10%","比最近4周{day}同一时段清闲得多 · 后10%","比最近4週{day}同一時段清閒得多 · 後10%"],
 };
