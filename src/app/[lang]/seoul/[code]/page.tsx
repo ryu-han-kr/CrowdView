@@ -26,6 +26,7 @@ import { KstNote } from "@/components/LocalTime";
 import { Glyph } from "@/components/Glyph";
 import { SeoulPeopleProfile } from "@/components/VisitorProfile";
 import { UsualBand } from "@/components/UsualBand";
+import { TrackRecent } from "@/components/TrackRecent";
 import { cellOf } from "@/lib/crowd/model";
 import { usualBand } from "@/lib/crowd/percentile";
 import { getHolidays } from "@/lib/crowd/signals";
@@ -89,6 +90,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
 
   return (
     <main className="px-5 pt-4 pb-10 md:px-0 md:pt-8">
+      <TrackRecent id={`seoul-${area.code}`} href={`/seoul/${area.code}`} title={name} img={heroImg} sub={t(group.label)} />
       <Link href="/seoul" className="text-sm text-gray-500">
         ← {t("서울 실시간 인구")}
       </Link>

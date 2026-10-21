@@ -6,7 +6,7 @@ import { getSktCongestion } from "@/lib/skt";
 import { notFound } from "next/navigation";
 import { DataTag } from "@/components/DataTag";
 import { LevelBadge } from "@/components/Level";
-import { FESTIVAL_CATEGORIES, FESTIVAL_STEPS, festivalStatus, getFestival, getFestivalCrowd, getFestivalLive, isLongRunning, seoulAreaOf } from "@/lib/festivals";
+import { FESTIVAL_CATEGORIES, FESTIVAL_STEPS, festivalHref, festivalStatus, getFestival, getFestivalCrowd, getFestivalLive, isLongRunning, seoulAreaOf } from "@/lib/festivals";
 import { compactNumber } from "@/lib/format";
 import { LEVELS, levelOf, inkOf } from "@/lib/levels";
 import { daysUntil, kst } from "@/lib/time";
@@ -18,6 +18,7 @@ import { formatHour } from "@/i18n/translate";
 import { KstNote } from "@/components/LocalTime";
 import { Glyph } from "@/components/Glyph";
 import { FestivalActions } from "@/components/FestivalActions";
+import { TrackRecent } from "@/components/TrackRecent";
 
 export const revalidate = 3600;
 
@@ -71,6 +72,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
 
   return (
     <main className="px-5 pt-4 pb-10 md:px-0 md:pt-8">
+      <TrackRecent id={`festival-${f.id}`} href={festivalHref(f)} title={tr(f.title)} img={f.image} sub={tr(f.region)} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

@@ -7,7 +7,7 @@ import { LANGS, LANG_LABEL, localePath, stripLang } from "@/i18n/config";
 import { Glyph } from "@/components/Glyph";
 
 /** 🌐 언어 선택. 같은 페이지의 다른 언어 주소로 이동한다 */
-export function LangSwitcher({ compact = false }: { compact?: boolean }) {
+export function LangSwitcher({ compact = false, iconOnly = false }: { compact?: boolean; iconOnly?: boolean }) {
   const { lang, t } = useI18n();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -35,7 +35,7 @@ export function LangSwitcher({ compact = false }: { compact?: boolean }) {
         // 읽어 주는 이름 = 보이는 언어 이름 + '언어 선택' (보이는 글자가 이름에 들어가야 음성 명령으로도 누를 수 있다)
         aria-label={`${LANG_LABEL[lang]} · ${t("언어 선택")}`}
         className={`flex items-center gap-1.5 rounded-full border border-gray-200 bg-white font-medium text-gray-700 hover:bg-gray-50 ${
-          compact ? "h-8 px-2.5 text-xs" : "h-9 px-3 text-sm"
+          iconOnly ? "h-10 w-10 justify-center" : compact ? "h-8 px-2.5 text-xs" : "h-9 px-3 text-sm"
         }`}
       >
         <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
@@ -43,7 +43,7 @@ export function LangSwitcher({ compact = false }: { compact?: boolean }) {
           <path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3Z" />
         </svg>
         {/* PC 상단 메뉴: 태블릿 폭에서는 지구본만 (메뉴 '마이'가 밀려 가려지던 것) */}
-        <span className={compact ? undefined : "hidden xl:inline"}>{LANG_LABEL[lang]}</span>
+        {!iconOnly && <span className={compact ? undefined : "hidden xl:inline"}>{LANG_LABEL[lang]}</span>}
       </button>
       {open && (
         <ul role="listbox" className="absolute right-0 z-50 mt-1.5 w-36 overflow-hidden rounded-2xl border border-gray-100 bg-white py-1 shadow-xl">

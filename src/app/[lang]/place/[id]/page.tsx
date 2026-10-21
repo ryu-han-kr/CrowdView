@@ -51,6 +51,7 @@ import { KstNote, LocalTime } from "@/components/LocalTime";
 import { dataGrade, GRADE_LABEL } from "@/lib/data-grade";
 import { Glyph } from "@/components/Glyph";
 import { UsualBand } from "@/components/UsualBand";
+import { TrackRecent } from "@/components/TrackRecent";
 import { cellOf } from "@/lib/crowd/model";
 import { usualBand } from "@/lib/crowd/percentile";
 
@@ -307,6 +308,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
 
   return (
     <main>
+      <TrackRecent id={place.id} href={placeHref(place)} title={t(place.name)} img={place.image} sub={t(place.region)} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
