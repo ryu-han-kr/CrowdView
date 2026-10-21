@@ -8,6 +8,10 @@ import { CategoryIcons } from "@/components/home/CategoryIcons";
 import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
 import { PhotoRail, type PhotoCardItem } from "@/components/home/PhotoRail";
 import { PlusPromo } from "@/components/home/PlusPromo";
+import { RecentRail } from "@/components/home/RecentRail";
+import { RankList, type RankItem } from "@/components/home/RankList";
+import { headcountInfo } from "@/lib/format";
+import { Glyph } from "@/components/Glyph";
 import { PLUS } from "@/lib/business";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { festivalHref, getFestivalCrowd, getFestivals, isLongRunning } from "@/lib/festivals";
@@ -95,11 +99,12 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     },
   ] as (HeroSlide | undefined)[]).filter((s): s is HeroSlide => !!s);
   const crowdSlides: HeroSlide[] = [
-    { id: "airport", href: "/airport", img: "/places/icn-t1.jpg", tag: t("실시간"), title: t("인천공항 출국장, 지금 몇 분 기다릴까?"), sub: t("출국장별 대기 인원과 시간대별 예측") },
+    { id: "airport", href: "/airport", img: "/places/icn-t1.jpg", live: true, tag: t("실시간"), title: t("인천공항 출국장, 지금 몇 분 기다릴까?"), sub: t("출국장별 대기 인원과 시간대별 예측") },
     {
       id: "seoul",
       href: "/seoul",
       img: "/places/gyeongbokgung.jpg",
+      live: true,
       tag: t("실시간"),
       title: t("서울 실시간 인구 {n}곳", { n: SEOUL_AREAS.length }),
       sub: t("강남역·성수·홍대·한강공원… 지금 몇 명이 있을까?"),
@@ -129,6 +134,34 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const anyCalm = calmCards.some((c) => (c.score ?? 100) < 60);
   const calmRail = <PhotoRail title={anyCalm ? t("지금 한산한 명소") : t("그나마 덜 붐비는 곳")} subtitle={t("실시간·예측 혼잡도 기준")} moreHref="/map" items={calmCards} />;
   const plusPromo = <PlusPromo t={t} price={PLUS.priceKrw.toLocaleString()} />;
+  // 지금 붐비는 TOP 5: 실측 들어오는 운영 중 장소를 붐비는 순으로 (NOL '많이 찾은 즐길거리' 레퍼런스 — 큰 순위 숫자 + 오른쪽 사진)
+  const busyItems: RankItem[] = places
+    .filter((p) => crowd[p.id] && crowd[p.id].source !== "model" && crowd[p.id].open)
+    .sort((a, b) => crowd[b.id].score - crowd[a.id].score)
+    .slice(0, 5)
+    .map((p) => {
+      const c = crowd[p.id];
+      const hc = headcountInfo(c, { t, lang });
+      const vs =
+        c.vsUsual === undefined
+          ? undefined
+          : Math.abs(c.vsUsual - 1) < 0.1
+            ? t("평소 이 시간과 비슷해요")
+            : t(c.vsUsual > 1 ? "평소 이 시간보다 {n}% 많아요" : "평소 이 시간보다 {n}% 적어요", { n: Math.round(Math.abs(c.vsUsual - 1) * 100) });
+      return {
+        id: p.id,
+        href: placeHref(p),
+        title: t(p.name),
+        sub: c.avgWaitMin !== undefined ? t("놀이기구 평균 대기 {n}분", { n: c.avgWaitMin }) : hc?.text,
+        note: vs ?? `${t(p.region)} · ${t("{age} 갱신", { age: fmtAge(c.ageMinutes, t) })}`,
+        img: p.image,
+        emoji: p.emoji,
+        score: c.score,
+      };
+    });
+  const busyList = <RankList title={t("지금 붐비는 TOP 5")} subtitle={t("실측 자료가 들어오는 곳 기준 · 피하고 싶다면 참고하세요")} moreHref="/map" moreLabel={t("지도에서 보기")} items={busyItems} />;
+  // 상태 알약: 실시간 자료 기준 시각 (NOL '공지' 줄 자리)
+  const seoulTime = Object.values(seoul)[0]?.time?.slice(11, 16);
 
   return (
     <main className="px-5 pt-5 pb-4 md:px-0 md:pt-8">
@@ -144,38 +177,52 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           }),
         }}
       />
-      <header className="mb-4 flex items-end justify-between gap-3 md:mb-5">
-        <div className="min-w-0">
-          <div className="flex items-center gap-3">
-            <p className="text-xs font-semibold tracking-wide text-indigo-500 md:hidden">CrowdView</p>
-          </div>
-          <h1 className="mt-0.5 text-xl font-bold md:text-2xl">{ko ? t("지금 어디가 한산할까?") : t("한산할 때 즐기는 한국 여행")}</h1>
-          <p className="mt-0.5 hidden text-sm text-gray-500 md:block">
-            {ko ? t("공항·놀이공원·명소·축제의 실시간 혼잡도와 AI 예측을 한눈에") : t("명소·축제 안내와 실시간 혼잡도를 한 곳에서")}
-          </p>
+      {/* 휴대폰 머리: 로고 + 검색 알약 (NOL 레퍼런스 10/21). 제목(h1)은 검색엔진·PC용으로 아래에 */}
+      <header className="mb-3 md:mb-5">
+        <div className="flex items-center gap-3 md:hidden">
+          <Link href="/" className="shrink-0 text-xl font-extrabold tracking-tight">
+            <span className="text-indigo-600">Crowd</span>View
+          </Link>
+          <a
+            href="#places"
+            className="flex min-w-0 flex-1 items-center gap-2 rounded-full border-2 border-indigo-500 bg-white px-4 py-2.5 text-[15px] text-gray-500"
+          >
+            <span className="min-w-0 flex-1 truncate">{t("장소·지역 검색")}</span>
+            <Glyph e="🔍" className="h-5 w-5 shrink-0 text-indigo-600" />
+          </a>
+          <LangSwitcher iconOnly />
         </div>
-        <div className="flex shrink-0 flex-col items-end gap-1">
-          <div className="md:hidden">
-            <LangSwitcher compact />
-          </div>
-          {newest !== null && (
-            <span className="flex items-center gap-1.5 text-xs text-gray-500">
-              <span className="relative flex h-2 w-2">
-                <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-emerald-400" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-              </span>
-              {t("{age} 갱신", { age: fmtAge(newest, t) })}
-            </span>
-          )}
-        </div>
+        <h1 className="sr-only md:not-sr-only md:text-2xl md:font-bold">{ko ? t("지금 어디가 한산할까?") : t("한산할 때 즐기는 한국 여행")}</h1>
+        <p className="mt-0.5 hidden text-sm text-gray-500 md:block">
+          {ko ? t("공항·놀이공원·명소·축제의 실시간 혼잡도와 AI 예측을 한눈에") : t("명소·축제 안내와 실시간 혼잡도를 한 곳에서")}
+        </p>
       </header>
 
       <HeroCarousel slides={slides} />
+      {newest !== null && (
+        <Link
+          href="/methodology"
+          className="mt-3 flex items-center gap-2 rounded-2xl bg-indigo-50/70 px-3.5 py-2.5 text-xs text-gray-700 md:mt-4 md:text-sm"
+        >
+          <span className="shrink-0 rounded-full bg-indigo-600 px-2 py-0.5 text-[11px] font-bold text-white">LIVE</span>
+          <span className="relative flex h-2 w-2 shrink-0">
+            <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-emerald-400" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+          </span>
+          <span className="min-w-0 truncate">
+            {t("{age} 갱신", { age: fmtAge(newest, t) })}
+            {seoulTime && ` · ${t("서울시 {time} 기준", { time: seoulTime })}`} · {t("공항·놀이공원·서울 121곳 실측")}
+          </span>
+          <span className="ml-auto shrink-0 text-gray-400">›</span>
+        </Link>
+      )}
       <CategoryIcons t={t} lang={lang} />
+      <RecentRail />
 
       {ko ? (
         <HomeList places={places} crowd={crowd}>
           {calmRail}
+          {busyList}
           {festivalRail}
           {plusPromo}
           {landmarkRail}
@@ -185,6 +232,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {landmarkRail}
           {festivalRail}
           {calmRail}
+          {busyList}
           {plusPromo}
           <HomeList places={places} crowd={crowd} />
         </>

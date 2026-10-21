@@ -44,6 +44,37 @@ export function usePreferredTags() {
   return { tags: list, toggle, setTags: set };
 }
 
+/** 최근 본 곳: 장소·서울 지역·축제 상세를 열면 기록 (홈 '최근 본 곳' 줄, NOL 레퍼런스 10/21). 이 기기에만, 최대 12개 */
+export interface Recent {
+  id: string;
+  href: string;
+  title: string;
+  img?: string;
+  sub?: string;
+  /** 마지막으로 본 시각 (ms) */
+  at: number;
+}
+const RECENT_MAX = 12;
+
+export function useRecent() {
+  const [raw, set] = useStoredList("cv:recent");
+  const recent = (raw as unknown as Recent[]).filter((r) => r && r.id && r.href);
+  const save = (next: Recent[]) => set(next as unknown as string[]);
+  const add = (r: Omit<Recent, "at">) => {
+    // 저장소를 바로 읽는다: 하이드레이션 직후 effect에서는 훅의 목록이 아직 서버 값([])이라 그대로 쓰면 기록을 덮어쓴다
+    let cur: Recent[] = [];
+    try {
+      cur = (JSON.parse(localStorage.getItem("cv:recent") ?? EMPTY) as Recent[]).filter((x) => x && x.id && x.href);
+    } catch {
+      cur = [];
+    }
+    // 같은 곳을 다시 열었을 때 순서·내용이 같으면 저장하지 않는다 (렌더링 때마다 쓰지 않게)
+    if (cur[0]?.id === r.id && cur[0].title === r.title && cur[0].img === r.img) return;
+    save([{ ...r, at: Date.now() }, ...cur.filter((x) => x.id !== r.id)].slice(0, RECENT_MAX));
+  };
+  return { recent, add, clear: () => save([]) };
+}
+
 /** 여행 담기: 서울 실시간·여행 가이드에서 가고 싶은 곳을 모아 두는 목록 (왼쪽 정리 패널에 보인다) */
 export interface Pick {
   id: string;

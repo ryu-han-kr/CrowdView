@@ -21,10 +21,14 @@ const ITEMS: { href: string; label: string; emoji: string; bg: string; fg: strin
 
 const TILE = "group flex w-[68px] flex-col items-center gap-1.5 pt-3 md:w-[84px]";
 
+/**
+ * 휴대폰: 두 줄 격자로 한 화면에 10개가 보이고 옆으로 밀면 나머지 (NOL 레퍼런스 10/21, 전엔 한 줄 12개를 밀어야 했다).
+ * 태블릿·PC: 한 줄에 전부
+ */
 export function CategoryIcons({ t, lang }: { t: T; lang: Lang }) {
   return (
-    <nav aria-label={t("바로가기")} className="no-scrollbar -mx-5 mt-6 overflow-x-auto px-5 md:mx-0 md:mt-8 md:px-0">
-      <ul className="flex gap-1 md:justify-between">
+    <nav aria-label={t("바로가기")} className="no-scrollbar -mx-5 mt-5 overflow-x-auto px-5 md:mx-0 md:mt-8 md:px-0">
+      <ul className="grid grid-flow-col grid-rows-2 gap-x-1 gap-y-2 md:flex md:justify-between">
         {ITEMS.map((it) => {
           const inner = (
             <>
@@ -35,7 +39,7 @@ export function CategoryIcons({ t, lang }: { t: T; lang: Lang }) {
                   </span>
                 )}
                 <span
-                  className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br shadow-sm ring-1 ring-black/[0.03] transition-transform md:h-16 md:w-16 md:group-hover:-translate-y-0.5 ${it.bg} ${it.fg}`}
+                  className={`flex h-14 w-14 items-center justify-center rounded-[20px] bg-gradient-to-br shadow-sm ring-1 ring-black/[0.03] transition-transform md:h-16 md:w-16 md:group-hover:-translate-y-0.5 ${it.bg} ${it.fg}`}
                 >
                   <Glyph e={it.emoji} className="h-7 w-7 md:h-8 md:w-8" />
                 </span>

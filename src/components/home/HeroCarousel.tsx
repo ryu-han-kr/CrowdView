@@ -13,6 +13,8 @@ export interface HeroSlide {
   img: string;
   /** 사진 위 작은 꼬리표 (예: 진행 중 축제) */
   tag?: string;
+  /** 실측 자료가 들어오는 화면이면 빨간 LIVE 표시 (NOL 레퍼런스) */
+  live?: boolean;
   title: string;
   sub?: string;
 }
@@ -34,20 +36,22 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
   const loop = n > 1;
   const [pos, setPos] = useState(loop ? n : 0); // 3벌 중 위치 (가운데 벌: n ~ 2n-1)
   const [animate, setAnimate] = useState(true);
+  // 일시정지 (오른쪽 아래 ⏸ 버튼). 켜 두면 자동으로 넘어가지 않는다
+  const [paused, setPaused] = useState(false);
   const holdUntil = useRef(0);
   const touchX = useRef<number | null>(null);
   const index = loop ? (((pos - n) % n) + n) % n : 0;
 
   // 자동 넘김 (직접 넘긴 직후 잠깐 쉬고, 탭이 안 보일 때는 브라우저가 알아서 늦춘다)
   useEffect(() => {
-    if (!loop) return;
+    if (!loop || paused) return;
     const id = setInterval(() => {
       if (Date.now() < holdUntil.current) return;
       setAnimate(true);
       setPos((p) => p + 1);
     }, AUTO_MS);
     return () => clearInterval(id);
-  }, [loop]);
+  }, [loop, paused]);
 
   // 가운데 벌을 벗어나면 넘김이 끝난 뒤 같은 배너 자리로 순간 이동
   useEffect(() => {
@@ -122,7 +126,13 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
               />
               <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 to-transparent" />
               <div className="absolute inset-y-0 left-0 flex max-w-[85%] flex-col justify-end p-5 pb-9 text-white md:max-w-[60%] md:justify-center md:px-16 md:py-10">
-                {s.tag && <span className="mb-2 w-fit rounded-md bg-white px-2 py-0.5 text-[11px] font-bold text-gray-900 md:text-xs">{s.tag}</span>}
+                {(s.tag || s.live) && (
+                  <span className="mb-2 flex w-fit items-stretch overflow-hidden rounded-md text-[11px] font-bold md:text-xs">
+                    {/* 옆에 흐리게 보이는 배너(opacity 60%)에서는 빨간 바탕 글자 대비가 모자라 가운데 배너에만 */}
+                    {s.live && current && <span className="bg-red-700 px-2 py-0.5 text-white">LIVE</span>}
+                    {s.tag && <span className={`px-2 py-0.5 ${s.live ? "bg-black/60 text-white" : "bg-white text-gray-900"}`}>{s.tag}</span>}
+                  </span>
+                )}
                 <p className="text-xl leading-snug font-extrabold break-keep [text-wrap:balance] md:text-4xl">{s.title}</p>
                 {s.sub && <p className="mt-1.5 line-clamp-2 text-xs text-white/85 md:mt-3 md:text-base">{s.sub}</p>}
               </div>
@@ -133,8 +143,8 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
 
       {n > 1 && (
         <>
-          {/* 아래 점 + 번호 */}
-          <div className="absolute inset-x-0 bottom-3 flex items-center justify-center gap-1.5">
+          {/* 아래 점 (왼쪽) + 일시정지·번호 알약 (오른쪽, NOL 레퍼런스) */}
+          <div className="absolute bottom-3 left-[calc((100cqw-var(--w))/2+16px)] flex items-center gap-1.5 md:bottom-4 md:left-[calc((100cqw-var(--w))/2+24px)]">
             {slides.map((s, i) => (
               <button
                 key={s.id}
@@ -144,9 +154,21 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
               />
             ))}
           </div>
-          <span className="pointer-events-none absolute top-3 right-[calc((100cqw-var(--w))/2+12px)] rounded-full bg-black/45 px-2.5 py-0.5 text-[11px] font-semibold text-white md:top-4 md:right-[calc((100cqw-var(--w))/2+16px)] md:text-xs">
-            {index + 1} / {n}
-          </span>
+          <div className="absolute right-[calc((100cqw-var(--w))/2+12px)] bottom-2.5 flex items-center gap-1 md:right-[calc((100cqw-var(--w))/2+16px)] md:bottom-3">
+            <button
+              onClick={() => setPaused((p) => !p)}
+              aria-label={t(paused ? "자동 넘김 재생" : "자동 넘김 멈춤")}
+              aria-pressed={paused}
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-black/45 text-white"
+            >
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor">
+                {paused ? <path d="M8 5v14l11-7z" /> : <path d="M7 5h3v14H7zM14 5h3v14h-3z" />}
+              </svg>
+            </button>
+            <span className="rounded-full bg-black/45 px-2.5 py-1 text-[11px] font-semibold text-white md:text-xs">
+              {index + 1} / {n}
+            </span>
+          </div>
           {(["prev", "next"] as const).map((d) => (
             <button
               key={d}

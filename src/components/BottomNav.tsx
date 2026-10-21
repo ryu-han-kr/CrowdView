@@ -88,24 +88,33 @@ export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
   );
 }
 
+/** 휴대폰 하단 탭 5개, 홈이 가운데 (NOL 레퍼런스 10/21: 카테고리·내주변·홈·찜·마이). 지역 여행이 '탐색'으로 들어온다 */
+const MOBILE_TABS = ["/explore", "/map", "/", "/airport", "/me"].map((href) => TABS.find((tab) => tab.href === href)!);
+const MOBILE_LABEL: Record<string, string> = { "/explore": "탐색" };
+
 export function BottomNav() {
   const pathname = usePathname();
   const { t } = useI18n();
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 md:hidden border-t border-gray-100 bg-white/90 pb-[env(safe-area-inset-bottom)] backdrop-blur">
-      <ul className="mx-auto grid max-w-md grid-cols-4">
-        {TABS.filter((tab) => !tab.desktopOnly).map((tab) => {
+      <ul className="mx-auto grid max-w-md grid-cols-5">
+        {MOBILE_TABS.map((tab) => {
           const active = isTabActive(tab.href, pathname);
+          const home = tab.href === "/";
           return (
             <li key={tab.href}>
               <Link
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
                 className={`flex h-16 flex-col items-center justify-center gap-0.5 text-[11px] font-medium ${
-                  active ? "text-indigo-600" : "text-gray-500"
+                  active ? "text-indigo-600" : "text-gray-600"
                 }`}
               >
-                <span className={`flex h-8 w-14 items-center justify-center rounded-full transition-colors ${active ? "bg-indigo-50" : ""}`}>
+                <span
+                  className={`flex h-8 w-14 items-center justify-center rounded-full transition-colors ${
+                    home && active ? "bg-indigo-600 text-white" : active ? "bg-indigo-50" : ""
+                  }`}
+                >
                   <svg
                     viewBox="0 0 24 24"
                     className="h-6 w-6"
@@ -118,7 +127,7 @@ export function BottomNav() {
                     <path d={tab.icon} />
                   </svg>
                 </span>
-                {t(tab.label)}
+                {t(MOBILE_LABEL[tab.href] ?? tab.label)}
               </Link>
             </li>
           );
