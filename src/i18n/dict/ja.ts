@@ -538,6 +538,8 @@ const dict: Dict = {
   "인천국제공항공사 출국장 혼잡도 (1분 주기)": "仁川国際空港公社 出国場混雑度 (1分ごと)",
   "한국공항공사 공항 혼잡도": "韓国空港公社 空港混雑度",
   "놀이기구 대기시간 · Powered by ThemeParks.wiki": "アトラクション待ち時間・Powered by ThemeParks.wiki",
+  "놀이기구 대기시간 · Powered by Queue-Times.com": "アトラクション待ち時間・Powered by Queue-Times.com",
+  "놀이기구 대기시간 평균 (Queue-Times, 5분 단위)": "アトラクション平均待ち時間(Queue-Times、5分ごと)",
   "CrowdView 예측 모델 (샘플)": "CrowdView 予測モデル (サンプル)",
   "🎌 {name}": "🎌 {name}",
   "🧳 연휴 전날": "🧳 連休前日",

@@ -87,6 +87,8 @@ export interface Place {
   busanDongs?: string[];
   /** ThemeParks.wiki 엔티티 (놀이기구 대기시간) */
   themeparksId?: string;
+  /** Queue-Times 공원 번호 (ThemeParks.wiki가 실패할 때 예비 원천) */
+  queueTimesId?: number;
   /** 계절 영업: 여는 달 ~ 닫는 달 (1~12, 해를 넘기면 [12, 3]처럼). 그 밖의 달은 시즌 아님 */
   season?: [from: number, to: number];
   /** TourAPI에서 받아 붙인 정보 (getLivePlaces) */
@@ -125,7 +127,7 @@ export interface CrowdSnapshot {
   headcount: number;
   trend: "up" | "down" | "flat";
   hourly: HourPoint[];
-  source: "seoul-citydata" | "incheon-airport" | "kac-airport" | "themeparks-wiki" | "model";
+  source: "seoul-citydata" | "incheon-airport" | "kac-airport" | "themeparks-wiki" | "queue-times" | "model";
   zones?: Zone[];
   /** 원천이 주는 공식 단계 (예: 서울시 '보통'). 장소 기준과 다를 수 있어 참고로 보여준다 */
   officialLevel?: string;

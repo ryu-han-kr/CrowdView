@@ -117,6 +117,7 @@ const BASE_PLACES: Place[] = [
     ktoContent: { id: 127797, type: 12 },
     // 에버랜드 공원만 (리조트 전체 id는 캐리비안 베이 시설까지 섞인다)
     themeparksId: "b4dd937f-a79d-4b82-922f-e8ab0fbf5b5b",
+    queueTimesId: 125,
     midRegion: { land: "11B00000", temp: "11B20601" },
     airStation: { sido: "경기", name: "김량장동" },
     criteria: { unit: "분", steps: [10, 20, 35, 50], basis: "운영 중 놀이기구 평균 대기시간", provisional: true },
@@ -488,6 +489,7 @@ const BASE_PLACES: Place[] = [
       description: "레고 블록을 테마로 한 어린이·가족형 테마파크.",
       ktoContent: { id: 2815362, type: 12 },
       themeparksId: "9a35410b-a840-4189-abf3-fccd429f4d78",
+      queueTimesId: 315,
       criteria: { unit: "분", steps: [10, 20, 30, 45], basis: "운영 중 놀이기구 평균 대기시간", provisional: true },
     }),
     leisure("eworld", "이월드", "themepark", "대구 달서", "대구 달서구 두류공원로 200", 35.8548, 128.5648, {
@@ -546,6 +548,7 @@ const BASE_PLACES: Place[] = [
       description: "실내·야외 물놀이 시설을 갖춘 대형 워터파크. 야외 시설은 여름 위주로 운영해요.",
       ktoContent: { id: 127889, type: 12 },
       themeparksId: "de3955e7-e3b7-4b85-884b-2d0fb2c1d71c",
+      queueTimesId: 329,
       criteria: { unit: "분", steps: [5, 15, 30, 45], basis: "운영 중 물놀이 시설 평균 대기시간", provisional: true },
     }),
     leisure("ocean-world", "비발디파크 오션월드", "waterpark", "강원 홍천", "강원 홍천군 서면 한치골길 262", 37.65, 127.6869, {

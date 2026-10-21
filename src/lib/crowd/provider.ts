@@ -85,7 +85,7 @@ export async function fetchSnapshot(place: Place): Promise<CrowdSnapshot> {
   // 날씨·공휴일·관광지 집중률·공항 승객 수로 예측 곡선을 보정한다
   const s = await getSignals(place);
   if (key && place.seoulArea) return fetchSeoulCitydata(place, s);
-  if (place.themeparksId) return fetchThemePark(place, s);
+  if (place.themeparksId || place.queueTimesId) return fetchThemePark(place, s);
   if ((process.env.DATA_GO_KR_KEY || fixtureMode()) && place.airport) return fetchAirport(place, place.airport, s);
   return modelSnapshot(place, new Date(), s);
 }
