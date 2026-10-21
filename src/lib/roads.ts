@@ -55,7 +55,7 @@ async function fetchLinks(type: "its" | "ex", lat: number, lng: number, half: nu
     maxY: (lat + half).toFixed(5),
     getType: "json",
   });
-  const res = await fetch(`https://openapi.its.go.kr:9443/trafficInfo?${qs}`, { signal: AbortSignal.timeout(8000) });
+  const res = await fetch(`https://openapi.its.go.kr:9443/trafficInfo?${qs}`, { signal: AbortSignal.timeout(15_000) });
   if (!res.ok) throw new Error(`its ${res.status}`);
   const j = (await res.json()) as { header?: { resultCode?: number; resultMsg?: string }; body?: { items?: Link[] } };
   if (j.header?.resultCode !== undefined && j.header.resultCode !== 0) throw new Error(`its ${j.header.resultMsg}`);

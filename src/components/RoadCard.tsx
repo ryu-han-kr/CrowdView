@@ -2,13 +2,20 @@
 import { getT } from "@/i18n/server";
 import type { Lang } from "@/i18n/config";
 import { Glyph } from "@/components/Glyph";
-import type { RoadGroup, RoadLevel, RoadStatus } from "@/lib/roads";
+import { getRoadStatus, type RoadGroup, type RoadLevel, type RoadStatus } from "@/lib/roads";
 
 const COLOR: Record<RoadLevel, { bg: string; fg: string }> = {
   원활: { bg: "#ecfdf5", fg: "#047857" },
   서행: { bg: "#fefce8", fg: "#854d0e" },
   정체: { bg: "#fef2f2", fg: "#b91c1c" },
 };
+
+/**
+ * 위치만 받아 스스로 불러온다. 국가교통정보센터가 가끔 10초 넘게 걸려서 페이지는 <Suspense>로 먼저 보여 주고 이 카드만 늦게 채운다
+ */
+export async function RoadSection({ lat, lng, lang }: { lat: number; lng: number; lang: Lang }) {
+  return <RoadCard roads={await getRoadStatus(lat, lng)} lang={lang} />;
+}
 
 export function RoadCard({ roads, lang, className = "" }: { roads?: RoadStatus; lang: Lang; className?: string }) {
   if (!roads) return null;

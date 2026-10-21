@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { Suspense } from "react";
 import { StayLinks } from "@/components/StayLinks";
 import type { Metadata } from "next";
 import placeImages from "@/data/korea/place-images.json";
@@ -30,8 +31,7 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 import { JudgementCard } from "@/components/JudgementCard";
 import { SeoulPeopleProfile, VisitorProfile } from "@/components/VisitorProfile";
 import { WeatherCard } from "@/components/WeatherCard";
-import { RoadCard } from "@/components/RoadCard";
-import { getRoadStatus } from "@/lib/roads";
+import { RoadSection } from "@/components/RoadCard";
 import { InlineAd } from "@/components/AdUnit";
 import { FaqBlock } from "@/components/FaqBlock";
 import { AlertButtons } from "@/components/AlertButtons";
@@ -141,13 +141,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const [place, crowd] = await Promise.all([getLivePlace(id), getCrowd(id)]);
   if (!place || !crowd) notFound();
   if (place.category === "airport") redirect(localePath(lang, placeHref(place)));
-  // 진입로 소통 (국가교통정보센터, 5분)
-  const [signals, [today], related, roads] = await Promise.all([
-    getSignals(place),
-    getHistory(id, 1),
-    getRelatedPlaces(place),
-    getRoadStatus(place.lat, place.lng),
-  ]);
+  const [signals, [today], related] = await Promise.all([getSignals(place), getHistory(id, 1), getRelatedPlaces(place)]);
   const relatedNames = await translateNames(
     related.flatMap((r) => [r.name, r.region]),
     lang,
@@ -412,7 +406,10 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           </section>
 
           <WeatherCard signals={signals} lang={lang} place={place} />
-          <RoadCard roads={roads} lang={lang} />
+          {/* 가는 길 도로 상황 (국가교통정보센터): 늦게 와도 페이지는 먼저 */}
+          <Suspense fallback={null}>
+            <RoadSection lat={place.lat} lng={place.lng} lang={lang} />
+          </Suspense>
           <AlertButtons placeId={place.id} enabled={authEnabled && pushEnabled} />
           {isOpen && !beforeEvent && <CrowdReport placeId={place.id} askWait={["themepark", "waterpark", "ski"].includes(place.category)} />}
           {!beforeEvent && (
