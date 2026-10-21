@@ -68,7 +68,7 @@ const KO: Copy = {
           "서울시 데이터는 기준 시각이 20~40분 늦게 나와요. 40분 넘게 갱신되지 않으면 ‘갱신 지연’으로 표시해요",
           "실측이 없는 장소와 서울 밖 지역은 추정이라 실제와 차이가 클 수 있어요",
           "버스 경로는 따로 계산하지 않아요",
-          "시각 표기: 모든 실시간 자료는 CrowdView가 10분마다 가져와요. 화면의 ‘○시 기준’은 원천(서울시 등)의 관측 시각이고, ‘○분 전 갱신’은 CrowdView가 마지막으로 가져온 때예요. 서울시 자료는 5분마다 바뀌지만 기준 시각이 20~40분 늦게 나와 두 시각이 다를 수 있어요",
+          "시각 표기: CrowdView는 운영 중인 놀이공원은 5분, 서울시 지역·공항은 10분, 문 닫은 시간과 실측이 없는 장소는 30분마다 가져와요. 화면의 ‘○시 기준’은 원천(서울시 등)의 관측 시각이고, ‘○분 전 갱신’은 CrowdView가 마지막으로 가져온 때예요. 서울시 자료는 5분마다 바뀌지만 기준 시각이 20~40분 늦게 나와 두 시각이 다를 수 있어요",
         ],
       ],
     },
@@ -77,7 +77,7 @@ const KO: Copy = {
   sources: [
     ["서울시 실시간 도시데이터", "서울 121곳 인구·12시간 예측", "5분 (수집 10분)"],
     ["인천국제공항공사 · 한국공항공사", "출국장 대기·혼잡, 주차, 승객 예고", "5~30분"],
-    ["ThemeParks.wiki · Queue-Times(예비)", "에버랜드·레고랜드·캐리비안베이 놀이기구 대기", "2~5분"],
+    ["ThemeParks.wiki · Queue-Times(예비)", "에버랜드·레고랜드·캐리비안베이 놀이기구 대기", "2~5분 (수집 5분)"],
     ["한국도로공사 · 서울시 도로 소통", "고속도로·서울 주변 도로 속도", "10분"],
     ["한국관광공사 TourAPI · 데이터랩 · 관광지 집중률", "축제 일정, 명소 사진·좌표, 지역 방문객, 30일 예측", "6시간~1주"],
     ["기상청 · 에어코리아 · 한국천문연구원", "날씨·미세먼지·공휴일", "1~12시간"],
@@ -137,7 +137,7 @@ const EN: Copy = {
           "Seoul data arrives 20–40 minutes late; values older than 40 minutes are marked ‘update delayed’",
           "Places without live data and regions outside Seoul are estimates and can differ more",
           "Bus routes are not modelled separately",
-          "Timestamps: CrowdView fetches every live source every 10 minutes. ‘As of HH:MM’ is the source's own observation time (e.g. Seoul); ‘updated N min ago’ is when CrowdView last fetched. Seoul data changes every 5 minutes but its reference time lags 20–40 minutes, so the two can differ",
+          "Timestamps: CrowdView fetches theme parks every 5 minutes while open, Seoul areas and airports every 10, and closed or estimate-only places every 30. ‘As of HH:MM’ is the source's own observation time (e.g. Seoul); ‘updated N min ago’ is when CrowdView last fetched. Seoul data changes every 5 minutes but its reference time lags 20–40 minutes, so the two can differ",
         ],
       ],
     },
@@ -146,7 +146,7 @@ const EN: Copy = {
   sources: [
     ["Seoul real-time city data", "Population and 12-hour forecast for 121 Seoul areas", "5 min (fetched every 10)"],
     ["Incheon International Airport · Korea Airports Corporation", "Departure waits, parking, passenger notices", "5–30 min"],
-    ["ThemeParks.wiki · Queue-Times (backup)", "Everland, Legoland and Caribbean Bay ride waits", "2-5 min"],
+    ["ThemeParks.wiki · Queue-Times (backup)", "Everland, Legoland and Caribbean Bay ride waits", "2-5 min (fetched every 5)"],
     ["Korea Expressway Corp. · Seoul road traffic", "Expressway and nearby Seoul road speeds", "10 min"],
     [
       "Korea Tourism Organization TourAPI · DataLab · concentration",

@@ -537,7 +537,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 ) : (
                   "Powered by ThemeParks.wiki"
                 )}{" "}
-                · {t("CrowdView가 10분마다 가져와요")}
+                · {t("운영 중에는 5분마다 가져와요")}
               </p>
             </section>
           )}

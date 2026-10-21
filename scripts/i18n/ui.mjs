@@ -2437,5 +2437,5 @@ export default {
   "최근 4주 {day} 같은 시간과 비슷한 수준이에요": ["About the same as the usual {day} hour over the last 4 weeks","直近4週間の{day}同時間帯と同じくらいです","与最近4周{day}同一时段差不多","與最近4週{day}同一時段差不多"],
   "최근 4주 {day} 같은 시간보다 한산해요 · 하위 25%": ["Quieter than the same {day} hour over the last 4 weeks · bottom 25%","直近4週間の{day}同時間帯より空いています・下位25%","比最近4周{day}同一时段更清闲 · 后25%","比最近4週{day}同一時段更清閒 · 後25%"],
   "최근 4주 {day} 같은 시간보다 훨씬 한산해요 · 하위 10%": ["Much quieter than the same {day} hour over the last 4 weeks · bottom 10%","直近4週間の{day}同時間帯よりかなり空いています・下位10%","比最近4周{day}同一时段清闲得多 · 后10%","比最近4週{day}同一時段清閒得多 · 後10%"],
-  "CrowdView가 10분마다 가져와요": ["CrowdView fetches it every 10 minutes","CrowdViewが10分ごとに取得します","CrowdView每10分钟获取一次","CrowdView每10分鐘擷取一次"],
+  "운영 중에는 5분마다 가져와요": ["Fetched every 5 minutes while open","営業中は5分ごとに取得します","营业期间每5分钟获取一次","營業期間每5分鐘擷取一次"],
 };
