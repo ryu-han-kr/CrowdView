@@ -38,7 +38,8 @@ async function calibrationSamples(crowd: Record<string, CrowdResult>): Promise<S
   );
 }
 
-// Vercel Cron(vercel.json, 10분마다, GET)이 Authorization: Bearer CRON_SECRET 헤더로 호출한다.
+// Vercel Cron(vercel.json, 5분마다, GET)이 Authorization: Bearer CRON_SECRET 헤더로 호출한다. 장소별 수집 주기는 lib/crowd/cadence
+// (운영 중 놀이공원 5분, 서울·공항 10분, 문 닫은 시간 30분). 매시·매일 한 번 하는 일은 정각 첫 실행(0~5분)에만.
 // 다른 클라우드로 옮기면 그쪽 스케줄러가 같은 헤더를 붙여 GET 또는 POST로 부르면 된다
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET;
@@ -51,12 +52,14 @@ export async function GET(req: Request) {
   const alerts = await checkAlerts(await getAllCrowd()).catch(async (e) => (await opsAlert("혼잡 알림 발송 실패", e), 0));
   // 만료 정리·자동결제 7일 전 안내는 하루 한 번 (새벽 4시 첫 수집)이면 충분 — 매번 돌리면 DB가 계속 깨어 있다
   const now = kst();
-  const daily = Math.floor(now.hour) === 4 && (now.hour % 1) * 60 < 10;
+  // 수집기가 5분마다 돌므로 '첫 실행'은 0~5분 (10분이면 한 시간에 두 번 걸린다)
+  const firstRun = (now.hour % 1) * 60 < 5;
+  const daily = Math.floor(now.hour) === 4 && firstRun;
   // Plus 자동결제: 결제일이 된 구독을 결제한다 (토스는 예약 결제가 없어서 우리가 돌린다. 대상이 없으면 DB 조회 1번)
   const charged = await chargeDue().catch(async (e) => (await opsAlert("Plus 자동결제 실행 실패", e), 0));
   const expired = daily ? await expireEnded().catch(async (e) => (await opsAlert("구독 만료 정리 실패", e), 0)) : 0;
   // 예측 정확도: 매시 정각 첫 수집 때 채점·새 예측 저장 (서울 121곳, Redis)
-  const hourly = (now.hour % 1) * 60 < 10;
+  const hourly = firstRun;
   const scored = hourly ? await trackAccuracy(await getAllSeoulLive()).catch(async (e) => (await opsAlert("예측 정확도 기록 실패", e), 0)) : 0;
   // 실측과 비교해 예측 모델 고치기: 매시 정각 첫 수집 때 실측 장소마다 모델 오차를 쌓고 보정 칸을 갱신 (Redis)
   const calibrated = hourly
@@ -81,7 +84,7 @@ export async function GET(req: Request) {
   // 제보로 장소별 보정값 다시 계산 (예측·추정 값에만 쓰인다)
   const biased = daily ? await updateBiases(PLACES).catch(async (e) => (await opsAlert("제보 보정 계산 실패", e), 0)) : 0;
   // 여행 날짜 알림 (Plus): 아침 9시 첫 수집 때 한 번 (새벽에 깨우지 않게)
-  const morning = Math.floor(now.hour) === 9 && (now.hour % 1) * 60 < 10;
+  const morning = Math.floor(now.hour) === 9 && firstRun;
   const trips = morning ? await checkTripWatches().catch(async (e) => (await opsAlert("여행 날짜 알림 실패", e), 0)) : 0;
   const notices = daily ? await sendRenewalNotices().catch(async (e) => (await opsAlert("자동결제 안내 실패", e), 0)) : 0;
   // 실시간 원본 중 40분 넘게 안 바뀐 곳이 있으면 그 원본이 멈춘 것 (화면엔 '갱신 지연'으로 보인다)
