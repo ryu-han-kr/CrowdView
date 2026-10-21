@@ -84,3 +84,19 @@ test("공항 주차: 정상 / 면수 초과·음수·숫자 아님 정리 / 빈 
   assert.deepEqual(await as("empty", () => getParking(icn1)), []);
   assert.deepEqual(await as("timeout", () => getParking(icn1)), []);
 });
+
+test("진입로 소통: 구간 속도 → 원활·서행·정체, 막히는 도로 이름 (고정 자료)", async () => {
+  const { getRoadStatus, summarize } = await import("@/lib/roads");
+  const r = await as("normal", () => getRoadStatus(35.1587, 129.1604));
+  assert.ok(r?.local && r.highway);
+  assert.equal(r.local.links, 8);
+  assert.equal(r.local.avgSpeed, 28);
+  assert.equal(r.local.level, "서행");
+  assert.deepEqual(r.local.slowest[0], { road: "해운대해변로", speed: 9 });
+  assert.equal(r.highway.level, "원활");
+  assert.equal(r.time, "09:15");
+  // 속도 0·숫자 아님·말이 안 되는 값은 빼고, 3구간 미만이면 요약하지 않는다
+  assert.equal(summarize([{ speed: "0" }, { speed: "abc" }, { speed: "999" }, { speed: "50" }], "local"), undefined);
+  assert.equal(summarize([{ speed: "5" }, { speed: "8" }, { speed: "10" }], "local")?.level, "정체");
+  assert.equal(await as("timeout", () => getRoadStatus(35.1587, 129.1604)), undefined);
+});

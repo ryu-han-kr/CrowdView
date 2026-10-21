@@ -1,0 +1,71 @@
+{
+  "its": [
+    {
+      "roadName": "해운대로",
+      "speed": "12",
+      "createdDate": "20261021091500"
+    },
+    {
+      "roadName": "해운대로",
+      "speed": "18",
+      "createdDate": "20261021091500"
+    },
+    {
+      "roadName": "중동1로",
+      "speed": "35",
+      "createdDate": "20261021091500"
+    },
+    {
+      "roadName": "달맞이길",
+      "speed": "42",
+      "createdDate": "20261021091500"
+    },
+    {
+      "roadName": "좌동순환로",
+      "speed": "28",
+      "createdDate": "20261021091500"
+    },
+    {
+      "roadName": "해운대해변로",
+      "speed": "9",
+      "createdDate": "20261021091500"
+    },
+    {
+      "roadName": "우동1로",
+      "speed": "38",
+      "createdDate": "20261021091500"
+    },
+    {
+      "roadName": "센텀중앙로",
+      "speed": "45",
+      "createdDate": "20261021091500"
+    }
+  ],
+  "ex": [
+    {
+      "roadName": "경부고속도로",
+      "speed": "92",
+      "createdDate": "20261021091500"
+    },
+    {
+      "roadName": "경부고속도로",
+      "speed": "85",
+      "createdDate": "20261021091500"
+    },
+    {
+      "roadName": "남해고속도로",
+      "speed": "64",
+      "createdDate": "20261021091500"
+    },
+    {
+      "roadName": "부산울산고속도로",
+      "speed": "95",
+      "createdDate": "20261021091500"
+    },
+    {
+      "roadName": "부산울산고속도로",
+      "speed": "88",
+      "createdDate": "20261021091500"
+    }
+  ]
+}

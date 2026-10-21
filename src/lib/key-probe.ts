@@ -8,6 +8,26 @@ export interface ProbeResult {
   status?: number;
   /** 원본 응답 앞부분 (키는 *** 로 가림) */
   sample?: string;
+  /** JSON이면 첫 항목의 필드 이름 (화면에 쓸 값이 있는지 확인용) */
+  fields?: string[];
+}
+
+/** 응답 JSON에서 첫 번째 '항목' 객체를 찾아 필드 이름만 */
+function firstItemFields(body: string): string[] | undefined {
+  try {
+    const walk = (v: unknown, depth = 0): string[] | undefined => {
+      if (depth > 5 || !v || typeof v !== "object") return undefined;
+      if (Array.isArray(v)) return v[0] && typeof v[0] === "object" ? Object.keys(v[0]) : undefined;
+      for (const x of Object.values(v)) {
+        const r = walk(x, depth + 1);
+        if (r) return r;
+      }
+      return undefined;
+    };
+    return walk(JSON.parse(body));
+  } catch {
+    return undefined;
+  }
 }
 
 const PROBES: { id: string; env: string; url: (key: string) => string; ok: (status: number, body: string) => boolean }[] = [
@@ -42,7 +62,7 @@ async function probe(p: (typeof PROBES)[number]): Promise<ProbeResult> {
     const res = await fetch(p.url(key), { signal: AbortSignal.timeout(10_000) });
     const body = await res.text();
     const sample = body.replaceAll(key, "***").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
-    return { configured: true, ok: p.ok(res.status, body), status: res.status, sample };
+    return { configured: true, ok: p.ok(res.status, body), status: res.status, sample, fields: firstItemFields(body) };
   } catch (e) {
     return { configured: true, ok: false, sample: String((e as { cause?: { code?: string } }).cause?.code ?? (e as Error).message).slice(0, 120) };
   }
@@ -50,9 +70,9 @@ async function probe(p: (typeof PROBES)[number]): Promise<ProbeResult> {
 
 /** 키별 확인 결과 (30분 동안 저장해 두고 다시 부르지 않는다) */
 export async function probeKeys(): Promise<Record<string, ProbeResult>> {
-  const saved = await kv.get("probe:keys").catch(() => null);
+  const saved = await kv.get("probe:keys:v2").catch(() => null);
   if (saved) return JSON.parse(saved);
   const results = Object.fromEntries(await Promise.all(PROBES.map(async (p) => [p.id, await probe(p)] as const)));
-  await kv.set("probe:keys", JSON.stringify(results), 30 * 60).catch(() => {});
+  await kv.set("probe:keys:v2", JSON.stringify(results), 30 * 60).catch(() => {});
   return results;
 }
