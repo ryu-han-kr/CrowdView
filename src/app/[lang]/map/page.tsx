@@ -10,7 +10,7 @@ import { PLACES, placeHref } from "@/lib/places";
 import { pageMeta } from "@/lib/seo";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { SEOUL_GROUPS, getAllSeoulLive, seoulGroup } from "@/lib/seoul-live";
-import { kst, addDays } from "@/lib/time";
+import { kst, addDays, shortDate } from "@/lib/time";
 import { CATEGORY_LABEL } from "@/lib/types";
 
 // ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
@@ -111,7 +111,7 @@ export default async function MapPage({ params }: { params: Promise<{ lang: stri
       href: festivalHref(f),
       score: (on && nearScore(f as LatLng)) || fcrowd[i]?.score,
       emoji: "🎪",
-      sub: `${on ? t("진행 중") : `${f.start.slice(5).replace("-", "/")}~`} · ${f.region}`,
+      sub: `${on ? t("진행 중") : `${shortDate(f.start)}~`} · ${f.region}`,
       img: f.image,
     });
   });

@@ -24,6 +24,16 @@ export function addDays(date: string, n: number): string {
   return new Date(Date.parse(`${date}T00:00:00Z`) + n * 86_400_000).toISOString().slice(0, 10);
 }
 
+/** 'YYYY-MM-DD' → '10/02' (화면 공통 날짜 표기) */
+export const shortDate = (date: string) => date.slice(5).replace("-", "/");
+
+/** 기간 '10/02 ~ 10/25' (하루면 날짜 하나, 해가 바뀌면 앞에 연도) */
+export function dateRange(start: string, end: string): string {
+  if (start === end) return shortDate(start);
+  const year = start.slice(0, 4) !== end.slice(0, 4);
+  return year ? `${start.slice(0, 4)}/${shortDate(start)} ~ ${end.slice(0, 4)}/${shortDate(end)}` : `${shortDate(start)} ~ ${shortDate(end)}`;
+}
+
 export function daysUntil(date: string, from: Date = new Date()): number {
   const today = Date.parse(`${kst(from).date}T00:00:00Z`);
   return Math.round((Date.parse(`${date}T00:00:00Z`) - today) / 86_400_000);
