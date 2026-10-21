@@ -1032,7 +1032,7 @@ const dict: Dict = {
   "1개월 {n}원": "₩{n} for 1 month",
   "이번 주 시간대별 예상 혼잡 · 초록 칸이 한산해요": "Expected crowds by time this week · green cells are quiet",
   "시": "h",
-  "CrowdView는 무료로 쓸 수 있어요. Plus는 광고 제거와 혼잡 알림을 1개월 {price}원에 제공해요.": "CrowdView is free. Plus adds ad-free viewing and crowd alerts for ₩{price} per month.",
+  "CrowdView는 무료로 쓸 수 있어요. Plus는 광고 제거와 혼잡 알림을 1개월 {price}원에 제공해요.": "CrowdView is free. Plus adds ad-free viewing and crowd alerts with a one-month pass for ₩{price} (no auto-renewal).",
   "광고 제거 · 혼잡 알림 · 맞춤 코스 추천 — 1개월 {n}원": "No ads · crowd alerts · custom routes — ₩{n} for 1 month",
   "1개월 {n}원으로 더 편한 여행": "A smoother trip for ₩{n} a month",
   "전체 시간표 · 붐비면 다시 짜기 · 1개월 3,900원": "Full schedule · re-plan when crowded · ₩3,900 for 1 month",

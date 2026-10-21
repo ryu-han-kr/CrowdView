@@ -49,7 +49,17 @@ const num = (v) => {
   const n = Number(v);
   return Number.isFinite(n) && n !== 0 ? Math.round(n * 1e5) / 1e5 : undefined;
 };
-const clean = (s) => String(s ?? "").replace(/\r/g, "").replace(/\s+\n/g, "\n").trim();
+// 서울시 API 글자에 HTML 문자 참조가 겹쳐 오기도 한다 (&amp;lt; → <). 더 바뀌지 않을 때까지 푼다
+const ENTITY = { lt: "<", gt: ">", quot: '"', "#39": "'", apos: "'", amp: "&" };
+const unescape = (s) => {
+  for (let i = 0; i < 3; i++) {
+    const next = s.replace(/&(lt|gt|quot|#39|apos|amp);/g, (_, e) => ENTITY[e]);
+    if (next === s) break;
+    s = next;
+  }
+  return s;
+};
+const clean = (s) => unescape(String(s ?? "")).replace(/\r/g, "").replace(/\s+\n/g, "\n").trim();
 const inSeoul = (lat, lng) => lat > 37.4 && lat < 37.72 && lng > 126.76 && lng < 127.19;
 let changed = false;
 const write = (name, data) => {
@@ -269,7 +279,7 @@ function stationOf(subwayInfo) {
       gu: clean(r.AREANM),
       fee: clean(r.PAYATNM),
       who: clean(r.USETGTINFO),
-      url: r.SVCURL,
+      url: unescape(String(r.SVCURL ?? "")),
       img: r.IMGURL || undefined,
       lat: num(r.Y),
       lng: num(r.X),
