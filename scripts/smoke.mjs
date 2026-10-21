@@ -18,7 +18,7 @@ const PAGES = [
   ["/seoul", ["서울 실시간"]],
   ["/seoul/POI008", ["경복궁"]],
   ["/place/gyeongbokgung", ["경복궁", "이번 주"]],
-  ["/spot/haeundae", ["해운대", "이용 정보"]],
+  ["/spot/haeundae", ["해운대", "지금 혼잡도"]],
   ["/events", []],
   ["/airport", []],
   ["/methodology", []],
@@ -56,6 +56,21 @@ try {
   res.status === 200 ? console.log(`✓ /guide/${rows[0][0]}`) : fail(`/guide/${rows[0][0]} ${res.status}`);
 } catch (e) {
   fail(`guide detail ${e.message}`);
+}
+
+// 자료 신선도 (QA 10/21 운영 감시): 서울 실시간이 100곳 넘게 오고, 서울시 기준 시각이 90분 안이고, 값이 말이 되는지
+try {
+  const j = await (await fetch(`${BASE}/api/public/crowd`, { headers: HEADERS })).json();
+  const seoul = j.seoul ?? [];
+  const ageMin = (t) => (Date.now() - Date.parse(`${t.replace(" ", "T")}:00+09:00`)) / 60_000;
+  const old = seoul.filter((s) => !(ageMin(s.time) <= 90));
+  const bad = seoul.filter((s) => !(s.peopleMin >= 0 && s.peopleMin <= s.peopleMax));
+  if (seoul.length < 100) fail(`서울 실시간 ${seoul.length}곳뿐`);
+  else if (old.length > seoul.length * 0.2) fail(`서울 실시간 오래된 값 ${old.length}/${seoul.length}곳 (예: ${old[0].name} ${old[0].time})`);
+  else if (bad.length) fail(`서울 인구 범위 이상 ${bad.length}곳 (예: ${bad[0].name} ${bad[0].peopleMin}~${bad[0].peopleMax})`);
+  else console.log(`✓ 서울 실시간 ${seoul.length}곳, 90분 넘은 값 ${old.length}곳`);
+} catch (e) {
+  fail(`public crowd ${e.message}`);
 }
 
 // 코스 추천 API

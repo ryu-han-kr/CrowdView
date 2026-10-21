@@ -46,6 +46,10 @@ export function PhotoGallery({
       <div
         ref={track}
         className="no-scrollbar flex h-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain"
+        // 키보드로도 넘겨 볼 수 있게 (axe scrollable-region-focusable)
+        tabIndex={0}
+        role="region"
+        aria-label={t("사진")}
         onScroll={(e) => {
           const el = e.currentTarget;
           setIdx(Math.round(el.scrollLeft / Math.max(1, el.clientWidth)));

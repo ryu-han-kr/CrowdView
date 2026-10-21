@@ -1043,6 +1043,7 @@ const dict: Dict = {
   "다만 그때도 ‘{level}’ 예상이라 한산하다는 뜻은 아니에요.": "Even then it's expected to be ‘{level}’, so it won't be quiet.",
   "면수 자료 없음": "No space count",
   "데이터를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.": "Couldn't load the data. Please refresh in a moment.",
+  "사진": "Photos",
   "롯데월드 어드벤처": "Lotte World Adventure",
   "에버랜드": "Everland",
   "서울랜드": "Seoul Land",

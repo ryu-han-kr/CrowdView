@@ -1,0 +1,78 @@
+{
+  "*": {
+    "PPLTN_TIME": "@now-10m",
+    "AREA_CONGEST_MSG": "시험 자료",
+    "MALE_PPLTN_RATE": "48.0",
+    "FEMALE_PPLTN_RATE": "52.0",
+    "PPLTN_RATE_0": "3",
+    "PPLTN_RATE_10": "8",
+    "PPLTN_RATE_20": "30",
+    "PPLTN_RATE_30": "25",
+    "PPLTN_RATE_40": "15",
+    "PPLTN_RATE_50": "10",
+    "PPLTN_RATE_60": "6",
+    "PPLTN_RATE_70": "3",
+    "RESNT_PPLTN_RATE": "20",
+    "FCST_PPLTN": [
+      {
+        "FCST_TIME": "@now+60m",
+        "FCST_CONGEST_LVL": "보통",
+        "FCST_PPLTN_MIN": "20000",
+        "FCST_PPLTN_MAX": "22000"
+      },
+      {
+        "FCST_TIME": "@now+120m",
+        "FCST_CONGEST_LVL": "약간 붐빔",
+        "FCST_PPLTN_MIN": "24000",
+        "FCST_PPLTN_MAX": "26000"
+      },
+      {
+        "FCST_TIME": "@now+180m",
+        "FCST_CONGEST_LVL": "붐빔",
+        "FCST_PPLTN_MIN": "28000",
+        "FCST_PPLTN_MAX": "30000"
+      }
+    ],
+    "AREA_CONGEST_LVL": "@mix"
+  },
+  "rows": {
+    "성수카페거리": {
+      "PPLTN_TIME": "@now-10m",
+      "AREA_CONGEST_MSG": "시험 자료",
+      "MALE_PPLTN_RATE": "48.0",
+      "FEMALE_PPLTN_RATE": "52.0",
+      "PPLTN_RATE_0": "3",
+      "PPLTN_RATE_10": "8",
+      "PPLTN_RATE_20": "30",
+      "PPLTN_RATE_30": "25",
+      "PPLTN_RATE_40": "15",
+      "PPLTN_RATE_50": "10",
+      "PPLTN_RATE_60": "6",
+      "PPLTN_RATE_70": "3",
+      "RESNT_PPLTN_RATE": "20",
+      "FCST_PPLTN": [
+        {
+          "FCST_TIME": "@now+60m",
+          "FCST_CONGEST_LVL": "보통",
+          "FCST_PPLTN_MIN": "20000",
+          "FCST_PPLTN_MAX": "22000"
+        },
+        {
+          "FCST_TIME": "@now+120m",
+          "FCST_CONGEST_LVL": "약간 붐빔",
+          "FCST_PPLTN_MIN": "24000",
+          "FCST_PPLTN_MAX": "26000"
+        },
+        {
+          "FCST_TIME": "@now+180m",
+          "FCST_CONGEST_LVL": "붐빔",
+          "FCST_PPLTN_MIN": "28000",
+          "FCST_PPLTN_MAX": "30000"
+        }
+      ],
+      "AREA_CONGEST_LVL": "붐빔",
+      "AREA_PPLTN_MIN": "30000",
+      "AREA_PPLTN_MAX": "32000"
+    }
+  }
+}

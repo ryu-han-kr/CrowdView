@@ -1,0 +1,29 @@
+# 매일 밤 운영 사이트 전체 화면 시험 (읽기 전용): 휴대폰 크롬·사파리 엔진·PC로 e2e 전부 + 접근성.
+# 결제·로그인·저장은 하지 않는다 (요금 화면은 로그인 전 안내까지만). 실패하면 GitHub가 메일로 알린다
+name: e2e-nightly
+
+on:
+  schedule:
+    - cron: "0 18 * * *" # 03:00 KST
+  workflow_dispatch:
+
+jobs:
+  e2e-prod:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      E2E_BASE_URL: https://crowdview.app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npx playwright test
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-nightly
+          path: playwright-report

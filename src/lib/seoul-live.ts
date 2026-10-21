@@ -2,6 +2,7 @@
 import { APIS, beforeCall } from "./api-quota";
 import { kv } from "./cache";
 import { cached } from "./cached";
+import { fixtureMode, loadFixture } from "./fixtures";
 import { SEOUL_AREAS, type SeoulArea } from "./seoul-areas";
 
 // 서울시 4단계 → 0~100 점수 (5단계 기준 각 구간의 중앙 부근)
@@ -42,7 +43,13 @@ export interface SeoulLive {
   max: number;
   /** 서울시 기준 시각 (YYYY-MM-DD HH:mm) */
   time: string;
-  forecast: { time: string; level: string; score: number; min: number; max: number }[];
+  forecast: {
+    time: string;
+    level: string;
+    score: number;
+    min: number;
+    max: number;
+  }[];
   /** 서울시 안내 문구 (예: "사람들이 몰려있을 가능성이 크고 …") */
   message?: string;
   /** 성별·연령대(%)·상주/비상주 비율 */
@@ -71,10 +78,10 @@ export function seoulGroup(name: string): SeoulGroup {
  * 전체를 Redis 키 하나에 10분 저장 (페이지를 그릴 때 Redis 읽기 1번). 서울시에는 동시에 8개씩
  */
 export function getAllSeoulLive(): Promise<Record<string, Omit<SeoulLive, "distance">>> {
-  const key = process.env.SEOUL_OPENAPI_KEY;
+  const key = process.env.SEOUL_OPENAPI_KEY ?? (fixtureMode() && "fixture");
   if (!key) return Promise.resolve({});
   return cached(
-    "seoul:live:all",
+    `seoul:live:all${fixtureMode() ? `:fx-${fixtureMode()}` : ""}`,
     600,
     async () => {
       const out: Record<string, Omit<SeoulLive, "distance">> = {};
@@ -100,7 +107,7 @@ export function getAllSeoulLive(): Promise<Record<string, Omit<SeoulLive, "dista
           .then((raw) => (raw ? (JSON.parse(raw) as { v: typeof out }).v : null))
           .catch(() => null);
         // 서울시 시각은 KST "YYYY-MM-DD HH:mm"
-        const recent = (time: string) => Date.now() - Date.parse(`${time.replace(" ", "T")}:00+09:00`) < 90 * 60_000;
+        const recent = (time: string) => Date.now() - Date.parse(`${time.replace(" ", "T")}:00+09:00`) < SEOUL_STALE_MIN * 60_000;
         for (const a of missing()) if (prev?.[a.code] && recent(prev[a.code].time)) out[a.code] = prev[a.code];
       }
       return out;
@@ -116,7 +123,7 @@ export async function getSeoulAreaLive(code: string): Promise<Omit<SeoulLive, "d
 
 /** 실시간 지역 인구 (5분 단위로 바뀌어 10분 캐시) */
 export async function getSeoulLive(lat: number, lng: number): Promise<SeoulLive | undefined> {
-  const key = process.env.SEOUL_OPENAPI_KEY;
+  const key = process.env.SEOUL_OPENAPI_KEY ?? (fixtureMode() && "fixture");
   const area = nearestSeoulArea(lat, lng);
   if (!key || !area) return undefined;
   try {
@@ -128,28 +135,83 @@ export async function getSeoulLive(lat: number, lng: number): Promise<SeoulLive 
   }
 }
 
+/** 서울시 기준 시각이 이보다 오래되면 '실시간'으로 쓰지 않는다 (서울시는 보통 5~20분 늦게 낸다) */
+export const SEOUL_STALE_MIN = 90;
+
+/** 고정 자료: 지역 이름별 행, 없으면 "*" 행을 그 지역 이름으로 (단계는 이름에 따라 고르게 섞는다) */
+function fixtureRow(areaName: string): Record<string, unknown> | undefined {
+  const fx = loadFixture<{
+    rows?: Record<string, Record<string, unknown>>;
+    "*"?: Record<string, unknown>;
+  }>("seoul-citydata");
+  if (!fx) return undefined;
+  if (fx.rows?.[areaName]) return fx.rows[areaName];
+  const base = fx["*"];
+  if (!base) return undefined;
+  const levels = Object.keys(SEOUL_LEVEL_SCORE);
+  const h = [...areaName].reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const level = typeof base.AREA_CONGEST_LVL === "string" && base.AREA_CONGEST_LVL !== "@mix" ? base.AREA_CONGEST_LVL : levels[h % levels.length];
+  const min = (h % 40) * 500;
+  return {
+    ...base,
+    AREA_NM: areaName,
+    AREA_CONGEST_LVL: level,
+    AREA_PPLTN_MIN: base.AREA_PPLTN_MIN ?? min,
+    AREA_PPLTN_MAX: base.AREA_PPLTN_MAX ?? min + 2000,
+  };
+}
+
 async function fetchSeoulLive(key: string, areaName: string): Promise<Omit<SeoulLive, "distance">> {
+  if (fixtureMode()) {
+    const row = fixtureRow(areaName);
+    if (!row) throw new Error(`seoul citydata fixture: ${areaName} 없음`);
+    return parseSeoulRow(row, areaName);
+  }
   await beforeCall(APIS.find((a) => a.id === "seoul-citydata"));
   const res = await fetch(`http://openapi.seoul.go.kr:8088/${key}/json/citydata_ppltn/1/5/${encodeURIComponent(areaName)}`, {
     signal: AbortSignal.timeout(6000),
   });
   if (!res.ok) throw new Error(`seoul citydata ${res.status}`);
-  const row = (await res.json())["SeoulRtd.citydata_ppltn"]?.[0];
+  return parseSeoulRow((await res.json())["SeoulRtd.citydata_ppltn"]?.[0], areaName);
+}
+
+/**
+ * 서울시 응답 한 줄 → 실시간 인구. 받는 데 성공해도 내용이 이상하면 쓰지 않는다 (QA 10/21 DATA-S02·SEOUL-S02):
+ * 모르는 단계, 인구가 숫자가 아니거나 음수, 최소 > 최대, 시각이 없거나 미래(10분 넘게), 90분(SEOUL_STALE_MIN)보다 오래된 값
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function parseSeoulRow(row: any, areaName: string, now = Date.now()): Omit<SeoulLive, "distance"> {
   if (!row || SEOUL_LEVEL_SCORE[row.AREA_CONGEST_LVL] === undefined) throw new Error("seoul citydata: unexpected payload");
+  const min = Number(row.AREA_PPLTN_MIN);
+  const max = Number(row.AREA_PPLTN_MAX);
+  if (!Number.isFinite(min) || !Number.isFinite(max) || min < 0 || min > max)
+    throw new Error(`seoul citydata: 인구 범위 이상 ${row.AREA_PPLTN_MIN}~${row.AREA_PPLTN_MAX}`);
+  const time = String(row.PPLTN_TIME ?? "");
+  const at = Date.parse(`${time.replace(" ", "T")}:00+09:00`);
+  if (!Number.isFinite(at)) throw new Error(`seoul citydata: 시각 없음 '${time}'`);
+  if (at - now > 10 * 60_000) throw new Error(`seoul citydata: 미래 시각 ${time}`);
+  if (now - at > SEOUL_STALE_MIN * 60_000) throw new Error(`seoul citydata: 오래된 자료 ${time}`);
   return {
     area: areaName,
     level: row.AREA_CONGEST_LVL,
     score: SEOUL_LEVEL_SCORE[row.AREA_CONGEST_LVL],
-    min: Number(row.AREA_PPLTN_MIN),
-    max: Number(row.AREA_PPLTN_MAX),
-    time: String(row.PPLTN_TIME ?? ""),
-    forecast: ((row.FCST_PPLTN ?? []) as Record<string, string>[]).map((f) => ({
-      time: f.FCST_TIME,
-      level: f.FCST_CONGEST_LVL,
-      score: SEOUL_LEVEL_SCORE[f.FCST_CONGEST_LVL] ?? 0,
-      min: Number(f.FCST_PPLTN_MIN),
-      max: Number(f.FCST_PPLTN_MAX),
-    })),
+    min,
+    max,
+    time,
+    forecast: ((row.FCST_PPLTN ?? []) as Record<string, string>[])
+      .filter(
+        (f) =>
+          SEOUL_LEVEL_SCORE[f.FCST_CONGEST_LVL] !== undefined &&
+          Number(f.FCST_PPLTN_MIN) >= 0 &&
+          Number(f.FCST_PPLTN_MIN) <= Number(f.FCST_PPLTN_MAX),
+      )
+      .map((f) => ({
+        time: f.FCST_TIME,
+        level: f.FCST_CONGEST_LVL,
+        score: SEOUL_LEVEL_SCORE[f.FCST_CONGEST_LVL] ?? 0,
+        min: Number(f.FCST_PPLTN_MIN),
+        max: Number(f.FCST_PPLTN_MAX),
+      })),
     message: row.AREA_CONGEST_MSG || undefined,
     profile:
       row.MALE_PPLTN_RATE !== undefined
@@ -166,7 +228,11 @@ async function fetchSeoulLive(key: string, areaName: string): Promise<Omit<Seoul
 /** 지역 상세용 추가 정보 (실시간 도시데이터 전체판에서 필요한 것만) */
 export interface SeoulAreaExtra {
   /** 상권 전체 결제 붐빔 단계 (한산한 / 보통 / 분주한 / 바쁜) */
-  commerce?: { level: string; time: string; categories: { name: string; group: string; level: string }[] };
+  commerce?: {
+    level: string;
+    time: string;
+    categories: { name: string; group: string; level: string }[];
+  };
   road?: { index: string; speed: number; message: string };
   bikes?: number;
 }
@@ -176,7 +242,7 @@ export interface SeoulAreaExtra {
  * 화면에 쓰는 몇 가지만 뽑아 Redis에 저장한다
  */
 export async function getSeoulAreaExtra(areaName: string): Promise<SeoulAreaExtra | undefined> {
-  const key = process.env.SEOUL_OPENAPI_KEY;
+  const key = process.env.SEOUL_OPENAPI_KEY; // 고정 자료 모드에는 상권·도로 자료가 없어 부르지 않는다
   if (!key) return undefined;
   try {
     return await cached(`seoul:extra:${areaName}`, 600, async () => {
@@ -201,7 +267,13 @@ export async function getSeoulAreaExtra(areaName: string): Promise<SeoulAreaExtr
               })),
             }
           : undefined,
-        road: road?.ROAD_TRAFFIC_IDX ? { index: road.ROAD_TRAFFIC_IDX, speed: Number(road.ROAD_TRAFFIC_SPD), message: road.ROAD_MSG } : undefined,
+        road: road?.ROAD_TRAFFIC_IDX
+          ? {
+              index: road.ROAD_TRAFFIC_IDX,
+              speed: Number(road.ROAD_TRAFFIC_SPD),
+              message: road.ROAD_MSG,
+            }
+          : undefined,
         bikes: bikes || undefined,
       };
     });

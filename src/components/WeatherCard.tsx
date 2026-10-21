@@ -51,7 +51,7 @@ export async function WeatherCard({ signals, lang, place }: { signals: Signals; 
         href={weatherHref(lang, place)}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={t(lang === "ko" ? "네이버 날씨에서 자세히 보기" : "구글 날씨에서 자세히 보기")}
+        title={t(lang === "ko" ? "네이버 날씨에서 자세히 보기" : "구글 날씨에서 자세히 보기")}
         className="card mt-3 flex items-center gap-3 transition active:scale-[0.99] md:hover:ring-1 md:hover:ring-sky-200"
       >
         {w && (

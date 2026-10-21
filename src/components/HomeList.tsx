@@ -9,6 +9,7 @@ import { CATEGORY_LABEL, type Category, type CrowdResult, type Place } from "@/l
 import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
 import { StickyBar } from "./StickyBar";
+import { useUrlQuery } from "./useUrlQuery";
 import { Glyph } from "@/components/Glyph";
 
 type Filter = "all" | "fav" | Category;
@@ -31,7 +32,7 @@ const CATEGORIES = Object.keys(CATEGORY_EMOJI) as Category[];
  * 검색 중이거나 파트를 고르면 추천 섹션(children)은 숨긴다
  */
 export function HomeList({ places, crowd, children }: { places: Place[]; crowd: Record<string, CrowdResult>; children?: React.ReactNode }) {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useUrlQuery();
   const [filter, setFilter] = useState<Filter>("all");
   const [sort, setSort] = useState<Sort>("calm");
   const [view, setView] = useState<"list" | "map">("list");
