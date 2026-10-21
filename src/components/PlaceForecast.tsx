@@ -163,6 +163,9 @@ export function WeekForecast({
   const wdValid = weekdays.filter((x) => x.avg > 0);
   const wdCalm = wdValid.reduce((a, b) => (b.avg < a.avg ? b : a), wdValid[0]);
   const wdBusy = wdValid.reduce((a, b) => (b.avg > a.avg ? b : a), wdValid[0]);
+  // 가장 한산·붐빔 값이 같으면(동률) '가장'이라 부르지 않는다
+  const mTie = mCalm?.peakScore === mBusy?.peakScore;
+  const wdTie = wdCalm?.avg === wdBusy?.avg;
   const w = weekdays[wd];
 
   return (
@@ -186,7 +189,9 @@ export function WeekForecast({
         <p className="text-sm text-gray-600">
           <b className="text-gray-900">{d.long}</b> · {t("가장 붐빌 때 {hour}", { hour: d.peakLabel })}
           {d.date === calmestDate && (
-            <span className="ml-1.5 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-700">{t("이번 주 가장 한산")}</span>
+            <span className="ml-1.5 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-700">
+              {lv.key >= 4 ? t("이번 주 중 덜 붐빔") : t("이번 주 가장 한산")}
+            </span>
           )}
         </p>
         <p className="mt-0.5 text-xl font-extrabold">
@@ -228,7 +233,9 @@ export function WeekForecast({
           {more === "month" && (
             <div className="mx-auto mt-3 max-w-sm">
               <p className="text-[15px] leading-relaxed">
-                {t("앞으로 30일 중 가장 한산한 날은 {calm}, 가장 붐비는 날은 {busy}예요.", { calm: mCalm.long, busy: mBusy.long })}
+                {mTie
+                  ? t("앞으로 30일은 날마다 비슷해요.")
+                  : t("앞으로 30일 중 가장 한산한 날은 {calm}, 가장 붐비는 날은 {busy}예요.", { calm: mCalm.long, busy: mBusy.long })}
               </p>
               <div className="mt-3 grid grid-cols-7 gap-1 text-center text-xs text-gray-500">
                 {dows.map((x, i) => (
@@ -277,7 +284,9 @@ export function WeekForecast({
           {more === "weekday" && wdValid.length > 0 && (
             <div className="mt-3">
               <p className="text-[15px] leading-relaxed">
-                {t("{calm}요일이 가장 한산하고, {busy}요일이 가장 붐벼요.", { calm: wdCalm.label, busy: wdBusy.label })}
+                {wdTie
+                  ? t("요일마다 비슷해요.")
+                  : t("{calm}요일이 가장 한산하고, {busy}요일이 가장 붐벼요.", { calm: wdCalm.label, busy: wdBusy.label })}
               </p>
               <div className="mt-3 rounded-2xl bg-gray-50 px-4 py-2.5 text-[15px]" aria-live="polite">
                 <b>{w.label}</b> · <b style={{ color: inkOf(levelOf(w.avg).color) }}>{t(levelOf(w.avg).label)}</b>
@@ -293,7 +302,7 @@ export function WeekForecast({
                   height: wdH(x.avg),
                   score: x.avg,
                   top: topText(x.peopleShort, x.avg, t),
-                  calm: x === wdCalm,
+                  calm: !wdTie && x === wdCalm,
                 }))}
               />
             </div>

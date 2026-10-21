@@ -120,6 +120,8 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
         </div>
       </div>
       {geoError && <p className="mt-2 text-xs font-semibold text-red-600">{geoError}</p>}
+      {/* 서울시 단계는 장소별 평소 대비라 인원 수와 단계가 엇갈려 보일 수 있다 */}
+      <p className="mt-2 text-xs text-gray-500">{t("단계는 장소마다 평소 인구와 비교한 서울시 기준이에요 · 인원이 많아도 '원활'일 수 있어요")}</p>
       {view === "map" ? (
         <SpotMap
           className="mt-3"

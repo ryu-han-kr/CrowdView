@@ -80,14 +80,19 @@ export function DailyForecastChart({ days, weekdays }: { days: { date: string; v
             {t(lv.label)} <span className="text-lg font-bold text-gray-900">{Math.round(d.value)}%</span>
           </p>
         </div>
-        <div className="shrink-0 text-right text-sm">
-          <p className="text-emerald-700">
-            {t("가장 한산")} <b>{label(calm)}</b>
-          </p>
-          <p className="text-red-600">
-            {t("가장 붐빔")} <b>{label(top)}</b>
-          </p>
-        </div>
+        {/* 가장 한산·붐빔이 같은 값(동률)이면 '가장'을 붙이지 않는다 */}
+        {days[calm].value === days[top].value ? (
+          <p className="shrink-0 text-right text-sm text-gray-600">{t("날마다 비슷해요")}</p>
+        ) : (
+          <div className="shrink-0 text-right text-sm">
+            <p className="text-emerald-700">
+              {t("가장 한산")} <b>{label(calm)}</b>
+            </p>
+            <p className="text-red-600">
+              {t("가장 붐빔")} <b>{label(top)}</b>
+            </p>
+          </div>
+        )}
       </div>
       <div role="img" aria-label={t("앞으로 30일 붐빔 예측 그래프")} className="relative select-none">
         <AreaChart data={data} xDataKey="date" yMax={100} margin={MARGIN} aspectRatio="16 / 9" animationDuration={700}>
