@@ -155,6 +155,10 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const flat = (x?: string) => x?.replace(/\s*\n+\s*/g, " / ").trim();
   const infoTr = await translateNames([flat(place.info?.hoursText), flat(place.info?.restText)], lang);
   const trInfo = (x?: string) => (x ? (infoTr.get(flat(x)!) ?? x) : x);
+  // 주소도 외국어 화면에서는 번역 (외부 점검: en 화면 한국어 노출)
+  const address = (await translateNames([place.address], lang)).get(place.address) ?? place.address;
+  // 화면의 '○시 기준'은 한 값만: 원천의 관측 시각(서울시 등), 없으면 CrowdView가 받은 시각 (P1-2 기준 시각 단일화)
+  const basisTime = crowd.observedAt ? crowd.observedAt.slice(11, 16) : kstClock(crowd.updatedAt);
   // 함께 가면 좋은 곳: 이름으로 좌표를 찾아 거리 + 그 근처(1km 안 서울 실시간 지역) 지금 혼잡
   const seoulNow = await getAllSeoulLive().catch(() => ({}) as Awaited<ReturnType<typeof getAllSeoulLive>>);
   // 연관 목록에 이 장소 자신이 다른 표기로 섞여 온다 (예: 롯데월드어드벤쳐) → 띄어쓰기·쳐/처 같은 표기 차이를 무시하고 뺀다
@@ -359,7 +363,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                     name: t(place.name),
                     level: t(level.label),
                     source: t(SOURCE_LABEL[crowd.source]),
-                    time: crowd.observedAt ? crowd.observedAt.slice(11, 16) : kstClock(crowd.updatedAt),
+                    time: basisTime,
                   })}
             {!beforeEvent &&
               best &&
@@ -533,7 +537,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 ) : (
                   "Powered by ThemeParks.wiki"
                 )}{" "}
-                · {t("5분 단위 갱신")}
+                · {t("CrowdView가 10분마다 가져와요")}
               </p>
             </section>
           )}
@@ -692,7 +696,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 q: t("{name} 지금 붐비나요?", { name: t(place.name) }),
                 a: isOpen
                   ? t("{time} 기준 {name}의 혼잡도는 '{level}'이에요. {detail}", {
-                      time: formatClock(kst().hour),
+                      time: basisTime,
                       name: t(place.name),
                       level: t(level.label),
                       detail: headcountInfo(crowd, { t, lang })?.text ?? t(level.desc),
@@ -756,7 +760,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             )}
             <div className="flex gap-3">
               <span className="w-14 shrink-0 text-gray-500">{t("주소")}</span>
-              <span>{place.address}</span>
+              <span>{address}</span>
             </div>
             <div className="flex flex-wrap gap-1.5 pt-1">
               {place.tags.map((tag) => (

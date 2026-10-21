@@ -3,6 +3,7 @@ import { getT } from "@/i18n/server";
 import type { Lang } from "@/i18n/config";
 import { Glyph } from "@/components/Glyph";
 import { getRoadStatus, type RoadGroup, type RoadLevel, type RoadSource, type RoadStatus } from "@/lib/roads";
+import { translateNames } from "@/lib/name-translate";
 
 const COLOR: Record<RoadLevel, { bg: string; fg: string }> = {
   원활: { bg: "#ecfdf5", fg: "#047857" },
@@ -17,7 +18,17 @@ const LOCAL_LABEL: Record<RoadSource, string> = { seoul: "주변 도로", its: "
  * 위치만 받아 스스로 불러온다. 원본이 가끔 10초 넘게 걸려서 페이지는 <Suspense>로 먼저 보여 주고 이 카드만 늦게 채운다
  */
 export async function RoadSection({ lat, lng, lang }: { lat: number; lng: number; lang: Lang }) {
-  return <RoadCard roads={await getRoadStatus(lat, lng)} lang={lang} />;
+  const roads = await getRoadStatus(lat, lng);
+  // 느린 도로 이름(올림픽대로 등)도 외국어 화면에서는 번역 (Papago 캐시)
+  if (roads && lang !== "ko") {
+    const groups = [roads.local, roads.highway].filter((g): g is RoadGroup => !!g);
+    const tr = await translateNames(
+      groups.flatMap((g) => g.slowest.map((s) => s.road)),
+      lang,
+    ).catch(() => new Map<string, string>());
+    for (const g of groups) g.slowest = g.slowest.map((s) => ({ ...s, road: tr.get(s.road) ?? s.road }));
+  }
+  return <RoadCard roads={roads} lang={lang} />;
 }
 
 export function RoadCard({ roads, lang, className = "" }: { roads?: RoadStatus; lang: Lang; className?: string }) {

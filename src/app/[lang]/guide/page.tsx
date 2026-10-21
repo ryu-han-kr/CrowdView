@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { GuideList, type Row } from "@/components/GuideList";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
-import { GUIDE, GUIDE_KINDS, RESERVATIONS, guideText } from "@/lib/seoul-guide";
+import { GUIDE, GUIDE_KINDS, RESERVATIONS } from "@/lib/seoul-guide";
+import { guideNames } from "@/lib/guide-names";
 import { pageMeta } from "@/lib/seo";
 import { Glyph } from "@/components/Glyph";
 
@@ -28,14 +29,15 @@ export default async function GuidePage({ params }: { params: Promise<{ lang: st
   const open = RESERVATIONS.filter((r) => r.status === "접수중" && (!r.rcptEnd || r.rcptEnd >= nowKst))
     .sort((a, b) => a.rcptEnd.localeCompare(b.rcptEnd))
     .slice(0, 6);
+  // 첫 탭(명소) 이름: 그 언어 글이 없는 곳은 이름만 번역 (다른 탭은 /data/guide-{lang}.json이 같은 방식)
+  const attractions = GUIDE.filter((p) => p.kind === "attraction" && (lang === "ko" || !p.id.startsWith("kt-")));
+  const names = await guideNames(attractions, lang);
   return (
     <main className="px-5 pt-6 pb-10 md:px-0 md:pt-10">
       <h1 className="text-2xl font-bold md:text-3xl">{t("서울 여행 가이드")}</h1>
       <p className="mt-1 mb-5 text-sm text-gray-500">{t("명소·맛집·쇼핑·자연 + 그 동네의 지금 혼잡도")}</p>
       <GuideList
-        initial={GUIDE.filter((p) => p.kind === "attraction" && (lang === "ko" || !p.id.startsWith("kt-"))).map(
-          (p) => [p.id, p.kind, guideText(p, lang).text.n, p.lat ?? null, p.lng ?? null, p.gu ?? null, p.img ?? null] as Row,
-        )}
+        initial={attractions.map((p) => [p.id, p.kind, names.get(p.id) ?? p.id, p.lat ?? null, p.lng ?? null, p.gu ?? null, p.img ?? null] as Row)}
         counts={Object.fromEntries(
           GUIDE_KINDS.map((k) => [k.id, GUIDE.filter((p) => p.kind === k.id && (lang === "ko" || !p.id.startsWith("kt-"))).length]),
         )}
