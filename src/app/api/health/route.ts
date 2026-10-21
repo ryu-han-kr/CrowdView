@@ -8,7 +8,8 @@ import { pool } from "@/lib/db";
 import { mailEnabled } from "@/lib/mail";
 import { tossEnabled } from "@/lib/toss";
 import { getVitals } from "@/lib/vitals";
-import { getApiUsage } from "@/lib/api-quota";
+import { getApiUsage, getMonthUsage } from "@/lib/api-quota";
+import { papagoBlockedUntil } from "@/lib/name-translate";
 import { kv, kvBackend } from "@/lib/cache";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { getAllSeoulLive } from "@/lib/seoul-live";
@@ -95,6 +96,14 @@ export async function GET() {
     .map(([k]) => k);
   if (seoulAgeMin === null || seoulAgeMin > SEOUL_STALE_MIN) stale.push("seoul-live");
   const quotaHot = usage.filter((u) => (u.pct ?? 0) >= 70).map((u) => ({ id: u.id, pct: Math.round(u.pct!) }));
+  // Papago: 오늘·이달 글자 수와 NCP 429로 멈춰 있는지 (10/21 월 한도 초과를 일일 집계로는 못 봤다)
+  const papagoInfo = usage.find((u) => u.id === "papago");
+  const papago = {
+    today: papagoInfo?.count ?? 0,
+    month: await getMonthUsage("papago").catch(() => 0),
+    monthlyLimit: papagoInfo?.monthlyLimit,
+    blockedUntil: await papagoBlockedUntil(),
+  };
   const ok = redisOk && stale.length === 0;
 
   return NextResponse.json(
@@ -106,6 +115,7 @@ export async function GET() {
       seoulLive: { areas: seoulTimes.length, newest, ageMin: seoulAgeMin },
       stale,
       quotaHot,
+      papago,
       vitals,
       db,
       features: features(),

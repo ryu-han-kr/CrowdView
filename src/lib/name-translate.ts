@@ -39,6 +39,11 @@ async function papago(texts: string[], lang: Lang): Promise<string[] | null> {
     body: new URLSearchParams({ source: "ko", target: lang, text }),
     signal: AbortSignal.timeout(10_000),
   });
+  if (res.status === 429) {
+    // NCP가 한도 초과라고 하면 모든 서버가 6시간 멈춘다 (인스턴스마다 10분씩 다시 두드리던 것을 공유). /api/health papago.blockedUntil
+    await kv.set(BLOCK_KEY, new Date(Date.now() + BLOCK_MS).toISOString(), BLOCK_MS / 1000).catch(() => {});
+    throw new Error(`papago 429: ${(await res.text()).slice(0, 120)}`);
+  }
   if (!res.ok) throw new Error(`papago ${res.status}: ${(await res.text()).slice(0, 120)}`);
   const out = String((await res.json()).message?.result?.translatedText ?? "").split("\n");
   return out.length === texts.length ? out.map((s) => s.trim()) : null;
@@ -46,6 +51,11 @@ async function papago(texts: string[], lang: Lang): Promise<string[] | null> {
 
 const HANGUL = /[가-힣]/;
 let disabledUntil = 0; // 권한 없음·한도 초과 등으로 실패하면 잠시 호출을 멈춘다
+/** NCP 429를 받은 뒤 모든 서버가 멈추는 공유 표시 (Redis) */
+const BLOCK_KEY = "papago:blocked";
+const BLOCK_MS = 6 * 3600_000;
+/** 지금 NCP 한도 초과로 멈춰 있으면 풀리는 시각(ISO), 아니면 undefined */
+export const papagoBlockedUntil = async (): Promise<string | undefined> => (await kv.get(BLOCK_KEY).catch(() => null)) ?? undefined;
 const LOCK_TTL = 60;
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -93,7 +103,8 @@ async function translateMissing(names: string[], lang: Lang): Promise<Map<string
  * Preview 배포(PR마다 빌드)는 메모리 캐시라 저장된 번역이 하나도 없어, 빌드 한 번에 모든 이름을 새로 번역했다.
  * 그 사용량은 운영 한도 계산에도 잡히지 않았다 (10/21 확인). Preview는 원문으로 보인다
  */
-const canTranslate = () => process.env.VERCEL_ENV === "production" || process.env.TRANSLATE_FORCE === "1";
+const canTranslate = () =>
+  process.env.NEXT_PHASE !== "phase-production-build" && (process.env.VERCEL_ENV === "production" || process.env.TRANSLATE_FORCE === "1");
 
 /** 한국어 이름들 → 번역 Map (번역 못 한 것은 원문). ko면 그대로 */
 export async function translateNames(texts: (string | undefined)[], lang: Lang): Promise<Map<string, string>> {
@@ -107,6 +118,8 @@ export async function translateNames(texts: (string | undefined)[], lang: Lang):
   const missing: string[] = [];
   uniq.forEach((s, i) => (cached[i] ? out.set(s, cached[i]!) : missing.push(s)));
   if (missing.length === 0 || Date.now() < disabledUntil || !canTranslate()) return out;
+  // 다른 서버가 NCP 429를 받았으면 이 서버도 부르지 않는다 (Redis 읽기 1번)
+  if (await papagoBlockedUntil()) return out;
 
   // 1) 이 서버에서 이미 번역 중인 이름은 그 결과를 기다린다
   const waiting = missing.filter((s) => inflight.has(cacheKey(lang, s)));
