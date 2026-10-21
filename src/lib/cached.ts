@@ -13,8 +13,10 @@ interface Entry<T> {
 
 const mem = new Map<string, Entry<unknown>>();
 const inflight = new Map<string, Promise<unknown>>();
-// 실패하면 이 시간 뒤에 다시 시도 (원본 장애 때 계속 두드리지 않게)
+// 실패하면 이 시간 뒤에 다시 시도 (원본 장애 때 계속 두드리지 않게).
+// 실패 표시는 Redis에도 남겨 모든 서버가 공유한다 — 새로 뜬 서버마다 시간 초과(8초)를 다시 기다리면 화면이 그만큼 늦어진다
 const RETRY_MS = 5 * 60 * 1000;
+const failKey = (key: string) => `${key}:fail`;
 const EMPTY_FRESH = 30 * 60;
 
 const keepSeconds = (fresh: number) => fresh + Math.max(fresh, 6 * 60 * 60);
@@ -39,9 +41,11 @@ async function read<T>(key: string, fresh: number, load: () => Promise<T>, isEmp
   if (isFresh(local)) return local!.v as T;
 
   let shared: Entry<T> | null = null;
+  let failedRecently = false;
   try {
-    const raw = await kv.get(key);
+    const [raw, failed] = await kv.mget([key, failKey(key)]);
     shared = raw ? (JSON.parse(raw) as Entry<T>) : null;
+    failedRecently = !!failed;
   } catch {
     shared = null;
   }
@@ -53,6 +57,10 @@ async function read<T>(key: string, fresh: number, load: () => Promise<T>, isEmp
   // 오래된 데이터라도 비어 있지 않으면 장애·빈 응답 때 대신 쓴다
   const prev = shared ?? (local as Entry<T> | undefined) ?? null;
   const stale = prev && !isEmpty(prev.v) ? prev : null;
+  if (failedRecently) {
+    if (stale) return stale.v;
+    throw new Error(`${key}: 원본이 최근 실패해 ${RETRY_MS / 60000}분 동안 다시 부르지 않음`);
+  }
   try {
     const v = await load();
     if (isEmpty(v)) {
@@ -68,6 +76,7 @@ async function read<T>(key: string, fresh: number, load: () => Promise<T>, isEmp
     await kv.set(key, JSON.stringify(entry), keepSeconds(fresh)).catch(() => {});
     return v;
   } catch (e) {
+    await kv.set(failKey(key), "1", RETRY_MS / 1000).catch(() => {});
     if (!stale) throw e;
     // 마지막 데이터를 쓰고, 잠시 뒤 다시 시도
     mem.set(key, { t: now - fresh * 1000 + Math.min(RETRY_MS, fresh * 1000), v: stale.v });
