@@ -6,6 +6,8 @@
 //   naive-24h / median-24h    : 기준선 (외부 점검 P1-5). 지금 값을 그대로 24시간 뒤 예측 / 최근 4주 같은 요일·시각 실제 값의 중앙값.
 //                               패턴 예측이 기준선보다 낫지 않으면 기준선을 쓰는 게 맞다 — 같은 지표로 나란히 비교한다
 // 맞춤 기준은 화면과 같은 5단계 (levelOf) 일치, 오차는 점수(0~100) 차이의 절댓값
+// P1-5 2단계: 최근 7일 합계에서 기준선이 패턴 예측을 단계 일치·평균 오차 둘 다 이기면(비교 수 MIN_PICK_N 이상) 그 방법을
+// 24시간 예측(한산한 코스의 내일·주말 점수)에 자동으로 쓴다 (getMethod24). 4주 중앙값은 요일×시 168칸 프로필(acc:prof)로 들고 있다
 import { kv } from "./cache";
 import { makePredictor, shapeNear } from "./forecast";
 import { levelOf } from "./levels";
@@ -47,6 +49,47 @@ const median = (xs: number[]) => {
   const m = v.length >> 1;
   return v.length % 2 ? v[m] : Math.round((v[m - 1] + v[m]) / 2);
 };
+
+/** 24시간 예측 방법 */
+export type Method24 = "pattern-24h" | "naive-24h" | "median-24h";
+/** 기준선으로 바꾸려면 7일 비교 수가 이만큼은 있어야 한다 (121곳 × 하루 약 20시간 ≈ 2,400/일 → 하루 반 치) */
+export const MIN_PICK_N = 3000;
+const PROFILE_KEY = "acc:prof";
+const KEEP_PROFILE = 400 * 86_400;
+/** 지역 코드 → 요일(일=0)×24+시 168칸의 4주 중앙값 (없는 칸은 null) */
+export type MedianProfile = Record<string, (number | null)[]>;
+
+/** 순수 계산: 7일 합계로 24시간 예측에 쓸 방법. 기준선이 패턴 예측을 단계 일치·평균 오차 둘 다 이길 때만 바꾼다 (둘 다 이기면 오차가 작은 쪽) */
+export function pickMethod24(sum: Record<Method24, DayStat>): Method24 {
+  const rate = (s: DayStat) => (s.n ? s.match / s.n : 0);
+  const err = (s: DayStat) => (s.n ? s.absErr / s.n : Infinity);
+  const base = sum["pattern-24h"];
+  if (base.n < MIN_PICK_N) return "pattern-24h";
+  const better = (["naive-24h", "median-24h"] as const).filter(
+    (m) => sum[m].n >= MIN_PICK_N && rate(sum[m]) > rate(base) && err(sum[m]) < err(base),
+  );
+  if (!better.length) return "pattern-24h";
+  return better.sort((a, b) => err(sum[a]) - err(sum[b]))[0];
+}
+
+/** 최근 7일 합계와 지금 쓰는 방법 (Redis 명령 1번) */
+export async function getMethod24(): Promise<{ method: Method24; sum: Record<Method24, DayStat> }> {
+  const rows = await getAccuracy(7);
+  const sum = {} as Record<Method24, DayStat>;
+  for (const m of ["pattern-24h", "naive-24h", "median-24h"] as const) {
+    sum[m] = rows.reduce<DayStat>((a, r) => {
+      const s = r.stats[m];
+      return s ? { n: a.n + s.n, match: a.match + s.match, absErr: a.absErr + s.absErr } : a;
+    }, { n: 0, match: 0, absErr: 0 });
+  }
+  return { method: pickMethod24(sum), sum };
+}
+
+/** 4주 중앙값 프로필 (없으면 빈 객체) */
+export async function getMedianProfile(): Promise<MedianProfile> {
+  const raw = await kv.get(PROFILE_KEY).catch(() => null);
+  return raw ? (JSON.parse(raw) as MedianProfile) : {};
+}
 
 type Live = Record<string, Omit<SeoulLive, "distance">>;
 
@@ -97,6 +140,12 @@ export async function trackAccuracy(live: Live, now = new Date()): Promise<numbe
   // 4주 중앙값 기준선: 목표 시각의 7·14·21·28일 전 실제 값 (2개 이상 있을 때만)
   const past = await kv.mget([7, 14, 21, 28].map((d) => actualKey(daysBefore(target(24), d)))).catch(() => [] as (string | null)[]);
   const pastMaps = past.filter((r): r is string => !!r).map((r) => JSON.parse(r) as Record<string, number>);
+  // 4주 중앙값은 요일×시 프로필에도 넣어 둔다 (한산한 코스가 내일·주말 어느 시간이든 바로 쓸 수 있게). 한 시간에 한 칸씩 채워진다
+  const profile = pastMaps.length >= 2 ? await getMedianProfile() : undefined;
+  const slot = (() => {
+    const d = new Date(Date.parse(`${target(24)}:00:00Z`));
+    return d.getUTCDay() * 24 + d.getUTCHours();
+  })();
   for (const h of HORIZONS) {
     const tKey = target(h.hours);
     const preds: Record<string, number> = {};
@@ -106,7 +155,10 @@ export async function trackAccuracy(live: Live, now = new Date()): Promise<numbe
         preds[code] = l.score;
       } else if (h.id === "median-24h") {
         const xs = pastMaps.map((m) => m[code]).filter((x): x is number => typeof x === "number");
-        if (xs.length >= 2) preds[code] = median(xs);
+        if (xs.length >= 2) {
+          preds[code] = median(xs);
+          if (profile) (profile[code] ??= Array(168).fill(null))[slot] = preds[code];
+        }
       } else if (h.id.startsWith("official")) {
         const f = l.forecast.find((x) => seoulHour(x.time) === tKey);
         if (f) preds[code] = f.score;
@@ -126,6 +178,7 @@ export async function trackAccuracy(live: Live, now = new Date()): Promise<numbe
     }
     if (Object.keys(preds).length) await kv.set(predKey(h.id, tKey), JSON.stringify(preds), KEEP_PRED).catch(() => {});
   }
+  if (profile && Object.keys(profile).length) await kv.set(PROFILE_KEY, JSON.stringify(profile), KEEP_PROFILE).catch(() => {});
   return scored;
 }
 

@@ -13,7 +13,8 @@ import { flushReports } from "@/lib/crowd-report";
 import { updateBiases } from "@/lib/crowd/bias";
 import { learnable, recordCalibration, type Sample } from "@/lib/crowd/calibration";
 import { expectedScore } from "@/lib/crowd/model";
-import { getSignals } from "@/lib/crowd/signals";
+import { recordActuals, updateQuantiles } from "@/lib/crowd/percentile";
+import { getHolidays, getSignals } from "@/lib/crowd/signals";
 import { getLivePlaces } from "@/lib/place-info";
 import { updateWeekRatios } from "@/lib/region-visitors";
 import type { CrowdResult } from "@/lib/types";
@@ -61,6 +62,14 @@ export async function GET(req: Request) {
   const calibrated = hourly
     ? await recordCalibration(await calibrationSamples(await getAllCrowd())).catch(async (e) => (await opsAlert("모델 보정 기록 실패", e), 0))
     : 0;
+  // 백분위 혼잡지수: 매시 정각 첫 수집 때 실제 값(서울 인구·실측 장소 점수)을 시각별로 남기고, 지금 시간대의 4주 분포 요약을 갱신 (Redis)
+  const percentiles = hourly
+    ? await (async () => {
+        const saved = await recordActuals(await getAllSeoulLive(), await getAllCrowd(), new Date());
+        const summarized = await updateQuantiles(new Date(), await getHolidays().catch(() => undefined));
+        return saved + summarized;
+      })().catch(async (e) => (await opsAlert("백분위 혼잡지수 기록 실패", e), 0))
+    : 0;
   // 시군구 주말/평일 방문객 비 (데이터랩, 명소 예측의 주말 배율)
   const weekRatios = daily ? await updateWeekRatios().catch(async (e) => (await opsAlert("주말 배율 계산 실패", e), 0)) : 0;
   // 어제 실측 기록을 하루 요약으로 (요일별·월별 실측 평균용, Redis)
@@ -92,7 +101,7 @@ export async function GET(req: Request) {
     );
   // 실시간 원본이 하나도 안 들어오면(전부 예측값) 원본 API·키 장애일 가능성이 크다
   if (refreshed.length && refreshed.every((r) => r.source === "model")) await opsAlert(`실시간 수집 전체 실패 (${refreshed.length}곳 모두 예측값)`);
-  return NextResponse.json({ refreshed, alerts, charged, expired, notices, scored, calibrated, weekRatios, summarized, trips, reports, biased });
+  return NextResponse.json({ refreshed, alerts, charged, expired, notices, scored, calibrated, percentiles, weekRatios, summarized, trips, reports, biased });
 }
 
 export const POST = GET;
