@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { checkAlerts } from "@/lib/alerts";
+import { archiveSnapshot } from "@/lib/archive";
 import { getAllCrowd, refreshAll } from "@/lib/crowd/service";
 import { trackAccuracy } from "@/lib/accuracy";
 import { opsAlert } from "@/lib/ops";
@@ -48,6 +49,10 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
   const refreshed = await refreshAll();
+  // 자료 보관: 이번 수집 결과(장소 전체 + 서울 121곳)를 R2에 한 객체로 (lib/archive, 환경변수 없으면 0)
+  const archived = await Promise.all([getAllCrowd(), getAllSeoulLive()])
+    .then(([c, s]) => archiveSnapshot(c, s))
+    .catch(async (e) => (await opsAlert("자료 보관(R2) 실패", e, { key: "archive", cooldownS: 3 * 3600 }), 0));
   // 새 혼잡도로 Plus 혼잡 알림을 보내고, 기간이 끝난 해지 구독을 정리한다 (DB가 없으면 건너뜀)
   const alerts = await checkAlerts(await getAllCrowd()).catch(async (e) => (await opsAlert("혼잡 알림 발송 실패", e), 0));
   // 만료 정리·자동결제 7일 전 안내는 하루 한 번 (새벽 4시 첫 수집)이면 충분 — 매번 돌리면 DB가 계속 깨어 있다
@@ -104,7 +109,22 @@ export async function GET(req: Request) {
     );
   // 실시간 원본이 하나도 안 들어오면(전부 예측값) 원본 API·키 장애일 가능성이 크다
   if (refreshed.length && refreshed.every((r) => r.source === "model")) await opsAlert(`실시간 수집 전체 실패 (${refreshed.length}곳 모두 예측값)`);
-  return NextResponse.json({ refreshed, alerts, charged, expired, notices, scored, calibrated, percentiles, weekRatios, summarized, trips, reports, biased });
+  return NextResponse.json({
+    refreshed,
+    archived,
+    alerts,
+    charged,
+    expired,
+    notices,
+    scored,
+    calibrated,
+    percentiles,
+    weekRatios,
+    summarized,
+    trips,
+    reports,
+    biased,
+  });
 }
 
 export const POST = GET;

@@ -10,6 +10,7 @@ import { tossEnabled } from "@/lib/toss";
 import { getVitals } from "@/lib/vitals";
 import { getApiUsage, getMonthUsage } from "@/lib/api-quota";
 import { papagoBlockedUntil } from "@/lib/name-translate";
+import { archiveStatus } from "@/lib/archive";
 import { kv, kvBackend } from "@/lib/cache";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { getAllSeoulLive } from "@/lib/seoul-live";
@@ -116,6 +117,7 @@ export async function GET() {
       stale,
       quotaHot,
       papago,
+      archive: await archiveStatus(),
       vitals,
       db,
       features: features(),
