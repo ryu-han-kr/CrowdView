@@ -1,8 +1,8 @@
-// 진입로 소통 카드 (국가교통정보센터 실시간 속도): 주변 도로 · 가까운 고속도로 각각 원활/서행/정체 + 평균 속도 + 막히는 도로
+// 진입로 소통 카드: 주변 도로(서울시 도시데이터 또는 국가교통정보센터) · 가까운 고속도로(한국도로공사) 각각 원활/서행/정체 + 평균 속도 + 막히는 도로
 import { getT } from "@/i18n/server";
 import type { Lang } from "@/i18n/config";
 import { Glyph } from "@/components/Glyph";
-import { getRoadStatus, type RoadGroup, type RoadLevel, type RoadStatus } from "@/lib/roads";
+import { getRoadStatus, type RoadGroup, type RoadLevel, type RoadSource, type RoadStatus } from "@/lib/roads";
 
 const COLOR: Record<RoadLevel, { bg: string; fg: string }> = {
   원활: { bg: "#ecfdf5", fg: "#047857" },
@@ -10,8 +10,11 @@ const COLOR: Record<RoadLevel, { bg: string; fg: string }> = {
   정체: { bg: "#fef2f2", fg: "#b91c1c" },
 };
 
+const SOURCE: Record<RoadSource, string> = { seoul: "서울시 실시간 도시데이터", its: "국가교통정보센터", ex: "한국도로공사" };
+const LOCAL_LABEL: Record<RoadSource, string> = { seoul: "주변 도로", its: "주변 도로 (약 2km)", ex: "주변 도로" };
+
 /**
- * 위치만 받아 스스로 불러온다. 국가교통정보센터가 가끔 10초 넘게 걸려서 페이지는 <Suspense>로 먼저 보여 주고 이 카드만 늦게 채운다
+ * 위치만 받아 스스로 불러온다. 원본이 가끔 10초 넘게 걸려서 페이지는 <Suspense>로 먼저 보여 주고 이 카드만 늦게 채운다
  */
 export async function RoadSection({ lat, lng, lang }: { lat: number; lng: number; lang: Lang }) {
   return <RoadCard roads={await getRoadStatus(lat, lng)} lang={lang} />;
@@ -41,11 +44,15 @@ export function RoadCard({ roads, lang, className = "" }: { roads?: RoadStatus; 
         <Glyph e="🚗" className="h-4 w-4 text-indigo-500" /> {t("가는 길 도로 상황")}
       </p>
       <ul className="mt-1 divide-y divide-gray-100">
-        {row("주변 도로 (약 2km)", roads.local)}
-        {row("가까운 고속도로 (약 6km)", roads.highway)}
+        {roads.local && row(LOCAL_LABEL[roads.local.source], roads.local)}
+        {row("가까운 고속도로 (나들목 8km 안)", roads.highway)}
       </ul>
       <p className="mt-1 text-[11px] text-gray-500">
-        {t("국가교통정보센터 실시간 구간 속도")}
+        {[...new Set([roads.local?.source, roads.highway?.source])]
+          .filter((s): s is RoadSource => !!s)
+          .map((s) => t(SOURCE[s]))
+          .join(" · ")}{" "}
+        {t("실시간 구간 속도")}
         {roads.time && ` · ${t("{time} 기준", { time: roads.time })}`}
       </p>
     </section>
