@@ -14,6 +14,7 @@
     "e2e:screens": "playwright test --grep @screens --workers=2"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1154.0",
     "@number-flow/react": "^0.6.2",
     "@pdf-lib/fontkit": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.23",
