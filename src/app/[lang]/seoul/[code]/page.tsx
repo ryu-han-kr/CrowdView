@@ -18,7 +18,8 @@ import { translateNames } from "@/lib/name-translate";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { SEOUL_GROUPS, getSeoulAreaExtra, getSeoulAreaLive, seoulGroup } from "@/lib/seoul-live";
 import { getSktCongestion } from "@/lib/skt";
-import { GUIDE, GUIDE_KINDS, TOILETS, guideText, nearest, photoNear } from "@/lib/seoul-guide";
+import { GUIDE, GUIDE_KINDS, TOILETS, nearest, photoNear } from "@/lib/seoul-guide";
+import { guideNames } from "@/lib/guide-names";
 import Image from "next/image";
 import { canOptimize } from "@/lib/img";
 import { KstNote } from "@/components/LocalTime";
@@ -73,6 +74,13 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
   const name = names.get(area.name) ?? area.name;
   // 숙소 검색어 (해외 사이트용 영어 이름, Papago 캐시)
   const enName = lang === "en" ? name : ((await translateNames([area.name], "en")).get(area.name) ?? area.name);
+  // 이 동네 명소·맛집: 그 언어 글이 없는 곳은 이름만 번역 (한국어 노출 방지)
+  const toiletCount = nearest(TOILETS, area, (x) => ({ lat: x[1], lng: x[2] }), 50, 0.8).length;
+  const spots = nearest(GUIDE, area, (g) => (g.lat && g.lng ? { lat: g.lat, lng: g.lng } : undefined), 6, 1);
+  const spotNames = await guideNames(
+    spots.map((s) => s.item),
+    lang,
+  );
   const group = SEOUL_GROUPS.find((g) => g.id === seoulGroup(area.name))!;
   const level = live && levelOf(live.score);
   // 이 지역 사진: 800m 안 가이드 명소의 관광공사 사진 (서울시 데이터에는 사진이 없다)
@@ -213,8 +221,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
 
           {live?.profile && <SeoulPeopleProfile profile={live.profile} lang={lang} />}
           {(() => {
-            const toilets = nearest(TOILETS, area, (x) => ({ lat: x[1], lng: x[2] }), 50, 0.8).length;
-            const spots = nearest(GUIDE, area, (g) => (g.lat && g.lng ? { lat: g.lat, lng: g.lng } : undefined), 6, 1);
+            const toilets = toiletCount;
             return (
               <section className="mt-4 rounded-3xl border border-gray-100 p-4">
                 <Link
@@ -233,7 +240,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
                       {spots.map(({ item: g }) => (
                         <li key={g.id}>
                           <Link href={`/guide/${g.id}`} className="block truncate rounded-xl bg-gray-50 px-3 py-2 text-xs font-semibold">
-                            {GUIDE_KINDS.find((k) => k.id === g.kind)?.emoji} {guideText(g, lang).text.n}
+                            {GUIDE_KINDS.find((k) => k.id === g.kind)?.emoji} {spotNames.get(g.id)}
                           </Link>
                         </li>
                       ))}

@@ -1073,6 +1073,7 @@ const dict: Dict = {
   "최근 4주 {day} 같은 시간과 비슷한 수준이에요": "About the same as the usual {day} hour over the last 4 weeks",
   "최근 4주 {day} 같은 시간보다 한산해요 · 하위 25%": "Quieter than the same {day} hour over the last 4 weeks · bottom 25%",
   "최근 4주 {day} 같은 시간보다 훨씬 한산해요 · 하위 10%": "Much quieter than the same {day} hour over the last 4 weeks · bottom 10%",
+  "CrowdView가 10분마다 가져와요": "CrowdView fetches it every 10 minutes",
   "롯데월드 어드벤처": "Lotte World Adventure",
   "에버랜드": "Everland",
   "서울랜드": "Seoul Land",

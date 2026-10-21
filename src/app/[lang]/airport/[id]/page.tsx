@@ -25,6 +25,7 @@ import { DEFAULT_LANG, type Lang } from "@/i18n/config";
 import { fmtAge, fmtMinutes, fmtPeople, trParking, trZone } from "@/i18n/patterns";
 import { getT } from "@/i18n/server";
 import { headcountInfo } from "@/lib/format";
+import { translateNames } from "@/lib/name-translate";
 import { KstNote } from "@/components/LocalTime";
 
 // ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
@@ -65,6 +66,8 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
   const place = getPlace(id);
   if (!place || place.category !== "airport") notFound();
   const photos = [...new Set([...(place.image ? [place.image] : []), ...((placeImages as Record<string, string[]>)[place.id] ?? [])])];
+  // 주소도 외국어 화면에서는 번역 (외부 점검: en 화면 한국어 노출)
+  const address = (await translateNames([place.address], lang)).get(place.address) ?? place.address;
 
   const [crowd, paxDays, parking, history, fees, signals, arrivals, zones2] = await Promise.all([
     getCrowd(id),
@@ -108,7 +111,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
             <PlaceThumb place={place} size={52} />
             <div>
               <h1 className="text-2xl font-bold">{t(place.name)}</h1>
-              <p className="text-xs text-gray-500">{place.address}</p>
+              <p className="text-xs text-gray-500">{address}</p>
               <KstNote />
             </div>
           </header>

@@ -10,6 +10,7 @@ import { getT } from "@/i18n/server";
 import { compactNumber } from "@/lib/format";
 import { levelOf, inkOf } from "@/lib/levels";
 import { translateNames } from "@/lib/name-translate";
+import { guideNames } from "@/lib/guide-names";
 import { GUIDE, GUIDE_KINDS, TOILETS, TOILET_FLAG, areaNear, getGuidePlace, guideText, nearest } from "@/lib/seoul-guide";
 import { getAllSeoulLive } from "@/lib/seoul-live";
 import { jsonLd, pageMeta } from "@/lib/seo";
@@ -62,6 +63,11 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
         1,
       )
     : [];
+  // 근처 가볼 곳 이름: 그 언어 글이 없는 곳은 이름만 번역
+  const aroundNames = await guideNames(
+    around.map((x) => x.item),
+    lang,
+  );
   const people = (min: number, max: number) => t("{min}~{max}명", { min: compactNumber(min, lang), max: compactNumber(max, lang) });
   const rows: [string, string | undefined][] = [
     [t("주소"), text.a],
@@ -204,7 +210,7 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
                   <li key={g.id}>
                     <Link href={`/guide/${g.id}`} className="block h-full rounded-2xl border border-gray-100 px-3 py-2.5">
                       <span className="block truncate text-sm font-semibold">
-                        {GUIDE_KINDS.find((k) => k.id === g.kind)?.emoji} {guideText(g, lang).text.n}
+                        {GUIDE_KINDS.find((k) => k.id === g.kind)?.emoji} {aroundNames.get(g.id)}
                       </span>
                       <span className="block text-[11px] text-gray-500">{km.toFixed(1)}km</span>
                     </Link>
