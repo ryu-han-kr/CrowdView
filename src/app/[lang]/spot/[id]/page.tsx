@@ -18,6 +18,8 @@ import { KstNote } from "@/components/LocalTime";
 import { Glyph } from "@/components/Glyph";
 import { PlaceHero } from "@/components/PlaceHero";
 import { WeatherCard } from "@/components/WeatherCard";
+import { RoadCard } from "@/components/RoadCard";
+import { getRoadStatus } from "@/lib/roads";
 import { formatHour } from "@/i18n/translate";
 import { DailyForecastChart } from "@/components/DailyForecastChart";
 import { HourlyChart } from "@/components/HourlyChart";
@@ -114,7 +116,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
     : undefined;
 
   // 예측 모델 (근처 실시간이 없어도 모든 명소에 지금 추정·오늘 곡선·이번 주 히트맵)
-  const model = await spotForecast(l);
+  const [model, roads] = await Promise.all([spotForecast(l), getRoadStatus(l.lat, l.lng)]);
   const nowScore = live ? live.score : model.now.score;
   const nowOpen = live ? live.open : model.now.open;
   const nowLevel = levelOf(nowScore);
@@ -213,6 +215,8 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
           </section>
 
           <WeatherCard signals={model.signals} lang={lang} place={model.place} />
+          {/* 가는 길 도로 상황 (국가교통정보센터, 5분) */}
+          <RoadCard roads={roads} lang={lang} />
           {nowOpen && (
             <CalmAlternatives lat={l.lat} lng={l.lng} score={nowScore} selfId={place ? place.id : area ? `seoul-${area.code}` : `spot-${l.id}`} lang={lang} />
           )}

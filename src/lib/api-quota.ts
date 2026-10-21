@@ -47,6 +47,8 @@ export const APIS: ApiInfo[] = [
   // 공공데이터포털 밖
   { id: "seoul-citydata", name: "서울시 실시간 도시데이터" },
   { id: "seoul-events", name: "서울시 문화행사 정보" },
+  // 국가교통정보센터 실시간 소통 (명소·장소 진입로). 한도 공개값을 못 찾아 넉넉히 잡은 추정
+  { id: "its-traffic", name: "국가교통정보센터 실시간 소통", limit: 20000, limitGuess: true },
   // 유료(종량제 건당 33원, Basic 요금제 하루 100건까지). 비용 상한용으로 하루 30건(90%면 27건 ≈ 하루 900원)에서 멈춘다.
   // 더 쓰려면 SK_DAILY_LIMIT 환경변수로 올린다
   { id: "skt-congestion", name: "SK 장소 혼잡도·TMAP 장소 검색", limit: Number(process.env.SK_DAILY_LIMIT) || 30 },
