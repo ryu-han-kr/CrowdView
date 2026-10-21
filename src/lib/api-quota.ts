@@ -15,6 +15,8 @@ export interface ApiInfo {
   dataset?: string;
   /** 하루 호출 한도. 없으면 집계만 */
   limit?: number;
+  /** 한 달 한도 (Papago처럼 월 요금 상한이 있는 것). 90%에서 멈춘다 */
+  monthlyLimit?: number;
   /** 한도가 공식 확인값이 아니면 true */
   limitGuess?: boolean;
   /** 세는 단위 (기본 "회") */
@@ -56,8 +58,9 @@ export const APIS: ApiInfo[] = [
   // 유료(종량제 건당 33원, Basic 요금제 하루 100건까지). 비용 상한용으로 하루 30건(90%면 27건 ≈ 하루 900원)에서 멈춘다.
   // 더 쓰려면 SK_DAILY_LIMIT 환경변수로 올린다
   { id: "skt-congestion", name: "SK 장소 혼잡도·TMAP 장소 검색", limit: Number(process.env.SK_DAILY_LIMIT) || 30 },
-  // 글자 수로 센다. NCP 콘솔 Application 하루 한도(3만 자)와 맞추고, 90%(2.7만 자)에서 앱이 먼저 멈춘다
-  { id: "papago", name: "Papago 번역 (글자 수)", limit: 30000, unit: "자" },
+  // 글자 수로 센다. NCP 콘솔 Application 하루 한도(3만 자)와 맞추고, 90%(2.7만 자)에서 앱이 먼저 멈춘다.
+  // 월 상한(기본 30만 자, PAPAGO_MONTHLY_LIMIT)도 둔다 — 10/21 NCP가 429를 내는데 우리 일일 집계는 17%였다 (한 달 누적이 문제)
+  { id: "papago", name: "Papago 번역 (글자 수)", limit: 30000, monthlyLimit: Number(process.env.PAPAGO_MONTHLY_LIMIT) || 300_000, unit: "자" },
 ];
 
 const SAFETY = 0.9;
@@ -67,23 +70,36 @@ export class QuotaError extends Error {}
 
 export const apiOfPath = (path: string) => APIS.find((a) => a.prefix && path.startsWith(a.prefix));
 const quotaKey = (id: string, date = kst().date) => `quota:${date}:${id}`;
+/** 월 집계 키 (YYYY-MM). 다음 달 집계가 시작된 뒤에도 지난달을 볼 수 있게 40일 보관 */
+const monthKey = (id: string, month = kst().date.slice(0, 7)) => `quota:m:${month}:${id}`;
+const KEEP_MONTH = 40 * 86_400;
 
 /**
  * 원본 API를 부르기 직전에 호출한다. amount는 이번 호출의 양 (기본 1회, Papago는 글자 수).
- * 한도(90%)를 넘으면 QuotaError. Redis가 안 되면 막지 않는다 (집계보다 서비스가 먼저)
+ * 한도(90%)를 넘으면 QuotaError. 월 한도가 있는 API는 월 집계도 같이. Redis가 안 되면 막지 않는다 (집계보다 서비스가 먼저)
  */
 export async function beforeCall(api: ApiInfo | undefined, amount = 1): Promise<void> {
   if (!api) return;
   let n: number;
+  let m = 0;
   try {
     n = await kv.incr(quotaKey(api.id), KEEP_DAYS * 86_400, amount);
+    if (api.monthlyLimit) m = await kv.incr(monthKey(api.id), KEEP_MONTH, amount);
   } catch {
     return;
   }
-  if (api.limit && n > api.limit * SAFETY) {
+  const over = api.limit && n > api.limit * SAFETY ? `오늘 ${n - amount}${api.unit ?? "회"}로 한도(${api.limit})` : undefined;
+  const overMonth = api.monthlyLimit && m > api.monthlyLimit * SAFETY ? `이달 ${m - amount}${api.unit ?? "회"}로 월 한도(${api.monthlyLimit})` : undefined;
+  if (over || overMonth) {
     await kv.decr(quotaKey(api.id), amount).catch(() => {});
-    throw new QuotaError(`${api.name}: 오늘 ${n - amount}${api.unit ?? "회"}로 한도(${api.limit})의 ${SAFETY * 100}% 도달`);
+    if (api.monthlyLimit) await kv.decr(monthKey(api.id), amount).catch(() => {});
+    throw new QuotaError(`${api.name}: ${over ?? overMonth}의 ${SAFETY * 100}% 도달`);
   }
+}
+
+/** 이달 누적 (월 한도가 있는 API만 의미 있다) */
+export async function getMonthUsage(id: string, month = kst().date.slice(0, 7)): Promise<number> {
+  return Number((await kv.get(monthKey(id, month)).catch(() => null)) ?? 0);
 }
 
 /** 원본이 "한도 초과"라고 답하면 오늘 남은 호출을 막는다 */
