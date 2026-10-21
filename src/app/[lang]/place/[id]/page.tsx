@@ -48,6 +48,7 @@ import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { getAllSeoulLive } from "@/lib/seoul-live";
 import Link from "@/i18n/link";
 import { KstNote, LocalTime } from "@/components/LocalTime";
+import { dataGrade, GRADE_LABEL } from "@/lib/data-grade";
 import { Glyph } from "@/components/Glyph";
 
 // ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
@@ -379,7 +380,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                       )}
                       {crowd.avgWaitMin === undefined && headcountInfo(crowd)?.kind && <DataTag kind={headcountInfo(crowd)!.kind} />}
                       {crowd.trend === "up" && <span className="text-red-500"> · {t("늘어나는 중")}</span>}
-                      {crowd.trend === "down" && <span className="text-emerald-600"> · {t("줄어드는 중")}</span>}
+                      {crowd.trend === "down" && <span className="text-emerald-700"> · {t("줄어드는 중")}</span>}
                     </>
                   ) : (
                     t(level.desc)
@@ -397,11 +398,26 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   max: compactNumber(crowd.area.range[1], lang),
                 })}{" "}
                 <span className="text-xs text-gray-600">· {t("서울시 실측")}</span>
+                {crowd.vsUsual !== undefined && (
+                  <span className="block">
+                    {Math.abs(crowd.vsUsual - 1) < 0.1
+                      ? t("평소 이 시간과 비슷해요")
+                      : t(crowd.vsUsual > 1 ? "평소 이 시간보다 {n}% 많아요" : "평소 이 시간보다 {n}% 적어요", {
+                          n: Math.round(Math.abs(crowd.vsUsual - 1) * 100),
+                        })}
+                  </span>
+                )}
               </p>
             )}
             <p className={`mt-2 text-xs ${crowd.stale ? "font-semibold text-amber-700" : "text-gray-600"}`}>
               {t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}
               {crowd.stale && <> · {t("갱신 지연")}</>} · {t(SOURCE_LABEL[crowd.source])}
+            </p>
+            {/* 자료 등급: A 실측 · B 실시간 추정 · C 통계 예측 (어디서 온 값인지) */}
+            <p className="mt-1 text-xs text-gray-600">
+              <span className="mr-1 rounded bg-gray-900 px-1.5 py-px text-[10px] font-bold text-white">{dataGrade(crowd)}</span>
+              {t(GRADE_LABEL[dataGrade(crowd)])}
+              {dataGrade(crowd) !== "A" && ` · ${t("인원은 정원 기준으로 환산한 추정치예요")}`}
             </p>
           </section>
 
@@ -689,7 +705,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                     ? t("오늘 휴무")
                     : t("오늘 {from} ~ {to}", { from: formatClock(place.hours[0]), to: formatClock(place.hours[1]) })}
                   {!place.info?.closedToday && <LocalTime hour={place.hours[0]} to={place.hours[1]} />}{" "}
-                  <span className={isOpen ? "text-emerald-600" : "text-gray-500"}>
+                  <span className={isOpen ? "text-emerald-700" : "text-gray-500"}>
                     {isOpen ? `· ${t("운영 중")}` : `· ${t(crowd.offSeason ? "시즌 아님" : "운영 종료")}`}
                   </span>
                   {!place.info?.hoursVerified && <DataTag kind="임의" />}

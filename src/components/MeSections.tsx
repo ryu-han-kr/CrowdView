@@ -45,7 +45,7 @@ export function SavedPlans() {
                   </span>
                   <span className="mt-0.5 block truncate text-sm font-semibold">{p.stops.join(" → ")}</span>
                   {left <= 7 && (
-                    <span className="block text-[11px] text-amber-600">{t("코스 링크는 {n}일 뒤 사라져요", { n: Math.max(0, left) })}</span>
+                    <span className="block text-[11px] text-amber-700">{t("코스 링크는 {n}일 뒤 사라져요", { n: Math.max(0, left) })}</span>
                   )}
                 </Link>
                 {/* 다른 사람에게 코스 보내기 (공유 링크 /r/{id}) */}

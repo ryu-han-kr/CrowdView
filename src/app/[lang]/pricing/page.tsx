@@ -76,7 +76,7 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
               <tr key={label} className="border-b border-gray-100">
                 <td className="py-3 pr-2">{t(label)}</td>
                 <td className="text-center">
-                  {free ? <Glyph e="✓" className="mx-auto h-4 w-4 text-emerald-600" label="O" /> : <span className="text-gray-300">–</span>}
+                  {free ? <Glyph e="✓" className="mx-auto h-4 w-4 text-emerald-700" label="O" /> : <span className="text-gray-300">–</span>}
                 </td>
                 <td className="text-center">
                   {plus ? <Glyph e="✓" className="mx-auto h-4 w-4 text-indigo-600" label="O" /> : <span className="text-gray-300">–</span>}

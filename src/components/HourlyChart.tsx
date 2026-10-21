@@ -187,7 +187,7 @@ export function HourlyChart({
           <p className="text-xs text-gray-500">
             {p.people === undefined && t("혼잡 지수 {n}", { n: p.score })}
             {p.peopleKind && SHOW_DATA_LABELS && (
-              <span className={p.peopleKind === "est" ? "text-amber-600" : undefined}>
+              <span className={p.peopleKind === "est" ? "text-amber-700" : undefined}>
                 {t("인원")}: {t(PEOPLE_NOTE[p.peopleKind])}
               </span>
             )}
@@ -196,7 +196,7 @@ export function HourlyChart({
         {delta && (
           <div className="shrink-0 text-right">
             <p className="text-xs text-gray-500">{t("{h} 대비", { h: formatHour(prev!.hour, lang) })}</p>
-            <p className={`text-base font-bold ${delta.diff > 0 ? "text-red-600" : delta.diff < 0 ? "text-emerald-600" : "text-gray-500"}`}>
+            <p className={`text-base font-bold ${delta.diff > 0 ? "text-red-600" : delta.diff < 0 ? "text-emerald-700" : "text-gray-500"}`}>
               {delta.diff > 0 ? "↑" : delta.diff < 0 ? "↓" : "→"} {delta.text}
             </p>
           </div>

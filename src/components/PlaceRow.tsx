@@ -56,7 +56,7 @@ export function PlaceRow({ place, crowd }: { place: Place; crowd: CrowdResult })
             </>
           )}
           {crowd.open && crowd.trend === "up" && <span className="text-red-500"> · {t("늘어나는 중")}</span>}
-          {crowd.open && crowd.trend === "down" && <span className="text-emerald-600"> · {t("줄어드는 중")}</span>}
+          {crowd.open && crowd.trend === "down" && <span className="text-emerald-700"> · {t("줄어드는 중")}</span>}
         </p>
       </div>
       <span className="flex shrink-0 flex-col items-end">
@@ -108,7 +108,7 @@ export function PlaceCard({ place, crowd }: { place: Place; crowd: CrowdResult }
           {crowd.open && isEstimated(crowd) && !info?.kind && <DataTag />}
         </p>
         {crowd.open && crowd.trend !== "flat" && (
-          <p className={`mt-1 text-xs ${crowd.trend === "up" ? "text-red-500" : "text-emerald-600"}`}>
+          <p className={`mt-1 text-xs ${crowd.trend === "up" ? "text-red-600" : "text-emerald-700"}`}>
             {crowd.trend === "up" ? `↑ ${t("늘어나는 중")}` : `↓ ${t("줄어드는 중")}`}
           </p>
         )}

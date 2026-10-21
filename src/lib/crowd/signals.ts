@@ -7,6 +7,7 @@ import { dataGoKr, ymd } from "../datagokr";
 import { addDays, kst } from "../time";
 import type { Place } from "../types";
 import { getLocalPop, type LocalPop } from "./busan-pop";
+import { getSchoolOff, getSearchTrend } from "./extra-signals";
 import { getAirForecast, getAirNow, getMidWeather, type AirNow, type MidDay } from "./weather-air";
 
 export interface Weather {
@@ -33,6 +34,10 @@ export interface Signals {
   air?: AirNow;
   /** YYYY-MM-DD → 초미세먼지 예보 등급 1~4 */
   airForecast?: Map<string, number>;
+  /** 네이버 검색 추이 배율 (최근 7일 / 그 전 4주, 0.85~1.2) — 앞으로 7일에만 */
+  searchTrend?: number;
+  /** YYYY-MM-DD → 서울·경기 초등학교 표본 중 쉬는 학교 비율 (0~1) */
+  schoolOff?: Map<string, number>;
 }
 
 const HOUR = 3600;
@@ -161,7 +166,7 @@ export async function getAirportPax(place: Place): Promise<Map<string, number[]>
 
 export async function getSignals(place: Place): Promise<Signals> {
   if (!process.env.DATA_GO_KR_KEY) return {};
-  const [holidays, weather, concentration, pax, localPop, midWeather, air, airForecast] = await Promise.allSettled([
+  const [holidays, weather, concentration, pax, localPop, midWeather, air, airForecast, searchTrend, schoolOff] = await Promise.allSettled([
     getHolidays(),
     getWeather(place),
     place.kto ? getConcentration(place.kto) : Promise.resolve(undefined),
@@ -170,6 +175,9 @@ export async function getSignals(place: Place): Promise<Signals> {
     getMidWeather(place),
     getAirNow(place),
     getAirForecast(place),
+    // 키가 있을 때만 (없으면 undefined)
+    place.airport ? Promise.resolve(undefined) : getSearchTrend(place.name),
+    getSchoolOff(),
   ]);
   const ok = <T>(r: PromiseSettledResult<T>, name: string): T | undefined => {
     if (r.status === "fulfilled") return r.value;
@@ -185,5 +193,7 @@ export async function getSignals(place: Place): Promise<Signals> {
     midWeather: ok(midWeather, "midWeather"),
     air: ok(air, "air"),
     airForecast: ok(airForecast, "airForecast"),
+    searchTrend: ok(searchTrend, "searchTrend"),
+    schoolOff: ok(schoolOff, "schoolOff"),
   };
 }

@@ -98,7 +98,7 @@ function ScrubBars({ items, sel, onSel, tall = false }: { items: BarItem[]; sel:
               style={{ height: `${Math.max(6, it.height)}%`, background: l.color }}
             />
             <span
-              className={`mt-1.5 whitespace-nowrap ${many ? "text-[11px] tracking-tight" : "text-sm"} ${on ? "font-bold text-gray-900" : it.calm ? "font-bold text-emerald-600" : "font-medium text-gray-600"}`}
+              className={`mt-1.5 whitespace-nowrap ${many ? "text-[11px] tracking-tight" : "text-sm"} ${on ? "font-bold text-gray-900" : it.calm ? "font-bold text-emerald-700" : "font-medium text-gray-600"}`}
             >
               {it.label}
             </span>
@@ -351,8 +351,9 @@ export function MonthCalendar({ year }: { year: YearBar[] }) {
 /** 지금부터 문 닫을 때까지 시간마다 예상 혼잡 (가장 한산한 시간 ★) */
 export function UpcomingHours({ hours, bestHour }: { hours: { hour: number; label: string; score: number }[]; bestHour?: number }) {
   const { t } = useI18n();
+  // 가로로 넘기는 줄: 키보드로도 넘길 수 있게 (axe scrollable-region-focusable)
   return (
-    <ul className="mt-2 flex gap-1.5 overflow-x-auto pb-1">
+    <ul className="mt-2 flex gap-1.5 overflow-x-auto pb-1" tabIndex={0} aria-label={t("시간대별 예상")}>
       {hours.map((h) => {
         const l = levelOf(h.score);
         const best = h.hour === bestHour;
