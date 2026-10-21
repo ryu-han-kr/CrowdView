@@ -14,6 +14,7 @@ import { getAllCrowd } from "@/lib/crowd/service";
 import { getAllSeoulLive } from "@/lib/seoul-live";
 import { kst } from "@/lib/time";
 import { probeKeys } from "@/lib/key-probe";
+import { roadsDiag } from "@/lib/roads";
 
 export const dynamic = "force-dynamic";
 
@@ -61,7 +62,7 @@ export async function GET() {
     .set("health:ping", String(started), 60)
     .then(() => true)
     .catch(() => false);
-  const [crowd, seoul, usage, vitals, db, keyProbe] = await Promise.all([
+  const [crowd, seoul, usage, vitals, db, keyProbe, roads] = await Promise.all([
     getAllCrowd().catch(() => ({}) as Awaited<ReturnType<typeof getAllCrowd>>),
     getAllSeoulLive().catch(() => ({}) as Awaited<ReturnType<typeof getAllSeoulLive>>),
     getApiUsage().catch(() => []),
@@ -70,6 +71,7 @@ export async function GET() {
     dbStatus(),
     // 새 API 키 확인 (교통·지하철). 상태 판단(ok)에는 넣지 않는다
     probeKeys().catch(() => ({})),
+    roadsDiag().catch(() => undefined),
   ]);
 
   // 소스별: 실시간 장소 수, 가장 오래된 값(분)
@@ -108,6 +110,7 @@ export async function GET() {
       db,
       features: features(),
       keyProbe,
+      roads,
       ms: Date.now() - started,
     },
     { status: ok ? 200 : 503, headers: { "cache-control": "no-store" } },

@@ -189,14 +189,14 @@ export function conzonesFrom(rows: { routeName?: string; conzoneId?: string; con
 
 const EX = "https://data.ex.co.kr/openapi";
 
-async function exGet<T>(path: string, params: Record<string, string>): Promise<{ list: T[]; pageSize: number }> {
+async function exGet<T>(path: string, params: Record<string, string>): Promise<{ list: T[]; count: number }> {
   await beforeCall(APIS.find((a) => a.id === "ex-traffic"));
   const qs = new URLSearchParams({ key: process.env.EX_API_KEY!, type: "json", ...params });
   const res = await fetch(`${EX}/${path}?${qs}`, { signal: AbortSignal.timeout(15_000) });
   if (!res.ok) throw new Error(`ex ${res.status}`);
-  const j = (await res.json()) as { code?: string; message?: string; list?: T[]; pageSize?: number };
+  const j = (await res.json()) as { code?: string; message?: string; list?: T[]; count?: number };
   if (j.code !== "SUCCESS") throw new Error(`ex ${j.message}`);
-  return { list: j.list ?? [], pageSize: Number(j.pageSize) || 1 };
+  return { list: j.list ?? [], count: Number(j.count) || 0 };
 }
 
 /** 영업소(나들목) 좌표 590곳 — 거의 안 바뀌어 하루 한 번 */
@@ -219,14 +219,16 @@ const exUnits = () =>
 /** 전국 콘존 실시간 속도 (검지기 약 8,300줄 → 콘존별 평균). 10분마다, 모든 장소가 같이 쓴다 */
 const exConzones = () =>
   cached(
-    "ex:conzones",
+    "ex:conzones:v2",
     600,
     async () => {
       type Row = { routeName?: string; conzoneId?: string; conzoneName?: string; speed?: string; stdDate?: string; stdHour?: string };
+      // 실시간 교통량은 pageSize를 주지 않아 전체 건수(count)와 첫 쪽에서 실제로 온 줄 수로 쪽 수를 센다
       const first = await exGet<Row>("odtraffic/trafficAmountByRealtime", { numOfRows: "1000", pageNo: "1" });
+      const pages = first.list.length ? Math.ceil(first.count / first.list.length) : 1;
       const rest = await Promise.all(
-        Array.from({ length: Math.min(first.pageSize, 15) - 1 }, (_, i) =>
-          exGet<Row>("odtraffic/trafficAmountByRealtime", { numOfRows: "1000", pageNo: String(i + 2) }).then((r) => r.list),
+        Array.from({ length: Math.min(pages, 15) - 1 }, (_, i) =>
+          exGet<Row>("odtraffic/trafficAmountByRealtime", { numOfRows: String(first.list.length), pageNo: String(i + 2) }).then((r) => r.list),
         ),
       );
       const rows = [...first.list, ...rest.flat()];
@@ -250,6 +252,24 @@ async function highwayNear(p: LatLng): Promise<{ group?: RoadGroup; time?: strin
     ),
     time: cz.time,
   };
+}
+
+/** /api/health 확인용: 영업소·콘존 수와 에버랜드(영동고속도로 마성 나들목 근처) 주변 콘존 수 */
+export async function roadsDiag(): Promise<Record<string, unknown> | undefined> {
+  if (!process.env.EX_API_KEY) return undefined;
+  try {
+    const [units, cz] = await Promise.all([exUnits(), exConzones()]);
+    const everland = conzonesNear(units, cz.zones, { lat: 37.2939, lng: 127.2025 });
+    return {
+      units: units.length,
+      zones: cz.zones.length,
+      time: cz.time,
+      everland: everland.slice(0, 5),
+      sample: cz.zones.slice(0, 3).map((z) => z.name),
+    };
+  } catch (e) {
+    return { error: (e as Error).message.slice(0, 120) };
+  }
 }
 
 /** 장소 둘레 도로 소통. 자료가 모자라면 undefined */
