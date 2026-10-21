@@ -438,6 +438,12 @@ export default {
   "혼잡 알림": ["Crowd alerts", "混雑通知", "拥挤提醒", "擁擠提醒"],
   "한산해지면 알림": ["Alert when quiet", "空いたら通知", "人少时提醒", "人少時提醒"],
   "붐비기 시작하면 알림": ["Alert when busy", "混み始めたら通知", "开始拥挤时提醒", "開始擁擠時提醒"],
+  // 무료 알림 1개 (P2-1)
+  "로그인하고 이 장소가 한산해질 때 알림을 받아 보세요": ["Log in to get notified when this place gets quiet","ログインしてこの場所が空いたときに通知を受け取る","登录后在这里变清闲时收到提醒","登入後在這裡變清閒時收到提醒"],
+  "무료는 알림 1개 · Plus는 30개": ["Free: 1 alert · Plus: 30","無料は通知1件・Plusは30件","免费1个提醒 · Plus 30个","免費1個提醒 · Plus 30個"],
+  "Plus 알아보기": ["About Plus","Plusについて","了解Plus","了解Plus"],
+  "1개": ["1","1件","1个","1個"],
+  "30개": ["30","30件","30个","30個"],
   "Plus로 이 장소가 한산해질 때 알림을 받아 보세요": [
     "Get an alert when this place gets quiet with Plus",
     "Plusでここが空いたら通知を受け取れます",

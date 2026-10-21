@@ -10,7 +10,7 @@ import { Glyph } from "@/components/Glyph";
 
 type Kind = "calm" | "busy";
 
-/** 장소 상세의 혼잡 알림 켜기/끄기 (Plus). Plus가 아니면 안내 링크 */
+/** 장소 상세의 혼잡 알림 켜기/끄기. 로그인한 회원은 누구나 1개(무료), Plus는 30개. 로그인 전에는 안내 링크 */
 export function AlertButtons({ placeId, enabled }: { placeId: string; enabled: boolean }) {
   return enabled ? <Inner placeId={placeId} /> : null;
 }
@@ -23,7 +23,7 @@ function Inner({ placeId }: { placeId: string }) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!data?.user || !plus) return;
+    if (!data?.user) return;
     fetch("/api/alerts")
       .then((r) => (r.ok ? r.json() : { alerts: [] }))
       .then((j: { alerts: { placeId: string; kind: Kind }[] }) =>
@@ -33,7 +33,7 @@ function Inner({ placeId }: { placeId: string }) {
         }),
       )
       .catch(() => {});
-  }, [data?.user, plus, placeId]);
+  }, [data?.user, placeId]);
 
   const toggle = async (kind: Kind) => {
     setError(null);
@@ -59,9 +59,9 @@ function Inner({ placeId }: { placeId: string }) {
     <section className="card mt-4">
       <p className="flex items-center gap-1 text-sm font-bold">
         <Glyph e="🔔" className="h-4 w-4 text-indigo-500" /> {t("혼잡 알림")}{" "}
-        <span className="ml-1 rounded bg-indigo-600 px-1.5 py-0.5 text-[10px] text-white">Plus</span>
+        {plus && <span className="ml-1 rounded bg-indigo-600 px-1.5 py-0.5 text-[10px] text-white">Plus</span>}
       </p>
-      {plus ? (
+      {data?.user ? (
         <div className="mt-3 flex gap-2">
           {(["calm", "busy"] as const).map((k) => (
             <button
@@ -76,9 +76,17 @@ function Inner({ placeId }: { placeId: string }) {
           ))}
         </div>
       ) : (
-        <Link href="/pricing" className="mt-2 block text-xs text-indigo-600">
-          {t("Plus로 이 장소가 한산해질 때 알림을 받아 보세요")} ›
+        <Link href="/me" className="mt-2 block text-xs text-indigo-600">
+          {t("로그인하고 이 장소가 한산해질 때 알림을 받아 보세요")} ›
         </Link>
+      )}
+      {data?.user && !plus && (
+        <p className="mt-2 text-[11px] text-gray-500">
+          {t("무료는 알림 1개 · Plus는 30개")}{" "}
+          <Link href="/pricing" className="text-indigo-600">
+            {t("Plus 알아보기")} ›
+          </Link>
+        </p>
       )}
       {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
     </section>

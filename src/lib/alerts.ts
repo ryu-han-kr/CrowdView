@@ -62,11 +62,12 @@ export const markAlertsExist = () => kv.set(ANY_KEY, "1", 35 * 24 * 3600).catch(
 export async function checkAlerts(crowd: Record<string, CrowdResult>): Promise<number> {
   if (!pushEnabled) return 0;
   if (!(await kv.get(ANY_KEY).catch(() => "1"))) return 0;
-  // 지금 Plus인 회원의 알림만
+  // Plus 회원은 전부, 무료 회원은 가장 먼저 켠 1개만 (외부 점검 P2-1, 사용자 결정 10/21 — Plus가 끝나도 1개는 계속 간다)
   const alerts = await sql<Due>(
     `select a.user_id, a.place_id, a.kind, a.last_score, a.last_sent_at
-     from crowd_alert a join plus_subscription s on s.user_id = a.user_id
-     where s.status <> 'expired' and s.current_period_end > now()`,
+     from crowd_alert a
+     where exists (select 1 from plus_subscription s where s.user_id = a.user_id and s.status <> 'expired' and s.current_period_end > now())
+        or a.created_at = (select min(b.created_at) from crowd_alert b where b.user_id = a.user_id)`,
   );
   // 알림이 남아 있으면 표시를 연장하고, 다 지워졌으면 표시를 내린다
   if (alerts.length) await markAlertsExist();

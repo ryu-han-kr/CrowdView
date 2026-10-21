@@ -8,6 +8,9 @@ import { errorJson, requireUser, unauthorized } from "@/lib/plus-http";
 import { rateLimit } from "@/lib/ratelimit";
 
 const KINDS = ["calm", "busy"] as const;
+/** 무료 회원 알림 수 (lib/alerts checkAlerts의 '가장 먼저 켠 1개'와 같은 수) */
+export const FREE_ALERTS = 1;
+const PLUS_ALERTS = 30;
 
 export async function GET(req: Request) {
   const limited = await rateLimit(req, "alerts");
@@ -29,18 +32,19 @@ export async function POST(req: Request) {
   if (!pushEnabled) return NextResponse.json({ error: "알림 준비 중이에요" }, { status: 503 });
   const user = await requireUser(req);
   if (!user) return unauthorized();
-  if (!(await isPlus(user.id))) return NextResponse.json({ error: "Plus 회원만 쓸 수 있어요" }, { status: 402 });
+  const plus = await isPlus(user.id);
   const body = (await req.json().catch(() => ({}))) as { placeId?: string; kind?: string; subscription?: PushSub; lang?: string };
   if (!body.placeId || !alertTarget(body.placeId) || !KINDS.includes(body.kind as (typeof KINDS)[number])) return errorJson("잘못된 요청");
   if (!body.subscription?.endpoint || !body.subscription.keys?.p256dh) return errorJson("알림 권한이 필요해요");
-  // 회원당 30개까지 (알림 점검이 회원 수 × 알림 수만큼 돈다)
+  // 무료 회원은 1개(외부 점검 P2-1, 사용자 결정 10/21), Plus는 30개까지 (알림 점검이 회원 수 × 알림 수만큼 돈다)
   const [{ n }] = await sql<{ n: number }>("select count(*)::int as n from crowd_alert where user_id = $1", [user.id]);
-  if (n >= 30) return errorJson("알림은 30개까지 켤 수 있어요");
+  if (!plus && n >= FREE_ALERTS) return NextResponse.json({ error: "무료는 알림 1개까지예요. Plus로 여러 곳 알림을 받아 보세요" }, { status: 402 });
+  if (n >= PLUS_ALERTS) return errorJson("알림은 30개까지 켤 수 있어요");
   await savePushSubscription(user.id, body.subscription, body.lang ?? "ko");
   await sql("insert into crowd_alert (user_id, place_id, kind) values ($1, $2, $3) on conflict do nothing", [user.id, body.placeId, body.kind]);
   await markAlertsExist();
   // 유료 기능 사용 기록 (7일 환불 판단)
-  await markPlusUsed(user.id);
+  if (plus) await markPlusUsed(user.id);
   return NextResponse.json({ ok: true });
 }
 

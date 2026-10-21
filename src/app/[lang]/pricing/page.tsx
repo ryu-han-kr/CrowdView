@@ -19,8 +19,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   });
 }
 
-// 무료 / Plus 비교 (✓ 제공, – 미제공)
-const ROWS: [label: string, free: boolean, plus: boolean][] = [
+// 무료 / Plus 비교 (✓ 제공, – 미제공, 글자면 그 범위만 제공)
+const ROWS: [label: string, free: boolean | string, plus: boolean | string][] = [
   ["실시간 혼잡도 (공항·놀이공원·관광지·축제·서울 121곳)", true, true],
   ["시간대별·주간 혼잡 예측", true, true],
   ["축제 일정, 날씨·미세먼지, 공항 주차·입국 정보", true, true],
@@ -28,8 +28,9 @@ const ROWS: [label: string, free: boolean, plus: boolean][] = [
   ["지역별 명소·서울 여행 가이드·근처 숙소 찾기", true, true],
   ["한산한 코스 추천 전체 일정 (무료는 앞 2곳 미리보기)", false, true],
   ["광고 없이 보기", false, true],
-  ["찜한 장소가 한산해지면 알림 (웹 푸시)", false, true],
-  ["혼잡해지기 전에 미리 알림", false, true],
+  // 무료 회원도 알림 1개 (외부 점검 P2-1, 사용자 결정 10/21)
+  ["찜한 장소가 한산해지면 알림 (웹 푸시)", "1개", "30개"],
+  ["혼잡해지기 전에 미리 알림", "1개", "30개"],
 ];
 
 export default async function PricingPage({ params }: { params: Promise<{ lang: string }> }) {
@@ -76,10 +77,22 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
               <tr key={label} className="border-b border-gray-100">
                 <td className="py-3 pr-2">{t(label)}</td>
                 <td className="text-center">
-                  {free ? <Glyph e="✓" className="mx-auto h-4 w-4 text-emerald-700" label="O" /> : <span className="text-gray-300">–</span>}
+                  {typeof free === "string" ? (
+                    <span className="text-xs font-semibold text-emerald-700">{t(free)}</span>
+                  ) : free ? (
+                    <Glyph e="✓" className="mx-auto h-4 w-4 text-emerald-700" label="O" />
+                  ) : (
+                    <span className="text-gray-300">–</span>
+                  )}
                 </td>
                 <td className="text-center">
-                  {plus ? <Glyph e="✓" className="mx-auto h-4 w-4 text-indigo-600" label="O" /> : <span className="text-gray-300">–</span>}
+                  {typeof plus === "string" ? (
+                    <span className="text-xs font-semibold text-indigo-600">{t(plus)}</span>
+                  ) : plus ? (
+                    <Glyph e="✓" className="mx-auto h-4 w-4 text-indigo-600" label="O" />
+                  ) : (
+                    <span className="text-gray-300">–</span>
+                  )}
                 </td>
               </tr>
             ))}
