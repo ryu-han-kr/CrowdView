@@ -199,16 +199,24 @@ async function exGet<T>(path: string, params: Record<string, string>): Promise<{
   return { list: j.list ?? [], count: Number(j.count) || 0 };
 }
 
+/** 모든 쪽 받기: 한 쪽에 실제로 오는 줄 수가 요청보다 적을 수 있어(영업소는 100줄) 전체 건수(count) ÷ 첫 쪽 줄 수로 쪽 수를 센다. 최대 15쪽 */
+async function exAll<T>(path: string): Promise<T[]> {
+  const first = await exGet<T>(path, { numOfRows: "1000", pageNo: "1" });
+  const per = first.list.length;
+  const pages = per ? Math.min(Math.ceil(first.count / per), 15) : 1;
+  const rest = await Promise.all(
+    Array.from({ length: pages - 1 }, (_, i) => exGet<T>(path, { numOfRows: String(per), pageNo: String(i + 2) }).then((r) => r.list)),
+  );
+  return [...first.list, ...rest.flat()];
+}
+
 /** 영업소(나들목) 좌표 590곳 — 거의 안 바뀌어 하루 한 번 */
 const exUnits = () =>
   cached(
-    "ex:units",
+    "ex:units:v2",
     24 * 3600,
     async () => {
-      const { list } = await exGet<{ unitName?: string; xValue?: string; yValue?: string }>("locationinfo/locationinfoUnit", {
-        numOfRows: "1000",
-        pageNo: "1",
-      });
+      const list = await exAll<{ unitName?: string; xValue?: string; yValue?: string }>("locationinfo/locationinfoUnit");
       return list
         .map((u) => ({ name: String(u.unitName ?? "").trim(), lat: Number(u.yValue), lng: Number(u.xValue) }))
         .filter((u) => u.name && u.lat > 33 && u.lat < 39 && u.lng > 124 && u.lng < 132);
@@ -223,15 +231,7 @@ const exConzones = () =>
     600,
     async () => {
       type Row = { routeName?: string; conzoneId?: string; conzoneName?: string; speed?: string; stdDate?: string; stdHour?: string };
-      // 실시간 교통량은 pageSize를 주지 않아 전체 건수(count)와 첫 쪽에서 실제로 온 줄 수로 쪽 수를 센다
-      const first = await exGet<Row>("odtraffic/trafficAmountByRealtime", { numOfRows: "1000", pageNo: "1" });
-      const pages = first.list.length ? Math.ceil(first.count / first.list.length) : 1;
-      const rest = await Promise.all(
-        Array.from({ length: Math.min(pages, 15) - 1 }, (_, i) =>
-          exGet<Row>("odtraffic/trafficAmountByRealtime", { numOfRows: String(first.list.length), pageNo: String(i + 2) }).then((r) => r.list),
-        ),
-      );
-      const rows = [...first.list, ...rest.flat()];
+      const rows = await exAll<Row>("odtraffic/trafficAmountByRealtime");
       const latest = rows
         .map((r) => `${r.stdDate ?? ""}${r.stdHour ?? ""}`)
         .sort()
