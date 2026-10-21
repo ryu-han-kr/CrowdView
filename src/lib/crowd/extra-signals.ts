@@ -20,8 +20,9 @@ export function trendFrom(values: number[]): number | undefined {
 }
 
 export async function getSearchTrend(keyword: string): Promise<number | undefined> {
-  const id = process.env.NAVER_DATALAB_CLIENT_ID;
-  const secret = process.env.NAVER_DATALAB_CLIENT_SECRET;
+  // 환경변수에 앞뒤 공백·줄바꿈이 섞여 들어가면 인증이 실패한다
+  const id = process.env.NAVER_DATALAB_CLIENT_ID?.trim();
+  const secret = process.env.NAVER_DATALAB_CLIENT_SECRET?.trim();
   if (!id || !secret) return undefined;
   const today = kst().date;
   return cached(`trend:${keyword}`, 12 * HOUR, async () => {
@@ -83,13 +84,19 @@ export async function getSchoolOff(): Promise<Map<string, number> | undefined> {
   const entries = await cached(`neis:off:${today}`, 24 * HOUR, async () => {
     const schools = (
       await Promise.all(
-        REGIONS.map((r) => neis<{ SD_SCHUL_CODE: string }>("schoolInfo", { pSize: String(PER_REGION), ATPT_OFCDC_SC_CODE: r, SCHUL_KND_SC_NM: "초등학교" }).then((rows) => rows.map((s) => [r, s.SD_SCHUL_CODE] as const))),
+        REGIONS.map((r) =>
+          neis<{ SD_SCHUL_CODE: string }>("schoolInfo", { pSize: String(PER_REGION), ATPT_OFCDC_SC_CODE: r, SCHUL_KND_SC_NM: "초등학교" }).then(
+            (rows) => rows.map((s) => [r, s.SD_SCHUL_CODE] as const),
+          ),
+        ),
       )
     ).flat();
     const from = today.replaceAll("-", "");
     const to = addDays(today, 60).replaceAll("-", "");
     const schedules = await Promise.all(
-      schools.map(([r, code]) => neis<NeisRow>("SchoolSchedule", { pSize: "365", ATPT_OFCDC_SC_CODE: r, SD_SCHUL_CODE: code, AA_FROM_YMD: from, AA_TO_YMD: to })),
+      schools.map(([r, code]) =>
+        neis<NeisRow>("SchoolSchedule", { pSize: "365", ATPT_OFCDC_SC_CODE: r, SD_SCHUL_CODE: code, AA_FROM_YMD: from, AA_TO_YMD: to }),
+      ),
     );
     return schools.length ? [...offShare(schedules)] : [];
   }).catch(() => [] as [string, number][]);

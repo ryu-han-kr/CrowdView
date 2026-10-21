@@ -40,6 +40,8 @@ interface Probe {
   url: (key: string) => string;
   /** POST 등 (네이버 데이터랩) */
   init?: (key: string) => RequestInit;
+  /** 값 대신 모양만 (글자 수·앞뒤 공백) — 키를 잘못 넣었는지 보려고 */
+  shape?: () => Record<string, unknown>;
   ok: (status: number, body: string) => boolean;
 }
 
@@ -80,7 +82,11 @@ const PROBES: Probe[] = [
     url: () => "https://openapi.naver.com/v1/datalab/search",
     init: (id) => ({
       method: "POST",
-      headers: { "X-Naver-Client-Id": id, "X-Naver-Client-Secret": process.env.NAVER_DATALAB_CLIENT_SECRET ?? "", "content-type": "application/json" },
+      headers: {
+        "X-Naver-Client-Id": id.trim(),
+        "X-Naver-Client-Secret": (process.env.NAVER_DATALAB_CLIENT_SECRET ?? "").trim(),
+        "content-type": "application/json",
+      },
       body: JSON.stringify({
         startDate: "2026-09-01",
         endDate: "2026-09-07",
@@ -89,6 +95,18 @@ const PROBES: Probe[] = [
       }),
     }),
     ok: (s, b) => s === 200 && /"results"/.test(b),
+    // 네이버 개발자센터 Client ID는 보통 20자, Secret은 10자
+    shape: () => {
+      const id = process.env.NAVER_DATALAB_CLIENT_ID ?? "";
+      const secret = process.env.NAVER_DATALAB_CLIENT_SECRET ?? "";
+      return {
+        idLen: id.trim().length,
+        secretLen: secret.trim().length,
+        idSpaces: id !== id.trim(),
+        secretSpaces: secret !== secret.trim(),
+        secretSet: !!secret,
+      };
+    },
   },
   {
     // 나이스 학교 기본정보 (학사일정과 같은 키)
@@ -121,8 +139,21 @@ async function probe(p: Probe): Promise<ProbeResult> {
     // 느린 원본을 가려내려고 넉넉히 30초 (화면에서 쓰는 호출은 lib/roads의 15초)
     const res = await fetch(p.url(key), { ...p.init?.(key), signal: AbortSignal.timeout(30_000) });
     const body = await res.text();
-    const sample = body.replaceAll(key, "***").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
-    return { configured: true, ok: p.ok(res.status, body), status: res.status, sample, fields: firstItemFields(body), meta: topMeta(body), ms: Date.now() - t0 };
+    const sample = body
+      .replaceAll(key, "***")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 200);
+    return {
+      configured: true,
+      ok: p.ok(res.status, body),
+      status: res.status,
+      sample,
+      fields: firstItemFields(body),
+      meta: { ...topMeta(body), ...p.shape?.() },
+      ms: Date.now() - t0,
+    };
   } catch (e) {
     return {
       configured: true,
