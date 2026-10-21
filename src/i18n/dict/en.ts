@@ -1056,6 +1056,7 @@ const dict: Dict = {
   "평소 이 시간과 비슷해요": "About usual for this time",
   "평소 이 시간보다 {n}% 많아요": "{n}% busier than usual for this time",
   "평소 이 시간보다 {n}% 적어요": "{n}% quieter than usual for this time",
+  "시간대별 예상": "Hourly outlook",
   "롯데월드 어드벤처": "Lotte World Adventure",
   "에버랜드": "Everland",
   "서울랜드": "Seoul Land",

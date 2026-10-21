@@ -81,7 +81,7 @@ export function DailyForecastChart({ days, weekdays }: { days: { date: string; v
           </p>
         </div>
         <div className="shrink-0 text-right text-sm">
-          <p className="text-emerald-600">
+          <p className="text-emerald-700">
             {t("가장 한산")} <b>{label(calm)}</b>
           </p>
           <p className="text-red-600">

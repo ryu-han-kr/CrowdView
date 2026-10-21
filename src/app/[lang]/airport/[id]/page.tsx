@@ -132,7 +132,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                   {crowd.trend === "up" ? (
                     <span className="text-red-500">{t("늘어나는 중")}</span>
                   ) : crowd.trend === "down" ? (
-                    <span className="text-emerald-600">{t("줄어드는 중")}</span>
+                    <span className="text-emerald-700">{t("줄어드는 중")}</span>
                   ) : (
                     t("변화 없음")
                   )}
@@ -210,10 +210,10 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                               <ul className="mt-4 divide-y divide-gray-100 rounded-2xl border border-gray-100 text-sm">
                                 {arrivals.flights.slice(0, 30).map((f) => (
                                   <li key={`${f.flight}-${f.time}`} className="flex items-center gap-3 px-4 py-2.5">
-                                    <span className={`w-12 shrink-0 font-semibold ${f.late ? "text-amber-600" : ""}`}>{f.time}</span>
+                                    <span className={`w-12 shrink-0 font-semibold ${f.late ? "text-amber-700" : ""}`}>{f.time}</span>
                                     <span className="min-w-0 flex-1 truncate">
                                       <b>{f.flight}</b> <span className="text-gray-500">{t("{from} 출발", { from: f.from })}</span>
-                                      {f.late && <span className="ml-1 text-[11px] font-semibold text-amber-600">{t("지연")}</span>}
+                                      {f.late && <span className="ml-1 text-[11px] font-semibold text-amber-700">{t("지연")}</span>}
                                     </span>
                                     <span className="shrink-0 text-xs text-gray-500">{f.entryGate && t("입국장 {gate}", { gate: f.entryGate })}</span>
                                   </li>
@@ -312,7 +312,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                                 <li key={z.zone} className="rounded-2xl bg-gray-50 px-3 py-2">
                                   <p className="text-xs text-gray-500">{t("구역 {n}", { n: z.zone })}</p>
                                   <p className="text-sm">
-                                    <b className={pct < 10 ? "text-red-500" : pct < 25 ? "text-orange-500" : "text-emerald-600"}>
+                                    <b className={pct < 10 ? "text-red-500" : pct < 25 ? "text-orange-500" : "text-emerald-700"}>
                                       {t("{n}면", { n: z.free.toLocaleString() })}
                                     </b>
                                     <span className="text-[11px] text-gray-500"> / {z.total.toLocaleString()}</span>

@@ -14,7 +14,13 @@ test("보안 헤더: 남의 사이트 틀 안에 못 넣고, 파일 종류 추�
 test("SEOUL-S01: 서울 실시간에서 '성수' 검색 → 성수카페거리 상세", async ({ page }) => {
   await page.goto("/seoul");
   // 휴대폰·PC 검색창이 따로 있어 보이는 쪽을 쓴다
-  await page.getByPlaceholder("지역 이름 검색 (예: 성수, 한강)").filter({ visible: true }).first().fill("성수");
+  // 화면이 준비(hydration)되기 전에 입력하면 지워질 수 있어, 검색어가 주소에 들어갈 때까지 다시 입력한다
+  const box = page.getByPlaceholder("지역 이름 검색 (예: 성수, 한강)").filter({ visible: true }).first();
+  await expect(async () => {
+    await box.fill("");
+    await box.fill("성수");
+    await expect(page).toHaveURL(/[?&]q=/, { timeout: 2_000 });
+  }).toPass({ timeout: 20_000 });
   const link = page.locator('a[href$="/seoul/POI068"]').filter({ visible: true }).first();
   await expect(link).toBeVisible();
   // 검색 결과에 성수와 상관없는 곳이 섞이지 않는다

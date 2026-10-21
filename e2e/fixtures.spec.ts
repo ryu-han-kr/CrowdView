@@ -43,8 +43,12 @@ test("MAP-01: 지도 '서울 실시간' 핀과 서울 목록이 같은 곳·같�
 test("HOME-07: 검색어가 주소에 남아 상세 → 뒤로 가기 후에도 그대로", async ({ page }) => {
   await page.goto("/seoul");
   const box = page.getByPlaceholder("지역 이름 검색 (예: 성수, 한강)").filter({ visible: true }).first();
-  await box.fill("성수");
-  await expect(page).toHaveURL(/[?&]q=%EC%84%B1%EC%88%98/);
+  // 화면 준비(hydration) 전에 입력하면 지워질 수 있어 주소에 들어갈 때까지 다시 입력
+  await expect(async () => {
+    await box.fill("");
+    await box.fill("성수");
+    await expect(page).toHaveURL(/[?&]q=%EC%84%B1%EC%88%98/, { timeout: 2_000 });
+  }).toPass({ timeout: 20_000 });
   await page.locator('a[data-place-id="seoul-POI068"]').filter({ visible: true }).first().click();
   await expect(page).toHaveURL(/\/seoul\/POI068/, { timeout: 30_000 });
   await page.goBack();

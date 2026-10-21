@@ -82,6 +82,6 @@ export function TrendArrow({ trend }: { trend: "up" | "down" | "flat" }) {
   return trend === "up" ? (
     <span className="text-xs font-medium text-red-600">↑ {t("증가")}</span>
   ) : (
-    <span className="text-xs font-medium text-emerald-600">↓ {t("감소")}</span>
+    <span className="text-xs font-medium text-emerald-700">↓ {t("감소")}</span>
   );
 }

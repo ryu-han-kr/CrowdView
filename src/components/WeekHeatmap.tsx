@@ -65,7 +65,7 @@ export function WeekHeatmap({ days, nowHour }: { days: HeatDay[]; nowHour: numbe
                       <td
                         key={b}
                         className="rounded-lg py-2 text-[11px] font-bold whitespace-nowrap"
-                        style={{ background: l.color, color: deepOf(l.color), opacity: past ? 0.3 : 1 }}
+                        style={past ? { background: `${l.color}33`, color: "#4b5563" } : { background: l.color, color: deepOf(l.color) }}
                       >
                         {t(l.label)}
                       </td>

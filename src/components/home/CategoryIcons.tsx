@@ -11,7 +11,7 @@ const ITEMS: { href: string; label: string; emoji: string; bg: string; fg: strin
   { href: "/?cat=ski#places", label: "스키장", emoji: "⛷️", bg: "from-slate-50 to-blue-100", fg: "text-blue-600" },
   { href: "/events", label: "축제", emoji: "🎆", bg: "from-violet-50 to-purple-100", fg: "text-violet-600" },
   { href: "/seoul", label: "서울 실시간", emoji: "📍", bg: "from-indigo-50 to-indigo-100", fg: "text-indigo-600", badge: "121곳" },
-  { href: "/explore", label: "지역 여행", emoji: "🗺️", bg: "from-emerald-50 to-teal-100", fg: "text-emerald-600", badge: "NEW" },
+  { href: "/explore", label: "지역 여행", emoji: "🗺️", bg: "from-emerald-50 to-teal-100", fg: "text-emerald-700", badge: "NEW" },
   { href: "/guide", label: "여행 가이드", emoji: "📖", bg: "from-amber-50 to-orange-100", fg: "text-orange-500" },
   { href: "/route", label: "추천 코스", emoji: "🧭", bg: "from-blue-50 to-cyan-100", fg: "text-cyan-600" },
   { href: "/near?tab=reservation", label: "체험·액티비티", emoji: "🎟️", bg: "from-fuchsia-50 to-pink-100", fg: "text-fuchsia-600" },

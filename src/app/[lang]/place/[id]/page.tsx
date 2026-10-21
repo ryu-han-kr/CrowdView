@@ -380,7 +380,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                       )}
                       {crowd.avgWaitMin === undefined && headcountInfo(crowd)?.kind && <DataTag kind={headcountInfo(crowd)!.kind} />}
                       {crowd.trend === "up" && <span className="text-red-500"> · {t("늘어나는 중")}</span>}
-                      {crowd.trend === "down" && <span className="text-emerald-600"> · {t("줄어드는 중")}</span>}
+                      {crowd.trend === "down" && <span className="text-emerald-700"> · {t("줄어드는 중")}</span>}
                     </>
                   ) : (
                     t(level.desc)
@@ -705,7 +705,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                     ? t("오늘 휴무")
                     : t("오늘 {from} ~ {to}", { from: formatClock(place.hours[0]), to: formatClock(place.hours[1]) })}
                   {!place.info?.closedToday && <LocalTime hour={place.hours[0]} to={place.hours[1]} />}{" "}
-                  <span className={isOpen ? "text-emerald-600" : "text-gray-500"}>
+                  <span className={isOpen ? "text-emerald-700" : "text-gray-500"}>
                     {isOpen ? `· ${t("운영 중")}` : `· ${t(crowd.offSeason ? "시즌 아님" : "운영 종료")}`}
                   </span>
                   {!place.info?.hoursVerified && <DataTag kind="임의" />}
