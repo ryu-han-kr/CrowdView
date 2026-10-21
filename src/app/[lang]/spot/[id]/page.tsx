@@ -49,10 +49,8 @@ export function generateStaticParams({ params }: { params: { lang: string } }) {
 }
 
 /** 소개 글 첫 문장 (설명·요약용, 최대 140자) */
-const firstSentence = (s: string) => {
-  const one = s.split(/(?<=다\.)\s/)[0] ?? s;
-  return one.length > 140 ? `${one.slice(0, 139)}…` : one;
-};
+const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, n - 1)}…` : s);
+const firstSentence = (s: string) => clip(s.split(/(?<=다\.)\s/)[0] ?? s, 140);
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string; id: string }> }): Promise<Metadata> {
   const { lang, id } = await params;
@@ -65,7 +63,11 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     lang,
     path: `/spot/${id}`,
     title: t("{name} 여행 정보·혼잡도", { name }),
-    description: lang === "ko" && info ? firstSentence(info.overview) : t("{name} 소개, 이용 시간, 쉬는 날, 근처 혼잡도와 숙소", { name }),
+    // 검색 결과 설명: 관광공사 원문 첫 문장만이면 이 화면에서 무엇을 알 수 있는지(혼잡도)가 안 보인다 → 혼잡도를 앞에 두고 소개를 잇는다
+    description:
+      lang === "ko" && info
+        ? clip(`${name} 지금 혼잡도와 시간대별 예측, 이용 시간·쉬는 날. ${firstSentence(info.overview)}`, 155)
+        : t("{name} 소개, 이용 시간, 쉬는 날, 근처 혼잡도와 숙소", { name }),
     image: l.img,
     // 소개 글이 한국어뿐이라 외국어 화면은 아직 검색에 올리지 않는다 (외국어 관광공사 자료 신청 후 공개)
     noindex: lang !== "ko",
@@ -83,8 +85,11 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
   const photos = [...new Set([l.img, ...(SPOT_IMAGES[id] ?? []), ...(info?.images ?? [])])];
   const kind = LANDMARK_KINDS.find((k) => k.id === l.kind)!;
   const paras = (info?.overview ?? "").split("\n").filter((x) => x.trim());
-  const intro = paras.slice(0, 1).join("\n");
-  const rest = paras.slice(1).join("\n");
+  // 첫 문장은 제목 아래에 이미 보이므로 '소개' 칸은 그다음부터 (같은 글이 두 번 보이지 않게)
+  const lead = info?.overview ? firstSentence(info.overview) : "";
+  const firstRest = paras[0]?.startsWith(lead) ? paras[0].slice(lead.length).trim() : (paras[0] ?? "");
+  const intro = firstRest || (paras[1] ?? "");
+  const rest = paras.slice(firstRest ? 1 : 2).join("\n");
 
   // 지금 혼잡도: 1.5km 안 우리 장소 → 0.8km 안 서울 실시간 지역
   const [crowd, seoul] = await Promise.all([
@@ -311,7 +316,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
             )}
           </section>
 
-          {info?.overview && (
+          {intro && (
             <section className="mt-8">
               <h2 className="text-lg font-bold">{t("소개")}</h2>
               {lang !== "ko" && <p className="mt-1 text-xs text-gray-500">{t("소개 글은 한국관광공사의 한국어 자료예요.")}</p>}

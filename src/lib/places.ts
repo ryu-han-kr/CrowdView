@@ -4,7 +4,7 @@ import photoCredits from "../data/korea/photo-credits.json";
 import type { Place } from "./types";
 
 /** 사진 경로: public/places/{id}.jpg (한국관광공사). 관광공사 사진이 없는 곳은 위키미디어 공용 사진(출처 표시), 그것도 없으면 색 배경 */
-const NO_PHOTO = new Set(["splas-resom"]);
+const NO_PHOTO = new Set<string>([]);
 const LEISURE_CREDITS: Record<string, Place["imageCredit"]> = {
   "caribbean-bay": {
     author: "박은영",
