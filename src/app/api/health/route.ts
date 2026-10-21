@@ -13,6 +13,7 @@ import { kv, kvBackend } from "@/lib/cache";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { getAllSeoulLive } from "@/lib/seoul-live";
 import { kst } from "@/lib/time";
+import { probeKeys } from "@/lib/key-probe";
 
 export const dynamic = "force-dynamic";
 
@@ -60,13 +61,15 @@ export async function GET() {
     .set("health:ping", String(started), 60)
     .then(() => true)
     .catch(() => false);
-  const [crowd, seoul, usage, vitals, db] = await Promise.all([
+  const [crowd, seoul, usage, vitals, db, keyProbe] = await Promise.all([
     getAllCrowd().catch(() => ({}) as Awaited<ReturnType<typeof getAllCrowd>>),
     getAllSeoulLive().catch(() => ({}) as Awaited<ReturnType<typeof getAllSeoulLive>>),
     getApiUsage().catch(() => []),
     // 실사용 화면 속도: 최근 7일 '좋음' 비율 (상태 판단에는 넣지 않는다)
     getVitals(7).catch(() => ({})),
     dbStatus(),
+    // 새 API 키 확인 (교통·지하철). 상태 판단(ok)에는 넣지 않는다
+    probeKeys().catch(() => ({})),
   ]);
 
   // 소스별: 실시간 장소 수, 가장 오래된 값(분)
@@ -104,6 +107,7 @@ export async function GET() {
       vitals,
       db,
       features: features(),
+      keyProbe,
       ms: Date.now() - started,
     },
     { status: ok ? 200 : 503, headers: { "cache-control": "no-store" } },
