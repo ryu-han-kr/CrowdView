@@ -17,6 +17,7 @@ import { translateNames } from "@/lib/name-translate";
 import { formatHour } from "@/i18n/translate";
 import { KstNote } from "@/components/LocalTime";
 import { Glyph } from "@/components/Glyph";
+import { FestivalActions } from "@/components/FestivalActions";
 
 export const revalidate = 3600;
 
@@ -153,6 +154,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
               </Row>
             )}
           </dl>
+          <FestivalActions id={f.id} title={tr(f.title)} start={f.start} end={f.end} place={f.place ? tr(f.place) : undefined} />
         </div>
 
         <div className="mt-6 lg:mt-0">
