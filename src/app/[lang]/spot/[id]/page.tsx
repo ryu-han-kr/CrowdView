@@ -203,7 +203,8 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
               </div>
               <CrowdGauge score={nowScore} closed={!nowOpen} size={120} />
             </div>
-            <p className="mt-2 text-xs text-gray-500">
+            {/* 단계 색이 옅게 깔린 배경이라 회색 500은 대비가 모자랄 때가 있다 (axe color-contrast) */}
+            <p className="mt-2 text-xs text-gray-600">
               {live ? (
                 <Link href={live.href} className="underline">
                   {t("가까운 측정 지점 {name} 기준", { name: live.label })} ›

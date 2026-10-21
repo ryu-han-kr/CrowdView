@@ -7,7 +7,7 @@ import type { Landmark, LandmarkKind } from "./korea";
 import { LANDMARK_INFO } from "./landmark-info";
 import { closedToday, parseTodayHours } from "./place-info";
 import { addDays, kst } from "./time";
-import { lastYearVisitors, spotRegion } from "./region-visitors";
+import { getWeekRatio, lastYearVisitors, spotRegion } from "./region-visitors";
 import type { CrowdSnapshot, HourPoint, Place } from "./types";
 
 const SPOT_KTO = spotKto as Record<string, NonNullable<Place["kto"]>>;
@@ -74,7 +74,14 @@ export async function spotForecast(l: Landmark): Promise<SpotForecast> {
         region.name,
       ).catch(() => new Map<string, number>())
     : new Map<string, number>();
-  if (!signals.concentration?.size && visitors.size) signals.concentration = visitors;
+  // 주말이 평일보다 얼마나 붐비는지: 그 시군구 실제 방문객 비 (없으면 모델 기본 1.6배)
+  const weekRatio = region ? await getWeekRatio(region.code).catch(() => undefined) : undefined;
+  signals.weekRatio = weekRatio;
+  if (!signals.concentration?.size && visitors.size) {
+    // 주말 효과는 weekRatio로 따로 넣으니, 방문객에서 빼고 '평소와 다른 날'(단풍철·축제)만 남긴다 (두 번 세지 않게)
+    const weekend = (d: string) => [0, 6].includes(new Date(`${d}T00:00:00Z`).getUTCDay());
+    signals.concentration = weekRatio ? new Map([...visitors].map(([d, v]) => [d, weekend(d) ? v / weekRatio : v])) : visitors;
+  }
   const now = modelSnapshot(place, new Date(), signals);
   const today = kst().date;
   const week = Array.from({ length: 7 }, (_, i) => {
@@ -86,8 +93,9 @@ export async function spotForecast(l: Landmark): Promise<SpotForecast> {
     const points = closed ? [] : forecastForDate(p, date, signals).filter((x) => x.hour >= p.hours[0] && x.hour < Math.min(24, p.hours[1]));
     return { date, points, closed };
   });
-  const lastYear = region && visitors.size
-    ? { region: region.name, days: week.map((d) => ({ date: d.date, visitors: visitors.get(d.date) ?? 0 })).filter((d) => d.visitors > 0) }
-    : undefined;
+  const lastYear =
+    region && visitors.size
+      ? { region: region.name, days: week.map((d) => ({ date: d.date, visitors: visitors.get(d.date) ?? 0 })).filter((d) => d.visitors > 0) }
+      : undefined;
   return { place, now, week, signals, lastYear };
 }

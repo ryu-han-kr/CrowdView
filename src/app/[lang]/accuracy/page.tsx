@@ -3,6 +3,9 @@ import Link from "@/i18n/link";
 import type { Lang } from "@/i18n/config";
 import { HORIZONS, getAccuracy, type DayStat } from "@/lib/accuracy";
 import { pageMeta } from "@/lib/seo";
+import { getCalibrationStats } from "@/lib/crowd/calibration";
+import { PLACES } from "@/lib/places";
+import { getT } from "@/i18n/server";
 
 // 예측 정확도 공개: 서울 121곳에서 매시간 예측과 실제를 비교한 결과 (lib/accuracy, 수집기가 기록)
 export const revalidate = 3600;
@@ -24,6 +27,14 @@ const COPY = {
     empty: "2026-10-17부터 기록을 시작했어요. 몇 시간 뒤부터 숫자가 쌓여요.",
     method: "계산 방식 보기",
     pts: "점",
+    model: "장소별 CrowdView 모델 · 실측과 비교 (최근 7일)",
+    modelLead:
+      "실측이 들어오는 장소(서울 지역·놀이공원 대기·공항)에서 매시간 ‘모델만으로 냈을 점수’와 실제를 비교하고, 평일/주말 × 시간대별로 차이를 배워 예측을 고쳐요. 배운 보정은 실측이 없는 같은 종류 장소에도 절반만 써요.",
+    place: "장소",
+    raw: "보정 전 오차",
+    cal: "보정 후 오차",
+    bias: "모델 치우침",
+    modelEmpty: "2026-10-21부터 기록을 시작했어요. 몇 시간 뒤부터 숫자가 쌓여요.",
   },
   en: {
     title: "Forecast accuracy",
@@ -41,6 +52,14 @@ const COPY = {
     empty: "Tracking started on 2026-10-17. Numbers appear after a few hours.",
     method: "How it is calculated",
     pts: "pt",
+    model: "CrowdView model vs. measured, by place (last 7 days)",
+    modelLead:
+      "Where live measurements exist (Seoul areas, theme park waits, airports), every hour we compare what the model alone would have said with the actual value, learn the gap by weekday/weekend × hour, and correct the forecast. Places of the same kind without live data get half of that correction.",
+    place: "Place",
+    raw: "Error before",
+    cal: "Error after",
+    bias: "Model bias",
+    modelEmpty: "Tracking started on 2026-10-21. Numbers appear after a few hours.",
   },
 };
 
@@ -57,7 +76,10 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 export default async function AccuracyPage({ params }: { params: Promise<{ lang: string }> }) {
   const lang = (await params).lang as Lang;
   const c = lang === "ko" ? COPY.ko : COPY.en;
-  const rows = await getAccuracy(14);
+  const [rows, calib] = await Promise.all([getAccuracy(14), getCalibrationStats(7)]);
+  const t = getT(lang);
+  const calibRows = PLACES.filter((p) => calib[p.id]?.n).map((p) => ({ place: p, s: calib[p.id] }));
+  const avg = (v: number, n: number) => `${(v / n).toFixed(1)}${c.pts}`;
   const any = rows.some((r) => HORIZONS.some((h) => r.stats[h.id]?.n));
   const err = (s: DayStat) => (s.n ? `${(s.absErr / s.n).toFixed(1)}${c.pts}` : "–");
 
@@ -125,6 +147,38 @@ export default async function AccuracyPage({ params }: { params: Promise<{ lang:
         </div>
       ) : (
         <p className="mt-8 empty-note p-5">{c.empty}</p>
+      )}
+      <h2 className="mt-10 text-lg font-bold">{c.model}</h2>
+      <p className="mt-2 max-w-3xl text-sm leading-relaxed text-gray-600">{c.modelLead}</p>
+      {calibRows.length ? (
+        <div className="mt-4 overflow-x-auto rounded-2xl border border-gray-100 bg-white">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-gray-50 text-xs text-gray-500">
+              <tr>
+                <th className="px-3 py-2">{c.place}</th>
+                <th className="px-3 py-2">{c.raw}</th>
+                <th className="px-3 py-2">{c.cal}</th>
+                <th className="px-3 py-2">{c.bias}</th>
+                <th className="px-3 py-2">{c.n}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {calibRows.map(({ place, s }) => (
+                <tr key={place.id} className="border-t border-gray-100">
+                  <td className="px-3 py-2 whitespace-nowrap">{t(place.name)}</td>
+                  <td className="px-3 py-2">{avg(s.raw, s.n)}</td>
+                  <td className="px-3 py-2">
+                    <b>{avg(s.cal, s.n)}</b>
+                  </td>
+                  <td className="px-3 py-2">{`${s.bias >= 0 ? "+" : ""}${avg(s.bias, s.n)}`}</td>
+                  <td className="px-3 py-2">{s.n}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="mt-4 empty-note p-5">{c.modelEmpty}</p>
       )}
       <Link href="/methodology" className="mt-6 inline-block text-sm font-semibold text-indigo-600">
         {c.method} ›
