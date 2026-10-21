@@ -3,7 +3,7 @@
 // - 5분마다 한 객체 (archive/crowd/YYYY/MM/DD/HHmm.ndjson.gz, 줄마다 {kind, at, ...}). 하루 약 288개·3MB, 1년 약 1.1GB
 // - S3 호환 API라 R2 → S3·MinIO로 옮겨도 endpoint만 바꾸면 된다 (직접 운영 서버로 가는 설계)
 // - 환경변수(R2_ACCOUNT_ID·R2_ACCESS_KEY_ID·R2_SECRET_ACCESS_KEY·R2_BUCKET)가 없으면 아무것도 하지 않는다
-// 읽기: rclone/aws cli(endpoint https://{account}.r2.cloudflarestorage.com) 또는 R2 대시보드. 분석은 날짜 폴더를 받아 zcat
+// 읽기: `npm run archive:read -- YYYY-MM-DD` (scripts/archive/read.ts: 하루치 내려받아 NDJSON 합치기 + 장소별·지역별 요약) 또는 rclone/aws cli·R2 대시보드
 import { gzipSync } from "node:zlib";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { kv } from "./cache";
