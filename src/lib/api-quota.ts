@@ -61,6 +61,8 @@ export const APIS: ApiInfo[] = [
   { id: "skt-congestion", name: "SK 장소 혼잡도·TMAP 장소 검색", limit: Number(process.env.SK_DAILY_LIMIT) || 30 },
   // 글자 수로 센다. NCP 콘솔 Application 하루 한도(3만 자)와 맞추고, 90%(2.7만 자)에서 앱이 먼저 멈춘다.
   // 월 상한(기본 30만 자, PAPAGO_MONTHLY_LIMIT)도 둔다 — 10/21 NCP가 429를 내는데 우리 일일 집계는 17%였다 (한 달 누적이 문제)
+  // NCP NAVER API HUB Search Trend: 월 5만 건 무료(사용자가 NCP 콘솔 한도도 5만으로 걸어 둠). 우리 쓰임은 월 2천 건 안팎
+  { id: "naver-searchtrend", name: "네이버 검색어 트렌드 (NCP Search Trend)", monthlyLimit: Number(process.env.SEARCHTREND_MONTHLY_LIMIT) || 50_000 },
   { id: "papago", name: "Papago 번역 (글자 수)", limit: 30000, monthlyLimit: Number(process.env.PAPAGO_MONTHLY_LIMIT) || 300_000, unit: "자" },
 ];
 

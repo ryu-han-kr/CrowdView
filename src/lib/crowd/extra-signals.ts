@@ -3,6 +3,7 @@
 //    네이버 클라우드(NCP) NAVER API HUB의 Search Trend로 부른다 (개발자센터 데이터랩은 10/22 신규 등록 불가 — 검색 계열 API가 NCP로 이관).
 //    키: NAVER_DATALAB_CLIENT_ID/SECRET(NCP 앱), 없으면 Papago 앱 키 — NCP 콘솔에서 그 앱에 Search Trend를 켜 두면 된다
 // 2) 나이스 학사일정 (NEIS_API_KEY): 서울·경기 초등학교 표본 중 쉬는 학교(방학·재량휴업) 비율 → 평일 놀이공원·워터파크·스키장 보정
+import { APIS, beforeCall } from "../api-quota";
 import { cached } from "../cached";
 import { addDays, kst } from "../time";
 
@@ -48,8 +49,14 @@ export const searchTrendHeaders = (k: { id: string; secret: string }) => ({
 export async function getSearchTrend(keyword: string): Promise<number | undefined> {
   const keys = naverDatalabKeys();
   if (!keys) return undefined;
+  // 배포 빌드 중에는 새로 부르지 않는다 (빌드 작업자마다 같은 키워드를 다시 불러 한도를 쓰던 문제, 10/21). 묵은 값은 lib/cached가 돌려준다
+  const building = process.env.NEXT_PHASE === "phase-production-build";
   const today = kst().date;
-  return cached(`trend:${keyword}`, 12 * HOUR, async () => {
+  // 키는 "tr"로 시작하면 안 된다: 빌드 중에도 Redis에 쓰게 열어 둔 번역 키(lib/cache buildSafe)와 겹친다
+  return cached(`stl:${keyword}`, 12 * HOUR, async () => {
+    if (building) throw new Error("빌드 중에는 검색어 트렌드를 부르지 않음");
+    // 월 호출 수 집계·90% 차단 (lib/api-quota)
+    await beforeCall(APIS.find((a) => a.id === "naver-searchtrend"));
     const res = await fetch(SEARCH_TREND_URL, {
       method: "POST",
       headers: searchTrendHeaders(keys),
