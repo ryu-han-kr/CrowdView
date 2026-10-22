@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
+import { placeTag } from "@/lib/category-style";
 import { StayLinks } from "@/components/StayLinks";
 import type { Metadata } from "next";
 import placeImages from "@/data/korea/place-images.json";
@@ -364,7 +365,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           href: p.page,
           credit: p.credit === "한국관광공사" ? t("사진 한국관광공사") : t("사진 {author} · {license}", { author: p.credit.replace(" / Wikimedia Commons", ""), license: p.license }),
         }))}
-        chips={[{ label: t(CATEGORY_LABEL[place.category]), href: `/?cat=${place.category}` }, { label: t(place.region) }]}
+        // 세부 분류가 있으면 그 이름으로 (예: 테마파크 → 놀이공원·아쿠아리움). 누르면 홈의 그 분류 목록
+        chips={[{ label: placeTag(place, t).label, href: `/?cat=${place.category}` }, { label: t(place.region) }]}
       />
 
       {/* 모바일: 한 줄로 쌓기 / PC: 왼쪽(지금·언제 갈까) 고정 + 오른쪽(그래프·정보) */}
