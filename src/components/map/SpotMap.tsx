@@ -75,11 +75,13 @@ export function SpotMap({
       {legend && <MapLegend counts={counts} className="mb-2" />}
       {/* 시험용 표시 (QA 10/21 MAP-01): 지도에 넘긴 곳 수. 핀마다 data-place-id·data-level, 묶음은 data-cluster-ids */}
       <div className="relative overflow-hidden rounded-3xl bg-slate-100" data-testid="spot-map" data-spot-count={shown.length}>
-        {failed ? (
-          <SketchMap spots={shown} onSelect={setSelected} />
-        ) : (
-          <NaverSpots spots={shown} onSelect={setSelected} onFail={() => setFailed(true)} heightClass={heightClass} />
+        {/* 인증 실패 때 지도를 바로 없애면 네이버 SDK 안쪽 오류로 화면 전체가 멈췄다 → 숨겨 두고 그림을 보인다 (자체 QA 10/22) */}
+        {KEY_ID && (
+          <div className={failed ? "hidden" : undefined} aria-hidden={failed || undefined}>
+            <NaverSpots spots={shown} onSelect={setSelected} onFail={() => setFailed(true)} heightClass={heightClass} />
+          </div>
         )}
+        {failed && <SketchMap spots={shown} onSelect={setSelected} />}
         {spots.length > max && (
           <p className="absolute top-3 left-3 z-10 rounded-full bg-white/95 px-2.5 py-1 text-[11px] text-gray-600 shadow">
             {t("앞쪽 {n}곳만 보여요", { n: max })}

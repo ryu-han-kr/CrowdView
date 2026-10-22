@@ -4,12 +4,19 @@
 import { distanceKm, travelMinutes, type LatLng, type Transport } from "./geo";
 
 /** 관심사 (화면 칩) */
-export type Interest = "history" | "nature" | "shopping" | "fun";
-export const INTERESTS: { id: Interest; label: string; emoji: string }[] = [
+export type Interest = "history" | "nature" | "shopping" | "fun" | "cafe" | "food" | "culture" | "anime" | "department" | "flagship";
+/** kakao: 카카오 장소 검색이 켜져 있을 때만 (애니 매장·백화점·플래그십은 우리 자료에 없다) */
+export const INTERESTS: { id: Interest; label: string; emoji: string; kakao?: boolean }[] = [
   { id: "history", label: "역사·문화", emoji: "🏯" },
   { id: "nature", label: "공원·자연", emoji: "🌳" },
   { id: "shopping", label: "거리·쇼핑", emoji: "🛍️" },
   { id: "fun", label: "놀이·체험", emoji: "🎢" },
+  { id: "cafe", label: "카페", emoji: "☕" },
+  { id: "food", label: "맛집", emoji: "🍜" },
+  { id: "culture", label: "전시·미술관", emoji: "🖼️" },
+  { id: "anime", label: "애니·캐릭터", emoji: "🧸", kakao: true },
+  { id: "department", label: "백화점·몰", emoji: "🏬", kakao: true },
+  { id: "flagship", label: "플래그십·팝업", emoji: "✨", kakao: true },
 ];
 
 export interface Candidate extends LatLng {
@@ -45,6 +52,8 @@ export interface Leg {
   minutes: number;
   km: number;
   walk: boolean;
+  /** 자동차로 가는 구간 */
+  car?: boolean;
   /** 지하철로 가면 탄 노선 순서 (예: ["3호선", "2호선"]) */
   lines?: string[];
 }
@@ -70,6 +79,7 @@ export interface RouteStop {
   travelMin: number;
   travelKm: number;
   walk: boolean;
+  car?: boolean;
   lines?: string[];
   score: number;
   /** 식사 들르기면 점심·저녁 (혼잡 점수 없음) */
@@ -228,6 +238,7 @@ function makePlanner(req: RouteRequest, travel: TravelFn, spots: MealSpot[], mus
       travelKm: l.km,
       walk: l.walk,
       ...(l.lines && { lines: l.lines }),
+      ...(l.car && { car: true }),
       score: 0,
       meal: m.kind,
       basis: "place",
@@ -265,6 +276,7 @@ function makePlanner(req: RouteRequest, travel: TravelFn, spots: MealSpot[], mus
       travelKm: l.km,
       walk: l.walk,
       ...(l.lines && { lines: l.lines }),
+      ...(l.car && { car: true }),
       score,
       peak: peakOfDay(c, arrive),
       ...(calmestHour(c, arrive) === Math.floor(arrive / 60) && { calm: true }),

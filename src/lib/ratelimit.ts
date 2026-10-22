@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { kv } from "./cache";
 
 /** 버킷별 1분 허용 횟수 */
-export const LIMITS = { route: 20, share: 10, alerts: 30, me: 60, log: 10, admin: 30, report: 6, pay: 5 } as const;
+export const LIMITS = { search: 60, route: 20, share: 10, alerts: 30, me: 60, log: 10, admin: 30, report: 6, pay: 5 } as const;
 export type Bucket = keyof typeof LIMITS;
 
 export function clientIp(req: Request): string {

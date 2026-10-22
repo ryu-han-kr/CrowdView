@@ -21,7 +21,17 @@ const color = (p: RoutePoint) => (p.meal ? "#f59e0b" : p.score === undefined ? "
  */
 export function RouteMap({ points }: { points: RoutePoint[] }) {
   const [failed, setFailed] = useState(!KEY_ID);
-  return failed ? <RouteSketch points={points} /> : <NaverRoute points={points} onFail={() => setFailed(true)} />;
+  // 인증 실패 때 지도를 바로 없애면 네이버 SDK가 지워진 요소를 건드려 화면 전체 오류가 났다 (자체 QA 10/22).
+  // 지도는 남겨 두고 숨긴 채 위에 그림을 보인다
+  if (!KEY_ID) return <RouteSketch points={points} />;
+  return (
+    <>
+      <div className={failed ? "hidden" : undefined} aria-hidden={failed || undefined}>
+        <NaverRoute points={points} onFail={() => setFailed(true)} />
+      </div>
+      {failed && <RouteSketch points={points} />}
+    </>
+  );
 }
 
 function NaverRoute({ points, onFail }: { points: RoutePoint[]; onFail: () => void }) {
