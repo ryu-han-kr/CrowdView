@@ -121,14 +121,9 @@ body {
   inherits: true;
   initial-value: #e3efff;
 }
+/* 사용자 QA 10/22: 위쪽 하늘색 그라데이션이 화면을 흐리게 만들어 걷어 냄. 흰 바탕 + 회색 구역(sector)으로 구분한다 */
 .page-glow {
-  background:
-    radial-gradient(60% 70% at 85% 0%, var(--glow-a), transparent 70%), radial-gradient(50% 60% at 10% 10%, var(--glow-b), transparent 70%),
-    linear-gradient(to bottom, var(--glow-c) 0%, color-mix(in srgb, var(--glow-c) 45%, white) 45%, rgba(255, 255, 255, 0) 100%);
-  transition:
-    --glow-a 0.8s ease,
-    --glow-b 0.8s ease,
-    --glow-c 0.8s ease;
+  background: none;
 }
 /* 페이지마다 하늘색 안에서 아주 조금만 다르게 (모두 흰 바탕 + 밝은 파랑) */
 body[data-page="map"],
@@ -203,6 +198,17 @@ html[data-plus="1"] [data-plus-promo] {
   color: var(--color-gray-500);
 }
 /* 카드 안의 한 줄 항목 */
+/* 회색 구역 (사용자 QA 10/22, 레퍼런스: 여기어때 객실 선택 — 회색 바탕 구역 안에 흰 상자). 다크 모드는 gray-100이 어두운 면으로 바뀐다 */
+@utility sector {
+  border-radius: 1.5rem;
+  background: var(--color-gray-100);
+  padding: 1rem;
+}
+@utility sector-box {
+  border-radius: 1rem;
+  background: var(--surface, #fff);
+  padding: 0.875rem 1rem;
+}
 @utility card-row {
   border-radius: 1rem;
   background: var(--color-gray-50);

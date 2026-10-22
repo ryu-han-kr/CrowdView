@@ -1,25 +1,25 @@
 import Link from "@/i18n/link";
 import { localePath, type Lang } from "@/i18n/config";
 import type { T } from "@/i18n/translate";
-import { Glyph } from "@/components/Glyph";
 
-// 홈 아이콘 메뉴: 누르면 그 탭(페이지)으로 간다. 그림은 Lucide 선 아이콘 + 은은한 색 타일 (아이콘 색은 타일과 같은 계열의 진한 색)
-const ITEMS: { href: string; label: string; emoji: string; bg: string; fg: string; badge?: string }[] = [
-  { href: "/airport", label: "공항", emoji: "✈️", bg: "from-sky-50 to-blue-100", fg: "text-sky-600", badge: "실시간" },
-  { href: "/?cat=themepark#places", label: "테마파크", emoji: "🎡", bg: "from-pink-50 to-rose-100", fg: "text-rose-500" },
-  { href: "/?cat=waterpark#places", label: "워터파크", emoji: "🌊", bg: "from-cyan-50 to-sky-100", fg: "text-cyan-600" },
-  { href: "/?cat=ski#places", label: "스키장", emoji: "⛷️", bg: "from-slate-50 to-blue-100", fg: "text-blue-600" },
-  { href: "/events", label: "축제", emoji: "🎆", bg: "from-violet-50 to-purple-100", fg: "text-violet-600" },
-  { href: "/seoul", label: "서울 실시간", emoji: "📍", bg: "from-indigo-50 to-indigo-100", fg: "text-indigo-600", badge: "121곳" },
-  { href: "/explore", label: "지역 여행", emoji: "🗺️", bg: "from-emerald-50 to-teal-100", fg: "text-emerald-700", badge: "NEW" },
-  { href: "/guide", label: "여행 가이드", emoji: "📖", bg: "from-amber-50 to-orange-100", fg: "text-orange-500" },
-  { href: "/route", label: "추천 코스", emoji: "🧭", bg: "from-blue-50 to-cyan-100", fg: "text-cyan-600" },
-  { href: "/near?tab=reservation", label: "체험·액티비티", emoji: "🎟️", bg: "from-fuchsia-50 to-pink-100", fg: "text-fuchsia-600" },
-  { href: "/near", label: "내 주변", emoji: "🚻", bg: "from-lime-50 to-green-100", fg: "text-green-600" },
-  { href: "/map", label: "지도", emoji: "🗾", bg: "from-slate-50 to-slate-200", fg: "text-slate-600" },
+// 홈 아이콘 메뉴: 누르면 그 탭(페이지)으로 간다. 그림은 3D 아이콘 (사용자 QA 10/22: 선 아이콘이 밋밋 → NOL 레퍼런스처럼 입체).
+// 아이콘: Microsoft Fluent Emoji 3D (MIT, public/icons/3d/LICENSE-fluentui-emoji.txt)
+const ITEMS: { href: string; label: string; icon: string; badge?: string }[] = [
+  { href: "/airport", label: "공항", icon: "airport", badge: "실시간" },
+  { href: "/?cat=themepark#places", label: "테마파크", icon: "themepark" },
+  { href: "/?cat=waterpark#places", label: "워터파크", icon: "waterpark" },
+  { href: "/?cat=ski#places", label: "스키장", icon: "ski" },
+  { href: "/events", label: "축제", icon: "festival" },
+  { href: "/seoul", label: "서울 실시간", icon: "seoul", badge: "121곳" },
+  { href: "/explore", label: "지역 여행", icon: "explore", badge: "NEW" },
+  { href: "/guide", label: "여행 가이드", icon: "guide" },
+  { href: "/route", label: "추천 코스", icon: "route" },
+  { href: "/near?tab=reservation", label: "체험·액티비티", icon: "activity" },
+  { href: "/near", label: "내 주변", icon: "near" },
+  { href: "/map", label: "지도", icon: "map" },
 ];
 
-const TILE = "group flex w-[68px] flex-col items-center gap-1.5 pt-3 md:w-[84px]";
+const TILE = "group flex w-[72px] flex-col items-center gap-1.5 pt-3 md:w-[88px]";
 
 /**
  * 휴대폰: 두 줄 격자로 한 화면에 10개가 보이고 옆으로 밀면 나머지 (NOL 레퍼런스 10/21, 전엔 한 줄 12개를 밀어야 했다).
@@ -38,13 +38,12 @@ export function CategoryIcons({ t, lang }: { t: T; lang: Lang }) {
                     {t(it.badge)}
                   </span>
                 )}
-                <span
-                  className={`flex h-14 w-14 items-center justify-center rounded-[20px] bg-gradient-to-br shadow-sm ring-1 ring-black/[0.03] transition-transform md:h-16 md:w-16 md:group-hover:-translate-y-0.5 ${it.bg} ${it.fg}`}
-                >
-                  <Glyph e={it.emoji} className="h-7 w-7 md:h-8 md:w-8" />
+                <span className="flex h-[60px] w-[60px] items-center justify-center rounded-[20px] bg-[#f3f4fa] transition-transform md:h-[68px] md:w-[68px] md:group-hover:-translate-y-0.5">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- 작은 고정 아이콘(4~9KB webp)이라 이미지 최적화 요금을 쓰지 않는다 */}
+                  <img src={`/icons/3d/${it.icon}.webp`} alt="" width={40} height={40} className="h-10 w-10 md:h-11 md:w-11" />
                 </span>
               </span>
-              <span className="text-center text-xs font-medium whitespace-nowrap text-gray-700 md:text-[13px]">{t(it.label)}</span>
+              <span className="text-center text-[13px] font-semibold whitespace-nowrap text-gray-800 md:text-sm">{t(it.label)}</span>
             </>
           );
           return (
