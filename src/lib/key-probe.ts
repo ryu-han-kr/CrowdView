@@ -1,6 +1,7 @@
 // 새로 넣은 API 키가 실제로 되는지 서버에서 한 번 불러 본다 (Vercel의 Sensitive 값은 밖에서 읽을 수 없어 운영 서버에서만 확인 가능).
 // /api/health 의 keyProbe 로 보인다: 키 값은 절대 내보내지 않고 정상 여부와 원본 응답 앞부분(키는 가림)만. 30분 저장
 import { kv } from "./cache";
+import { naverDatalabKeys } from "./crowd/extra-signals";
 
 export interface ProbeResult {
   configured: boolean;
@@ -37,6 +38,8 @@ function firstItemFields(body: string): string[] | undefined {
 interface Probe {
   id: string;
   env: string;
+  /** env 하나로 안 되는 키 (네이버 데이터랩: 전용 키 없으면 로그인 앱 키) */
+  key?: () => string | undefined;
   url: (key: string) => string;
   /** POST 등 (네이버 데이터랩) */
   init?: (key: string) => RequestInit;
@@ -79,12 +82,13 @@ const PROBES: Probe[] = [
     // 네이버 데이터랩 검색어 트렌드 (아이디는 주소에, 비밀번호는 머리글에)
     id: "naverDatalab",
     env: "NAVER_DATALAB_CLIENT_ID",
+    key: () => naverDatalabKeys()?.id,
     url: () => "https://openapi.naver.com/v1/datalab/search",
     init: (id) => ({
       method: "POST",
       headers: {
         "X-Naver-Client-Id": id.trim(),
-        "X-Naver-Client-Secret": (process.env.NAVER_DATALAB_CLIENT_SECRET ?? "").trim(),
+        "X-Naver-Client-Secret": naverDatalabKeys()?.secret ?? "",
         "content-type": "application/json",
       },
       body: JSON.stringify({
@@ -97,9 +101,12 @@ const PROBES: Probe[] = [
     ok: (s, b) => s === 200 && /"results"/.test(b),
     // 네이버 개발자센터 Client ID는 보통 20자, Secret은 10자
     shape: () => {
-      const id = process.env.NAVER_DATALAB_CLIENT_ID ?? "";
-      const secret = process.env.NAVER_DATALAB_CLIENT_SECRET ?? "";
+      const k = naverDatalabKeys();
+      const from = k?.from ?? "none";
+      const id = (from === "login" ? process.env.NAVER_CLIENT_ID : process.env.NAVER_DATALAB_CLIENT_ID) ?? "";
+      const secret = (from === "login" ? process.env.NAVER_CLIENT_SECRET : process.env.NAVER_DATALAB_CLIENT_SECRET) ?? "";
       return {
+        from,
         idLen: id.trim().length,
         secretLen: secret.trim().length,
         idSpaces: id !== id.trim(),
@@ -132,7 +139,7 @@ function topMeta(body: string): Record<string, unknown> | undefined {
 }
 
 async function probe(p: Probe): Promise<ProbeResult> {
-  const key = process.env[p.env];
+  const key = p.key ? p.key() : process.env[p.env];
   if (!key) return { configured: false };
   const t0 = Date.now();
   try {
