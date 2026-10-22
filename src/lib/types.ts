@@ -6,7 +6,7 @@ export type Category = "landmark" | "street" | "themepark" | "waterpark" | "ski"
 export const CATEGORY_LABEL: Record<Category, string> = {
   landmark: "명소",
   street: "핫플",
-  themepark: "놀이공원",
+  themepark: "테마파크",
   waterpark: "워터파크",
   ski: "스키장",
   beach: "해변",

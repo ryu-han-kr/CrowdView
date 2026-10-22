@@ -81,7 +81,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const listPlaces = places.map((p) => ({ ...p, image: heroImage(p) }));
   // 지금 한산한 명소 (사진 있는 우리 장소)
   const calmCards: PhotoCardItem[] = places
-    .filter((p) => p.image && crowd[p.id].open && p.category !== "airport" && p.category !== "event")
+    .filter((p) => heroImage(p) && crowd[p.id].open && p.category !== "airport" && p.category !== "event")
     .sort((a, b) => crowd[a.id].score - crowd[b.id].score)
     .slice(0, 10)
     .map((p) => ({
