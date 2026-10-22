@@ -23,6 +23,7 @@ export async function CalmAlternatives({
   score,
   selfId,
   lang,
+  className = "card mt-4",
 }: {
   lat: number;
   lng: number;
@@ -31,6 +32,7 @@ export async function CalmAlternatives({
   /** 빼고 볼 자기 자신 (장소 id 또는 seoul-<코드>) */
   selfId: string;
   lang: Lang;
+  className?: string;
 }) {
   const t = getT(lang);
   const [crowd, seoul] = await Promise.all([
@@ -65,7 +67,7 @@ export async function CalmAlternatives({
   );
 
   return (
-    <section className="card mt-4">
+    <section className={className}>
       <p className="flex items-center gap-1.5 text-sm font-bold">
         <Glyph e="🌿" className="h-4 w-4 text-emerald-500" /> {t("지금 덜 붐비는 근처 대안")}
       </p>

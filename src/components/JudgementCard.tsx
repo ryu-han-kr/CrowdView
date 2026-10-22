@@ -23,11 +23,14 @@ export function JudgementCard({
   crowd,
   signals,
   lang,
+  inline = false,
 }: {
   place: Place;
   crowd: CrowdResult;
   signals: Signals;
   lang: Lang;
+  /** 탭 안에 넣을 때: 접지 않고 펼친 채로, 바깥 여백 없이 */
+  inline?: boolean;
 }) {
   const t = getT(lang);
   const outdoor = Math.round((place.outdoor ?? OUTDOOR[place.category]) * 100);
@@ -80,7 +83,7 @@ export function JudgementCard({
   ];
 
   return (
-    <details className="group mt-8 rounded-2xl border border-gray-100 p-4">
+    <details open={inline || undefined} className={`group rounded-2xl border border-gray-100 p-4 ${inline ? "" : "mt-8"}`}>
       <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-bold">
         {t("이 혼잡도는 어떻게 판단하나요?")}
         <span className="text-gray-500 transition-transform group-open:rotate-180">⌄</span>

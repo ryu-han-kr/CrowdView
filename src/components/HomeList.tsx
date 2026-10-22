@@ -6,7 +6,11 @@ import { headcountInfo } from "@/lib/format";
 import { placeHref } from "@/lib/places";
 import { useFavorites } from "@/lib/prefs";
 import { CATEGORY_LABEL, type Category, type CrowdResult, type Place } from "@/lib/types";
-import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
+import Image from "next/image";
+import Link from "@/i18n/link";
+import { CATEGORY_TONE } from "@/lib/category-style";
+import { inkOf, levelOf } from "@/lib/levels";
+import type { PhotoCardItem } from "./home/PhotoRail";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
 import { StickyBar } from "./StickyBar";
 import { useUrlQuery } from "./useUrlQuery";
@@ -64,7 +68,7 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
     }
     return t(offSeason ? "시즌 아님" : "운영 종료");
   };
-  const cards: (PhotoCardItem & { lat: number; lng: number; emoji: string })[] = list.map((p) => {
+  const cards: (PhotoCardItem & { lat: number; lng: number; emoji: string; region: string; trend?: "up" | "down" | "flat" })[] = list.map((p) => {
     const c = crowd[p.id];
     const hc = headcountInfo(c, i18n);
     return {
@@ -74,8 +78,13 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
       emoji: p.emoji,
       title: t(p.name),
       sub: [t(p.region), hc?.text].filter(Boolean).join(" · "),
+      region: t(p.region),
+      people: hc?.text,
+      trend: c.open ? c.trend : undefined,
       score: c.open ? c.score : undefined,
       badge: c.open ? undefined : closedLabel(p, c.offSeason),
+      tag: { label: t(CATEGORY_LABEL[p.category]), ...CATEGORY_TONE[p.category] },
+      favId: p.id,
       lat: p.lat,
       lng: p.lng,
     };
@@ -174,15 +183,81 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
             className="mt-4"
           />
         ) : (
-          <ul className="mt-4 grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 md:grid-cols-4 md:gap-x-4 lg:grid-cols-5">
+          // 사진 왼쪽 · 글 오른쪽 가로 카드를 회색 구역 안에 (사용자 QA 10/22: 왼쪽→오른쪽으로 읽히게, 배경으로 구별)
+          <ul className="sector mt-4 grid gap-2.5 p-3 md:grid-cols-2 lg:grid-cols-3">
             {cards.map((c) => (
               <li key={c.id}>
-                <PhotoCard item={c} />
+                <ListCard item={c} />
               </li>
             ))}
           </ul>
         )}
       </section>
     </>
+  );
+}
+
+/** 가로 카드: 사진(왼쪽) + 분류·이름·지역·지금 단계(오른쪽) + 찜 하트 */
+function ListCard({ item }: { item: PhotoCardItem & { region: string; trend?: "up" | "down" | "flat" } }) {
+  const { t } = useI18n();
+  const { isFavorite, toggle } = useFavorites();
+  const fav = item.favId ? isFavorite(item.favId) : false;
+  const lv = item.score !== undefined ? levelOf(item.score) : undefined;
+  return (
+    <Link
+      href={item.href}
+      className="relative flex gap-3 rounded-2xl bg-white p-2.5 pr-3 shadow-[0_1px_2px_rgb(15_23_42/0.06)] transition active:scale-[0.99] md:hover:shadow-md"
+    >
+      <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-xl bg-gray-100">
+        {item.img ? (
+          <Image src={item.img} alt="" fill sizes="208px" className="object-cover" />
+        ) : (
+          <div className="flex h-full items-center justify-center text-indigo-400">
+            <Glyph e={item.emoji ?? "📍"} className="h-10 w-10" />
+          </div>
+        )}
+      </div>
+      <div className="min-w-0 flex-1 py-0.5">
+        {item.tag && (
+          <p className="flex items-center gap-1 text-[12px] font-extrabold" style={{ color: item.tag.color }}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- 작은 고정 아이콘 */}
+            <img src={`/icons/3d/${item.tag.icon}.webp`} alt="" width={16} height={16} className="h-4 w-4" />
+            {item.tag.label}
+          </p>
+        )}
+        <p className="mt-0.5 truncate pr-8 text-base font-extrabold text-gray-950">{item.title}</p>
+        <p className="truncate text-[13px] font-medium text-gray-600">{item.region}</p>
+        <p className="mt-1.5 flex items-center gap-1.5 truncate">
+          {lv ? (
+            <>
+              <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: lv.color }} />
+              <b className="text-[15px] font-extrabold" style={{ color: inkOf(lv.color) }}>
+                {t(lv.label)}
+              </b>
+              {item.people && <span className="truncate text-[13px] font-bold text-gray-800">{item.people}</span>}
+              {item.trend === "up" && <span className="shrink-0 text-xs font-bold text-red-600 dark:text-red-400">↑</span>}
+              {item.trend === "down" && <span className="shrink-0 text-xs font-bold text-emerald-700">↓</span>}
+            </>
+          ) : (
+            <b className="text-[14px] font-bold text-gray-600">{item.badge}</b>
+          )}
+        </p>
+      </div>
+      {item.favId && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggle(item.favId!);
+          }}
+          aria-label={fav ? t("즐겨찾기 해제") : t("즐겨찾기")}
+          aria-pressed={fav}
+          className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full"
+        >
+          <Glyph e={fav ? "❤️" : "🤍"} className={`h-5 w-5 ${fav ? "text-rose-500" : "text-gray-400"}`} />
+        </button>
+      )}
+    </Link>
   );
 }

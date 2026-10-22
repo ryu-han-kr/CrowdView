@@ -19,6 +19,7 @@ export function PhotoGallery({
   sizes = "(min-width: 768px) 1100px, 100vw",
   counterClassName = "top-3 right-3",
   bottomClassName = "bottom-3",
+  onSelect,
 }: {
   photos: string[];
   alt: string;
@@ -30,6 +31,8 @@ export function PhotoGallery({
   counterClassName?: string;
   /** 아래 점·출처 줄의 위치 (사진 아래를 다른 내용이 덮으면 올린다) */
   bottomClassName?: string;
+  /** 사진을 누르면 (전체 보기 열기) */
+  onSelect?: (i: number) => void;
 }) {
   const { t } = useI18n();
   const track = useRef<HTMLDivElement>(null);
@@ -57,7 +60,12 @@ export function PhotoGallery({
         aria-roledescription={t("사진 넘겨 보기")}
       >
         {photos.map((src, i) => (
-          <div key={src} className="relative h-full w-full shrink-0 snap-center overflow-hidden" aria-label={`${i + 1} / ${photos.length}`}>
+          <div
+            key={src}
+            className={`relative h-full w-full shrink-0 snap-center overflow-hidden ${onSelect ? "cursor-zoom-in" : ""}`}
+            aria-label={`${i + 1} / ${photos.length}`}
+            onClick={onSelect ? () => onSelect(i) : undefined}
+          >
             <Image
               src={src}
               alt={photos.length > 1 ? `${alt} ${t("사진")} ${i + 1}/${photos.length}` : alt}

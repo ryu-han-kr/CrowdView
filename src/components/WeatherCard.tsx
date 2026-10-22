@@ -38,59 +38,78 @@ export async function WeatherCard({ signals, lang, place }: { signals: Signals; 
   const air = signals.air;
   if (!w && !air) return null;
 
+  const sky = w ? t(w.pty ? PTY[w.pty] : (SKY[w.sky ?? 0] ?? "")) : "";
+
+  // 날씨·강수·미세먼지·기상청 해설·고농도 예보를 한 카드에 모은다 (사용자 QA 10/22: 흩어진 글을 한곳에)
   return (
-    <>
+    <section className="card mt-3">
+      <div className="flex items-center justify-between">
+        <h2 className="text-base font-extrabold">{t("오늘 날씨")}</h2>
+        <a
+          href={weatherHref(lang, place)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm font-semibold text-indigo-600"
+          title={t(lang === "ko" ? "네이버 날씨에서 자세히 보기" : "구글 날씨에서 자세히 보기")}
+        >
+          {t("자세히")} ›
+        </a>
+      </div>
+      <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+        <div className="rounded-2xl bg-sky-50 px-2 py-3">
+          {w ? (
+            <>
+              <Glyph
+                e={ICON(w.sky, w.pty)}
+                className={`mx-auto h-9 w-9 ${w.pty ? "text-sky-600" : w.sky === 1 ? "text-amber-400" : "text-sky-500"}`}
+              />
+              <p className="mt-1 text-xl font-extrabold text-gray-900">{w.tmp !== undefined ? `${w.tmp}°` : "–"}</p>
+              <p className="text-sm font-semibold text-gray-700">{sky}</p>
+            </>
+          ) : (
+            <p className="py-4 text-sm text-gray-600">–</p>
+          )}
+        </div>
+        <div className="rounded-2xl bg-indigo-50 px-2 py-3">
+          <Glyph e="☔" className="mx-auto h-9 w-9 text-indigo-500" />
+          <p className="mt-1 text-xl font-extrabold text-gray-900">{w ? `${w.pop ?? 0}%` : "–"}</p>
+          <p className="text-sm font-semibold text-gray-700">{t("강수확률")}</p>
+        </div>
+        <div className="rounded-2xl px-2 py-3" style={{ background: air?.pm25Grade ? `${AIR_COLOR[air.pm25Grade]}1f` : "var(--color-gray-100)" }}>
+          <Glyph e="😷" className="mx-auto h-9 w-9 text-gray-600" />
+          <p className="mt-1 text-xl font-extrabold" style={{ color: air?.pm25Grade ? inkOf(AIR_COLOR[air.pm25Grade]) : undefined }}>
+            {air?.pm25Grade ? t(AIR_GRADE[air.pm25Grade]) : "–"}
+          </p>
+          <p className="text-sm font-semibold text-gray-700">
+            {t("초미세먼지")}
+            {air?.pm25 !== undefined && <span className="ml-0.5 text-xs font-medium">{air.pm25}㎍</span>}
+          </p>
+        </div>
+      </div>
       {pm25High && (
-        <p className="mt-3 rounded-2xl bg-red-50 px-4 py-2.5 text-xs font-semibold text-red-700">
-          <Glyph e="😷" className="mr-1 h-4 w-4" />
+        <p className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-sm font-bold text-red-700">
+          <Glyph e="⚠️" className="mr-1 h-4 w-4" />
           {t("{days} 초미세먼지 고농도(50㎍ 초과) 예보 · 야외라면 마스크를 챙기세요", {
             days: pm25High.dates.map((d) => (d === kst().date ? t("오늘") : t("내일"))).join("·"),
           })}
         </p>
       )}
-      <a
-        href={weatherHref(lang, place)}
-        target="_blank"
-        rel="noopener noreferrer"
-        title={t(lang === "ko" ? "네이버 날씨에서 자세히 보기" : "구글 날씨에서 자세히 보기")}
-        className="card mt-3 flex items-center gap-3 transition active:scale-[0.99] md:hover:ring-1 md:hover:ring-sky-200"
-      >
-        {w && (
-          <>
-            <Glyph e={ICON(w.sky, w.pty)} className={`h-10 w-10 ${w.pty ? "text-sky-600" : w.sky === 1 ? "text-amber-400" : "text-sky-500"}`} />
-            <div className="min-w-0 flex-1">
-              <p className="text-2xl font-bold text-gray-900">
-                {w.tmp !== undefined && `${w.tmp}°`}{" "}
-                <span className="text-base font-semibold text-gray-800">{t(w.pty ? PTY[w.pty] : (SKY[w.sky ?? 0] ?? ""))}</span>
-              </p>
-              <p className="text-xs font-medium text-gray-600">
-                {t("강수확률 {n}%", { n: w.pop ?? 0 })} · {t("기상청 단기예보")}
-              </p>
-            </div>
-          </>
-        )}
-        {air?.pm25Grade && (
-          <div className="shrink-0 text-right">
-            <p className="text-xs font-medium text-gray-600">{t("초미세먼지")}</p>
-            <p className="text-lg font-bold" style={{ color: inkOf(AIR_COLOR[air.pm25Grade]) }}>
-              {t(AIR_GRADE[air.pm25Grade])}
-              {air.pm25 !== undefined && <span className="ml-1 text-xs font-semibold text-gray-700">{air.pm25}㎍</span>}
-            </p>
-            <p className="text-[11px] text-gray-500">{t("{name} 측정소", { name: stations.get(air.station) ?? air.station })}</p>
-          </div>
-        )}
-        <span aria-hidden className="shrink-0 self-center pl-1 text-xl text-gray-500">
-          ›
-        </span>
-      </a>
       {summary && (
-        <div className="mt-2 rounded-2xl bg-gray-50 px-4 py-2.5 text-xs leading-relaxed text-gray-600">
+        <div className="mt-3 rounded-xl bg-gray-100 px-3.5 py-3 text-sm leading-relaxed text-gray-800">
           {summary.lines.map((l) => (
             <p key={l}>{l}</p>
           ))}
-          <p className="mt-1 text-[11px] text-gray-500">기상청 통보문 · {summary.issued} 발표</p>
         </div>
       )}
-    </>
+      <p className="mt-2 text-xs text-gray-600">
+        {[
+          w && t("기상청 단기예보"),
+          air?.pm25Grade && t("{name} 측정소", { name: stations.get(air.station) ?? air.station }),
+          summary && `기상청 통보문 ${summary.issued} 발표`,
+        ]
+          .filter(Boolean)
+          .join(" · ")}
+      </p>
+    </section>
   );
 }

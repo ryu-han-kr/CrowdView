@@ -5,6 +5,8 @@ import { test } from "@playwright/test";
 const SCREENS: [name: string, path: string][] = [
   ["home", "/"],
   ["place", "/place/gyeongbokgung"],
+  ["place-seongsu", "/place/seongsu"],
+  ["place-everland", "/place/everland"],
   ["map", "/map"],
   ["seoul", "/seoul"],
   ["route", "/route"],

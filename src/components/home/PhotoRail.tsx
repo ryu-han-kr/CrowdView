@@ -5,7 +5,8 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { canOptimize } from "@/lib/img";
 import { useI18n } from "@/i18n/client";
-import { LevelBadge } from "../Level";
+import { levelOf } from "@/lib/levels";
+import { useFavorites } from "@/lib/prefs";
 import { Glyph } from "@/components/Glyph";
 
 export interface PhotoCardItem {
@@ -26,10 +27,25 @@ export interface PhotoCardItem {
   /** 지도로 보기용 위치 */
   lat?: number;
   lng?: number;
+  /** 사진 왼쪽 위 분류 꼬리표 (색·3D 아이콘, lib/category-style) */
+  tag?: { label: string; color: string; icon: string };
+  /** 찜 하트 (우리 장소 id) */
+  favId?: string;
+  /** 사진 아래 굵게 보일 인원 (예: 약 5,800명) */
+  people?: string;
 }
 
-/** 세로로 긴 사진 카드 */
+/**
+ * 세로로 긴 사진 카드 (사용자 QA 10/22, 레퍼런스: 여기어때 '이런 상품은 어떠세요?' 카드).
+ * 사진 위: 왼쪽 위 분류 꼬리표(색·아이콘) · 오른쪽 위 찜 하트 · 아래 어둡게 깔고 흰 굵은 글씨로 지금 단계·인원
+ * 사진 아래: 이름(굵게) · 지역
+ */
 export function PhotoCard({ item, rank, className = "" }: { item: PhotoCardItem; rank?: number; className?: string }) {
+  const { t } = useI18n();
+  const { isFavorite, toggle } = useFavorites();
+  const lv = item.score !== undefined ? levelOf(item.score) : undefined;
+  const fav = item.favId ? isFavorite(item.favId) : false;
+  const bottom = lv || item.badge || item.note;
   const body = (
     <>
       <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100">
@@ -47,26 +63,54 @@ export function PhotoCard({ item, rank, className = "" }: { item: PhotoCardItem;
             <Glyph e={item.emoji ?? "📍"} className="h-12 w-12" />
           </div>
         )}
-        {item.badge && (
-          <span className="absolute top-2 left-2 rounded-md bg-white/95 px-1.5 py-0.5 text-[11px] font-bold text-gray-900 shadow-sm">
-            {item.badge}
+        {item.tag && (
+          <span
+            className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-white/95 py-0.5 pr-2.5 pl-1 text-[12px] font-extrabold shadow-sm"
+            style={{ color: item.tag.color }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element -- 작은 고정 아이콘 */}
+            <img src={`/icons/3d/${item.tag.icon}.webp`} alt="" width={18} height={18} className="h-[18px] w-[18px]" />
+            {item.tag.label}
           </span>
         )}
-        {item.score !== undefined && (
-          <span className="absolute top-2 right-2 rounded-full bg-white/95 shadow-sm">
-            <LevelBadge score={item.score} />
-          </span>
+        {item.favId && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggle(item.favId!);
+            }}
+            aria-label={fav ? t("즐겨찾기 해제") : t("즐겨찾기")}
+            aria-pressed={fav}
+            className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm transition active:scale-90"
+          >
+            <Glyph e={fav ? "❤️" : "🤍"} className={`h-[18px] w-[18px] ${fav ? "text-rose-500" : "text-white"}`} />
+          </button>
+        )}
+        {(bottom || rank !== undefined) && (
+          <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
         )}
         {rank !== undefined && (
-          <>
-            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/50 to-transparent" />
-            <span className="absolute bottom-1 left-3 text-5xl leading-none font-black text-white italic drop-shadow md:text-6xl">{rank}</span>
-          </>
+          <span className="absolute bottom-1 left-3 text-5xl leading-none font-black text-white italic drop-shadow md:text-6xl">{rank}</span>
+        )}
+        {bottom && (
+          <p className={`absolute right-2.5 bottom-2 left-2.5 truncate text-white drop-shadow ${rank !== undefined ? "pl-10 text-right" : ""}`}>
+            {lv ? (
+              <>
+                <span className="mr-1 inline-block h-2.5 w-2.5 rounded-full ring-2 ring-white/80" style={{ background: lv.color }} />
+                <b className="text-[17px] font-extrabold">{t(lv.label)}</b>
+                {item.people && <span className="ml-1 text-[13px] font-bold">{item.people}</span>}
+              </>
+            ) : (
+              <b className="text-[15px] font-extrabold">{item.badge ?? item.note}</b>
+            )}
+          </p>
         )}
       </div>
-      <p className="mt-2 line-clamp-2 text-sm leading-snug font-semibold break-keep text-gray-900">{item.title}</p>
-      {item.sub && <p className="mt-0.5 truncate text-xs text-gray-500">{item.sub}</p>}
-      {item.note && <p className="mt-0.5 truncate text-xs font-semibold text-rose-600">{item.note}</p>}
+      <p className="mt-2 line-clamp-2 text-[15px] leading-snug font-bold break-keep text-gray-950">{item.title}</p>
+      {item.sub && <p className="mt-0.5 truncate text-[13px] font-medium text-gray-600">{item.sub}</p>}
+      {item.note && lv && <p className="mt-0.5 truncate text-[13px] font-bold text-rose-600">{item.note}</p>}
     </>
   );
   const cls = `group block ${className}`;
@@ -108,17 +152,17 @@ export function PhotoRail({
   return (
     <section className="mt-10 md:mt-14">
       <div className="flex items-end justify-between gap-3">
-        <h2 className="min-w-0 text-lg font-bold md:text-xl">
+        <h2 className="min-w-0 text-xl font-extrabold tracking-tight md:text-2xl">
           {title}
-          {subtitle && <span className="ml-2 hidden text-sm font-normal text-gray-500 md:inline">{subtitle}</span>}
+          {subtitle && <span className="ml-2 hidden text-sm font-medium text-gray-600 md:inline">{subtitle}</span>}
         </h2>
         {moreHref && (
-          <Link href={moreHref} className="shrink-0 text-sm text-gray-500">
+          <Link href={moreHref} className="shrink-0 text-sm font-semibold text-gray-700">
             {t("전체 보기")} ›
           </Link>
         )}
       </div>
-      {subtitle && <p className="mt-0.5 text-xs text-gray-500 md:hidden">{subtitle}</p>}
+      {subtitle && <p className="mt-0.5 text-[13px] font-medium text-gray-600 md:hidden">{subtitle}</p>}
       {chips && (
         <div className="no-scrollbar -mx-5 mt-3 flex gap-2 overflow-x-auto px-5 md:mx-0 md:px-0">
           {chips.map((c) => (
