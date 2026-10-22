@@ -2149,6 +2149,10 @@ export default {
   "예측 정확도": ["Forecast accuracy", "予測精度", "预测准确度", "預測準確度"],
   // ── 대안·공유 복사·캘린더·날씨 경고
   // ── 자체 QA (10/22)
+  "요즘 뜨는 곳 TOP 5": ["Trending now TOP 5","いま話題のスポット TOP 5","近期热门 TOP 5","近期熱門 TOP 5"],
+  "네이버 검색량과 AI 뉴스 검색으로 매일 아침 갱신": ["Updated every morning from Naver search volume and AI news search","NAVER検索量とAIニュース検索で毎朝更新","每天早上根据Naver搜索量和AI新闻搜索更新","每天早上根據Naver搜尋量和AI新聞搜尋更新"],
+  "검색량 {n}배 ↑": ["Searches up {n}×","検索 {n}倍 ↑","搜索量 {n}倍 ↑","搜尋量 {n}倍 ↑"],
+  "요즘 많이 찾는 곳": ["Popular lately","最近よく検索される場所","最近热门搜索","最近熱門搜尋"],
   "코스": ["Routes", "コース", "路线", "路線"],
   "‘{q}’에 맞는 곳이 없어요.": ["No results for ‘{q}’.","「{q}」に合う場所がありません。","没有符合“{q}”的地点。","沒有符合「{q}」的地點。"],
   "이 지역에는 아직 없어요.": ["Nothing in this region yet.","この地域にはまだありません。","该地区暂无内容。","該地區暫無內容。"],
