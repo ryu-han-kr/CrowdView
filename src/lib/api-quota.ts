@@ -2,7 +2,8 @@
 // - 실제로 원본 API를 부를 때마다 Redis에 quota:{날짜}:{API} 를 1 올린다 (캐시에서 읽은 건 세지 않는다)
 // - 한도의 90%에 닿으면 그날은 더 부르지 않고 마지막으로 받아 둔 데이터를 쓴다 (호출부가 QuotaError를 잡는다)
 // - 공공데이터포털이 "한도 초과" 응답을 주면 그날 남은 호출을 막는다
-// 한도는 공공데이터포털 개발계정 기준 (2026-10-16 확인). 운영계정으로 바꾸면 limit을 올린다.
+// 한도는 공공데이터포털 마이페이지 '활용신청 현황'의 일일 트래픽 (2026-10-22 확인: 40건 모두 운영계정, 33건 승인).
+// 운영 신청이 아직 승인 전인 것(관광공사 4개·강원랜드)은 개발계정 한도 그대로. 승인되면 limit을 올린다.
 import { kv } from "./cache";
 import { kst } from "./time";
 
@@ -24,30 +25,30 @@ export interface ApiInfo {
 }
 
 export const APIS: ApiInfo[] = [
-  { id: "icn-dep-t1", name: "인천공항 출국장 혼잡도 T1", prefix: "/B551177/statusOfDepartureCongestion/", dataset: "15148225", limit: 1000 },
-  { id: "icn-dep-t2", name: "인천공항 출국장 혼잡도 T2", prefix: "/B551177/statusOfDepartureCongestionT2/", dataset: "15161098", limit: 1000 },
-  { id: "icn-pax", name: "인천공항 승객예고", prefix: "/B551177/passgrAnncmt/", dataset: "15095066", limit: 1000 },
-  { id: "icn-parking", name: "인천공항 주차 정보", prefix: "/B551177/StatusOfParking/", dataset: "15095047", limit: 1000 },
-  { id: "icn-arrivals", name: "인천공항 입국장 현황", prefix: "/B551177/StatusOfArrivals/", dataset: "15095061", limit: 500 },
-  { id: "icn-space-t1", name: "인천공항 T1 주차면", prefix: "/B551177/ParkLocationData/", dataset: "15107228", limit: 1000 },
-  { id: "icn-space-t2", name: "인천공항 T2 주차면", prefix: "/B551177/parkLocationAreaData/", dataset: "15160956", limit: 1000, limitGuess: true },
-  { id: "icn-fee", name: "인천공항 주차 요금", prefix: "/B551177/ParkingChargeInfo/", dataset: "15095053", limit: 1000 },
-  { id: "kac-congestion", name: "한국공항공사 공항 혼잡도", prefix: "/B551178/airport-congestion/", dataset: "15159598", limit: 5000 },
-  { id: "kac-parking", name: "한국공항공사 주차장 혼잡도", prefix: "/B551178/parking-congestion/", dataset: "15158689", limit: 5000 },
-  { id: "kac-pax", name: "한국공항공사 예상 승객", prefix: "/B551178/daily-expect-passenger/", limit: 5000, limitGuess: true },
-  { id: "kma-short", name: "기상청 단기예보", prefix: "/1360000/VilageFcstInfoService_2.0/", dataset: "15084084", limit: 10000 },
-  { id: "kma-mid", name: "기상청 중기예보", prefix: "/1360000/MidFcstInfoService/", dataset: "15059468", limit: 10000 },
-  { id: "kma-msg", name: "기상청 단기예보 통보문", prefix: "/1360000/VilageFcstMsgService/", dataset: "15058629", limit: 10000 },
-  { id: "airkorea-pm50", name: "에어코리아 고농도 초미세먼지 예보", prefix: "/B552584/MinuDustFrcstDspthSvc/", dataset: "15112307", limit: 500 },
-  { id: "airkorea", name: "에어코리아 대기오염", prefix: "/B552584/ArpltnInforInqireSvc/", dataset: "15073861", limit: 500 },
-  { id: "kasi", name: "천문연구원 특일(공휴일)", prefix: "/B090041/", dataset: "15012690", limit: 10000 },
-  { id: "kto-cnctr", name: "관광공사 관광지 집중률", prefix: "/B551011/TatsCnctrRateService/", dataset: "15128555", limit: 1000 },
-  { id: "kto-tour", name: "관광공사 TourAPI(축제·운영시간)", prefix: "/B551011/KorService2/", dataset: "15101578", limit: 1000 },
-  { id: "kto-related", name: "관광공사 연관 관광지", prefix: "/B551011/TarRlteTarService1/", dataset: "15128560", limit: 1000 },
-  { id: "kto-datalab", name: "관광공사 데이터랩(지역 방문자)", prefix: "/B551011/DataLabService/", dataset: "15101972", limit: 1000 },
+  { id: "icn-dep-t1", name: "인천공항 출국장 혼잡도 T1", prefix: "/B551177/statusOfDepartureCongestion/", dataset: "15148225", limit: 100000 },
+  { id: "icn-dep-t2", name: "인천공항 출국장 혼잡도 T2", prefix: "/B551177/statusOfDepartureCongestionT2/", dataset: "15161098", limit: 100000 },
+  { id: "icn-pax", name: "인천공항 승객예고", prefix: "/B551177/passgrAnncmt/", dataset: "15095066", limit: 1000000 },
+  { id: "icn-parking", name: "인천공항 주차 정보", prefix: "/B551177/StatusOfParking/", dataset: "15095047", limit: 1000000 },
+  { id: "icn-arrivals", name: "인천공항 입국장 현황", prefix: "/B551177/StatusOfArrivals/", dataset: "15095061", limit: 10000 },
+  { id: "icn-space-t1", name: "인천공항 T1 주차면", prefix: "/B551177/ParkLocationData/", dataset: "15107228", limit: 10000 },
+  { id: "icn-space-t2", name: "인천공항 T2 주차면", prefix: "/B551177/parkLocationAreaData/", dataset: "15160956", limit: 10000 },
+  { id: "icn-fee", name: "인천공항 주차 요금", prefix: "/B551177/ParkingChargeInfo/", dataset: "15095053", limit: 1000000 },
+  { id: "kac-congestion", name: "한국공항공사 공항 혼잡도", prefix: "/B551178/airport-congestion/", dataset: "15159598", limit: 100000 },
+  { id: "kac-parking", name: "한국공항공사 주차장 혼잡도", prefix: "/B551178/parking-congestion/", dataset: "15158689", limit: 100000 },
+  { id: "kac-pax", name: "한국공항공사 예상 승객", prefix: "/B551178/daily-expect-passenger/", limit: 100000 },
+  { id: "kma-short", name: "기상청 단기예보", prefix: "/1360000/VilageFcstInfoService_2.0/", dataset: "15084084", limit: 100000 },
+  { id: "kma-mid", name: "기상청 중기예보", prefix: "/1360000/MidFcstInfoService/", dataset: "15059468", limit: 1000000 },
+  { id: "kma-msg", name: "기상청 단기예보 통보문", prefix: "/1360000/VilageFcstMsgService/", dataset: "15058629", limit: 1000000 },
+  { id: "airkorea-pm50", name: "에어코리아 고농도 초미세먼지 예보", prefix: "/B552584/MinuDustFrcstDspthSvc/", dataset: "15112307", limit: 10000 },
+  { id: "airkorea", name: "에어코리아 대기오염", prefix: "/B552584/ArpltnInforInqireSvc/", dataset: "15073861", limit: 10000 },
+  { id: "kasi", name: "천문연구원 특일(공휴일)", prefix: "/B090041/", dataset: "15012690", limit: 1000000 },
+  { id: "kto-cnctr", name: "관광공사 관광지 집중률", prefix: "/B551011/TatsCnctrRateService/", dataset: "15128555", limit: 1000 }, // 운영계정 신청 중 (승인되면 100,000)
+  { id: "kto-tour", name: "관광공사 TourAPI(축제·운영시간)", prefix: "/B551011/KorService2/", dataset: "15101578", limit: 1000 }, // 운영계정 신청 중 (승인되면 100,000)
+  { id: "kto-related", name: "관광공사 연관 관광지", prefix: "/B551011/TarRlteTarService1/", dataset: "15128560", limit: 1000 }, // 운영계정 신청 중 (승인되면 100,000)
+  { id: "kto-datalab", name: "관광공사 데이터랩(지역 방문자)", prefix: "/B551011/DataLabService/", dataset: "15101972", limit: 1000 }, // 운영계정 신청 중 (승인되면 100,000)
   // 강원랜드 광장주차장 실시간 주차 (하이원 보조 지표). 개발계정 5,000/일, 요청 주소는 PARKING_HIGH1_URL (lib/crowd/parking)
   { id: "parking-high1", name: "강원랜드 광장주차장 실시간 주차", dataset: "15168488", limit: 5000 },
-  { id: "busan-pop", name: "부산시 생활인구", prefix: "/6260000/", limit: 1000, limitGuess: true },
+  { id: "busan-pop", name: "부산시 생활인구", prefix: "/6260000/", limit: 100000 },
   // 공공데이터포털 밖
   { id: "seoul-citydata", name: "서울시 실시간 도시데이터" },
   { id: "seoul-events", name: "서울시 문화행사 정보" },
