@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // 응답 헤더에 프레임워크 이름을 싣지 않는다 (x-powered-by)
+  poweredByHeader: false,
   // 비용 리포트 PDF에 쓰는 한글 폰트를 함수 번들에 포함
   outputFileTracingIncludes: {
     "/api/cron/cost-report": ["./assets/fonts/*.ttf"],

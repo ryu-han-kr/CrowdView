@@ -67,13 +67,23 @@ export async function getMidWeather(place: Place): Promise<Map<string, MidDay> |
 /** 가까운 측정소의 지금 미세먼지 */
 export async function getAirNow(place: Place): Promise<AirNow | undefined> {
   if (!place.airStation) return undefined;
+  const name = place.airStation.name;
+  // 측정값은 1시간마다 바뀐다. 시도 한 번에 측정소 전체를 받아 1시간 캐시 (시도 5곳 × 24 = 120건)
   const rows = await dataGoKr(
     "/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty",
     { sidoName: place.airStation.sido, returnType: "json", numOfRows: "200", ver: "1.0" },
-    // 측정값은 1시간마다 바뀐다. 에어코리아는 하루 500건 한도라 1시간 캐시 (시도 5곳 × 24 = 120건)
     HOUR,
-  );
-  const r = rows.find((x) => x.stationName === place.airStation!.name);
+  ).catch(() => [] as Awaited<ReturnType<typeof dataGoKr>>);
+  let r = rows.find((x) => x.stationName === name);
+  // 시도 조회는 에어코리아 쪽에서 가끔 20초 넘게 멈춘다(10/22 경기·제주). 그때는 가벼운 측정소 조회로 대신 받는다
+  if (!r) {
+    const one = await dataGoKr(
+      "/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty",
+      { stationName: name, dataTerm: "DAILY", returnType: "json", numOfRows: "1", ver: "1.0" },
+      HOUR,
+    ).catch(() => []);
+    if (one[0]) r = { ...one[0], stationName: name };
+  }
   if (!r) return undefined;
   const num = (v: unknown) => (v === undefined || v === null || v === "-" || v === "" ? undefined : Number(v));
   return {

@@ -77,7 +77,7 @@ export function SeoulPeopleProfile({
   return (
     <section className={className}>
       <h2 className="text-sm font-bold">{t("지금 이곳에 있는 사람들")}</h2>
-      {areaName && <p className="mt-0.5 text-xs text-gray-500">{t("서울시 실시간 도시데이터 · 주변 {area} 기준", { area: t(areaName) })}</p>}
+      {areaName && <p className="mt-0.5 text-xs text-gray-500">{t("서울시 실시간 도시데이터 · 주변 {area} 기준", { area: areaName })}</p>}
       <div className="mt-3">
         <GenderDonut male={profile.male} female={profile.female} />
       </div>

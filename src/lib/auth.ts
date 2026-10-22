@@ -74,7 +74,8 @@ export const auth = betterAuth({
     enabled: true,
     window: 60,
     max: 60,
-    customRules: { "/sign-in/email": { window: 60, max: 5 }, "/sign-in/social": { window: 60, max: 10 } },
+    // 로그인 상태 확인(get-session)은 화면마다 부른다. 통신사 공유 IP(CGNAT)에 여러 사람이 묶여도 막히지 않게 넉넉히
+    customRules: { "/sign-in/email": { window: 60, max: 5 }, "/sign-in/social": { window: 60, max: 10 }, "/get-session": { window: 60, max: 1000 } },
     // 창(window)마다 키를 나눠 INCR 한 번으로 세고 판정 (동시에 몰려도 정확). Redis 장애면 막지 않는다
     customStorage: {
       consume: async (key, rule) => {
