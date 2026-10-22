@@ -13,10 +13,19 @@ interface Entry<T> {
 
 const mem = new Map<string, Entry<unknown>>();
 const inflight = new Map<string, Promise<unknown>>();
-// 실패하면 이 시간 뒤에 다시 시도 (원본 장애 때 계속 두드리지 않게).
+// 실패하면 이 시간 뒤에 다시 시도 (원본 장애 때 계속 두드리지 않게). 연달아 실패하면 5분 → 15분 → 1시간으로 늘린다
+// (10/22: 에어코리아 한 시도가 시간 초과를 반복 → 5분마다 재시도가 하루 호출을 늘렸다).
 // 실패 표시는 Redis에도 남겨 모든 서버가 공유한다 — 새로 뜬 서버마다 시간 초과(8초)를 다시 기다리면 화면이 그만큼 늦어진다
-const RETRY_MS = 5 * 60 * 1000;
+const RETRY_MIN = [5, 15, 60];
+/** 연속 실패 n번째(1부터) → 다시 부르기까지 ms */
+export const retryAfterMs = (n: number) => RETRY_MIN[Math.min(Math.max(n, 1), RETRY_MIN.length) - 1] * 60 * 1000;
 const failKey = (key: string) => `${key}:fail`;
+/** 연속 실패 횟수 (성공하면 0) */
+const failCountKey = (key: string) => `${key}:failn`;
+const FAIL_COUNT_KEEP = 3 * 3600;
+// 빌드(next build) 중에는 결과를 Redis에 저장하지 못한다(lib/cache buildSafe). 그래서 빌드 작업자마다 같은 원본을 다시 부르고
+// 그 호출이 하루 한도에 그대로 잡혔다(10/21 운영 배포 51번). 빌드 중엔 묵은 값이라도 있으면 원본을 부르지 않는다 — 배포 뒤 첫 요청에서 새로 받는다
+const building = () => process.env.NEXT_PHASE === "phase-production-build";
 const EMPTY_FRESH = 30 * 60;
 
 const keepSeconds = (fresh: number) => fresh + Math.max(fresh, 6 * 60 * 60);
@@ -42,10 +51,12 @@ async function read<T>(key: string, fresh: number, load: () => Promise<T>, isEmp
 
   let shared: Entry<T> | null = null;
   let failedRecently = false;
+  let failCount = 0;
   try {
-    const [raw, failed] = await kv.mget([key, failKey(key)]);
+    const [raw, failed, failn] = await kv.mget([key, failKey(key), failCountKey(key)]);
     shared = raw ? (JSON.parse(raw) as Entry<T>) : null;
     failedRecently = !!failed;
+    failCount = Number(failn ?? 0) || 0;
   } catch {
     shared = null;
   }
@@ -57,9 +68,10 @@ async function read<T>(key: string, fresh: number, load: () => Promise<T>, isEmp
   // 오래된 데이터라도 비어 있지 않으면 장애·빈 응답 때 대신 쓴다
   const prev = shared ?? (local as Entry<T> | undefined) ?? null;
   const stale = prev && !isEmpty(prev.v) ? prev : null;
+  if (stale && building()) return stale.v;
   if (failedRecently) {
     if (stale) return stale.v;
-    throw new Error(`${key}: 원본이 최근 실패해 ${RETRY_MS / 60000}분 동안 다시 부르지 않음`);
+    throw new Error(`${key}: 원본이 최근 실패해 잠시 다시 부르지 않음 (연속 ${failCount}번)`);
   }
   try {
     const v = await load();
@@ -74,12 +86,15 @@ async function read<T>(key: string, fresh: number, load: () => Promise<T>, isEmp
     const entry = { t: now, v };
     mem.set(key, entry);
     await kv.set(key, JSON.stringify(entry), keepSeconds(fresh)).catch(() => {});
+    if (failCount) await kv.set(failCountKey(key), "0", 1).catch(() => {});
     return v;
   } catch (e) {
-    await kv.set(failKey(key), "1", RETRY_MS / 1000).catch(() => {});
+    const wait = retryAfterMs(failCount + 1);
+    await kv.set(failKey(key), "1", wait / 1000).catch(() => {});
+    await kv.set(failCountKey(key), String(failCount + 1), FAIL_COUNT_KEEP).catch(() => {});
     if (!stale) throw e;
     // 마지막 데이터를 쓰고, 잠시 뒤 다시 시도
-    mem.set(key, { t: now - fresh * 1000 + Math.min(RETRY_MS, fresh * 1000), v: stale.v });
+    mem.set(key, { t: now - fresh * 1000 + Math.min(wait, fresh * 1000), v: stale.v });
     return stale.v;
   }
 }
