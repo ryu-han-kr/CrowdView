@@ -12,6 +12,7 @@ import { RecentRail } from "@/components/home/RecentRail";
 import { RankList, type RankItem } from "@/components/home/RankList";
 import { headcountInfo } from "@/lib/format";
 import { CATEGORY_TONE } from "@/lib/category-style";
+import { heroImage } from "@/lib/place-photos";
 import { CATEGORY_LABEL } from "@/lib/types";
 import { Glyph } from "@/components/Glyph";
 import { PLUS } from "@/lib/business";
@@ -76,6 +77,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     ),
   ];
 
+  // 목록·카드는 고해상도 대표 사진으로 (사용자 QA 10/22: 사진이 비슷해 구별이 어렵다). 서버에서 바꿔 넘겨 사진 목록 JSON이 브라우저로 가지 않게
+  const listPlaces = places.map((p) => ({ ...p, image: heroImage(p) }));
   // 지금 한산한 명소 (사진 있는 우리 장소)
   const calmCards: PhotoCardItem[] = places
     .filter((p) => p.image && crowd[p.id].open && p.category !== "airport" && p.category !== "event")
@@ -84,7 +87,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     .map((p) => ({
       id: p.id,
       href: placeHref(p),
-      img: p.image,
+      img: heroImage(p),
       title: t(p.name),
       sub: t(p.region),
       score: crowd[p.id].score,
@@ -206,7 +209,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         title: t(p.name),
         sub: c.avgWaitMin !== undefined ? t("놀이기구 평균 대기 {n}분", { n: c.avgWaitMin }) : hc?.text,
         note: vs ?? `${t(p.region)} · ${t("{age} 갱신", { age: fmtAge(c.ageMinutes, t) })}`,
-        img: p.image,
+        img: heroImage(p),
         emoji: p.emoji,
         score: c.score,
       };
@@ -280,7 +283,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <RecentRail />
 
       {ko ? (
-        <HomeList places={places} crowd={crowd}>
+        <HomeList places={listPlaces} crowd={crowd}>
           {calmRail}
           {busyList}
           {festivalRail}
@@ -294,7 +297,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {calmRail}
           {busyList}
           {plusPromo}
-          <HomeList places={places} crowd={crowd} />
+          <HomeList places={listPlaces} crowd={crowd} />
         </>
       )}
     </main>

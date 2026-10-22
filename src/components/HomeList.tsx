@@ -184,7 +184,7 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
           />
         ) : (
           // 사진 왼쪽 · 글 오른쪽 가로 카드를 회색 구역 안에 (사용자 QA 10/22: 왼쪽→오른쪽으로 읽히게, 배경으로 구별)
-          <ul className="sector mt-4 grid gap-2.5 p-3 md:grid-cols-2 lg:grid-cols-3">
+          <ul className="sector mt-4 grid grid-cols-[minmax(0,1fr)] gap-2.5 p-3 md:grid-cols-2 lg:grid-cols-3">
             {cards.map((c) => (
               <li key={c.id}>
                 <ListCard item={c} />
@@ -227,7 +227,7 @@ function ListCard({ item }: { item: PhotoCardItem & { region: string; trend?: "u
         )}
         <p className="mt-0.5 truncate pr-8 text-base font-extrabold text-gray-950">{item.title}</p>
         <p className="truncate text-[13px] font-medium text-gray-600">{item.region}</p>
-        <p className="mt-1.5 flex items-center gap-1.5 truncate">
+        <p className="mt-1.5 flex min-w-0 items-center gap-1.5 overflow-hidden whitespace-nowrap">
           {lv ? (
             <>
               <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: lv.color }} />

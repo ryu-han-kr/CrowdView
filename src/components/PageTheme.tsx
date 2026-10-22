@@ -26,7 +26,8 @@ export function PageTheme() {
     const parts = path.split("/").filter(Boolean);
     // 언어 접두사(/en 등)는 건너뛴다
     const first = /^(en|ja|zh-CN|zh-TW|ko)$/.test(parts[0] ?? "") ? parts[1] : parts[0];
-    document.body.dataset.page = PAGES[first ?? ""] ?? "home";
+    // 홈(주소 첫 경로 없음)만 "home" — 머리 색 띠가 장소 화면 등에 깔리지 않게 (10/22)
+    document.body.dataset.page = first ? (PAGES[first] ?? "other") : "home";
   }, [path]);
   return null;
 }

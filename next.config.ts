@@ -8,7 +8,8 @@ const nextConfig: NextConfig = {
   // 관광공사 사진을 화면 크기에 맞게 줄여(WebP·AVIF) 보낸다. 원본은 수백 KB라 홈·카드가 무거웠다.
   // 사진은 잘 안 바뀌어서 7일 보관 (lib/img.ts canOptimize와 같은 목록). 서울시 문화 사이트 사진은 최적화 서버로 받아지지 않아 원본 그대로
   images: {
-    remotePatterns: [new URL("https://tong.visitkorea.or.kr/**")],
+    // 위키미디어 커먼즈: 장소 사진 (src/data/korea/place-photos.json, CC0·CC BY·CC BY-SA·공유 저작물만, 10/22)
+    remotePatterns: [new URL("https://tong.visitkorea.or.kr/**"), new URL("https://thumb.wikimedia.org/**"), new URL("https://upload.wikimedia.org/**")],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 7 * 24 * 3600,
     // 만들어 주는 크기를 줄인다: Vercel은 원본 × 크기 × 품질 조합마다 변환 요금을 받는다 (기본 16가지 크기 → 7가지).
