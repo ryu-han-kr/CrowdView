@@ -118,6 +118,31 @@ const PROBES: Probe[] = [
     url: (k) => `https://open.neis.go.kr/hub/schoolInfo?KEY=${k}&Type=json&pIndex=1&pSize=1&ATPT_OFCDC_SC_CODE=B10`,
     ok: (s, b) => s === 200 && /INFO-000/.test(b),
   },
+  {
+    // 카카오 로컬 키워드 검색 (코스 추천: 카페·백화점·애니 매장 찾기). REST API 키 = 카카오 로그인 앱의 client id
+    id: "kakaoLocal",
+    env: "KAKAO_REST_API_KEY",
+    key: () => process.env.KAKAO_REST_API_KEY || process.env.KAKAO_CLIENT_ID,
+    url: () => `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent("성수 카페")}&size=1`,
+    init: (k) => ({ headers: { Authorization: `KakaoAK ${k}` } }),
+    ok: (s, b) => s === 200 && b.includes('"documents"'),
+  },
+  {
+    // 네이버 지역 검색 (developers.naver.com 검색 API — 로그인 앱에 '검색'을 더해야 됨)
+    id: "naverLocal",
+    env: "NAVER_CLIENT_ID",
+    url: () => `https://openapi.naver.com/v1/search/local.json?query=${encodeURIComponent("성수 카페")}&display=1`,
+    init: (k) => ({ headers: { "X-Naver-Client-Id": k, "X-Naver-Client-Secret": process.env.NAVER_CLIENT_SECRET ?? "" } }),
+    ok: (s, b) => s === 200 && b.includes('"items"'),
+  },
+  {
+    // AI 검색(요즘 뜨는 곳·이벤트 매일 갱신)용 Claude API 키
+    id: "anthropic",
+    env: "ANTHROPIC_API_KEY",
+    url: () => "https://api.anthropic.com/v1/models?limit=1",
+    init: (k) => ({ headers: { "x-api-key": k, "anthropic-version": "2023-06-01" } }),
+    ok: (s) => s === 200,
+  },
 ];
 
 /** JSON 맨 위(한 단계 아래까지)의 숫자·짧은 글자 값 */

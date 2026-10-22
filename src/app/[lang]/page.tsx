@@ -24,6 +24,7 @@ import { festivalHref, getFestivalCrowd, getFestivals, isLongRunning } from "@/l
 import { LANDMARKS, REGIONS, dailyPick, inRegion } from "@/lib/korea";
 import { festivalCard, landmarkCard } from "@/lib/korea-cards";
 import { translateNames } from "@/lib/name-translate";
+import { getTrending } from "@/lib/trending";
 import { getLivePlaces } from "@/lib/place-info";
 import { placeHref } from "@/lib/places";
 import { getAllSeoulLive } from "@/lib/seoul-live";
@@ -277,6 +278,30 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       items={busyItems}
     />
   );
+  // 요즘 뜨는 곳 (사용자 10/22: 붐비는 순위 대신 유명·화제인 곳, 매일 자동 갱신 — lib/trending). 아직 계산 전이면 붐비는 순위
+  const trend = await getTrending();
+  const trendTr = trend ? await translateNames(trend.items.flatMap((x) => [x.title, x.kind === "event" ? x.reason : undefined, x.region]), lang) : new Map<string, string>();
+  const trendItems: RankItem[] = (trend?.items ?? []).slice(0, 5).map((x) => ({
+    id: x.id,
+    href: x.href,
+    external: x.external,
+    title: trendTr.get(x.title) ?? x.title,
+    img: x.img,
+    emoji: x.kind === "event" ? "🎉" : "📍",
+    sub: [x.period, x.region ? (trendTr.get(x.region) ?? trRegion(x.region, t)) : undefined].filter(Boolean).join(" · ") || undefined,
+    note:
+      x.kind === "event"
+        ? `AI · ${trendTr.get(x.reason) ?? x.reason}`
+        : x.rising && x.rising >= 1.5
+          ? t("검색량 {n}배 ↑", { n: x.rising.toFixed(1) })
+          : t("요즘 많이 찾는 곳"),
+    hot: x.kind === "event" || (x.rising ?? 0) >= 1.5,
+  }));
+  const trendList = trendItems.length ? (
+    <RankList title={t("요즘 뜨는 곳 TOP 5")} subtitle={t("네이버 검색량과 AI 뉴스 검색으로 매일 아침 갱신")} items={trendItems} />
+  ) : (
+    busyList
+  );
   // ── 모음 섹션 (사용자 레퍼런스 10/22, photo/qa-ref/round3)
   // 1) 테마파크·워터파크·스키장 세로 카드: 실측 먼저, 그다음 한산한 순
   const leisure = places
@@ -450,7 +475,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         <HomeList places={listPlaces} crowd={crowd} search={search}>
           {calmRail}
           {shortRail}
-          {busyList}
+          {trendList}
           {themeSection}
           {festivalRail}
           {collectionSection}
@@ -465,7 +490,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {calmRail}
           {shortRail}
           {collectionSection}
-          {busyList}
+          {trendList}
           {plusPromo}
           <HomeList places={listPlaces} crowd={crowd} search={search} />
         </>

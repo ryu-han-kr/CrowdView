@@ -15,6 +15,10 @@ export interface RankItem {
   img?: string;
   emoji?: string;
   score?: number;
+  /** 바깥 주소(기사·공식 사이트)면 새 창 */
+  external?: boolean;
+  /** note를 진한 빨강으로 (검색량 급증 등) */
+  hot?: boolean;
 }
 
 /** 큰 순위 숫자 + 글 + 오른쪽 사진 (NOL '많이 찾은 즐길거리' 레퍼런스 10/21) */
@@ -46,7 +50,7 @@ export function RankList({
       <ol className="mt-2 divide-y divide-gray-100 md:grid md:grid-cols-2 md:gap-x-10 md:divide-y-0">
         {items.map((it, i) => (
           <li key={it.id}>
-            <Link href={it.href} className="flex items-center gap-4 py-3.5">
+            <Link href={it.href} {...(it.external ? { target: "_blank", rel: "noreferrer" } : {})} className="flex items-center gap-4 py-3.5">
               <span className="w-8 shrink-0 text-center text-[28px] leading-none font-black text-gray-900 italic">{i + 1}</span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[15px] font-semibold text-gray-900">{it.title}</p>
@@ -54,7 +58,7 @@ export function RankList({
                   {it.score !== undefined && <LevelBadge score={it.score} />}
                   {it.sub && <span className="truncate text-sm text-gray-700">{it.sub}</span>}
                 </div>
-                {it.note && <p className="mt-0.5 truncate text-xs text-gray-500">{it.note}</p>}
+                {it.note && <p className={`mt-0.5 truncate text-xs ${it.hot ? "font-bold text-rose-700" : "text-gray-600"}`}>{it.note}</p>}
               </div>
               <div className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-2xl bg-gray-100 md:h-20 md:w-20">
                 {it.img ? (
