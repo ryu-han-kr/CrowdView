@@ -85,41 +85,41 @@ export function ShortCardRail({ title, sub, moreHref, items }: { title: string; 
         <ul ref={ref} className="no-scrollbar -mx-5 flex snap-x scroll-px-5 gap-3 overflow-x-auto px-5 md:mx-0 md:scroll-px-0 md:gap-4 md:px-0">
           {items.map((c) => (
             <li key={c.id} className="w-[44%] shrink-0 snap-start sm:w-[30%] md:w-[calc((100%-4rem)/5)]">
-              <Link href={c.href} className="group relative block aspect-[9/14] overflow-hidden rounded-2xl bg-gray-800">
-                {c.img && (
-                  <Image
-                    src={c.img}
-                    alt=""
-                    fill
-                    sizes="(min-width: 768px) 20vw, 45vw"
-                    unoptimized={!canOptimize(c.img)}
-                    className="object-cover transition-transform duration-300 md:group-hover:scale-105"
-                  />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/25 to-black/75" />
-                <span
-                  className={`absolute top-2.5 left-2.5 flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-extrabold text-white ${c.live ? "bg-red-600" : "bg-black/60"}`}
-                >
-                  {c.live && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
-                  {c.badge}
-                </span>
-                <div className="absolute inset-x-3 top-[34%] text-center">
-                  <p className="text-[22px] leading-tight font-black break-keep text-white drop-shadow md:text-2xl">{c.headline}</p>
+              <Link href={c.href} className="group block">
+                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-800">
+                  {c.img && (
+                    <Image
+                      src={c.img}
+                      alt=""
+                      fill
+                      sizes="(min-width: 768px) 20vw, 45vw"
+                      unoptimized={!canOptimize(c.img)}
+                      className="object-cover transition-transform duration-300 md:group-hover:scale-105"
+                    />
+                  )}
+                  <span
+                    className={`absolute top-2.5 left-2.5 flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-extrabold text-white ${c.live ? "bg-red-600" : "bg-black/60"}`}
+                  >
+                    {c.live && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+                    {c.badge}
+                  </span>
+                  {/* 사진 위엔 지금 단계 알약 하나만 (참고: 여기어때 평점 알약) */}
+                  <span className="absolute bottom-2.5 left-2.5 flex max-w-[calc(100%-1.25rem)] items-center gap-1.5 rounded-full bg-white px-2.5 py-1 shadow-sm">
+                    <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: c.boxColor }} />
+                    <span className="truncate text-[13px] font-extrabold" style={{ color: inkOf(c.boxColor) }}>
+                      {c.boxValue}
+                    </span>
+                  </span>
                 </div>
-                <p className="absolute inset-x-3 bottom-[68px] line-clamp-2 text-[14px] leading-snug font-bold break-keep text-white drop-shadow">
-                  {c.title}
-                </p>
-                <div className="absolute inset-x-2 bottom-2 rounded-xl bg-white px-2.5 py-2">
-                  <p className="truncate text-[12px] font-medium text-gray-700">{c.boxLine}</p>
-                  <p className="truncate text-[15px] font-extrabold" style={{ color: inkOf(c.boxColor) }}>
-                    {c.boxValue}
-                  </p>
-                </div>
+                {/* 글은 사진 아래 (상자 없이) */}
+                <p className="mt-2 truncate text-[12px] font-semibold text-gray-500">{c.boxLine}</p>
+                <p className="line-clamp-2 text-[15px] leading-snug font-extrabold break-keep text-gray-950">{c.title}</p>
+                <p className="mt-0.5 truncate text-[13px] font-bold text-gray-700">{c.headline}</p>
               </Link>
             </li>
           ))}
         </ul>
-        {items.length > 5 && <Arrows onPrev={() => scroll(-1)} onNext={() => scroll(1)} />}
+        {items.length > 5 && <Arrows onPrev={() => scroll(-1)} onNext={() => scroll(1)} top="top-[36%]" />}
       </div>
     </section>
   );
@@ -139,29 +139,26 @@ export function ThemeTiles({ title, sub, tiles }: { title: string; sub?: string;
   return (
     <section className="mt-10 md:mt-14">
       <SectionHead title={title} sub={sub} />
-      <ul className="mt-3 grid grid-cols-2 gap-2.5 md:grid-cols-3 md:gap-3">
+      <ul className="mt-3 grid grid-cols-3 gap-x-2.5 gap-y-4 md:grid-cols-6 md:gap-x-4">
         {tiles.map((x) => (
           <li key={x.id}>
             {/* 홈 안의 파트 고르기(?cat=·?q=)는 새로 열어야 목록이 바뀐다 → a */}
-            <a href={x.href} className="group relative block aspect-square overflow-hidden rounded-2xl bg-gray-800 md:aspect-[5/4]">
-              {x.img && (
-                <Image
-                  src={x.img}
-                  alt=""
-                  fill
-                  sizes="(min-width: 768px) 33vw, 50vw"
-                  unoptimized={!canOptimize(x.img)}
-                  className="object-cover transition-transform duration-300 md:group-hover:scale-105"
-                />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/10" />
-              <span className="absolute top-2.5 left-2.5 rounded-md bg-white/90 px-1.5 py-0.5 text-[11px] font-extrabold text-gray-900">
-                {x.badge}
-              </span>
-              <div className="absolute inset-x-3 bottom-3 md:inset-x-4 md:bottom-4">
-                <p className="text-[18px] leading-tight font-black break-keep text-white drop-shadow md:text-[22px]">{x.title}</p>
-                <p className="mt-1 line-clamp-2 text-[12px] font-semibold text-white/90 md:text-sm">{x.sub}</p>
+            <a href={x.href} className="group block">
+              <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-100">
+                {x.img && (
+                  <Image
+                    src={x.img}
+                    alt=""
+                    fill
+                    sizes="(min-width: 768px) 16vw, 33vw"
+                    unoptimized={!canOptimize(x.img)}
+                    className="object-cover transition-transform duration-300 md:group-hover:scale-105"
+                  />
+                )}
+                <span className="absolute top-2 left-2 rounded-md bg-white/95 px-1.5 py-0.5 text-[10px] font-extrabold text-gray-900">{x.badge}</span>
               </div>
+              <p className="mt-1.5 line-clamp-2 text-[14px] leading-snug font-extrabold break-keep text-gray-950">{x.title}</p>
+              <p className="mt-0.5 line-clamp-2 text-[12px] leading-snug text-gray-600">{x.sub}</p>
             </a>
           </li>
         ))}
@@ -201,55 +198,43 @@ export function CollectionCarousel({ title, sub, collections }: { title: string;
         ))}
       </div>
       <div className="relative mt-3">
-        <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white md:grid md:grid-cols-[1fr_1.35fr]">
-          <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[300px]">
-            {c.img && (
-              <Image
-                key={c.img}
-                src={c.img}
-                alt=""
-                fill
-                sizes="(min-width: 768px) 40vw, 100vw"
-                unoptimized={!canOptimize(c.img)}
-                className="object-cover"
-              />
-            )}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/10 to-black/40" />
-            <p className="absolute top-5 right-5 left-5 text-[22px] leading-tight font-black break-keep text-white drop-shadow md:top-8 md:left-8 md:text-[28px]">
-              {c.title}
-            </p>
-            <Link
-              href={c.href}
-              className="absolute bottom-4 left-5 rounded-full bg-white px-4 py-2 text-sm font-bold text-gray-900 shadow md:bottom-8 md:left-8"
-            >
+        <div className="relative h-[240px] overflow-hidden rounded-3xl bg-gray-800 md:h-[340px]">
+          {c.img && (
+            <Image key={c.img} src={c.img} alt="" fill sizes="(min-width: 768px) 70vw, 100vw" unoptimized={!canOptimize(c.img)} className="object-cover" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/10 to-black/0" />
+          <div className="absolute top-5 right-5 left-5 flex items-start justify-between gap-3 md:top-7 md:left-8 md:right-8">
+            <p className="text-[22px] leading-tight font-black break-keep text-white drop-shadow md:text-[28px]">{c.title}</p>
+            <Link href={c.href} className="shrink-0 rounded-full bg-white/95 px-3.5 py-1.5 text-[13px] font-bold text-gray-900 shadow">
               {t("자세히 보기")} ›
             </Link>
           </div>
-          <ul className="grid grid-cols-3 gap-2.5 p-3 md:gap-4 md:p-6">
-            {c.items.map((x) => (
-              <li key={x.id}>
-                <Link href={x.href} className="group block">
-                  <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-gray-100">
-                    {x.img && (
-                      <Image
-                        src={x.img}
-                        alt=""
-                        fill
-                        sizes="(min-width: 768px) 15vw, 30vw"
-                        unoptimized={!canOptimize(x.img)}
-                        className="object-cover transition-transform duration-300 md:group-hover:scale-105"
-                      />
-                    )}
-                  </div>
-                  <p className="mt-1.5 truncate text-[13px] font-semibold text-gray-800 md:text-sm">{x.title}</p>
-                  <p className="truncate text-[15px] font-extrabold md:text-base" style={{ color: inkOf(x.color) }}>
-                    {x.value}
-                  </p>
-                </Link>
-              </li>
-            ))}
-          </ul>
         </div>
+        {/* 작은 카드 3장이 큰 사진 아래쪽에 겹쳐 올라온다 */}
+        <ul className="relative -mt-24 grid grid-cols-3 gap-2.5 px-3 md:-mt-36 md:gap-5 md:px-8">
+          {c.items.map((x) => (
+            <li key={x.id}>
+              <Link href={x.href} className="group block">
+                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100 shadow-lg ring-[3px] ring-white">
+                  {x.img && (
+                    <Image
+                      src={x.img}
+                      alt=""
+                      fill
+                      sizes="(min-width: 768px) 20vw, 30vw"
+                      unoptimized={!canOptimize(x.img)}
+                      className="object-cover transition-transform duration-300 md:group-hover:scale-105"
+                    />
+                  )}
+                </div>
+                <p className="mt-2 line-clamp-2 text-[13px] leading-snug font-bold break-keep text-gray-900 md:text-[15px]">{x.title}</p>
+                <p className="mt-0.5 truncate text-[14px] font-extrabold md:text-base" style={{ color: inkOf(x.color) }}>
+                  {x.value}
+                </p>
+              </Link>
+            </li>
+          ))}
+        </ul>
         {collections.length > 1 && <Arrows onPrev={() => go(-1)} onNext={() => go(1)} top="top-1/2" />}
       </div>
     </section>
