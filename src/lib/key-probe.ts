@@ -136,6 +136,14 @@ const PROBES: Probe[] = [
     ok: (s, b) => s === 200 && b.includes('"items"'),
   },
   {
+    // 관광공사 관광사진 갤러리 (전문 사진). 활용신청 뒤 scripts/korea-data/pro-photos.mts 실행
+    id: "ktoGallery",
+    env: "DATA_GO_KR_KEY",
+    url: (k) =>
+      `https://apis.data.go.kr/B551011/PhotoGalleryService1/gallerySearchList1?serviceKey=${encodeURIComponent(k)}&MobileOS=ETC&MobileApp=CrowdView&_type=json&numOfRows=1&keyword=${encodeURIComponent("에버랜드")}`,
+    ok: (s, b) => s === 200 && b.includes("galWebImageUrl"),
+  },
+  {
     // Brave 뉴스 검색 (장소별 최근 소식·시즌 이벤트)
     id: "brave",
     env: "BRAVE_SEARCH_API_KEY",
