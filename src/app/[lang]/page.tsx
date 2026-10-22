@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import { getT as getMetaT } from "@/i18n/server";
 import { jsonLd, SITE } from "@/lib/seo";
-import { HomeList } from "@/components/HomeList";
+import { HomeList, type SearchData } from "@/components/HomeList";
 import { CategoryIcons } from "@/components/home/CategoryIcons";
 import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
 import { PhotoRail, type PhotoCardItem } from "@/components/home/PhotoRail";
@@ -21,7 +21,7 @@ import { Glyph } from "@/components/Glyph";
 import { PLUS } from "@/lib/business";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { festivalHref, getFestivalCrowd, getFestivals, isLongRunning } from "@/lib/festivals";
-import { LANDMARKS, REGIONS, dailyPick } from "@/lib/korea";
+import { LANDMARKS, REGIONS, dailyPick, inRegion } from "@/lib/korea";
 import { festivalCard, landmarkCard } from "@/lib/korea-cards";
 import { translateNames } from "@/lib/name-translate";
 import { getLivePlaces } from "@/lib/place-info";
@@ -33,6 +33,7 @@ import { localePath, type Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { fmtAge, trRegion } from "@/i18n/patterns";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
+import { photoNear } from "@/lib/seoul-guide";
 
 // ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 // (60초였을 때 ISR 쓰기 5일에 13만 건. 데이터는 10분마다 갱신되니 5분이면 충분)
@@ -164,6 +165,50 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const slides = (ko ? [...crowdSlides, ...travelSlides, routeSlide, plusSlide] : [...travelSlides, routeSlide, ...crowdSlides, plusSlide]).filter(
     (s): s is HeroSlide => !!s,
   );
+
+  // 홈 통합 검색 탭 자료 (사용자 10/22: 지역 여행 탭 대신 홈에서 명소·축제·서울 지역·관광지를 한 번에)
+  const [allNames, areaNames] = await Promise.all([
+    translateNames(
+      allFestivals.flatMap((f) => [f.title, f.region]),
+      lang,
+    ),
+    translateNames(
+      SEOUL_AREAS.map((a) => a.name),
+      lang,
+    ),
+  ]);
+  const search: SearchData = {
+    regions: REGIONS.map((r) => r.id).filter((id) => LANDMARKS.some((l) => l.region === id) || allFestivals.some((f) => inRegion(f.region, id))),
+    landmarks: LANDMARKS.map((l) => {
+      const c = lm(l);
+      return { id: c.id, href: c.href, img: c.img, title: c.title, sub: c.sub, score: c.score, tag: c.tag, region: l.region, keys: [l.n.ko] };
+    }),
+    festivals: allFestivals.map((f) => {
+      const c = festivalCard(f, t, today, allNames);
+      return {
+        id: c.id,
+        href: c.href,
+        img: c.img,
+        emoji: "🎪",
+        title: c.title,
+        sub: c.sub,
+        badge: c.badge,
+        region: REGIONS.find((r) => inRegion(f.region, r.id))?.id,
+        keys: [f.title, f.region],
+      };
+    }),
+    seoul: SEOUL_AREAS.map((a) => ({
+      id: `seoul-${a.code}`,
+      href: `/seoul/${a.code}`,
+      img: photoNear(a, 0.8),
+      emoji: "📍",
+      title: areaNames.get(a.name) ?? a.name,
+      sub: t("서울 실시간"),
+      score: seoul[a.code]?.score,
+      region: "서울",
+      keys: [a.name],
+    })),
+  };
 
   const festivalRail = (
     <PhotoRail
@@ -402,7 +447,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <RecentRail />
 
       {ko ? (
-        <HomeList places={listPlaces} crowd={crowd}>
+        <HomeList places={listPlaces} crowd={crowd} search={search}>
           {calmRail}
           {shortRail}
           {busyList}
@@ -422,7 +467,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {collectionSection}
           {busyList}
           {plusPromo}
-          <HomeList places={listPlaces} crowd={crowd} />
+          <HomeList places={listPlaces} crowd={crowd} search={search} />
         </>
       )}
     </main>

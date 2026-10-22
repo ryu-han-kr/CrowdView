@@ -25,15 +25,16 @@ const spotsPromise: Record<string, Promise<SpotRow[]>> = {};
 let seoulPromise: Promise<Record<string, string>> | undefined;
 
 /** 전국 명소 목록 (언어별로 한 번만 받는다. 외국어는 이름이 번역된 목록) */
-export function useSpots(): SpotRow[] | null {
+export function useSpots(enabled = true): SpotRow[] | null {
   const { lang } = useI18n();
   const [rows, setRows] = useState<SpotRow[] | null>(null);
   useEffect(() => {
+    if (!enabled) return;
     spotsPromise[lang] ??= fetch(`/data/spots-${lang}.json`)
       .then((r) => r.json())
       .catch(() => []);
     spotsPromise[lang].then(setRows);
-  }, [lang]);
+  }, [lang, enabled]);
   return rows;
 }
 

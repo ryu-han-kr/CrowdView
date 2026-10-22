@@ -12,7 +12,7 @@ import { LEVELS, levelOf, inkOf } from "@/lib/levels";
 import type { HourPoint } from "@/lib/types";
 
 // 왼쪽 58px는 단계 이름 칸 (그래프 선과 글씨가 겹치지 않게 그림 밖에 둔다)
-const MARGIN = { top: 8, right: 10, bottom: 34, left: 58 };
+const MARGIN = { top: 8, right: 10, bottom: 34, left: 66 };
 
 const PEOPLE_NOTE: Record<NonNullable<HourPoint["peopleKind"]>, string> = {
   real: "실측·공식 예보",
@@ -75,8 +75,10 @@ function LevelLines({ labels }: { labels: Record<number, string> }) {
         return (
           <g key={l.key}>
             {i > 0 && <line x1={0} x2={innerWidth} y1={yScale(l.min)} y2={yScale(l.min)} stroke="#eef0f3" strokeWidth="1" />}
-            <rect x={-6} y={yScale(top) + 1} width={3} height={Math.max(1, yScale(l.min) - yScale(top) - 2)} rx={1.5} fill={l.color} />
-            <text x={-10} y={yScale((l.min + top) / 2) + 4} textAnchor="end" fontSize="11" fontWeight="700" fill={l.color}>
+            <rect x={-5} y={yScale(top) + 1} width={3} height={Math.max(1, yScale(l.min) - yScale(top) - 2)} rx={1.5} fill={l.color} />
+            {/* 단계 이름: 왼쪽 칸 가운데에 옅은 색 알약 + 진한 글씨 (사용자 QA 10/22: 너무 왼쪽에 붙어 보였다) */}
+            <rect x={-MARGIN.left + 6} y={yScale((l.min + top) / 2) - 10} width={MARGIN.left - 16} height={20} rx={10} fill={l.color} fillOpacity={0.14} />
+            <text x={-MARGIN.left / 2 - 4} y={yScale((l.min + top) / 2) + 4.5} textAnchor="middle" fontSize="12.5" fontWeight="800" fill={inkOf(l.color)}>
               {labels[l.key]}
             </text>
           </g>
@@ -204,7 +206,7 @@ export function HourlyChart({
       </div>
 
       <div role="img" aria-label={t("시간대별 혼잡도 그래프")} className="relative select-none">
-        <AreaChart data={data} yMax={100} margin={MARGIN} aspectRatio="16 / 9" animationDuration={700}>
+        <AreaChart data={data} yMax={100} margin={MARGIN} aspectRatio="2 / 1" animationDuration={700}>
           <LevelGradients id={gid} />
           <LevelLines labels={levelLabels} />
           <Area

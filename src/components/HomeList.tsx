@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { headcountInfo } from "@/lib/format";
 import { placeHref } from "@/lib/places";
@@ -14,6 +14,42 @@ import { SpotMap, ViewToggle } from "./map/SpotMap";
 import { StickyBar } from "./StickyBar";
 import { useUrlQuery } from "./useUrlQuery";
 import { Glyph } from "@/components/Glyph";
+import { SUBS_OF, SUB_EMOJI, SUB_LABEL, subOf, type SubCategory } from "@/lib/subcategory";
+import { useSpots, type SpotRow } from "./MoreSpots";
+
+/** 홈 통합 검색의 다른 탭 항목 (서버에서 만든 명소·축제·서울 지역) */
+export interface SearchItem {
+  id: string;
+  href: string;
+  img?: string;
+  emoji?: string;
+  title: string;
+  sub?: string;
+  /** 지역 칩 (서울·부산…) */
+  region?: string;
+  score?: number;
+  badge?: string;
+  tag?: { label: string; color: string; icon?: string };
+  /** 검색에 함께 쓸 말 (한국어 이름 등) */
+  keys?: string[];
+}
+export interface SearchData {
+  landmarks: SearchItem[];
+  festivals: SearchItem[];
+  seoul: SearchItem[];
+  /** 지역 칩 순서 (lib/korea REGIONS) */
+  regions: string[];
+}
+type Tab = "all" | "live" | "landmark" | "festival" | "seoul" | "spot";
+const TABS: { id: Tab; label: string }[] = [
+  { id: "all", label: "전체" },
+  { id: "live", label: "실시간 장소" },
+  { id: "landmark", label: "명소" },
+  { id: "festival", label: "축제" },
+  { id: "seoul", label: "서울 지역" },
+  { id: "spot", label: "관광지" },
+];
+const SPOT_PAGE = 30;
 
 type Filter = "all" | "fav" | Category;
 type Sort = "calm" | "busy";
@@ -34,9 +70,24 @@ const CATEGORIES = Object.keys(CATEGORY_EMOJI) as Category[];
  * 홈의 전체 장소: 검색 + 파트 칩 + 한산한/붐비는 순 + 목록(사진 카드)·지도 전환.
  * 검색 중이거나 파트를 고르면 추천 섹션(children)은 숨긴다
  */
-export function HomeList({ places, crowd, children }: { places: Place[]; crowd: Record<string, CrowdResult>; children?: React.ReactNode }) {
+export function HomeList({
+  places,
+  crowd,
+  search,
+  children,
+}: {
+  places: Place[];
+  crowd: Record<string, CrowdResult>;
+  search?: SearchData;
+  children?: React.ReactNode;
+}) {
   const [query, setQuery] = useUrlQuery();
   const [filter, setFilter] = useState<Filter>("all");
+  // 통합 검색 탭 (사용자 10/22: 지역 여행 탭 대신 홈에서 한 번에) · 세부 분류 · 지역 칩
+  const [tab, setTab] = useState<Tab>("all");
+  const [sub, setSub] = useState<SubCategory | "all">("all");
+  const [region, setRegion] = useState<string>("all");
+  const [spotShown, setSpotShown] = useState(SPOT_PAGE);
   const [sort, setSort] = useState<Sort>("calm");
   const [view, setView] = useState<"list" | "map">("list");
   const { favorites } = useFavorites();
@@ -45,17 +96,34 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
 
   // 홈 아이콘 메뉴의 '테마파크' 같은 링크: /?cat=themepark#places → 그 파트를 골라 목록으로
   useEffect(() => {
-    const cat = new URLSearchParams(window.location.search).get("cat") as Category | null;
+    const params = new URLSearchParams(window.location.search);
+    const cat = params.get("cat") as Category | null;
     if (cat && CATEGORIES.includes(cat)) {
       setFilter(cat);
       document.getElementById("places")?.scrollIntoView({ behavior: "smooth" });
     }
+    const tb = params.get("tab") as Tab | null;
+    if (tb && TABS.some((x) => x.id === tb)) {
+      setTab(tb);
+      document.getElementById("places")?.scrollIntoView({ behavior: "smooth" });
+    }
   }, []);
+  const searching = query.trim() !== "";
+  useEffect(() => {
+    if (searching) setFilter("all");
+  }, [searching]);
 
+  useEffect(() => setSub("all"), [filter]);
+  useEffect(() => setSpotShown(SPOT_PAGE), [region, query, tab]);
   const q = query.trim().toLowerCase();
+  const hit = (xs: (string | undefined)[]) => !q || xs.some((s) => !!s && s.toLowerCase().includes(q));
   const list = places
     .filter((p) => (filter === "all" ? true : filter === "fav" ? favorites.includes(p.id) : p.category === filter))
-    .filter((p) => !q || [p.name, p.region, ...p.tags, CATEGORY_LABEL[p.category]].flatMap((s) => [s, t(s)]).some((s) => s.toLowerCase().includes(q)))
+    .filter((p) => sub === "all" || subOf(p.id) === sub)
+    .filter((p) => {
+      const sc = subOf(p.id);
+      return hit([p.name, p.region, ...p.tags, CATEGORY_LABEL[p.category], ...(sc ? [SUB_LABEL[sc]] : [])].flatMap((s) => [s, t(s)]));
+    })
     .sort((a, b) => Number(crowd[b.id].open) - Number(crowd[a.id].open) || (sort === "calm" ? 1 : -1) * (crowd[a.id].score - crowd[b.id].score));
 
   // 닫힌 곳 표시: 행사는 열리기 전이면 'D-n', 끝났으면 '종료' (QA 10/21: 열리기 전 행사가 '운영 종료'로 보임)
@@ -82,7 +150,7 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
       trend: c.open ? c.trend : undefined,
       score: c.open ? c.score : undefined,
       badge: c.open ? undefined : closedLabel(p, c.offSeason),
-      tag: { label: t(CATEGORY_LABEL[p.category]), ...CATEGORY_TONE[p.category] },
+      tag: { label: t(subOf(p.id) ? SUB_LABEL[subOf(p.id)!] : CATEGORY_LABEL[p.category]), ...CATEGORY_TONE[p.category] },
       favId: p.id,
       lat: p.lat,
       lng: p.lng,
@@ -94,7 +162,45 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
     ...(favorites.length ? [{ id: "fav" as const, label: t("찜"), emoji: "❤️" }] : []),
     ...CATEGORIES.filter((c) => places.some((p) => p.category === c)).map((c) => ({ id: c, label: t(CATEGORY_LABEL[c]), emoji: CATEGORY_EMOJI[c] })),
   ];
-  const browsing = !q && filter === "all" && view === "list";
+  const browsing = !q && filter === "all" && view === "list" && tab === "all";
+  const subs = filter !== "all" && filter !== "fav" ? (SUBS_OF[filter] ?? []).filter((x) => places.some((p) => p.category === filter && subOf(p.id) === x)) : [];
+
+  // 다른 탭: 명소·축제·서울 지역(서버) + 관광지(브라우저가 /data/spots-{lang}.json 을 받는다)
+  const needSpots = tab === "spot" || (tab === "all" && !!q);
+  const spots = useSpots(needSpots);
+  const inReg = (r?: string) => region === "all" || r === region;
+  /* eslint-disable react-hooks/exhaustive-deps -- q·region에 따라 다시 거른다 */
+  const landmarks = useMemo(() => (search?.landmarks ?? []).filter((x) => inReg(x.region) && hit([x.title, x.sub, ...(x.keys ?? [])])), [search, region, q]);
+  const festivals = useMemo(() => (search?.festivals ?? []).filter((x) => inReg(x.region) && hit([x.title, x.sub, ...(x.keys ?? [])])), [search, region, q]);
+  const seoulAreas = useMemo(() => (search?.seoul ?? []).filter((x) => hit([x.title, x.sub, ...(x.keys ?? [])])), [search, q]);
+  const spotItems: SearchItem[] = useMemo(
+    () =>
+      (spots ?? [])
+        .filter((s: SpotRow) => inReg(s[2]) && hit([s[3], s[7], t(s[2])]))
+        .map((s: SpotRow) => ({
+          id: `spot-${s[0]}`,
+          href:
+            i18n.lang === "ko"
+              ? `https://map.kakao.com/link/map/${encodeURIComponent(s[3])},${s[4]},${s[5]}`
+              : `https://www.google.com/maps/search/?api=1&query=${s[4]},${s[5]}`,
+          img: s[6],
+          emoji: "📍",
+          title: s[3],
+          sub: [t(s[2]), s[7] ? t(s[7]) : undefined].filter(Boolean).join(" · "),
+        })),
+    [spots, region, q],
+  );
+  /* eslint-enable react-hooks/exhaustive-deps */
+  const counts: Record<Tab, number> = {
+    all: 0,
+    live: list.length,
+    landmark: landmarks.length,
+    festival: festivals.length,
+    seoul: seoulAreas.length,
+    spot: spotItems.length,
+  };
+  const tabs = search ? TABS : [];
+  const regionChips = search && (tab === "landmark" || tab === "festival" || tab === "spot") ? search.regions : [];
 
   return (
     <>
@@ -117,6 +223,41 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
             </button>
           )}
         </label>
+        {tabs.length > 0 && (
+          <div role="tablist" className="no-scrollbar mt-3 flex gap-1 overflow-x-auto border-b border-gray-200">
+            {tabs.map((x) => (
+              <button
+                key={x.id}
+                role="tab"
+                aria-selected={tab === x.id}
+                onClick={() => setTab(x.id)}
+                className={`-mb-px shrink-0 border-b-[3px] px-3 pt-1 pb-2 text-[15px] font-bold transition-colors ${
+                  tab === x.id ? "border-gray-900 text-gray-950" : "border-transparent text-gray-500 md:hover:text-gray-800"
+                }`}
+              >
+                {t(x.label)}
+                {q && x.id !== "all" && <span className="ml-1 text-xs font-semibold text-gray-500">{counts[x.id]}</span>}
+              </button>
+            ))}
+          </div>
+        )}
+        {regionChips.length > 0 && (
+          <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
+            {["all", ...regionChips].map((r) => (
+              <button
+                key={r}
+                onClick={() => setRegion(r)}
+                aria-pressed={region === r}
+                className={`shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-semibold ${
+                  region === r ? "border-gray-900 bg-gray-900 text-white" : "border-gray-200 bg-white text-gray-700"
+                }`}
+              >
+                {r === "all" ? t("전국") : t(r)}
+              </button>
+            ))}
+          </div>
+        )}
+        {(tab === "all" || tab === "live") && (
         <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
           {chips.map((c) => (
             <button
@@ -132,10 +273,65 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
             </button>
           ))}
         </div>
+        )}
+        {/* 세부 분류 (예: 테마파크 → 놀이공원·아쿠아리움·동물원·민속촌) */}
+        {(tab === "all" || tab === "live") && subs.length > 0 && (
+          <div className="no-scrollbar mt-2 flex gap-1.5 overflow-x-auto">
+            {(["all", ...subs] as const).map((x) => (
+              <button
+                key={x}
+                onClick={() => setSub(x)}
+                aria-pressed={sub === x}
+                className={`flex shrink-0 items-center gap-1 rounded-lg px-3 py-1.5 text-[13px] font-bold ${
+                  sub === x ? "bg-indigo-600 text-white" : "bg-indigo-50 text-indigo-800"
+                }`}
+              >
+                {x !== "all" && <Glyph e={SUB_EMOJI[x]} className="h-3.5 w-3.5" />}
+                {x === "all" ? t("전체") : t(SUB_LABEL[x])}
+              </button>
+            ))}
+          </div>
+        )}
       </StickyBar>
 
       {browsing && children}
 
+      {tab !== "all" && tab !== "live" && (
+        <ResultList
+          title={t(TABS.find((x) => x.id === tab)!.label)}
+          count={counts[tab]}
+          items={(tab === "landmark" ? landmarks : tab === "festival" ? festivals : tab === "seoul" ? seoulAreas : spotItems).slice(0, tab === "spot" ? spotShown : undefined)}
+          loading={tab === "spot" && !spots}
+          empty={q ? t("‘{q}’에 맞는 곳이 없어요.", { q: query }) : t("이 지역에는 아직 없어요.")}
+          more={tab === "spot" && spotItems.length > spotShown ? () => setSpotShown((n) => n + SPOT_PAGE) : undefined}
+        />
+      )}
+
+      {/* 전체 탭에서 검색하면: 다른 탭 결과를 4개씩 (누르면 그 탭으로) */}
+      {tab === "all" &&
+        q &&
+        (
+          [
+            ["landmark", landmarks],
+            ["festival", festivals],
+            ["seoul", seoulAreas],
+            ["spot", spotItems],
+          ] as const
+        ).map(
+          ([id, items]) =>
+            items.length > 0 && (
+              <ResultList
+                key={id}
+                title={t(TABS.find((x) => x.id === id)!.label)}
+                count={items.length}
+                items={items.slice(0, 4)}
+                more={items.length > 4 ? () => setTab(id) : undefined}
+                moreLabel={t("전체 보기")}
+              />
+            ),
+        )}
+
+      {(tab === "all" || tab === "live") && (
       <section className="mt-8">
         <div className="flex items-center justify-between gap-2">
           <h2 className="min-w-0 truncate text-lg font-bold md:text-xl">
@@ -206,7 +402,68 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
           </ul>
         )}
       </section>
+      )}
     </>
+  );
+}
+
+/** 다른 탭 결과: 회색 구역 안 가로 카드 */
+function ResultList({
+  title,
+  count,
+  items,
+  loading,
+  empty,
+  more,
+  moreLabel,
+}: {
+  title: string;
+  count: number;
+  items: SearchItem[];
+  loading?: boolean;
+  empty?: string;
+  more?: () => void;
+  moreLabel?: string;
+}) {
+  const { t } = useI18n();
+  return (
+    <section className="mt-8">
+      <h2 className="text-lg font-bold md:text-xl">
+        {title} {!loading && <span className="text-base font-semibold text-gray-500">{t("{n}곳", { n: count })}</span>}
+      </h2>
+      {loading ? (
+        <p className="mt-4 empty-note p-6 text-center">{t("불러오는 중…")}</p>
+      ) : !items.length ? (
+        <p className="mt-4 empty-note p-6 text-center">{empty}</p>
+      ) : (
+        <ul className="sector mt-4 grid grid-cols-[minmax(0,1fr)] gap-2.5 p-3 md:grid-cols-2 lg:grid-cols-3">
+          {items.map((x) => {
+            const lv = x.score !== undefined ? levelOf(x.score) : undefined;
+            return (
+              <li key={x.id}>
+                <ListCard
+                  item={{
+                    href: x.href,
+                    img: x.img,
+                    emoji: x.emoji,
+                    title: x.title,
+                    sub: x.sub,
+                    tag: x.tag,
+                    level: lv ? { label: t(lv.label), color: lv.color } : undefined,
+                    badge: lv ? undefined : x.badge,
+                  }}
+                />
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      {more && (
+        <button onClick={more} className="mt-3 w-full rounded-2xl border border-gray-200 bg-white py-3 text-sm font-bold text-gray-800">
+          {moreLabel ?? t("더 보기")}
+        </button>
+      )}
+    </section>
   );
 }
 

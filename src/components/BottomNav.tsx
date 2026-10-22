@@ -12,7 +12,7 @@ export const TABS = [
   { href: "/map", label: "지도", icon: "M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 0v14m6-12v14" },
   { href: "/airport", label: "공항", icon: "M10.5 3.5a1.5 1.5 0 0 1 3 0V9l7 4v2l-7-2v4.5l2 1.5v1.5l-3.5-1-3.5 1V19l2-1.5V13l-7 2v-2l7-4z" },
   // 서울 실시간은 PC 상단 메뉴에만 (모바일 하단 탭은 그대로, 홈의 카드로 들어간다)
-  { href: "/explore", label: "지역 여행", icon: "M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 0v14m6-12v14", desktopOnly: true },
+  // '지역 여행'은 홈 통합 검색 탭(명소·축제·관광지 + 지역 칩)으로 옮겼다 (사용자 10/22). /explore 주소는 그대로 둔다
   { href: "/guide", label: "여행 가이드", icon: "M4 19.5V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-1.5Zm0 0A2 2 0 0 1 6 17h12M9 7h6", desktopOnly: true },
   {
     href: "/route",
@@ -89,8 +89,9 @@ export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
 }
 
 /** 휴대폰 하단 탭 5개, 홈이 가운데 (NOL 레퍼런스 10/21: 카테고리·내주변·홈·찜·마이). 지역 여행이 '탐색'으로 들어온다 */
-const MOBILE_TABS = ["/explore", "/map", "/", "/airport", "/me"].map((href) => TABS.find((tab) => tab.href === href)!);
-const MOBILE_LABEL: Record<string, string> = { "/explore": "탐색" };
+// 하단 첫 칸: 지역 여행(탐색)은 홈 통합 검색으로 옮기고, 한산한 코스 추천을 둔다 (사용자 10/22)
+const MOBILE_TABS = ["/route", "/map", "/", "/airport", "/me"].map((href) => TABS.find((tab) => tab.href === href)!);
+const MOBILE_LABEL: Record<string, string> = { "/route": "코스" };
 
 export function BottomNav() {
   const pathname = usePathname();
