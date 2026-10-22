@@ -63,6 +63,9 @@ export const APIS: ApiInfo[] = [
   // 월 상한(기본 30만 자, PAPAGO_MONTHLY_LIMIT)도 둔다 — 10/21 NCP가 429를 내는데 우리 일일 집계는 17%였다 (한 달 누적이 문제)
   // NCP NAVER API HUB Search Trend: 월 5만 건 무료(사용자가 NCP 콘솔 한도도 5만으로 걸어 둠). 우리 쓰임은 월 2천 건 안팎
   { id: "naver-searchtrend", name: "네이버 검색어 트렌드 (NCP Search Trend)", monthlyLimit: Number(process.env.SEARCHTREND_MONTHLY_LIMIT) || 50_000 },
+  // 무료 플랜 (사용자 10/22): 매월 초기화. 하루 몫을 나눠 한 달을 넘기지 않게
+  { id: "brave-search", name: "Brave Search (무료)", limit: Number(process.env.BRAVE_DAILY_LIMIT) || 60, monthlyLimit: Number(process.env.BRAVE_MONTHLY_LIMIT) || 2000 },
+  { id: "tavily", name: "Tavily 검색 (무료)", limit: Number(process.env.TAVILY_DAILY_LIMIT) || 30, monthlyLimit: Number(process.env.TAVILY_MONTHLY_LIMIT) || 1000, unit: "크레딧" },
   { id: "papago", name: "Papago 번역 (글자 수)", limit: 30000, monthlyLimit: Number(process.env.PAPAGO_MONTHLY_LIMIT) || 300_000, unit: "자" },
 ];
 

@@ -904,6 +904,8 @@ const dict: Dict = {
   "{name}에는 지금 약 {range}이 있고, 서울시 공식 혼잡 단계는 ‘{level}’이에요 ({time} 기준, 서울시 실시간 도시데이터).": "About {range} are at {name} now, and the Seoul official level is ‘{level}’ (as of {time}, Seoul real-time city data).",
   "데이터 출처·계산 방식": "Data sources & methodology",
   "예측 정확도": "Forecast accuracy",
+  "최근 소식": "Latest news",
+  "뉴스 검색으로 하루 한 번 모아요. 내용은 각 기사에서 확인하세요.": "Collected once a day from news search. Check each article for details.",
   "요즘 뜨는 곳 TOP 5": "Trending now TOP 5",
   "네이버 검색량과 AI 뉴스 검색으로 매일 아침 갱신": "Updated every morning from Naver search volume and AI news search",
   "검색량 {n}배 ↑": "Searches up {n}×",

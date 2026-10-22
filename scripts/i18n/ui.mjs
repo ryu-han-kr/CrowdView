@@ -2149,6 +2149,8 @@ export default {
   "예측 정확도": ["Forecast accuracy", "予測精度", "预测准确度", "預測準確度"],
   // ── 대안·공유 복사·캘린더·날씨 경고
   // ── 자체 QA (10/22)
+  "최근 소식": ["Latest news","最新ニュース","最新消息","最新消息"],
+  "뉴스 검색으로 하루 한 번 모아요. 내용은 각 기사에서 확인하세요.": ["Collected once a day from news search. Check each article for details.","ニュース検索で1日1回集めています。詳しくは各記事でご確認ください。","每天通过新闻搜索收集一次，详情请查看各篇报道。","每天透過新聞搜尋收集一次，詳情請查看各篇報導。"],
   "요즘 뜨는 곳 TOP 5": ["Trending now TOP 5","いま話題のスポット TOP 5","近期热门 TOP 5","近期熱門 TOP 5"],
   "네이버 검색량과 AI 뉴스 검색으로 매일 아침 갱신": ["Updated every morning from Naver search volume and AI news search","NAVER検索量とAIニュース検索で毎朝更新","每天早上根据Naver搜索量和AI新闻搜索更新","每天早上根據Naver搜尋量和AI新聞搜尋更新"],
   "검색량 {n}배 ↑": ["Searches up {n}×","検索 {n}倍 ↑","搜索量 {n}倍 ↑","搜尋量 {n}倍 ↑"],

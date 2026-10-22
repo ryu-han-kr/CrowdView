@@ -43,6 +43,7 @@ import { pushEnabled } from "@/lib/alerts";
 import { authEnabled } from "@/lib/auth";
 import { compactNumber, headcountInfo, isEstimated } from "@/lib/format";
 import { translateNames } from "@/lib/name-translate";
+import { getPlaceNews } from "@/lib/trending";
 import { getRelatedPlaces } from "@/lib/related-places";
 import { locateByName } from "@/lib/related-geo";
 import { distanceKm } from "@/lib/geo";
@@ -150,7 +151,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const [place, crowd] = await Promise.all([getLivePlace(id), getCrowd(id)]);
   if (!place || !crowd) notFound();
   if (place.category === "airport") redirect(localePath(lang, placeHref(place)));
-  const [signals, [today], related] = await Promise.all([getSignals(place), getHistory(id, 1), getRelatedPlaces(place)]);
+  const [signals, [today], related, news] = await Promise.all([getSignals(place), getHistory(id, 1), getRelatedPlaces(place), getPlaceNews(id)]);
+  // 최근 소식 제목도 외국어로 (Papago 캐시)
+  const newsTr = news?.hits.length ? await translateNames(news.hits.map((h) => h.title), lang) : new Map<string, string>();
   const relatedNames = await translateNames(
     related.flatMap((r) => [r.name, r.region]),
     lang,
@@ -791,6 +794,26 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               },
             ]}
           />
+
+          {/* 최근 소식 (Brave·Tavily 뉴스 검색, 하루 한 번 — lib/trending) */}
+          {news && news.hits.length > 0 && (
+            <section className="mt-8">
+              <h2 className="text-xl font-extrabold tracking-tight">{t("최근 소식")}</h2>
+              <ul className="sector mt-3 space-y-2 p-3">
+                {news.hits.map((h) => (
+                  <li key={h.url}>
+                    <a href={h.url} target="_blank" rel="noreferrer" className="block rounded-2xl bg-white px-4 py-3 shadow-[0_1px_2px_rgb(15_23_42/0.06)]">
+                      <p className="line-clamp-2 text-[15px] leading-snug font-bold text-gray-950">{newsTr.get(h.title) ?? h.title}</p>
+                      <p className="mt-1 text-xs font-medium text-gray-600">
+                        {h.source} ›
+                      </p>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-1.5 text-[11px] text-gray-500">{t("뉴스 검색으로 하루 한 번 모아요. 내용은 각 기사에서 확인하세요.")}</p>
+            </section>
+          )}
 
           {/* 정보 */}
           <section className="mt-8 mb-8 space-y-3 text-sm">

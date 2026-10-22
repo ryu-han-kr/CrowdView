@@ -10,6 +10,7 @@ import { festivalHref, getFestivals, isLongRunning } from "./festivals";
 import { heroImage } from "./place-photos";
 import { PLACES, placeHref } from "./places";
 import { addDays, kst } from "./time";
+import { searchNews, webSearchEnabled, type NewsHit } from "./web-search";
 
 export interface TrendItem {
   id: string;
@@ -33,6 +34,54 @@ export interface Trending {
   date: string;
   items: TrendItem[];
   ai: AiEvent[];
+}
+
+/** 장소별 최근 소식 (장소 상세 '최근 소식') */
+export interface PlaceNews {
+  date: string;
+  hits: NewsHit[];
+}
+const newsKey = (placeId: string) => `news:v1:${placeId}`;
+export async function getPlaceNews(placeId: string): Promise<PlaceNews | undefined> {
+  const raw = await kv.get(newsKey(placeId)).catch(() => null);
+  return raw ? (JSON.parse(raw) as PlaceNews) : undefined;
+}
+
+/** 뉴스 제목이 '행사·시즌 이벤트' 소식인지 */
+const EVENT_WORDS = /할로윈|핼러윈|크리스마스|축제|페스티벌|시즌|이벤트|퍼레이드|불꽃|개장|오픈|팝업|빛|라이트|단풍|벚꽃|눈썰매|야간|콘서트|공연|체험/;
+
+/** 소식을 볼 장소: 사람이 찾아가는 곳 (공항·행사 장소 제외), 스키장은 11~3월만 */
+function newsPlaces(month: number) {
+  return PLACES.filter(
+    (p) => ["themepark", "waterpark", "street", "landmark", "beach"].includes(p.category) || (p.category === "ski" && (month >= 11 || month <= 3)),
+  );
+}
+
+/** 장소마다 최근 1주 뉴스 → 관련 있는 것(이름이 제목에 있는 것)만 3개 저장. 행사 소식은 요즘 뜨는 곳 후보로 */
+async function refreshPlaceNews(today: string): Promise<TrendItem[]> {
+  if (!webSearchEnabled()) return [];
+  const month = Number(today.slice(5, 7));
+  const events: TrendItem[] = [];
+  for (const p of newsPlaces(month)) {
+    const short = p.name.replace(/\s*(어드벤처|스키장|해수욕장|카페거리|걷고싶은거리)$/, "");
+    // Brave 무료 플랜은 1초에 1건 → 장소 사이 1.1초 (저장된 검색어면 바로 넘어간다)
+    await new Promise((r) => setTimeout(r, 1100));
+    const hits = (await searchNews(p.name, 7)).filter((h) => h.title.includes(short)).slice(0, 3);
+    if (!hits.length) continue;
+    await kv.set(newsKey(p.id), JSON.stringify({ date: today, hits } satisfies PlaceNews), 3 * 86_400).catch(() => {});
+    const ev = hits.find((h) => EVENT_WORDS.test(h.title));
+    if (ev)
+      events.push({
+        id: `news-${p.id}`,
+        kind: "event",
+        title: ev.title.length > 40 ? `${ev.title.slice(0, 39)}…` : ev.title,
+        href: placeHref(p),
+        img: heroImage(p),
+        region: p.region,
+        reason: `뉴스 · ${ev.source}`,
+      });
+  }
+  return events;
 }
 
 const KEY = "trending:v1";
@@ -102,9 +151,10 @@ export async function refreshTrending(): Promise<number> {
       period: `${f.start.slice(5).replace("-", "/")}~${f.end.slice(5).replace("-", "/")}`,
     })),
   ];
-  const [vol, ai] = await Promise.all([
+  const [vol, ai, newsEvents] = await Promise.all([
     searchVolumes(cands.map((c) => c.kw)).catch(() => new Map<string, { recent: number; prev: number }>()),
     aiEventsEnabled() ? fetchAiEvents().catch(() => [] as AiEvent[]) : Promise.resolve([] as AiEvent[]),
+    refreshPlaceNews(today).catch(() => [] as TrendItem[]),
   ]);
   // 점수: 검색량(로그) + 오름세. 검색이 거의 없는 곳(기준의 3% 미만)은 뺀다
   const scored = cands
@@ -143,7 +193,15 @@ export async function refreshTrending(): Promise<number> {
       reason: e.why || "화제의 행사",
     };
   });
-  const data: Trending = { date: today, items: [...aiItems.filter((x) => x.img).slice(0, 3), ...items, ...aiItems.filter((x) => !x.img)], ai };
+  // 순서: AI 화제 행사(사진 있는 것) → 뉴스로 찾은 시즌 이벤트 2개 → 검색량 순위 → 나머지 AI 행사. 같은 장소는 한 번만
+  const seen = new Set<string>();
+  const merged = [...aiItems.filter((x) => x.img).slice(0, 3), ...newsEvents.slice(0, 2), ...items, ...aiItems.filter((x) => !x.img)].filter((x) => {
+    const k = x.external ? x.href : x.href.split("#")[0];
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+  const data: Trending = { date: today, items: merged, ai };
   if (!data.items.length) return 0;
   await kv.set(KEY, JSON.stringify(data), 3 * 86_400);
   return data.items.length;
