@@ -1,5 +1,6 @@
 "use client";
 
+import { ListCard } from "@/components/ListCard";
 import Link from "@/i18n/link";
 import Image from "next/image";
 import { canOptimize } from "@/lib/img";
@@ -143,60 +144,39 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
           }))}
         />
       ) : (
-        <ul className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+        // 사진 왼쪽 · 글 오른쪽 가로 카드를 회색 구역 안에 (사용자 QA 10/22, 홈 '전체 장소'와 같은 모양)
+        <ul className="sector mt-3 grid grid-cols-[minmax(0,1fr)] gap-2.5 p-3 md:grid-cols-2">
           {list.map((r, i) => {
             const g = SEOUL_GROUPS.find((x) => x.id === r.group);
+            const lv = r.score !== undefined ? levelOf(r.score) : undefined;
             return (
-              <li key={r.code} className="relative">
-                <Link
-                  href={`/seoul/${r.code}`}
-                  className="group block"
-                  data-place-id={`seoul-${r.code}`}
-                  data-level={r.score !== undefined ? levelOf(r.score).key : "none"}
-                >
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100">
-                    {r.img ? (
-                      <Image
-                        src={r.img}
-                        alt=""
-                        fill
-                        sizes="(min-width: 1280px) 20vw, (min-width: 768px) 28vw, 45vw"
-                        // 첫 화면에 보이는 맨 위 두 줄은 바로 받는다 (가장 큰 그림이 늦게 뜨던 문제)
-                        loading={i < 4 ? "eager" : "lazy"}
-                        fetchPriority={i < 2 ? "high" : "auto"}
-                        unoptimized={!canOptimize(r.img)}
-                        className="object-cover transition-transform duration-300 md:group-hover:scale-105"
+              <li key={r.code}>
+                <ListCard
+                  item={{
+                    href: `/seoul/${r.code}`,
+                    img: r.img,
+                    emoji: g?.emoji,
+                    eager: i < 4,
+                    title: names[r.name] ?? r.name,
+                    tag: g ? { label: t(g.label), color: "#4338ca", emoji: g.emoji } : undefined,
+                    sub: me && sort === "near" ? `${distanceKm(me, r).toFixed(1)}km` : undefined,
+                    level: lv ? { label: t(lv.label), color: lv.color } : undefined,
+                    people:
+                      r.min !== undefined
+                        ? t("{min}~{max}명", { min: compactNumber(r.min, lang), max: compactNumber(r.max ?? r.min, lang) })
+                        : t("정보 없음"),
+                    data: { "place-id": `seoul-${r.code}`, level: lv ? lv.key : "none" },
+                    action: (
+                      <PickStar
+                        pick={{
+                          id: `seoul-${r.code}`,
+                          label: names[r.name] ?? r.name,
+                          href: `/seoul/${r.code}`,
+                        }}
                       />
-                    ) : (
-                      <div className="flex h-full items-center justify-center bg-gradient-to-br from-teal-50 to-sky-100 text-4xl">{g?.emoji}</div>
-                    )}
-                    {r.score !== undefined && (
-                      <span className="absolute top-2 left-2 rounded-full bg-white/95 shadow-sm">
-                        <LevelBadge score={r.score} />
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-1.5 truncate text-sm font-semibold">{names[r.name] ?? r.name}</p>
-                  <p className="truncate text-xs text-gray-500">
-                    {g && `${g.emoji} `}
-                    {r.min !== undefined
-                      ? t("{min}~{max}명", {
-                          min: compactNumber(r.min, lang),
-                          max: compactNumber(r.max ?? r.min, lang),
-                        })
-                      : t("정보 없음")}
-                    {me && sort === "near" && ` · ${distanceKm(me, r).toFixed(1)}km`}
-                  </p>
-                </Link>
-                <div className="absolute top-1 right-1 rounded-full bg-white/90">
-                  <PickStar
-                    pick={{
-                      id: `seoul-${r.code}`,
-                      label: names[r.name] ?? r.name,
-                      href: `/seoul/${r.code}`,
-                    }}
-                  />
-                </div>
+                    ),
+                  }}
+                />
               </li>
             );
           })}

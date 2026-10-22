@@ -1,5 +1,6 @@
 "use client";
 
+import { ListCard } from "@/components/ListCard";
 import Link from "@/i18n/link";
 import Image from "next/image";
 import { canOptimize } from "@/lib/img";
@@ -215,52 +216,27 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
           ) : (
             <>
               {/* 사진 카드 (관광공사 사진이 있는 곳 — 없으면 종류 그림). 글만 늘어선 목록이 데이터베이스 같다는 QA 반영 */}
-              <ul className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
-                {list.slice(0, 120).map((r) => {
+              <ul className="sector mt-3 grid grid-cols-[minmax(0,1fr)] gap-2.5 p-3 md:grid-cols-2">
+                {list.slice(0, 120).map((r, i) => {
                   const level = levelOf(r);
                   const kind = KINDS.find((k) => k.id === r[1]);
                   return (
-                    <li key={r[0]} className="relative">
-                      <Link href={`/guide/${r[0]}`} className="group block">
-                        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100">
-                          {r[6] ? (
-                            <Image
-                              src={r[6]}
-                              alt=""
-                              fill
-                              sizes="(min-width: 1280px) 20vw, (min-width: 768px) 28vw, 45vw"
-                              unoptimized={!canOptimize(r[6])}
-                              className="object-cover transition-transform duration-300 md:group-hover:scale-105"
-                            />
-                          ) : (
-                            <div className="flex h-full items-center justify-center bg-gradient-to-br from-indigo-50 to-sky-100 text-indigo-300">
-                              <Glyph e={kind?.emoji} className="h-10 w-10" />
-                            </div>
-                          )}
-                          {level && (
-                            <span
-                              className="absolute top-2 left-2 rounded-full bg-white/95 px-2 py-0.5 text-[11px] font-bold shadow-sm"
-                              style={{ color: LEVEL_COLOR[level] }}
-                              title={t("이 동네 지금 혼잡도")}
-                            >
-                              ● {t(level)}
-                            </span>
-                          )}
-                        </div>
-                        <p className="mt-1.5 truncate text-sm font-semibold">{r[2]}</p>
-                        <p className="truncate text-xs text-gray-500">
-                          {kind && (
-                            <>
-                              <Glyph e={kind.emoji} /> {t(kind.label)}
-                            </>
-                          )}
-                          {r[5] ? ` · ${t(r[5])}` : ""}
-                          {me && r[3] !== null && ` · ${distanceKm(me, { lat: r[3], lng: r[4]! }).toFixed(1)}km`}
-                        </p>
-                      </Link>
-                      <div className="absolute top-1 right-1 rounded-full bg-white/90">
-                        <PickStar pick={{ id: r[0], label: r[2], href: `/guide/${r[0]}` }} />
-                      </div>
+                    <li key={r[0]}>
+                      <ListCard
+                        item={{
+                          href: `/guide/${r[0]}`,
+                          img: r[6] ?? undefined,
+                          emoji: kind?.emoji,
+                          eager: i < 4,
+                          title: r[2],
+                          tag: kind ? { label: t(kind.label), color: "#4338ca", emoji: kind.emoji } : undefined,
+                          sub: [r[5] ? t(r[5]) : "", me && r[3] !== null ? `${distanceKm(me, { lat: r[3], lng: r[4]! }).toFixed(1)}km` : ""]
+                            .filter(Boolean)
+                            .join(" · "),
+                          level: level ? { label: t(level), color: LEVEL_COLOR[level] } : undefined,
+                          action: <PickStar pick={{ id: r[0], label: r[2], href: `/guide/${r[0]}` }} />,
+                        }}
+                      />
                     </li>
                   );
                 })}

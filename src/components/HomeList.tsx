@@ -6,10 +6,9 @@ import { headcountInfo } from "@/lib/format";
 import { placeHref } from "@/lib/places";
 import { useFavorites } from "@/lib/prefs";
 import { CATEGORY_LABEL, type Category, type CrowdResult, type Place } from "@/lib/types";
-import Image from "next/image";
-import Link from "@/i18n/link";
 import { CATEGORY_TONE } from "@/lib/category-style";
-import { inkOf, levelOf } from "@/lib/levels";
+import { levelOf } from "@/lib/levels";
+import { ListCard } from "./ListCard";
 import type { PhotoCardItem } from "./home/PhotoRail";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
 import { StickyBar } from "./StickyBar";
@@ -187,7 +186,21 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
           <ul className="sector mt-4 grid grid-cols-[minmax(0,1fr)] gap-2.5 p-3 md:grid-cols-2 lg:grid-cols-3">
             {cards.map((c) => (
               <li key={c.id}>
-                <ListCard item={c} />
+                <ListCard
+                  item={{
+                    href: c.href,
+                    img: c.img,
+                    emoji: c.emoji,
+                    title: c.title,
+                    sub: c.region,
+                    tag: c.tag,
+                    level: c.score !== undefined ? { label: t(levelOf(c.score).label), color: levelOf(c.score).color } : undefined,
+                    people: c.people,
+                    trend: c.trend,
+                    badge: c.badge,
+                    favId: c.favId,
+                  }}
+                />
               </li>
             ))}
           </ul>
@@ -197,67 +210,3 @@ export function HomeList({ places, crowd, children }: { places: Place[]; crowd: 
   );
 }
 
-/** 가로 카드: 사진(왼쪽) + 분류·이름·지역·지금 단계(오른쪽) + 찜 하트 */
-function ListCard({ item }: { item: PhotoCardItem & { region: string; trend?: "up" | "down" | "flat" } }) {
-  const { t } = useI18n();
-  const { isFavorite, toggle } = useFavorites();
-  const fav = item.favId ? isFavorite(item.favId) : false;
-  const lv = item.score !== undefined ? levelOf(item.score) : undefined;
-  return (
-    <Link
-      href={item.href}
-      className="relative flex gap-3 rounded-2xl bg-white p-2.5 pr-3 shadow-[0_1px_2px_rgb(15_23_42/0.06)] transition active:scale-[0.99] md:hover:shadow-md"
-    >
-      <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-xl bg-gray-100">
-        {item.img ? (
-          <Image src={item.img} alt="" fill sizes="208px" className="object-cover" />
-        ) : (
-          <div className="flex h-full items-center justify-center text-indigo-400">
-            <Glyph e={item.emoji ?? "📍"} className="h-10 w-10" />
-          </div>
-        )}
-      </div>
-      <div className="min-w-0 flex-1 py-0.5">
-        {item.tag && (
-          <p className="flex items-center gap-1 text-[12px] font-extrabold" style={{ color: item.tag.color }}>
-            {/* eslint-disable-next-line @next/next/no-img-element -- 작은 고정 아이콘 */}
-            <img src={`/icons/3d/${item.tag.icon}.webp`} alt="" width={16} height={16} className="h-4 w-4" />
-            {item.tag.label}
-          </p>
-        )}
-        <p className="mt-0.5 truncate pr-8 text-base font-extrabold text-gray-950">{item.title}</p>
-        <p className="truncate text-[13px] font-medium text-gray-600">{item.region}</p>
-        <p className="mt-1.5 flex min-w-0 items-center gap-1.5 overflow-hidden whitespace-nowrap">
-          {lv ? (
-            <>
-              <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: lv.color }} />
-              <b className="text-[15px] font-extrabold" style={{ color: inkOf(lv.color) }}>
-                {t(lv.label)}
-              </b>
-              {item.people && <span className="truncate text-[13px] font-bold text-gray-800">{item.people}</span>}
-              {item.trend === "up" && <span className="shrink-0 text-xs font-bold text-red-600 dark:text-red-400">↑</span>}
-              {item.trend === "down" && <span className="shrink-0 text-xs font-bold text-emerald-700">↓</span>}
-            </>
-          ) : (
-            <b className="text-[14px] font-bold text-gray-600">{item.badge}</b>
-          )}
-        </p>
-      </div>
-      {item.favId && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            toggle(item.favId!);
-          }}
-          aria-label={fav ? t("즐겨찾기 해제") : t("즐겨찾기")}
-          aria-pressed={fav}
-          className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full"
-        >
-          <Glyph e={fav ? "❤️" : "🤍"} className={`h-5 w-5 ${fav ? "text-rose-500" : "text-gray-400"}`} />
-        </button>
-      )}
-    </Link>
-  );
-}
