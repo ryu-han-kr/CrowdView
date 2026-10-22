@@ -11,7 +11,8 @@ const ITEMS: { href: string; label: string; icon: string; badge?: string }[] = [
   { href: "/?cat=ski#places", label: "스키장", icon: "ski" },
   { href: "/events", label: "축제", icon: "festival" },
   { href: "/seoul", label: "서울 실시간", icon: "seoul", badge: "121곳" },
-  { href: "/explore", label: "지역 여행", icon: "explore", badge: "NEW" },
+  // 지역 여행 화면 대신 홈 통합 검색의 '명소' 탭 (사용자 10/22)
+  { href: "/?tab=landmark#places", label: "명소", icon: "explore", badge: "NEW" },
   { href: "/guide", label: "여행 가이드", icon: "guide" },
   { href: "/route", label: "추천 코스", icon: "route" },
   { href: "/near?tab=reservation", label: "체험·액티비티", icon: "activity" },
