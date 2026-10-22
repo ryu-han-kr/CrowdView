@@ -10,6 +10,8 @@ export interface ViewerPhoto {
   src: string;
   credit: string;
   alt?: string;
+  /** 원본(라이선스) 페이지 — 커먼즈 사진은 저작자·라이선스와 함께 링크 */
+  href?: string;
 }
 
 /**
@@ -91,9 +93,18 @@ export function PhotoViewer({
                   {d === "next" ? "›" : "‹"}
                 </button>
               ))}
-            <span className="absolute right-3 bottom-3 max-w-[80%] truncate rounded bg-black/55 px-2 py-0.5 text-[11px] text-white/90">
-              {p.credit}
-            </span>
+            {p.href ? (
+              <a
+                href={p.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute right-3 bottom-3 max-w-[80%] truncate rounded bg-black/55 px-2 py-0.5 text-[11px] text-white/90 underline-offset-2 hover:underline"
+              >
+                {p.credit}
+              </a>
+            ) : (
+              <span className="absolute right-3 bottom-3 max-w-[80%] truncate rounded bg-black/55 px-2 py-0.5 text-[11px] text-white/90">{p.credit}</span>
+            )}
           </div>
 
           {n > 1 && (

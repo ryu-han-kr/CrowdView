@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { StayLinks } from "@/components/StayLinks";
 import type { Metadata } from "next";
 import placeImages from "@/data/korea/place-images.json";
+import { placePhotos } from "@/lib/place-photos";
 import { breadcrumbLd, jsonLd, kstClock, pageMeta, SITE } from "@/lib/seo";
 import { HourlyChart } from "@/components/HourlyChart";
 import { LevelBadge } from "@/components/Level";
@@ -351,6 +352,12 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
       <PlaceHero
         place={place}
         gallery={PLACE_IMAGES[place.id] ?? []}
+        photos={placePhotos(place.id).map((p) => ({
+          src: p.src,
+          alt: p.alt,
+          href: p.page,
+          credit: p.credit === "한국관광공사" ? t("사진 한국관광공사") : t("사진 {author} · {license}", { author: p.credit.replace(" / Wikimedia Commons", ""), license: p.license }),
+        }))}
         chips={[{ label: t(CATEGORY_LABEL[place.category]), href: `/?cat=${place.category}` }, { label: t(place.region) }]}
       />
 
