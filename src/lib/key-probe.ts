@@ -1,7 +1,7 @@
 // 새로 넣은 API 키가 실제로 되는지 서버에서 한 번 불러 본다 (Vercel의 Sensitive 값은 밖에서 읽을 수 없어 운영 서버에서만 확인 가능).
 // /api/health 의 keyProbe 로 보인다: 키 값은 절대 내보내지 않고 정상 여부와 원본 응답 앞부분(키는 가림)만. 30분 저장
 import { kv } from "./cache";
-import { naverDatalabKeys } from "./crowd/extra-signals";
+import { naverDatalabKeys, SEARCH_TREND_URL, searchTrendHeaders } from "./crowd/extra-signals";
 
 export interface ProbeResult {
   configured: boolean;
@@ -83,14 +83,10 @@ const PROBES: Probe[] = [
     id: "naverDatalab",
     env: "NAVER_DATALAB_CLIENT_ID",
     key: () => naverDatalabKeys()?.id,
-    url: () => "https://openapi.naver.com/v1/datalab/search",
+    url: () => SEARCH_TREND_URL,
     init: (id) => ({
       method: "POST",
-      headers: {
-        "X-Naver-Client-Id": id.trim(),
-        "X-Naver-Client-Secret": naverDatalabKeys()?.secret ?? "",
-        "content-type": "application/json",
-      },
+      headers: searchTrendHeaders({ id: id.trim(), secret: naverDatalabKeys()?.secret ?? "" }),
       body: JSON.stringify({
         startDate: "2026-09-01",
         endDate: "2026-09-07",
@@ -99,12 +95,12 @@ const PROBES: Probe[] = [
       }),
     }),
     ok: (s, b) => s === 200 && /"results"/.test(b),
-    // 네이버 개발자센터 Client ID는 보통 20자, Secret은 10자
+    // NCP Application 키는 보통 Client ID 10자, Secret 40자 (값은 내보내지 않고 길이만)
     shape: () => {
       const k = naverDatalabKeys();
       const from = k?.from ?? "none";
-      const id = (from === "login" ? process.env.NAVER_CLIENT_ID : process.env.NAVER_DATALAB_CLIENT_ID) ?? "";
-      const secret = (from === "login" ? process.env.NAVER_CLIENT_SECRET : process.env.NAVER_DATALAB_CLIENT_SECRET) ?? "";
+      const id = k?.id ?? "";
+      const secret = k?.secret ?? "";
       return {
         from,
         idLen: id.trim().length,

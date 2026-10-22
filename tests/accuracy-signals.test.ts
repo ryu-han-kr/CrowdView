@@ -66,18 +66,26 @@ test("자료 등급: 기관 실측 A · 대기시간·지역 안 시설 B · 예
   assert.equal(dataGrade({ source: "model" }), "C");
 });
 
-// 10/22: 데이터랩 전용 키가 없으면 네이버 로그인 앱 키(같은 개발자센터 앱)를 쓴다
+// 10/22: Search Trend(NCP) 키 — 전용 키가 없으면 Papago 앱 키
 import { naverDatalabKeys } from "@/lib/crowd/extra-signals";
 
-test("데이터랩 키: 전용 키 우선, 없으면 로그인 앱 키, 둘 다 없으면 없음", () => {
-  const keys = ["NAVER_DATALAB_CLIENT_ID", "NAVER_DATALAB_CLIENT_SECRET", "NAVER_CLIENT_ID", "NAVER_CLIENT_SECRET"] as const;
+test("Search Trend 키: 전용 키 우선, 없으면 Papago 앱 키, 둘 다 없으면 없음", () => {
+  const keys = [
+    "NAVER_DATALAB_CLIENT_ID",
+    "NAVER_DATALAB_CLIENT_SECRET",
+    "PAPAGO_CLIENT_ID",
+    "PAPAGO_CLIENT_SECRET",
+    "PAPAGO_CLIENT_PASSWORD",
+    "NEXT_PUBLIC_NAVER_MAP_CLIENT_ID",
+    "NAVER_MAP_CLIENT_SECRET",
+  ] as const;
   const saved = Object.fromEntries(keys.map((k) => [k, process.env[k]]));
   try {
     for (const k of keys) delete process.env[k];
     assert.equal(naverDatalabKeys(), undefined);
-    process.env.NAVER_CLIENT_ID = " login-id ";
-    process.env.NAVER_CLIENT_SECRET = "login-secret\n";
-    assert.deepEqual(naverDatalabKeys(), { id: "login-id", secret: "login-secret", from: "login" });
+    process.env.PAPAGO_CLIENT_ID = " ncp-id ";
+    process.env.PAPAGO_CLIENT_PASSWORD = "ncp-secret\n";
+    assert.deepEqual(naverDatalabKeys(), { id: "ncp-id", secret: "ncp-secret", from: "papago" });
     process.env.NAVER_DATALAB_CLIENT_ID = "dl-id";
     process.env.NAVER_DATALAB_CLIENT_SECRET = "dl-secret";
     assert.deepEqual(naverDatalabKeys(), { id: "dl-id", secret: "dl-secret", from: "datalab" });
