@@ -23,7 +23,7 @@ import { RoadSection } from "@/components/RoadCard";
 import { formatHour } from "@/i18n/translate";
 import { DailyForecastChart } from "@/components/DailyForecastChart";
 import { HourlyChart } from "@/components/HourlyChart";
-import { CrowdGauge } from "@/components/CrowdGauge";
+import { CrowdMascot } from "@/components/place/CrowdMascot";
 import { WeekHeatmap } from "@/components/WeekHeatmap";
 import { DataTag } from "@/components/DataTag";
 import { levelOf, inkOf } from "@/lib/levels";
@@ -167,49 +167,44 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
         }}
       />
       {/* 위 사진: 장소 상세와 같은 전체 폭 사진 + 뒤로 버튼 (관광공사 사진 5~12장 넘겨 보기) */}
-      <PlaceHero place={{ ...model.place, name, image: undefined, emoji: kind.emoji }} gallery={photos} favorite={false} />
+      <PlaceHero
+        place={{ ...model.place, name, image: undefined, emoji: kind.emoji }}
+        gallery={photos}
+        favorite={false}
+        chips={[{ label: t(kind.label) }, { label: t(l.region) }]}
+      />
 
       {/* 장소 상세와 같은 틀: 모바일은 한 줄, PC는 왼쪽(지금·날씨) 고정 + 오른쪽(그래프·소개) */}
-      <div className="relative -mt-6 px-5 pb-10 md:mt-8 md:px-0 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-10">
+      <div className="relative mt-5 px-5 pb-10 md:mt-8 md:px-0 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-10">
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
-              <Glyph e={kind.emoji} className="mr-0.5 h-3.5 w-3.5" />
-              {t(kind.label)}
-            </span>
-            <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600">{t(l.region)}</span>
-          </div>
-          <h1 className="mt-2 text-[26px] leading-tight font-extrabold tracking-tight md:text-3xl">{name}</h1>
+          {/* 분류·지역 칩은 사진 위로, 한 문장 요약은 혼잡도 카드와 겹쳐 뺐다 (사용자 QA 10/22 — 장소 상세와 같게) */}
+          <h1 className="pt-1 text-[28px] leading-tight font-extrabold tracking-tight text-gray-950 md:pt-0 md:text-[34px]">{name}</h1>
           {lang !== "ko" && <p className="mt-0.5 text-sm text-gray-500">{l.n.ko}</p>}
           {info?.overview && (
-            <p lang="ko" className="mt-2 text-[15px] leading-7 text-gray-600">
+            <p lang="ko" className="mt-2 text-base leading-7 font-medium text-gray-700">
               {firstSentence(info.overview)}
             </p>
           )}
-          {/* 한 문장 요약 (장소 상세와 같은 상자) */}
-          <p className="mt-3 rounded-2xl bg-gray-50 px-4 py-3 text-[15px] leading-7 text-gray-800">
-            {nowOpen
-              ? t("{name}의 지금 혼잡도는 ‘{level}’이에요.", { name, level: t(nowLevel.label) })
-              : t("{name}은(는) 지금 운영 시간이 아니에요.", { name })}
-            {best && ` ${t("오늘 남은 운영 시간 중에는 {hour}쯤이 가장 한산할 것으로 보여요.", { hour: formatHour(best.hour, lang) })}${levelOf(best.score).key >= 4 ? ` ${t("다만 그때도 ‘{level}’ 예상이라 한산하다는 뜻은 아니에요.", { level: t(levelOf(best.score).label) })}` : ""}`}
-          </p>
           <KstNote className="mt-1" />
 
-          {/* 지금 혼잡도 (장소 상세와 같은 모양: 단계 + 반원 계기판) */}
-          <section className="mt-4 rounded-3xl px-4 py-3.5" style={{ background: `${nowOpen ? nowLevel.color : "#6b7280"}14` }}>
+          {/* 지금 혼잡도 (장소 상세와 같은 모양: 단계 + 햄스터 캐릭터) */}
+          <section
+            className="mt-4 rounded-3xl px-4 py-4"
+            style={{ background: `${nowOpen ? nowLevel.color : "#6b7280"}24`, boxShadow: `inset 0 0 0 1.5px ${nowOpen ? nowLevel.color : "#6b7280"}55` }}
+          >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-gray-600">{t("지금 혼잡도")}</p>
-                <p className="text-[28px] leading-tight font-extrabold" style={{ color: nowOpen ? inkOf(nowLevel.color) : "#4b5563" }}>
+                <p className="text-[15px] font-bold text-gray-800">{t("지금 혼잡도")}</p>
+                <p className="text-[34px] leading-tight font-black" style={{ color: nowOpen ? inkOf(nowLevel.color) : "#4b5563" }}>
                   {nowOpen ? t(nowLevel.label) : t("운영 시간 아님")}
                   {!live && nowOpen && <DataTag className="text-xs" />}
                 </p>
-                <p className="mt-0.5 text-base text-gray-700">{t(nowOpen ? nowLevel.desc : "운영 시간 {from} ~ {to}", { from: formatHour(model.place.hours[0], lang), to: formatHour(model.place.hours[1], lang) })}</p>
+                <p className="mt-1 text-[17px] font-semibold text-gray-900">{t(nowOpen ? nowLevel.desc : "운영 시간 {from} ~ {to}", { from: formatHour(model.place.hours[0], lang), to: formatHour(model.place.hours[1], lang) })}</p>
               </div>
-              <CrowdGauge score={nowScore} closed={!nowOpen} size={120} />
+              <CrowdMascot score={nowScore} closed={!nowOpen} size={112} className="-my-1 shrink-0" label={nowOpen ? t(nowLevel.label) : t("운영 시간 아님")} />
             </div>
             {/* 단계 색이 옅게 깔린 배경이라 회색 500은 대비가 모자랄 때가 있다 (axe color-contrast) */}
-            <p className="mt-2 text-xs text-gray-600">
+            <p className="sector-box mt-3 text-[13px] text-gray-700">
               {live ? (
                 <Link href={live.href} className="underline">
                   {t("가까운 측정 지점 {name} 기준", { name: live.label })} ›
