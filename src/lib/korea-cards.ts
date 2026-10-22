@@ -13,6 +13,14 @@ type Crowd = Awaited<ReturnType<typeof getAllCrowd>>;
 type Seoul = Awaited<ReturnType<typeof getAllSeoulLive>>;
 
 /** 랜드마크 카드: 가까운 우리 장소·서울 실시간 지역이 있으면 지금 혼잡도를 붙인다 */
+const KIND_TONE: Record<Landmark["kind"], { color: string; icon: string }> = {
+  history: { color: "#4338ca", icon: "landmark" },
+  nature: { color: "#15803d", icon: "explore" },
+  city: { color: "#be185d", icon: "street" },
+  fun: { color: "#c2410c", icon: "rollercoaster" },
+  sea: { color: "#0e7490", icon: "beach" },
+};
+
 export function landmarkCard(l: Landmark, lang: Lang, t: T, crowd: Crowd, seoul: Seoul): PhotoCardItem {
   const link = landmarkLink(l, lang);
   const c = link.placeId ? crowd[link.placeId] : undefined;
@@ -26,6 +34,8 @@ export function landmarkCard(l: Landmark, lang: Lang, t: T, crowd: Crowd, seoul:
     title: l.n[lang] ?? l.n.ko,
     sub: `${t(l.region)} · ${t(kind.label)}`,
     score,
+    // 분류 꼬리표 (사용자 QA 10/22: 사진이 비슷해 구별이 어렵다)
+    tag: { label: t(kind.label), ...KIND_TONE[l.kind] },
     lat: l.lat,
     lng: l.lng,
   };

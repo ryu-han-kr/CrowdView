@@ -4,6 +4,7 @@ import Link from "@/i18n/link";
 import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
+import { FeatureGrid } from "./home/FeatureLayouts";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
 import { MoreSpots, spotCard, useSpots, type SpotRow } from "./MoreSpots";
 import { StickyBar } from "./StickyBar";
@@ -123,13 +124,16 @@ export function ExploreView({
                 ))}
             </div>
             {landmarks.length ? (
+              <>
+              {landmarks.length >= 5 && <FeatureGrid items={landmarks.slice(0, 5)} className="mt-4" />}
               <ul className="mt-4 grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 md:grid-cols-5 md:gap-x-4">
-                {landmarks.map((l) => (
+                {(landmarks.length >= 5 ? landmarks.slice(5) : landmarks).map((l) => (
                   <li key={l.id}>
                     <PhotoCard item={l} />
                   </li>
                 ))}
               </ul>
+              </>
             ) : (
               <p className="mt-4 empty-note p-6 text-center">{t("아직 고른 명소가 없어요. 축제를 확인해 보세요.")}</p>
             )}
