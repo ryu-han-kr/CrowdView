@@ -323,7 +323,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       img: heroImage(p),
       badge: live ? "LIVE" : t("예측"),
       live,
-      headline: c.avgWaitMin !== undefined ? t("평균 대기 {n}분", { n: c.avgWaitMin }) : t("지금 {level}", { level: t(lv.label) }),
+      headline: c.avgWaitMin !== undefined ? t("평균 대기 {n}분", { n: c.avgWaitMin }) : placeTag(p, t).label,
       title: t(p.name),
       boxLine: t(p.region),
       boxValue: [t(lv.label), hc?.text].filter(Boolean).join(" · "),
