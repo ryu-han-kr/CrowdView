@@ -7,7 +7,8 @@ import { makePredictor, shapeNear } from "./forecast";
 import { distanceKm, travelMinutes, type LatLng, type Transport } from "./geo";
 import { PLACES, placeHref } from "./places";
 import type { Candidate, Interest, Leg, MealSpot } from "./route";
-import { GUIDE, getGuidePlace, photoNear } from "./seoul-guide";
+import { CULTURE, GUIDE, getGuidePlace, photoNear } from "./seoul-guide";
+import { kakaoSearch } from "./kakao-local";
 import { SEOUL_AREAS } from "./seoul-areas";
 import { getAllSeoulLive, seoulGroup, type SeoulGroup, type SeoulLive } from "./seoul-live";
 import { subwayTrip } from "./subway";
@@ -27,7 +28,20 @@ const PLACE_STAY: Partial<Record<Category, number>> = { landmark: 80, street: 70
 
 const GROUP_INTEREST: Partial<Record<SeoulGroup, Interest>> = { heritage: "history", park: "nature", street: "shopping", tour: "shopping" };
 // 운영 시간 정보가 없는 곳의 기본 방문 가능 시간 (밤늦게 공원·고궁으로 보내지 않게)
-const DEFAULT_HOURS: Record<Interest, [number, number]> = { history: [9, 18], nature: [6, 22], shopping: [10, 23], fun: [10, 22] };
+const DEFAULT_HOURS: Record<Interest, [number, number]> = {
+  history: [9, 18],
+  nature: [6, 22],
+  shopping: [10, 23],
+  fun: [10, 22],
+  cafe: [9, 22],
+  food: [11, 21],
+  culture: [10, 18],
+  anime: [11, 21],
+  department: [10.5, 20],
+  flagship: [11, 21],
+};
+const INTEREST_STAY: Partial<Record<Interest, number>> = { cafe: 50, food: 60, culture: 80, anime: 50, department: 90, flagship: 40 };
+const CAFE = /카페|cafe|커피|coffee|베이커리|bakery|디저트|빙수/i;
 const GROUP_STAY: Partial<Record<SeoulGroup, number>> = { heritage: 80, park: 60, street: 60, tour: 70 };
 
 /** "YYYY-MM-DD HH:MM" → 오늘 0시부터 센 시 (내일 9시 = 33) */
@@ -168,6 +182,112 @@ export async function getRouteCandidates(): Promise<Candidate[]> {
   return out;
 }
 
+/** 1km 안 서울 실시간 지역의 혼잡을 빌려 쓰는 후보 (없으면 보통 45로 본다) */
+function nearSeoul(
+  pt: LatLng,
+  seoul: Awaited<ReturnType<typeof getAllSeoulLive>>,
+  beyond: Awaited<ReturnType<typeof getBeyond>>,
+): Pick<Candidate, "hourly" | "now" | "basis" | "predict"> {
+  const near = SEOUL_AREAS.map((a) => ({ a, km: distanceKm(a, pt) }))
+    .filter((x) => x.km <= 1 && seoul[x.a.code])
+    .sort((x, y) => x.km - y.km)[0];
+  if (!near) return { hourly: {}, now: 45, basis: "seoul" };
+  const c = seoulCandidate(near.a, seoul[near.a.code], beyond);
+  return { hourly: c.hourly, now: c.now, basis: "seoul", ...(c.predict && { predict: c.predict }) };
+}
+
+/** 가이드 카페·맛집 + 문화공간(미술관·박물관) 후보 (사용자 10/22: 관심사 세분화) */
+export async function getExtraCandidates(interests: Interest[]): Promise<Candidate[]> {
+  if (!interests.some((i) => i === "cafe" || i === "food" || i === "culture")) return [];
+  const [seoul, beyond] = await Promise.all([getAllSeoulLive(), getBeyond()]);
+  const out: Candidate[] = [];
+  if (interests.includes("cafe") || interests.includes("food"))
+    for (const g of GUIDE) {
+      if (g.kind !== "food" || !g.lat || !g.lng) continue;
+      const name = g.t.ko?.n ?? g.id;
+      const interest: Interest = CAFE.test(name) ? "cafe" : "food";
+      if (!interests.includes(interest) || (interest === "food" && !g.t.ko?.menu)) continue;
+      out.push({
+        ...nearSeoul({ lat: g.lat, lng: g.lng }, seoul, beyond),
+        id: g.id,
+        name,
+        href: `/guide/${g.id}`,
+        lat: g.lat,
+        lng: g.lng,
+        img: g.img ?? photoNear({ lat: g.lat, lng: g.lng }),
+        interest,
+        stay: INTEREST_STAY[interest]!,
+        hours: DEFAULT_HOURS[interest],
+      });
+    }
+  if (interests.includes("culture"))
+    CULTURE.forEach((c, i) => {
+      if (!/미술관|박물관|기념관/.test(c.k) || !c.lat || !c.lng) return;
+      out.push({
+        ...nearSeoul({ lat: c.lat, lng: c.lng }, seoul, beyond),
+        id: `cu-${i}`,
+        name: c.n,
+        href: c.web || `https://map.kakao.com/link/map/${encodeURIComponent(c.n)},${c.lat},${c.lng}`,
+        lat: c.lat,
+        lng: c.lng,
+        ...(c.img && { img: c.img }),
+        interest: "culture",
+        stay: INTEREST_STAY.culture!,
+        hours: DEFAULT_HOURS.culture,
+      });
+    });
+  return out;
+}
+
+const KAKAO_QUERY: Partial<Record<Interest, string[]>> = {
+  anime: ["애니메이트", "캐릭터샵", "피규어"],
+  department: ["백화점", "쇼핑몰"],
+  flagship: ["플래그십 스토어", "팝업스토어"],
+};
+
+/** 카카오 장소 검색으로 출발지 둘레 5km의 애니·백화점·플래그십 후보 (카카오맵이 꺼져 있으면 []) */
+export async function getKakaoCandidates(interests: Interest[], start: LatLng): Promise<Candidate[]> {
+  const want = interests.filter((i) => KAKAO_QUERY[i]);
+  if (!want.length) return [];
+  const [seoul, beyond] = await Promise.all([getAllSeoulLive(), getBeyond()]);
+  const out: Candidate[] = [];
+  for (const interest of want)
+    for (const q of KAKAO_QUERY[interest]!) {
+      for (const k of await kakaoSearch(q, { ...start, radius: 5000 }, 10)) {
+        if (out.some((x) => x.id === `kk-${k.id}`)) continue;
+        out.push({
+          ...nearSeoul(k, seoul, beyond),
+          id: `kk-${k.id}`,
+          name: k.name,
+          href: k.url,
+          lat: k.lat,
+          lng: k.lng,
+          interest,
+          stay: INTEREST_STAY[interest]!,
+          hours: DEFAULT_HOURS[interest],
+        });
+      }
+    }
+  return out;
+}
+
+/** 이용자가 검색해 넣은 곳 → 꼭 갈 곳 후보 */
+export async function getCustomCandidates(custom: { name: string; lat: number; lng: number; href?: string }[]): Promise<Candidate[]> {
+  if (!custom.length) return [];
+  const [seoul, beyond] = await Promise.all([getAllSeoulLive(), getBeyond()]);
+  return custom.map((c, i) => ({
+    ...nearSeoul(c, seoul, beyond),
+    id: `my-${i}-${c.lat.toFixed(4)},${c.lng.toFixed(4)}`,
+    name: c.name,
+    href: c.href && /^(https:\/\/|\/)/.test(c.href) ? c.href : `https://map.kakao.com/link/map/${encodeURIComponent(c.name)},${c.lat},${c.lng}`,
+    lat: c.lat,
+    lng: c.lng,
+    interest: "shopping" as Interest,
+    stay: 60,
+    hours: [8, 23] as [number, number],
+  }));
+}
+
 /** 출발지 고르기 목록 (위치를 못 쓸 때) */
 export const START_HUBS: { id: string; name: string; lat: number; lng: number }[] = [
   "서울역",
@@ -191,7 +311,7 @@ export const START_HUBS: { id: string; name: string; lat: number; lng: number }[
  */
 export function transitTravel(a: LatLng, b: LatLng, mode: Transport): Leg {
   const est = travelMinutes(a, b, mode);
-  if (est.walk) return est;
+  if (est.walk || mode === "car") return est;
   const trip = subwayTrip(a, b);
   if (!trip) return est;
   const walkMin = Math.round((est.km / 4.5) * 60);

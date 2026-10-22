@@ -9,7 +9,7 @@ import type { Transport } from "@/lib/geo";
 import { isPlus } from "@/lib/plus";
 import { tossEnabled } from "@/lib/toss";
 import { INTERESTS, planRoute, type Candidate, type Interest } from "@/lib/route";
-import { MEAL_SPOTS, getPickCandidates, getRouteCandidates, transitTravel } from "@/lib/route-data";
+import { MEAL_SPOTS, getCustomCandidates, getExtraCandidates, getKakaoCandidates, getPickCandidates, getRouteCandidates, transitTravel } from "@/lib/route-data";
 import { getGuidePlace, guideText } from "@/lib/seoul-guide";
 import { addDays, kst } from "@/lib/time";
 import { getSignals } from "@/lib/crowd/signals";
@@ -69,6 +69,8 @@ export async function POST(req: Request) {
     /** 다시 짜기: 출발 시각(오늘 0시부터 분)과 빼고 짤 장소 */
     startMin?: number;
     exclude?: string[];
+    /** 검색해서 직접 넣은 곳 (최대 6) */
+    custom?: { name?: string; lat?: number; lng?: number; href?: string }[];
   };
   const lat = Number(body.start?.lat);
   const lng = Number(body.start?.lng);
@@ -79,8 +81,12 @@ export async function POST(req: Request) {
   const pickIds = (Array.isArray(body.picks) ? body.picks : [])
     .filter((x): x is string => typeof x === "string" && (/^(seoul-|vs-)[\w-]{1,40}$/.test(x) || PLACES.some((p) => p.id === x)))
     .slice(0, 6);
-  if (!interests.length && !pickIds.length) return NextResponse.json({ error: "관심사를 하나 이상 골라 주세요" }, { status: 400 });
-  const transport: Transport = body.transport === "walk" ? "walk" : "transit";
+  const custom = (Array.isArray(body.custom) ? body.custom : [])
+    .map((c) => ({ name: String(c?.name ?? "").slice(0, 60), lat: Number(c?.lat), lng: Number(c?.lng), href: typeof c?.href === "string" ? c.href.slice(0, 300) : undefined }))
+    .filter((c) => c.name && c.lat > 33 && c.lat < 39 && c.lng > 124 && c.lng < 132)
+    .slice(0, 6);
+  if (!interests.length && !pickIds.length && !custom.length) return NextResponse.json({ error: "관심사를 하나 이상 골라 주세요" }, { status: 400 });
+  const transport: Transport = body.transport === "walk" ? "walk" : body.transport === "car" ? "car" : "transit";
   // 출발: 오늘~6일 뒤. 서울시 12시간 예측 밖은 지하철 승하차 모양·장소 예측 모델로 (lib/forecast). 일정은 2~8시간
   const replan = Number.isFinite(Number(body.startMin)) && body.startMin !== undefined;
   // 다시 짤 때는 남은 시간이 짧을 수 있어 1시간부터
@@ -98,14 +104,21 @@ export async function POST(req: Request) {
         ? Math.max(nowMin, hour === null ? 0 : hour * 60)
         : day * 1440 + (hour ?? 9) * 60;
 
-  const all = await candidates();
+  // 기본 후보 + 세분 관심사(카페·맛집·전시는 우리 자료, 애니·백화점·플래그십은 카카오 장소 검색)
+  const [base, extra, kakao, mine] = await Promise.all([
+    candidates(),
+    getExtraCandidates(interests),
+    getKakaoCandidates(interests, { lat, lng }).catch(() => []),
+    getCustomCandidates(custom),
+  ]);
+  const all = [...base, ...extra, ...kakao];
   const plan = planRoute(
     all,
     { start: { lat, lng, name: String(body.start?.name ?? "출발") }, startMin, durationMin, interests, transport },
     {
       travel: transitTravel,
       meals: MEAL_SPOTS,
-      must: await getPickCandidates(pickIds, all),
+      must: [...mine, ...(await getPickCandidates(pickIds, all))].slice(0, 6),
       exclude: (Array.isArray(body.exclude) ? body.exclude : []).filter((x): x is string => typeof x === "string").slice(0, 30),
     },
   );
