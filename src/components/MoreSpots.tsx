@@ -21,18 +21,19 @@ const SPOT_KINDS = [
 const LEVEL_SCORE: Record<string, number> = { 여유: 25, 보통: 48, "약간 붐빔": 68, 붐빔: 88 };
 const PAGE = 20;
 
-let spotsPromise: Promise<SpotRow[]> | undefined;
+const spotsPromise: Record<string, Promise<SpotRow[]>> = {};
 let seoulPromise: Promise<Record<string, string>> | undefined;
 
-/** 전국 명소 목록 (한 번만 받는다) */
+/** 전국 명소 목록 (언어별로 한 번만 받는다. 외국어는 이름이 번역된 목록) */
 export function useSpots(): SpotRow[] | null {
+  const { lang } = useI18n();
   const [rows, setRows] = useState<SpotRow[] | null>(null);
   useEffect(() => {
-    spotsPromise ??= fetch("/data/spots.json")
+    spotsPromise[lang] ??= fetch(`/data/spots-${lang}.json`)
       .then((r) => r.json())
       .catch(() => []);
-    spotsPromise.then(setRows);
-  }, []);
+    spotsPromise[lang].then(setRows);
+  }, [lang]);
   return rows;
 }
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { GuideList, type Row } from "@/components/GuideList";
+import { translateNames } from "@/lib/name-translate";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { GUIDE, GUIDE_KINDS, RESERVATIONS } from "@/lib/seoul-guide";
@@ -31,7 +32,12 @@ export default async function GuidePage({ params }: { params: Promise<{ lang: st
     .slice(0, 6);
   // 첫 탭(명소) 이름: 그 언어 글이 없는 곳은 이름만 번역 (다른 탭은 /data/guide-{lang}.json이 같은 방식)
   const attractions = GUIDE.filter((p) => p.kind === "attraction" && (lang === "ko" || !p.id.startsWith("kt-")));
-  const names = await guideNames(attractions, lang);
+  const [names, resTr] = await Promise.all([
+    guideNames(attractions, lang),
+    // 체험 이름·장소도 외국어로 (6건, Papago 캐시). 자체 QA 10/22: en·ja에 한글 그대로
+    translateNames(open.flatMap((r) => [r.n, r.place]), lang),
+  ]);
+  const rt = (x: string) => resTr.get(x) ?? x;
   return (
     <main className="px-5 pt-6 pb-10 md:px-0 md:pt-10">
       <h1 className="text-2xl font-bold md:text-3xl">{t("서울 여행 가이드")}</h1>
@@ -53,15 +59,15 @@ export default async function GuidePage({ params }: { params: Promise<{ lang: st
             {open.map((r) => (
               <li key={r.id}>
                 <a href={r.url} target="_blank" rel="noreferrer" className="block h-full rounded-2xl border border-gray-100 px-4 py-3">
-                  <span className="block line-clamp-2 text-sm font-semibold">{r.n}</span>
+                  <span className="block line-clamp-2 text-sm font-semibold">{rt(r.n)}</span>
                   <span className="mt-1 block text-xs text-gray-500">
-                    {r.place} · {r.fee} · {t("접수 마감")} {r.rcptEnd.slice(5, 10)}
+                    {rt(r.place)} · {t(r.fee)} · {t("접수 마감")} {r.rcptEnd.slice(5, 10)}
                   </span>
                 </a>
               </li>
             ))}
           </ul>
-          {lang !== "ko" && <p className="mt-2 text-[11px] text-gray-500">{t("체험 예약 정보는 서울시 원문(한국어)이에요.")}</p>}
+          {lang !== "ko" && <p className="mt-2 text-[11px] text-gray-500">{t("체험 이름은 자동 번역이에요. 예약은 서울시 사이트(한국어)에서 해요.")}</p>}
         </section>
       )}
       <p className="mt-8 text-center text-[11px] text-gray-500">

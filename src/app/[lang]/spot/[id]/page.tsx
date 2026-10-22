@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { translateNames } from "@/lib/name-translate";
 import spotImages from "@/data/korea/spot-images.json";
 import { notFound } from "next/navigation";
 import { CalmAlternatives } from "@/components/CalmAlternatives";
@@ -122,6 +123,8 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
 
   // 예측 모델 (근처 실시간이 없어도 모든 명소에 지금 추정·오늘 곡선·이번 주 히트맵)
   const model = await spotForecast(l);
+  // 작년 방문객 지역(시군구) 이름도 외국어로 (자체 QA 10/22)
+  const lastYearRegion = model.lastYear ? ((await translateNames([model.lastYear.region], lang)).get(model.lastYear.region) ?? t(model.lastYear.region)) : "";
   const nowScore = live ? live.score : model.now.score;
   const nowOpen = live ? live.open : model.now.open;
   const nowLevel = levelOf(nowScore);
@@ -179,7 +182,11 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
         <div className="lg:sticky lg:top-24 lg:self-start">
           {/* 분류·지역 칩은 사진 위로, 한 문장 요약은 혼잡도 카드와 겹쳐 뺐다 (사용자 QA 10/22 — 장소 상세와 같게) */}
           <h1 className="pt-1 text-[28px] leading-tight font-extrabold tracking-tight text-gray-950 md:pt-0 md:text-[34px]">{name}</h1>
-          {lang !== "ko" && <p className="mt-0.5 text-sm text-gray-500">{l.n.ko}</p>}
+          {lang !== "ko" && (
+            <p lang="ko" className="mt-0.5 text-sm text-gray-500">
+              {l.n.ko}
+            </p>
+          )}
           {info?.overview && (
             <p lang="ko" className="mt-2 text-base leading-7 font-medium text-gray-700">
               {firstSentence(info.overview)}
@@ -274,7 +281,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
             const top = days.reduce((a, d) => (d.visitors > a.visitors ? d : a), days[0]);
             return (
               <section className="mt-8">
-                <h2 className="text-lg font-bold">{t("작년 이맘때 {region} 방문객", { region: t(model.lastYear.region) })}</h2>
+                <h2 className="text-lg font-bold">{t("작년 이맘때 {region} 방문객", { region: lastYearRegion })}</h2>
                 <p className="mt-0.5 text-sm text-gray-500">{t("관광공사 데이터랩 · 다른 지역에서 온 사람과 외국인, 작년 같은 요일")}</p>
                 <p className="mt-2 text-[15px]">
                   {t("하루 평균 약 {n}명, {day}이 가장 많았어요 (약 {m}명).", {

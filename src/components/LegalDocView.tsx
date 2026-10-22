@@ -17,7 +17,7 @@ export function LegalDocView({ doc, lang }: { doc: LegalDoc; lang: Lang }) {
           </p>
         )}
         {doc.sections.map((s) => (
-          <section key={s.title} className="mt-7">
+          <section key={s.title} lang="ko" className="mt-7">
             <h2 className="text-base font-bold">{s.title}</h2>
             <div className="mt-2 space-y-1.5 text-sm leading-relaxed text-gray-700">
               {s.body.map((p, i) =>

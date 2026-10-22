@@ -34,7 +34,12 @@ export default async function ExplorePage({ params }: { params: Promise<{ lang: 
   const today = kst().date;
   const [crowd, seoul, festivals] = await Promise.all([getAllCrowd(), getAllSeoulLive(), getFestivals(60)]);
   const shown = festivals.filter((f) => !isLongRunning(f));
-  const names = await translateNames(shown.flatMap((f) => [f.title, f.region]), lang);
+  const initialSpots = (spots as SpotRow[]).filter((s) => s[2] === REGIONS[0]?.id);
+  const [names, spotNames] = await Promise.all([
+    translateNames(shown.flatMap((f) => [f.title, f.region]), lang),
+    // 서버가 미리 그리는 첫 지역 명소 이름도 외국어로 (자체 QA 10/22)
+    translateNames(initialSpots.map((s) => s[3]), lang),
+  ]);
 
   const regions: ExploreRegion[] = REGIONS.map((r) => ({
     id: r.id,
@@ -49,7 +54,9 @@ export default async function ExplorePage({ params }: { params: Promise<{ lang: 
       <ExploreView
         regions={regions}
         kinds={LANDMARK_KINDS}
-        initialSpots={(spots as SpotRow[]).filter((s) => s[2] === regions[0]?.id)}
+        initialSpots={(regions[0]?.id === REGIONS[0]?.id ? initialSpots : (spots as SpotRow[]).filter((s) => s[2] === regions[0]?.id)).map(
+          (s) => [s[0], s[1], s[2], spotNames.get(s[3]) ?? s[3], s[4], s[5], s[6], s[7]] as SpotRow,
+        )}
         spotCounts={Object.fromEntries(REGIONS.map((r) => [r.id, (spots as SpotRow[]).filter((s) => s[2] === r.id).length]))}
       />
       <InlineAd className="mt-8" />

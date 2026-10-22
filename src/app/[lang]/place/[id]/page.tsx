@@ -161,6 +161,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const trInfo = (x?: string) => (x ? (infoTr.get(flat(x)!) ?? x) : x);
   // 주소도 외국어 화면에서는 번역 (외부 점검: en 화면 한국어 노출)
   const address = (await translateNames([place.address], lang)).get(place.address) ?? place.address;
+  // 주변 서울 실시간 지역 이름도 외국어로 (자체 QA 10/22: en·ja에 '잠실 관광특구'가 한글로)
+  const areaTr = await translateNames([crowd.area?.name, place.seoulArea], lang);
+  const areaLabel = (x?: string): string => (x ? (areaTr.get(x) ?? t(x)) : "");
   // 화면의 '○시 기준'은 한 값만: 원천의 관측 시각(서울시 등), 없으면 CrowdView가 받은 시각 (P1-2 기준 시각 단일화)
   const basisTime = crowd.observedAt ? crowd.observedAt.slice(11, 16) : kstClock(crowd.updatedAt);
   // 함께 가면 좋은 곳: 이름으로 좌표를 찾아 거리 + 그 근처(1km 안 서울 실시간 지역) 지금 혼잡
@@ -404,7 +407,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             {crowd.area && isOpen && !beforeEvent && (
               <p className="mt-2 text-sm text-gray-600">
                 {t("주변 {area} 전체 {min}~{max}명", {
-                  area: t(crowd.area.name),
+                  area: areaLabel(crowd.area.name),
                   min: compactNumber(crowd.area.range[0], lang),
                   max: compactNumber(crowd.area.range[1], lang),
                 })}{" "}
@@ -672,7 +675,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             <SeoulPeopleProfile
               profile={seoulProfile}
               lang={lang}
-              areaName={place.seoulArea}
+              areaName={areaLabel(place.seoulArea)}
               className="mt-8 rounded-3xl border border-gray-100 p-4"
             />
           )}

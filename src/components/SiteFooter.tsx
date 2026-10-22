@@ -20,10 +20,10 @@ export function SiteFooter({ lang, className = "" }: { lang: Lang; className?: s
         <Link href="/accuracy">{t("예측 정확도")}</Link>
       </nav>
       <p className="mt-3">
-        {B.serviceName} · {t("상호")} {B.company} · {t("대표")} {B.ceo} · {t("사업자등록번호")} {B.bizNo}
+        {B.serviceName} · {t("상호")} <span lang="ko">{B.company}</span> · {t("대표")} <span lang="ko">{B.ceo}</span> · {t("사업자등록번호")} {B.bizNo}
       </p>
       <p>
-        {t("통신판매업 신고")} {t(B.mailOrderNo)} · {t("주소")} {t(B.address)}
+        {t("통신판매업 신고")} {t(B.mailOrderNo)} · {t("주소")} <span lang="ko">{B.address}</span>
       </p>
       <p>
         {t("고객센터")} {t(B.phone)} · {t(B.email)}
