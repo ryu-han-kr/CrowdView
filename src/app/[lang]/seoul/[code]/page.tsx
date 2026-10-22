@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { StayLinks } from "@/components/StayLinks";
+import { CrowdMascot } from "@/components/place/CrowdMascot";
 import { AlertButtons } from "@/components/AlertButtons";
 import { CalmAlternatives } from "@/components/CalmAlternatives";
 import { pushEnabled } from "@/lib/alerts";
@@ -134,36 +135,32 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
           ]),
         }}
       />
-      {/* 한 문장 요약: 공식 단계·인원·기준 시각 (사람과 AI 검색이 바로 인용할 수 있게) */}
-      {live && (
-        <p className="mt-2 text-[13px] leading-relaxed text-gray-800">
-          {t("{name}에는 지금 약 {range}이 있고, 서울시 공식 혼잡 단계는 ‘{level}’이에요 ({time} 기준, 서울시 실시간 도시데이터).", {
-            name,
-            range: people(live.min, live.max),
-            level: t(live.level),
-            time: live.time.slice(11, 16),
-          })}
-        </p>
-      )}
-
+      {/* 한 문장 요약은 아래 인구 카드와 겹쳐 뺐다 (사용자 QA 10/22 — 장소 상세와 같게) */}
       <div className="mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
         <div>
           {live && level ? (
-            <section className="rounded-3xl px-4 py-3.5" style={{ background: `${level.color}14` }}>
-              <p className="text-xs font-medium text-gray-600">{t("지금 인구")}</p>
-              <p className="text-2xl font-extrabold" style={{ color: inkOf(level.color) }}>
-                {people(live.min, live.max)}
-              </p>
-              <p className="mt-0.5 text-sm text-gray-600">
-                {t("서울시 단계")}: <b>{t(live.level)}</b>
-              </p>
+            <section className="rounded-3xl px-4 py-4" style={{ background: `${level.color}24`, boxShadow: `inset 0 0 0 1.5px ${level.color}55` }}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-[15px] font-bold text-gray-800">{t("지금 인구")}</p>
+                  <p className="text-[30px] leading-tight font-black" style={{ color: inkOf(level.color) }}>
+                    {people(live.min, live.max)}
+                  </p>
+                  <p className="mt-1 text-[17px] font-semibold text-gray-900">
+                    {t("서울시 단계")}: <b>{t(live.level)}</b>
+                  </p>
+                </div>
+                <CrowdMascot score={live.score} size={104} className="-my-1 shrink-0" label={t(live.level)} />
+              </div>
               {band && (
                 <p className="mt-1 text-sm font-semibold">
                   <UsualBand band={band.band} weekend={weekend} t={t} />
                 </p>
               )}
-              {live.message && lang === "ko" && <p className="mt-2 text-xs leading-relaxed text-gray-600">{live.message}</p>}
-              <p className="mt-2 text-[11px] text-gray-600">{t("{time} 기준", { time: live.time.slice(11) })}</p>
+              {live.message && lang === "ko" && <p className="mt-2 text-[14px] leading-relaxed font-medium text-gray-800">{live.message}</p>}
+              <p className="sector-box mt-3 text-[13px] text-gray-700">
+                {t("{time} 기준", { time: live.time.slice(11) })} · {t("서울시 실시간 도시데이터")}
+              </p>
             </section>
           ) : (
             <p className="empty-note">{t("지금은 서울시 데이터를 받지 못했어요. 잠시 후 다시 확인해 주세요.")}</p>

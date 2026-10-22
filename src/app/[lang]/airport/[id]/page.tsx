@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
+import { inkOf } from "@/lib/levels";
+import { CrowdMascot } from "@/components/place/CrowdMascot";
 import Link from "@/i18n/link";
 import { notFound } from "next/navigation";
 import { AirportPaxChart } from "@/components/AirportPaxChart";
@@ -118,14 +120,17 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
 
           {/* 지금 */}
           {/* 지금 혼잡도 */}
-          <section className="mt-4 rounded-3xl px-4 py-3.5" style={{ background: `${level.color}14` }}>
+          <section
+            className="mt-4 rounded-3xl px-4 py-4"
+            style={{ background: `${crowd.open ? level.color : "#6b7280"}24`, boxShadow: `inset 0 0 0 1.5px ${crowd.open ? level.color : "#6b7280"}55` }}
+          >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs font-medium text-gray-500">{t("지금 출국 혼잡도")}</p>
-                <p className="text-2xl font-extrabold" style={{ color: crowd.open ? level.color : "#6b7280" }}>
+                <p className="text-[15px] font-bold text-gray-800">{t("지금 출국 혼잡도")}</p>
+                <p className="text-[34px] leading-tight font-black" style={{ color: crowd.open ? inkOf(level.color) : "#4b5563" }}>
                   {crowd.open ? t(level.label) : t("운영 종료")}
                 </p>
-                <p className="text-sm text-gray-600">
+                <p className="mt-1 text-[16px] font-semibold text-gray-900">
                   {avgWait !== null && (
                     <>
                       {t("평균 대기")} <b>{fmtMinutes(avgWait, t)}</b> ·{" "}
@@ -141,8 +146,9 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                   )}
                 </p>
               </div>
+              <CrowdMascot score={crowd.score} closed={!crowd.open} size={104} className="-my-1 shrink-0" label={crowd.open ? t(level.label) : t("운영 종료")} />
             </div>
-            <p className={`mt-2 text-[11px] ${crowd.stale ? "font-semibold text-amber-700" : "text-gray-600"}`}>
+            <p className={`sector-box mt-3 text-[13px] ${crowd.stale ? "font-semibold text-amber-800" : "text-gray-700"}`}>
               {crowd.source === "model"
                 ? t("실시간 데이터를 받지 못해 예측값을 보여드려요")
                 : `${t(SOURCE_LABEL[crowd.source] ?? "")} · ${t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}`}

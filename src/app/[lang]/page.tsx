@@ -82,6 +82,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   // 목록·카드는 고해상도 대표 사진으로 (사용자 QA 10/22: 사진이 비슷해 구별이 어렵다). 서버에서 바꿔 넘겨 사진 목록 JSON이 브라우저로 가지 않게
   const listPlaces = places.map((p) => ({ ...p, image: heroImage(p) }));
+  // 고해상도 사진 (place-photos 의 n번째, 없으면 기존 대표 사진)
+  const photoOf = (id: string, n = 0) => placePhotos(id)[n]?.src ?? places.find((x) => x.id === id)?.image;
   // 지금 한산한 명소 (사진 있는 우리 장소)
   const calmCards: PhotoCardItem[] = places
     .filter((p) => heroImage(p) && crowd[p.id].open && p.category !== "airport" && p.category !== "event")
@@ -126,7 +128,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     {
       id: "airport",
       href: "/airport",
-      img: "/places/icn-t1.jpg",
+      img: photoOf("icn-t1") ?? "/places/icn-t1.jpg",
       live: true,
       tag: t("실시간"),
       title: t("인천공항 출국장, 지금 몇 분 기다릴까?"),
@@ -135,7 +137,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     {
       id: "seoul",
       href: "/seoul",
-      img: "/places/gyeongbokgung.jpg",
+      img: photoOf("gyeongbokgung", 1) ?? "/places/gyeongbokgung.jpg",
       live: true,
       tag: t("실시간"),
       title: t("서울 실시간 인구 {n}곳", { n: SEOUL_AREAS.length }),
@@ -153,7 +155,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const routeSlide: HeroSlide = {
     id: "route",
     href: "/route",
-    img: "/places/namsan.jpg",
+    img: photoOf("namsan") ?? "/places/namsan.jpg",
     tag: t("추천 코스"),
     title: t("붐비는 시간을 피해 도는 코스"),
     sub: t("지하철 이동시간과 식사 시간까지 맞춰 드려요"),
@@ -255,7 +257,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     };
   });
   // 2) 테마 타일: 고른 주제로 바로 이동 (사진은 그 주제의 대표 장소)
-  const photoOf = (id: string, n = 0) => placePhotos(id)[n]?.src ?? places.find((x) => x.id === id)?.image;
   const countCalm = (f: (p: (typeof places)[number]) => boolean) => places.filter((p) => f(p) && crowd[p.id]?.open && crowd[p.id].score < 40).length;
   const themeTiles: ThemeTile[] = [
     {
