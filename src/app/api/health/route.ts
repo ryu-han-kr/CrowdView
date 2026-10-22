@@ -50,6 +50,8 @@ function features() {
     ads: has("NEXT_PUBLIC_ADSENSE_CLIENT"),
     sktCongestion: has("SK_OPENAPI_APP_KEY"),
     errorTracking: has("NEXT_PUBLIC_SENTRY_DSN"),
+    // Sentry 전에는 서버 오류를 디스코드 운영 알림으로 (instrumentation.ts)
+    errorAlerts: has("NEXT_PUBLIC_SENTRY_DSN") || has("SENTRY_DSN") || has("DISCORD_WEBHOOK_URL"),
     searchVerification: {
       google: has("NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION"),
       naver: has("NEXT_PUBLIC_NAVER_SITE_VERIFICATION"),
