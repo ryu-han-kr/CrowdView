@@ -7,10 +7,15 @@ on:
     - cron: "0 0 * * *"
   workflow_dispatch:
 
+# 집 데스크탑(Windows) 러너: PowerShell 스크립트 실행 정책에 막히지 않게 명령 프롬프트(cmd)로 실행
+defaults:
+  run:
+    shell: cmd
+
 jobs:
   smoke:
     if: github.event_name != 'deployment_status' || (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production')
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crowdview]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -22,13 +27,15 @@ jobs:
   lighthouse:
     needs: smoke
     if: github.event_name != 'deployment_status' || (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production')
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crowdview]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npx --yes @lhci/cli@0.15.1 autorun || true
+      # 윈도우(PowerShell)에는 '|| true'가 없어 실패해도 다음 단계로 가게 한다
+      - run: npx --yes @lhci/cli@0.15.1 autorun
+        continue-on-error: true
       - run: node scripts/lighthouse-summary.mjs
       - uses: actions/upload-artifact@v4
         with:

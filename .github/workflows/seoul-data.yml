@@ -11,9 +11,14 @@ permissions:
   contents: write
   pull-requests: write
 
+# 집 데스크탑(Windows) 러너: PowerShell 스크립트 실행 정책에 막히지 않게 명령 프롬프트(cmd)로 실행
+defaults:
+  run:
+    shell: cmd
+
 jobs:
   sync:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crowdview]
     env:
       # 단계의 if 는 secrets를 직접 못 읽어서 job env로 넘긴다
       DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}

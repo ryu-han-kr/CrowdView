@@ -6,9 +6,14 @@ on:
     - cron: "0 20 * * 0"
   workflow_dispatch:
 
+# 집 데스크탑(Windows) 러너: PowerShell 스크립트 실행 정책에 막히지 않게 명령 프롬프트(cmd)로 실행
+defaults:
+  run:
+    shell: cmd
+
 jobs:
   ping:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crowdview]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
