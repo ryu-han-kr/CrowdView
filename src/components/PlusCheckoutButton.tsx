@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { useSession } from "@/lib/auth-client";
 import { checkoutEnabled, startCardRegistration, startPassPayment } from "@/lib/plus-browser";
-import { PLUS } from "@/lib/business";
+import { PLUS, SALES_OPEN } from "@/lib/business";
 import { usePlus } from "@/lib/plus-client";
 import { ConfirmSheet } from "./ConfirmSheet";
 
@@ -25,6 +25,16 @@ export function PlusCheckoutButton({ className = "" }: { className?: string }) {
       <button disabled className={`rounded-2xl bg-white py-3 text-sm font-bold text-indigo-700 ${className}`}>
         {t("결제 연동 준비 중")}
       </button>
+    );
+  // 통신판매업 신고번호가 나오기 전에는 팔지 않는다 (lib/business SALES_OPEN)
+  if (!SALES_OPEN)
+    return (
+      <div className={className}>
+        <button disabled className="w-full rounded-2xl bg-white/90 py-3 text-sm font-bold text-indigo-700">
+          {t("결제 준비 중")}
+        </button>
+        <p className="mt-2 text-center text-xs font-semibold text-white/90">{t("판매 준비를 마치는 대로 곧 열려요")}</p>
+      </div>
     );
   return <Checkout className={className} />;
 }
