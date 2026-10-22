@@ -10,7 +10,7 @@ import { festivalHref, getFestivals, isLongRunning } from "./festivals";
 import { heroImage } from "./place-photos";
 import { PLACES, placeHref } from "./places";
 import { addDays, kst } from "./time";
-import { searchNews, webSearchEnabled, type NewsHit } from "./web-search";
+import { cleanTitle, searchNews, strip, webSearchEnabled, type NewsHit } from "./web-search";
 
 export interface TrendItem {
   id: string;
@@ -66,8 +66,10 @@ async function refreshPlaceNews(today: string): Promise<TrendItem[]> {
     const short = p.name.replace(/\s*(어드벤처|스키장|해수욕장|카페거리|걷고싶은거리)$/, "");
     // Brave 무료 플랜은 1초에 1건 → 장소 사이 1.1초 (저장된 검색어면 바로 넘어간다)
     await new Promise((r) => setTimeout(r, 1100));
-    const base = await searchNews(p.name, 7);
-    const extra = p.category === "themepark" ? await (async () => (await new Promise((r) => setTimeout(r, 1100)), searchNews(`${short} 이벤트`, 7)))() : [];
+    // 12시간 저장된 예전 결과도 제목을 다시 다듬는다
+    const tidy = (xs: NewsHit[]) => xs.map((h) => ({ ...h, title: cleanTitle(strip(h.title)) }));
+    const base = tidy(await searchNews(p.name, 7));
+    const extra = p.category === "themepark" ? await (async () => (await new Promise((r) => setTimeout(r, 1100)), searchNews(`${short} 이벤트`, 7)))().then(tidy) : [];
     const hits = [...extra.filter((h) => EVENT_WORDS.test(h.title)), ...base]
       .filter((h, i, arr) => h.title.includes(short) && arr.findIndex((x) => x.url === h.url) === i)
       .slice(0, 3);
