@@ -65,3 +65,26 @@ test("자료 등급: 기관 실측 A · 대기시간·지역 안 시설 B · 예
   assert.equal(dataGrade({ source: "themeparks-wiki" }), "B");
   assert.equal(dataGrade({ source: "model" }), "C");
 });
+
+// 10/22: 데이터랩 전용 키가 없으면 네이버 로그인 앱 키(같은 개발자센터 앱)를 쓴다
+import { naverDatalabKeys } from "@/lib/crowd/extra-signals";
+
+test("데이터랩 키: 전용 키 우선, 없으면 로그인 앱 키, 둘 다 없으면 없음", () => {
+  const keys = ["NAVER_DATALAB_CLIENT_ID", "NAVER_DATALAB_CLIENT_SECRET", "NAVER_CLIENT_ID", "NAVER_CLIENT_SECRET"] as const;
+  const saved = Object.fromEntries(keys.map((k) => [k, process.env[k]]));
+  try {
+    for (const k of keys) delete process.env[k];
+    assert.equal(naverDatalabKeys(), undefined);
+    process.env.NAVER_CLIENT_ID = " login-id ";
+    process.env.NAVER_CLIENT_SECRET = "login-secret\n";
+    assert.deepEqual(naverDatalabKeys(), { id: "login-id", secret: "login-secret", from: "login" });
+    process.env.NAVER_DATALAB_CLIENT_ID = "dl-id";
+    process.env.NAVER_DATALAB_CLIENT_SECRET = "dl-secret";
+    assert.deepEqual(naverDatalabKeys(), { id: "dl-id", secret: "dl-secret", from: "datalab" });
+  } finally {
+    for (const k of keys) {
+      if (saved[k] === undefined) delete process.env[k];
+      else process.env[k] = saved[k];
+    }
+  }
+});

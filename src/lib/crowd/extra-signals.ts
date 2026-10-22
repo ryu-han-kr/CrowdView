@@ -1,5 +1,6 @@
 // 예측 보정 신호 2가지 (QA 10/21 정확도 개선 3·4번). 키가 없으면 아무것도 하지 않는다.
-// 1) 네이버 데이터랩 검색어 트렌드 (NAVER_DATALAB_CLIENT_ID/SECRET): 최근 7일 검색이 그 전 4주보다 늘면 앞으로 7일 조금 더 붐빈다고 본다
+// 1) 네이버 데이터랩 검색어 트렌드: 최근 7일 검색이 그 전 4주보다 늘면 앞으로 7일 조금 더 붐빈다고 본다.
+//    키: NAVER_DATALAB_CLIENT_ID/SECRET, 없으면 네이버 로그인 앱 키(NAVER_CLIENT_ID/SECRET) — 같은 개발자센터 앱에 데이터랩을 켜 두면 된다
 // 2) 나이스 학사일정 (NEIS_API_KEY): 서울·경기 초등학교 표본 중 쉬는 학교(방학·재량휴업) 비율 → 평일 놀이공원·워터파크·스키장 보정
 import { cached } from "../cached";
 import { addDays, kst } from "../time";
@@ -19,11 +20,25 @@ export function trendFrom(values: number[]): number | undefined {
   return Math.max(0.85, Math.min(1.2, Math.round(r * 100) / 100));
 }
 
-export async function getSearchTrend(keyword: string): Promise<number | undefined> {
+/**
+ * 데이터랩 키 (네이버 개발자센터 앱의 Client ID/Secret). 전용 키가 없으면 로그인 앱 키를 쓴다.
+ * NCP(네이버 클라우드) 키(ID 10자·Secret 40자)는 데이터랩에서 401 — 10/21 운영에서 확인
+ */
+export function naverDatalabKeys(): { id: string; secret: string; from: "datalab" | "login" } | undefined {
   // 환경변수에 앞뒤 공백·줄바꿈이 섞여 들어가면 인증이 실패한다
   const id = process.env.NAVER_DATALAB_CLIENT_ID?.trim();
   const secret = process.env.NAVER_DATALAB_CLIENT_SECRET?.trim();
-  if (!id || !secret) return undefined;
+  if (id && secret) return { id, secret, from: "datalab" };
+  const loginId = process.env.NAVER_CLIENT_ID?.trim();
+  const loginSecret = process.env.NAVER_CLIENT_SECRET?.trim();
+  if (loginId && loginSecret) return { id: loginId, secret: loginSecret, from: "login" };
+  return undefined;
+}
+
+export async function getSearchTrend(keyword: string): Promise<number | undefined> {
+  const keys = naverDatalabKeys();
+  if (!keys) return undefined;
+  const { id, secret } = keys;
   const today = kst().date;
   return cached(`trend:${keyword}`, 12 * HOUR, async () => {
     const res = await fetch("https://openapi.naver.com/v1/datalab/search", {
