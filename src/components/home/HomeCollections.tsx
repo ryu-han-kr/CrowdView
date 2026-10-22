@@ -158,7 +158,7 @@ export function ThemeTiles({ title, sub, tiles }: { title: string; sub?: string;
                 <span className="absolute top-2 left-2 rounded-md bg-white/95 px-1.5 py-0.5 text-[10px] font-extrabold text-gray-900">{x.badge}</span>
               </div>
               <p className="mt-1.5 line-clamp-2 text-[14px] leading-snug font-extrabold break-keep text-gray-950">{x.title}</p>
-              <p className="mt-0.5 line-clamp-2 text-[12px] leading-snug text-gray-600">{x.sub}</p>
+              <p className="mt-0.5 line-clamp-2 text-[12px] leading-snug break-keep text-gray-600">{x.sub}</p>
             </a>
           </li>
         ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { headcountInfo } from "@/lib/format";
 import { placeHref } from "@/lib/places";
@@ -83,6 +83,7 @@ export function HomeList({
   children?: React.ReactNode;
 }) {
   const [query, setQuery] = useUrlQuery();
+  const inputRef = useRef<HTMLInputElement>(null);
   const [filter, setFilter] = useState<Filter>("all");
   // 통합 검색 탭 (사용자 10/22: 지역 여행 탭 대신 홈에서 한 번에) · 세부 분류 · 지역 칩
   const [tab, setTab] = useState<Tab>("all");
@@ -210,12 +211,16 @@ export function HomeList({
   return (
     <>
       <StickyBar id="places" className="-mx-5 mt-8 scroll-mt-16 px-5 pt-3 pb-3 md:mx-0 md:mt-10 md:px-0">
-        <label className="flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-3">
+        {/* 위에 붙어 따라올 땐 검색창을 접고 탭 줄만 (UI QA 9차: 붙은 줄이 화면 1/3을 가렸다). 검색어가 있으면 그대로 */}
+        <label
+          className={`flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-3 ${query ? "" : "group-data-[stuck=true]/sticky:hidden"}`}
+        >
           <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-gray-500" fill="none" stroke="currentColor" strokeWidth={2}>
             <circle cx="11" cy="11" r="7" />
             <path d="m20 20-3.5-3.5" strokeLinecap="round" />
           </svg>
           <input
+            ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t("장소·지역 검색 (예: 홍대, 공항)")}
@@ -229,7 +234,8 @@ export function HomeList({
           )}
         </label>
         {tabs.length > 0 && (
-          <div role="tablist" className="no-scrollbar mt-3 flex gap-1 overflow-x-auto border-b border-gray-200">
+          <div className={`mt-3 flex items-end border-b border-gray-200 ${query ? "" : "group-data-[stuck=true]/sticky:mt-0"}`}>
+          <div role="tablist" className="no-scrollbar -mb-px flex min-w-0 flex-1 gap-1 overflow-x-auto">
             {tabs.map((x) => (
               <button
                 key={x.id}
@@ -244,6 +250,23 @@ export function HomeList({
                 {q && x.id !== "all" && <span className="ml-1 text-xs font-semibold text-gray-500">{counts[x.id]}</span>}
               </button>
             ))}
+          </div>
+            {/* 붙었을 때만: 검색 돋보기 → 검색창 자리로 올라가 바로 입력 */}
+            <button
+              type="button"
+              onClick={() => {
+                const top = (document.getElementById("places")?.previousElementSibling as HTMLElement | null)?.getBoundingClientRect().top ?? 0;
+                window.scrollTo({ top: window.scrollY + top - (window.innerWidth >= 768 ? 64 : 0) - 8, behavior: "smooth" });
+                setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 350);
+              }}
+              aria-label={t("검색")}
+              className="mb-1.5 ml-1 hidden h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-700 group-data-[stuck=true]/sticky:flex"
+            >
+              <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth={2.2}>
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+              </svg>
+            </button>
           </div>
         )}
         {regionChips.length > 0 && (

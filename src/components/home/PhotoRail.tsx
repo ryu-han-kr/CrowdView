@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { canOptimize } from "@/lib/img";
 import { useI18n } from "@/i18n/client";
-import { levelOf } from "@/lib/levels";
+import { inkOf, levelOf } from "@/lib/levels";
 import { useFavorites } from "@/lib/prefs";
 import { Glyph } from "@/components/Glyph";
 
@@ -37,7 +37,7 @@ export interface PhotoCardItem {
 
 /**
  * 세로로 긴 사진 카드 (사용자 QA 10/22, 레퍼런스: 여기어때 '이런 상품은 어떠세요?' 카드).
- * 사진 위: 왼쪽 위 분류 꼬리표(색·아이콘) · 오른쪽 위 찜 하트 · 아래 어둡게 깔고 흰 굵은 글씨로 지금 단계·인원
+ * 사진 위: 왼쪽 위 분류 꼬리표(색·아이콘) · 오른쪽 위 찜 하트 · 아래 흰 알약에 지금 단계·인원
  * 사진 아래: 이름(굵게) · 지역
  */
 export function PhotoCard({ item, rank, className = "" }: { item: PhotoCardItem; rank?: number; className?: string }) {
@@ -88,24 +88,30 @@ export function PhotoCard({ item, rank, className = "" }: { item: PhotoCardItem;
             <Glyph e={fav ? "❤️" : "🤍"} className={`h-[18px] w-[18px] ${fav ? "text-rose-500" : "text-white"}`} />
           </button>
         )}
+        {/* 아래: 순위 배지 + 흰 단계 알약 (UI QA 9차: 큰 기울임 숫자·그림자 글씨가 포스터 글자와 겹쳐 어지러웠다) */}
         {(bottom || rank !== undefined) && (
-          <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-black/70 via-black/25 to-transparent" />
-        )}
-        {rank !== undefined && (
-          <span className="absolute bottom-1 left-3 text-5xl leading-none font-black text-white italic drop-shadow md:text-6xl">{rank}</span>
-        )}
-        {bottom && (
-          <p className={`absolute right-2.5 bottom-2 left-2.5 truncate text-white drop-shadow ${rank !== undefined ? "pl-10 text-right" : ""}`}>
-            {lv ? (
-              <>
-                <span className="mr-1 inline-block h-2.5 w-2.5 rounded-full ring-2 ring-white/80" style={{ background: lv.color }} />
-                <b className="text-[17px] font-extrabold">{t(lv.label)}</b>
-                {item.people && <span className="ml-1 text-[13px] font-bold">{item.people}</span>}
-              </>
-            ) : (
-              <b className="text-[15px] font-extrabold">{item.badge ?? item.note}</b>
+          <div className="absolute inset-x-2 bottom-2 flex items-center gap-1.5">
+            {rank !== undefined && (
+              <span className="flex h-8 min-w-8 shrink-0 items-center justify-center rounded-lg bg-gray-950 px-1.5 text-[17px] leading-none font-black text-white shadow-sm">
+                {rank}
+              </span>
             )}
-          </p>
+            {bottom && (
+              <span className="inline-flex min-w-0 items-center gap-1.5 rounded-full bg-white px-2.5 py-1 shadow-sm">
+                {lv ? (
+                  <>
+                    <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: lv.color }} />
+                    <b className="shrink-0 text-[13px] font-extrabold" style={{ color: inkOf(lv.color) }}>
+                      {t(lv.label)}
+                    </b>
+                    {item.people && <span className="truncate text-[12px] font-bold text-gray-800">{item.people}</span>}
+                  </>
+                ) : (
+                  <b className="truncate text-[13px] font-extrabold text-gray-900">{item.badge ?? item.note}</b>
+                )}
+              </span>
+            )}
+          </div>
         )}
       </div>
       <p className="mt-2 line-clamp-2 text-[15px] leading-snug font-bold break-keep text-gray-950">{item.title}</p>

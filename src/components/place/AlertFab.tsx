@@ -30,7 +30,13 @@ export function AlertFab({
   const [hint, setHint] = useState(true);
   useEffect(() => {
     const id = setTimeout(() => setHint(false), 6000);
-    return () => clearTimeout(id);
+    // 내려 읽기 시작하면 바로 접는다 (UI QA 9차: 말풍선이 본문 글자를 가렸다)
+    const onScroll = () => window.scrollY > 300 && setHint(false);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      clearTimeout(id);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
   if (!enabled) return null;
 

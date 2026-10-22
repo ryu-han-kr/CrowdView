@@ -241,6 +241,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         sub={t("실시간·예측 혼잡도 기준")}
         moreHref="/map"
         items={calmCards.slice(0, 5)}
+        className={ko ? "mt-6 md:mt-10" : undefined}
       />
       {calmCards.length > 5 && <PhotoRail title={t("여기도 한산해요")} items={calmCards.slice(5)} />}
     </>
@@ -283,24 +284,40 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   // 요즘 뜨는 곳 (사용자 10/22: 붐비는 순위 대신 유명·화제인 곳, 매일 자동 갱신 — lib/trending). 아직 계산 전이면 붐비는 순위
   const trend = await getTrending();
   const trendTr = trend ? await translateNames(trend.items.flatMap((x) => [x.title, x.kind === "event" ? x.reason : undefined, x.region]), lang) : new Map<string, string>();
-  const trendItems: RankItem[] = (trend?.items ?? []).slice(0, 5).map((x) => ({
-    id: x.id,
-    href: x.href,
-    external: x.external,
-    title: trendTr.get(x.title) ?? x.title,
-    img: x.img,
-    emoji: x.kind === "event" ? "🎉" : "📍",
-    sub: [x.period, x.region ? (trendTr.get(x.region) ?? trRegion(x.region, t)) : undefined].filter(Boolean).join(" · ") || undefined,
-    note:
-      x.kind === "event"
-        ? x.id.startsWith("news-")
-          ? `${t("뉴스")} · ${x.reason.split(" · ")[1] ?? ""}`
-          : `AI · ${trendTr.get(x.reason) ?? x.reason}`
-        : x.rising && x.rising >= 1.5
-          ? t("검색량 {n}배 ↑", { n: x.rising.toFixed(1) })
-          : t("요즘 많이 찾는 곳"),
-    hot: x.kind === "event" || (x.rising ?? 0) >= 1.5,
-  }));
+  const trendItems: RankItem[] = (trend?.items ?? []).slice(0, 5).map((x) => {
+    const region = x.region ? (trendTr.get(x.region) ?? trRegion(x.region, t)) : undefined;
+    // 뉴스 화제: 제목은 장소 이름, 기사 제목은 둘째 줄 (UI QA 9차: 잘린 기사 제목이 제목 자리에 '…"…'로 보였다)
+    const newsPlace = x.id.startsWith("news-") ? places.find((p) => p.id === x.id.slice(5)) : undefined;
+    if (newsPlace) {
+      const headline = (trendTr.get(x.title) ?? x.title).replace(/(…|\.\.\.)+$/, "");
+      return {
+        id: x.id,
+        href: x.href,
+        title: t(newsPlace.name),
+        img: x.img,
+        emoji: "📰",
+        sub: headline,
+        note: [region, t("뉴스 화제")].filter(Boolean).join(" · "),
+        hot: true,
+      };
+    }
+    return {
+      id: x.id,
+      href: x.href,
+      external: x.external,
+      title: trendTr.get(x.title) ?? x.title,
+      img: x.img,
+      emoji: x.kind === "event" ? "🎉" : "📍",
+      sub: [x.period, region].filter(Boolean).join(" · ") || undefined,
+      note:
+        x.kind === "event"
+          ? `AI · ${trendTr.get(x.reason) ?? x.reason}`
+          : x.rising && x.rising >= 1.5
+            ? t("검색량 {n}배 ↑", { n: x.rising.toFixed(1) })
+            : t("요즘 많이 찾는 곳"),
+      hot: x.kind === "event" || (x.rising ?? 0) >= 1.5,
+    };
+  });
   const trendList = trendItems.length ? (
     <RankList title={t("요즘 뜨는 곳 TOP 5")} subtitle={t("네이버 검색량과 AI 뉴스 검색으로 매일 아침 갱신")} items={trendItems} />
   ) : (
@@ -339,7 +356,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       img: photoOf("aquaplanet-jeju"),
       badge: t("추천"),
       title: t("비 오는 날엔 아쿠아리움"),
-      sub: t("실내라 날씨 걱정 없는 {n}곳", { n: places.filter((p) => p.tags.includes("아쿠아리움")).length }),
+      sub: t("실내라 날씨 걱정 없어요"),
     },
     {
       id: "family",
@@ -347,7 +364,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       img: photoOf("everland"),
       badge: t("가족"),
       title: t("아이와 함께 테마파크"),
-      sub: t("지금 한산한 테마파크 {n}곳", { n: countCalm((p) => p.category === "themepark") }),
+      // 한산한 곳이 0곳이면 '0곳'이라 쓰지 않는다 (UI QA 9차)
+      sub: ((n) => (n ? t("지금 한산한 테마파크 {n}곳", { n }) : t("놀이기구 대기 시간 한눈에")))(countCalm((p) => p.category === "themepark")),
     },
     {
       id: "palace",
