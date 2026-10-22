@@ -18,14 +18,40 @@ export interface NewsHit {
 
 const HOUR = 3600;
 const building = () => process.env.NEXT_PHASE === "phase-production-build";
-const strip = (s: unknown) =>
+const ENTITY: Record<string, string> = {
+  quot: '"',
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  apos: "'",
+  nbsp: " ",
+  ldquo: "“",
+  rdquo: "”",
+  lsquo: "‘",
+  rsquo: "’",
+  hellip: "…",
+  middot: "·",
+  ndash: "–",
+  mdash: "—",
+};
+/** 태그·HTML 문자 코드(&ldquo; &#8230; 등) 풀기 */
+export const strip = (s: unknown) =>
   String(s ?? "")
     .replace(/<[^>]+>/g, "")
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&amp;/g, "&")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCodePoint(parseInt(n, 16)))
+    .replace(/&([a-z]+);/gi, (m, n) => ENTITY[n.toLowerCase()] ?? m)
     .replace(/\s+/g, " ")
     .trim();
+
+/** 기사 제목 뒤에 붙은 사이트·분류 꼬리 떼기 (예: "… < 여행/맛집 < 뉴스", "… - 연합뉴스", "… | 한국경제") */
+export function cleanTitle(t: string): string {
+  return t
+    .replace(/\s+<\s+.*$/, "")
+    .replace(/\s+[|ㅣ]\s+[^|]{1,30}$/, "")
+    .replace(/\s+-\s+[^-]{1,25}$/, "")
+    .trim();
+}
 
 export const webSearchEnabled = () => !!(process.env.BRAVE_SEARCH_API_KEY || process.env.TAVILY_API_KEY);
 
@@ -44,7 +70,7 @@ async function braveNews(q: string, freshness: string): Promise<NewsHit[]> {
   };
   return (j.results ?? [])
     .map((r) => ({
-      title: strip(r.title),
+      title: cleanTitle(strip(r.title)),
       url: String(r.url ?? ""),
       description: strip(r.description).slice(0, 300),
       source: String(r.meta_url?.hostname ?? "").replace(/^www\./, ""),
@@ -72,7 +98,7 @@ async function tavilyNews(q: string, days: number): Promise<NewsHit[]> {
       try {
         source = new URL(String(r.url)).hostname.replace(/^www\./, "");
       } catch {}
-      return { title: strip(r.title), url: String(r.url ?? ""), description: strip(r.content).slice(0, 300), source, age: r.published_date };
+      return { title: cleanTitle(strip(r.title)), url: String(r.url ?? ""), description: strip(r.content).slice(0, 300), source, age: r.published_date };
     })
     .filter((r) => r.title && /^https?:\/\//.test(r.url));
 }

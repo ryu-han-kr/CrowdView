@@ -66,7 +66,11 @@ async function refreshPlaceNews(today: string): Promise<TrendItem[]> {
     const short = p.name.replace(/\s*(어드벤처|스키장|해수욕장|카페거리|걷고싶은거리)$/, "");
     // Brave 무료 플랜은 1초에 1건 → 장소 사이 1.1초 (저장된 검색어면 바로 넘어간다)
     await new Promise((r) => setTimeout(r, 1100));
-    const hits = (await searchNews(p.name, 7)).filter((h) => h.title.includes(short)).slice(0, 3);
+    const base = await searchNews(p.name, 7);
+    const extra = p.category === "themepark" ? await (async () => (await new Promise((r) => setTimeout(r, 1100)), searchNews(`${short} 이벤트`, 7)))() : [];
+    const hits = [...extra.filter((h) => EVENT_WORDS.test(h.title)), ...base]
+      .filter((h, i, arr) => h.title.includes(short) && arr.findIndex((x) => x.url === h.url) === i)
+      .slice(0, 3);
     if (!hits.length) continue;
     await kv.set(newsKey(p.id), JSON.stringify({ date: today, hits } satisfies PlaceNews), 3 * 86_400).catch(() => {});
     const ev = hits.find((h) => EVENT_WORDS.test(h.title));
@@ -105,6 +109,7 @@ async function searchVolumes(keywords: string[]): Promise<Map<string, { recent: 
   if (!keys) return out;
   const today = kst().date;
   const uniq = [...new Set(keywords.filter((k) => k && k !== ANCHOR))];
+  if (!uniq.length) return out;
   for (let i = 0; i < uniq.length; i += 4) {
     const group = uniq.slice(i, i + 4);
     await beforeCall(APIS.find((a) => a.id === "naver-searchtrend"));
@@ -125,6 +130,7 @@ async function searchVolumes(keywords: string[]): Promise<Map<string, { recent: 
     const series = new Map((j.results ?? []).map((r) => [r.title, (r.data ?? []).map((d) => d.ratio)]));
     const anchor = series.get(ANCHOR) ?? [];
     const base = avg(anchor.slice(-7)) || 1;
+    if (!out.has(ANCHOR) && anchor.length) out.set(ANCHOR, { recent: 100, prev: (avg(anchor.slice(0, -7)) / base) * 100 });
     for (const k of group) {
       const s = series.get(k) ?? [];
       out.set(k, { recent: (avg(s.slice(-7)) / base) * 100, prev: (avg(s.slice(0, -7)) / base) * 100 });
@@ -162,7 +168,8 @@ export async function refreshTrending(): Promise<number> {
       const v = vol.get(c.kw);
       if (!v || v.recent < 3) return undefined;
       const rising = v.prev > 0.5 ? v.recent / v.prev : v.recent > 3 ? 3 : 1;
-      return { ...c, index: v.recent, rising, score: Math.log10(1 + v.recent) + 0.6 * Math.log2(Math.min(rising, 8)) };
+      const lift = 0.4 * Math.log2(Math.min(Math.max(rising, 0.5), 6)) * (v.recent >= 10 ? 1 : 0.35);
+      return { ...c, index: v.recent, rising, score: Math.log10(1 + v.recent) + lift };
     })
     .filter((c): c is NonNullable<typeof c> => !!c)
     .sort((a, b) => b.score - a.score);

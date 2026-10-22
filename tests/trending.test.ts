@@ -31,3 +31,11 @@ test("세부 분류: 칩에 나오는 분류는 실제 장소가 있다", () => 
   assert.equal(subOf("aquaplanet-yeosu"), "aquarium");
   assert.equal(subOf("korean-folk-village"), "folk");
 });
+
+test("기사 제목: HTML 문자 코드를 풀고 사이트 꼬리를 뗀다", async () => {
+  const { strip, cleanTitle } = await import("@/lib/web-search");
+  assert.equal(strip("&ldquo;산타 트리&rdquo;&hellip;서울랜드 &#8230;"), "“산타 트리”…서울랜드 …");
+  assert.equal(cleanTitle("아쿠아플라넷 여수, 불꽃축제 특별 패키지 출시 < 여행/맛집 < 뉴스"), "아쿠아플라넷 여수, 불꽃축제 특별 패키지 출시");
+  assert.equal(cleanTitle("에버랜드 일 잘한다 | 한국경제"), "에버랜드 일 잘한다");
+  assert.equal(cleanTitle("에버랜드 할로윈 - 연합뉴스"), "에버랜드 할로윈");
+});
