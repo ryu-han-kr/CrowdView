@@ -15,17 +15,18 @@ export function distanceKm(a: LatLng, b: LatLng): number {
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
-export type Transport = "walk" | "transit";
+export type Transport = "walk" | "transit" | "car";
 
 /**
  * 이동시간 추정 (분). 길찾기 API 없이 직선거리 × 1.3(도로 우회)으로 계산한다.
  * 도보 시속 4.5km / 대중교통은 1.2km 넘으면 기다림·환승 12분 + 평균 시속 18km
  */
-export function travelMinutes(a: LatLng, b: LatLng, mode: Transport): { minutes: number; km: number; walk: boolean } {
+export function travelMinutes(a: LatLng, b: LatLng, mode: Transport): { minutes: number; km: number; walk: boolean; car?: boolean } {
   const km = distanceKm(a, b) * 1.3;
-  const walk = mode === "walk" || km < 1.2;
-  const minutes = walk ? (km / 4.5) * 60 : 12 + (km / 18) * 60;
-  return { minutes: Math.max(1, Math.round(minutes)), km: Math.round(km * 10) / 10, walk };
+  const walk = mode === "walk" || km < (mode === "car" ? 0.8 : 1.2);
+  // 자동차: 시내 시속 22km(10km 넘으면 35km) + 주차·출차 8분 (사용자 10/22: 대중교통·걷기·자동차)
+  const minutes = walk ? (km / 4.5) * 60 : mode === "car" ? 8 + (km / (km > 10 ? 35 : 22)) * 60 : 12 + (km / 18) * 60;
+  return { minutes: Math.max(1, Math.round(minutes)), km: Math.round(km * 10) / 10, walk, ...(!walk && mode === "car" && { car: true }) };
 }
 
 /** 카카오맵 길찾기 링크 (앱이 있으면 앱, 없으면 웹) */

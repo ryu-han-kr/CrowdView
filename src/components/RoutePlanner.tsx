@@ -37,7 +37,16 @@ const STATE_KEY = "route:planner";
 const clock = (m: number) => `${String(Math.floor(m / 60) % 24).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
 
 /** 추천 코스 만들기: 출발지(내 위치·주요 장소) · 출발 시각 · 일정 길이 · 관심사 · 이동 수단 → 혼잡을 피하는 순서 */
-export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record<string, string> }) {
+/** 가고 싶은 곳 (검색해서 넣은 곳) */
+interface MyStop {
+  name: string;
+  sub?: string;
+  lat: number;
+  lng: number;
+  href?: string;
+}
+
+export function RoutePlanner({ hubs, names = {}, kakao = false }: { hubs: Hub[]; names?: Record<string, string>; kakao?: boolean }) {
   const { t, lang } = useI18n();
   const tr = (ko: string) => names[ko] ?? t(ko);
   // 지금 시각·요일은 브라우저에서 열린 뒤에만 쓴다. 이 화면은 미리 만들어 두는 페이지라 서버가 그린 시각(빌드 때)과
@@ -55,6 +64,32 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
   const [duration, setDuration] = useState(240);
   const [interests, setInterests] = useState<Interest[]>(["history", "shopping", "nature"]);
   const [transport, setTransport] = useState<Transport>("transit");
+  // 가고 싶은 곳: 검색해서 넣으면 코스에 꼭 넣는다 (사용자 10/22)
+  const [mine, setMine] = useState<MyStop[]>([]);
+  const [q, setQ] = useState("");
+  const [hits, setHits] = useState<MyStop[]>([]);
+  const [searching, setSearching] = useState(false);
+  useEffect(() => {
+    const query = q.trim();
+    if (!query) return setHits([]);
+    const ctl = new AbortController();
+    const timer = setTimeout(async () => {
+      setSearching(true);
+      try {
+        const qs = new URLSearchParams({ q: query, lang, ...(start && { lat: String(start.lat), lng: String(start.lng) }) });
+        const res = await fetch(`/api/route/search?${qs}`, { signal: ctl.signal });
+        setHits(res.ok ? ((await res.json()).hits as MyStop[]) : []);
+      } catch {
+      } finally {
+        setSearching(false);
+      }
+    }, 250);
+    return () => {
+      clearTimeout(timer);
+      ctl.abort();
+    };
+  }, [q, lang, start]);
+  const sendMine = mine.map((m) => ({ name: m.name, lat: m.lat, lng: m.lng, href: m.href }));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -81,6 +116,7 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
         setDuration(s.duration ?? 240);
         if (Array.isArray(s.interests)) setInterests(s.interests);
         if (s.transport) setTransport(s.transport);
+        if (Array.isArray(s.mine)) setMine(s.mine);
         if (s.result) setResult(s.result);
         setEndAbs(s.endAbs ?? 0);
         setReplanned(s.replanned ?? null);
@@ -93,10 +129,10 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
     try {
       sessionStorage.setItem(
         STATE_KEY,
-        JSON.stringify({ at: Date.now(), start, day, hour, duration, interests, transport, result, endAbs, replanned }),
+        JSON.stringify({ at: Date.now(), start, day, hour, duration, interests, transport, mine, result, endAbs, replanned }),
       );
     } catch {}
-  }, [start, day, hour, duration, interests, transport, result, endAbs, replanned]);
+  }, [start, day, hour, duration, interests, transport, mine, result, endAbs, replanned]);
 
   const locate = async () => {
     setLocating(true);
@@ -133,13 +169,13 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
 
   const plan = async () => {
     if (!start) return setError(t("출발지를 먼저 정해 주세요"));
-    if (!interests.length && !sendPicks.length) return setError(t("관심사를 하나 이상 골라 주세요"));
+    if (!interests.length && !sendPicks.length && !mine.length) return setError(t("관심사를 하나 이상 골라 주세요"));
     setNotice(null);
-    let json = await request({ start, day, hour, durationMin: duration, interests, transport, lang, picks: sendPicks });
+    let json = await request({ start, day, hour, durationMin: duration, interests, transport, lang, picks: sendPicks, custom: sendMine });
     if (!json) return;
     // 밤늦게 '오늘·지금'으로 짜면 문 연 곳이 없다 → 내일 오전 9시 출발로 다시 짜고 알려 준다
     if (!json.plan.stops.length && day === 0 && hour === null) {
-      const next = await request({ start, day: 1, hour: 9, durationMin: duration, interests, transport, lang, picks: sendPicks });
+      const next = await request({ start, day: 1, hour: 9, durationMin: duration, interests, transport, lang, picks: sendPicks, custom: sendMine });
       if (next?.plan.stops.length) {
         json = next;
         setDay(1);
@@ -167,6 +203,7 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
       transport,
       lang,
       picks: sendPicks.filter((id) => !visited.includes(id)),
+      custom: sendMine.filter((m) => !result.plan.stops.slice(0, i + 1).some((s) => Math.abs(s.lat - m.lat) < 0.0005 && Math.abs(s.lng - m.lng) < 0.0005)),
       exclude: visited,
     });
     if (!json) return;
@@ -219,6 +256,58 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
               </button>
             ))}
           </div>
+        </div>
+
+        <div>
+          <p className="text-sm font-bold">{t("가고 싶은 곳")}</p>
+          <p className="mt-0.5 text-xs text-gray-600">{t("검색해서 넣으면 코스에 꼭 넣고, 남는 시간은 한산한 곳으로 채워요 (최대 6곳)")}</p>
+          <div className="relative mt-2">
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder={t("장소 이름 검색 (예: 더현대 서울, 국립중앙박물관)")}
+              className="w-full rounded-2xl bg-gray-100 px-4 py-3 text-[15px] outline-none placeholder:text-gray-500"
+              enterKeyHint="search"
+            />
+            {q.trim() && (
+              <ul className="absolute inset-x-0 top-full z-20 mt-1 max-h-80 overflow-y-auto rounded-2xl border border-gray-100 bg-white p-1 shadow-lg">
+                {searching && !hits.length && <li className="px-3 py-2.5 text-sm text-gray-500">{t("찾는 중…")}</li>}
+                {!searching && !hits.length && <li className="px-3 py-2.5 text-sm text-gray-500">{t("찾는 곳이 없어요")}</li>}
+                {hits.map((h) => (
+                  <li key={`${h.name}${h.lat}`}>
+                    <button
+                      onClick={() => {
+                        if (mine.length < 6 && !mine.some((m) => m.name === h.name)) setMine([...mine, h]);
+                        setQ("");
+                      }}
+                      className="flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-left md:hover:bg-gray-50"
+                    >
+                      <span className="min-w-0">
+                        <span className="block truncate text-[15px] font-bold text-gray-950">{h.name}</span>
+                        {h.sub && <span className="block truncate text-xs text-gray-600">{tr(h.sub)}</span>}
+                      </span>
+                      <span className="shrink-0 rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-bold text-indigo-700">+ {t("넣기")}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          {mine.length > 0 && (
+            <ul className="mt-2 flex flex-wrap gap-1.5">
+              {mine.map((m) => (
+                <li key={m.name}>
+                  <button
+                    onClick={() => setMine(mine.filter((x) => x !== m))}
+                    className="rounded-full bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white"
+                    aria-label={t("{name} 빼기", { name: m.name })}
+                  >
+                    {m.name} <Glyph e="✕" className="ml-0.5 h-3 w-3" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         <div>
@@ -276,7 +365,7 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
         <div>
           <p className="text-sm font-bold">{t("관심사")}</p>
           <div className="mt-2 flex flex-wrap gap-2">
-            {INTERESTS.map((i) => {
+            {INTERESTS.filter((i) => kakao || !i.kakao).map((i) => {
               const on = interests.includes(i.id);
               return (
                 <button
@@ -295,9 +384,9 @@ export function RoutePlanner({ hubs, names = {} }: { hubs: Hub[]; names?: Record
         <div>
           <p className="text-sm font-bold">{t("이동")}</p>
           <div className="mt-2 flex gap-2">
-            {(["transit", "walk"] as const).map((m) => (
+            {(["transit", "walk", "car"] as const).map((m) => (
               <button key={m} onClick={() => setTransport(m)} className={chip(transport === m)}>
-                <Glyph e={m === "transit" ? "🚇" : "🚶"} /> {m === "transit" ? t("대중교통") : t("걷기 위주")}
+                <Glyph e={m === "transit" ? "🚇" : m === "walk" ? "🚶" : "🚗"} /> {m === "transit" ? t("대중교통") : m === "walk" ? t("걷기 위주") : t("자동차")}
               </button>
             ))}
           </div>
@@ -505,7 +594,7 @@ export function RouteResult({
                 rel="noreferrer"
                 className="ml-4 flex items-center gap-2 border-l-2 border-dashed border-gray-200 py-1.5 pl-5 text-xs text-gray-500"
               >
-                <Glyph e={s.walk ? "🚶" : "🚇"} /> {s.lines?.length ? <>{s.lines.map((l) => lineName(t, l)).join(" → ")} · </> : null}
+                <Glyph e={s.walk ? "🚶" : s.car ? "🚗" : "🚇"} /> {s.lines?.length ? <>{s.lines.map((l) => lineName(t, l)).join(" → ")} · </> : null}
                 {t("{n}분", { n: s.travelMin })} · {s.travelKm}km · <span className="text-indigo-600">{t("길찾기")} ›</span>
               </a>
               <Link
