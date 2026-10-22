@@ -125,6 +125,15 @@ body {
 .page-glow {
   background: none;
 }
+/* 홈만 머리 쪽에 한 가지 색 띠 (사용자 10/22: 흰 바탕만이면 허전) — 흐리게 번지는 그라데이션 대신 또렷한 색 면이 배너 중간에서 끝난다 */
+body[data-page="home"] .page-glow {
+  background: linear-gradient(#e8ebff, #e8ebff) top / 100% 230px no-repeat;
+}
+@media (min-width: 768px) {
+  body[data-page="home"] .page-glow {
+    background-size: 100% 320px;
+  }
+}
 /* 페이지마다 하늘색 안에서 아주 조금만 다르게 (모두 흰 바탕 + 밝은 파랑) */
 body[data-page="map"],
 body[data-page="seoul"] {

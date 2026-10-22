@@ -571,7 +571,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                         </p>
                       )}
                       {isOpen && upcoming.length > 0 ? (
-                        <UpcomingHours hours={upcoming} bestHour={best?.hour} />
+                        <div className="sector-box mt-2 px-2.5 py-1">
+                          <UpcomingHours hours={upcoming} bestHour={best?.hour} />
+                        </div>
                       ) : (
                         <p className="text-[15px] font-medium text-gray-800">{isOpen ? noBestText : t("오늘 운영이 끝났어요.")}</p>
                       )}

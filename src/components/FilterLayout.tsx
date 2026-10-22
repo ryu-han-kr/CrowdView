@@ -167,7 +167,7 @@ export function FilterLayout({
                   <button key={o.id} onClick={() => toggle(g, o.id)} className={chip(g.selected.includes(o.id))}>
                     {o.emoji && <Glyph e={o.emoji} className="mr-1 h-[1em] w-[1em]" />}
                     {o.label}
-                    {o.count !== undefined && <span className="ml-1 text-xs opacity-80">{o.count}</span>}
+                    {o.count !== undefined && <span className="ml-1 text-xs font-semibold">{o.count}</span>}
                   </button>
                 ))}
               </div>
