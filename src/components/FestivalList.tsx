@@ -1,5 +1,8 @@
 "use client";
 
+import { SplitFeature } from "./home/FeatureLayouts";
+import { localePath } from "@/i18n/config";
+
 import Link from "@/i18n/link";
 import { useEffect, useState } from "react";
 import { FESTIVAL_CATEGORIES, festivalStatus, isLongRunning, type Festival, type FestivalCategory, type FestivalCrowd } from "@/lib/festivals";
@@ -91,6 +94,29 @@ export function FestivalList({
           </button>
         ))}
       </div>
+      {/* 배치 다양화 (사용자 10/22): 지금 진행 중 대표 축제 — 왼쪽 큰 사진 + 오른쪽 작은 카드 3 */}
+      {(() => {
+        const withImg = ongoing
+          .filter((f) => f.image)
+          .sort((a, b) => (lives[b.id]?.score ?? crowds[b.id]?.score ?? 0) - (lives[a.id]?.score ?? crowds[a.id]?.score ?? 0));
+        if (withImg.length < 4) return null;
+        const [top, ...rest] = withImg;
+        return (
+          <SplitFeature
+            title={t("지금 가장 뜨거운 축제")}
+            sub={t("실시간·작년 방문객으로 본 붐빔 순")}
+            hero={{ img: top.image, title: tr(top.title), desc: `${dateRange(top.start, top.end)} · ${reg(top.region)}`, href: localePath(lang, hrefs[top.id]), cta: t("자세히 보기") }}
+            items={rest.slice(0, 3).map((f) => ({
+              id: f.id,
+              href: hrefs[f.id],
+              img: f.image,
+              title: tr(f.title),
+              sub: `${dateRange(f.start, f.end)} · ${reg(f.region)}`,
+              score: lives[f.id]?.score ?? crowds[f.id]?.score,
+            }))}
+          />
+        );
+      })()}
       {[
         { title: t("지금 진행 중"), items: ongoing },
         { title: t("다가오는 축제"), items: upcoming },
@@ -98,10 +124,11 @@ export function FestivalList({
         (sec) =>
           sec.items.length > 0 && (
             <section key={sec.title} className="mt-6">
-              <h2 className="text-lg font-bold">
-                {sec.title} <span className="text-sm font-medium text-gray-500">{sec.items.length}</span>
+              <h2 className="text-xl font-extrabold tracking-tight">
+                {sec.title} <span className="text-sm font-semibold text-gray-600">{sec.items.length}</span>
               </h2>
-              <ul className="mt-3 grid gap-3 md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))]">
+              {/* 회색 구역 안 흰 가로 카드 (사용자 QA 10/22, 홈 '전체 장소'와 같은 결) */}
+              <ul className="sector mt-3 grid grid-cols-[minmax(0,1fr)] gap-2.5 p-3 md:grid-cols-[repeat(auto-fill,minmax(340px,1fr))]">
                 {sec.items.map((f) => {
                   const c = crowds[f.id];
                   const live = lives[f.id];
@@ -110,9 +137,9 @@ export function FestivalList({
                     <li key={f.id}>
                       <Link
                         href={hrefs[f.id]}
-                        className="flex h-full gap-3 rounded-3xl border border-gray-100 p-3 transition hover:shadow-md active:bg-gray-50"
+                        className="flex h-full gap-3 rounded-2xl bg-white p-2.5 pr-3 shadow-[0_1px_2px_rgb(15_23_42/0.06)] transition active:scale-[0.99] md:hover:shadow-md"
                       >
-                        <div className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-gray-100">
+                        <div className="h-[104px] w-[104px] shrink-0 overflow-hidden rounded-xl bg-gray-100">
                           {f.image ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={f.image} alt="" loading="lazy" className="h-full w-full object-cover" />
@@ -122,15 +149,15 @@ export function FestivalList({
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-start justify-between gap-2">
-                            <p className="line-clamp-2 text-sm font-semibold">{tr(f.title)}</p>
+                            <p className="line-clamp-2 text-base leading-snug font-extrabold text-gray-950">{tr(f.title)}</p>
                             <span className="shrink-0 rounded-full bg-gray-900 px-2 py-0.5 text-[11px] font-bold text-white">
                               {dday <= 0 ? t("진행 중") : `D-${dday}`}
                             </span>
                           </div>
-                          <p className="mt-0.5 truncate text-xs text-gray-500">
+                          <p className="mt-0.5 truncate text-[13px] font-medium text-gray-600">
                             {dateRange(f.start, f.end)} · {reg(f.region)}
                           </p>
-                          <div className="mt-1.5 flex items-center gap-1.5 text-[11px] text-gray-500">
+                          <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[12px] font-semibold text-gray-700">
                             {live ? (
                               <>
                                 <LevelBadge score={live.score} />

@@ -13,6 +13,7 @@ import { RankList, type RankItem } from "@/components/home/RankList";
 import { headcountInfo } from "@/lib/format";
 import { CATEGORY_TONE } from "@/lib/category-style";
 import { heroImage, placePhotos } from "@/lib/place-photos";
+import { FeatureGrid } from "@/components/home/FeatureLayouts";
 import { CollectionCarousel, ShortCardRail, ThemeTiles, type Collection, type ShortCard, type ThemeTile } from "@/components/home/HomeCollections";
 import { levelOf } from "@/lib/levels";
 import { CATEGORY_LABEL } from "@/lib/types";
@@ -182,13 +183,17 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   );
   // 지금 보통 이하인 곳이 하나도 없으면 '한산한'이라고 부르지 않는다 (주말 오후 등)
   const anyCalm = calmCards.some((c) => (c.score ?? 100) < 60);
+  // 큰 카드 1 + 작은 카드 4 (사용자 10/22: 배치 다양화). 나머지 한산한 곳은 아래 가로 줄로
   const calmRail = (
-    <PhotoRail
-      title={anyCalm ? t("지금 한산한 명소") : t("그나마 덜 붐비는 곳")}
-      subtitle={t("실시간·예측 혼잡도 기준")}
-      moreHref="/map"
-      items={calmCards}
-    />
+    <>
+      <FeatureGrid
+        title={anyCalm ? t("지금 한산한 명소") : t("그나마 덜 붐비는 곳")}
+        sub={t("실시간·예측 혼잡도 기준")}
+        moreHref="/map"
+        items={calmCards.slice(0, 5)}
+      />
+      {calmCards.length > 5 && <PhotoRail title={t("여기도 한산해요")} items={calmCards.slice(5)} />}
+    </>
   );
   const plusPromo = <PlusPromo t={t} price={PLUS.priceKrw.toLocaleString()} />;
   // 지금 붐비는 TOP 5: 실측 들어오는 운영 중 장소를 붐비는 순으로 (NOL '많이 찾은 즐길거리' 레퍼런스 — 큰 순위 숫자 + 오른쪽 사진)
