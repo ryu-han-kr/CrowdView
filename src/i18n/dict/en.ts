@@ -904,6 +904,8 @@ const dict: Dict = {
   "{name}에는 지금 약 {range}이 있고, 서울시 공식 혼잡 단계는 ‘{level}’이에요 ({time} 기준, 서울시 실시간 도시데이터).": "About {range} are at {name} now, and the Seoul official level is ‘{level}’ (as of {time}, Seoul real-time city data).",
   "데이터 출처·계산 방식": "Data sources & methodology",
   "예측 정확도": "Forecast accuracy",
+  "결제 준비 중": "Checkout coming soon",
+  "판매 준비를 마치는 대로 곧 열려요": "Opening soon once setup is complete",
   "여기도 한산해요": "Also quiet now",
   "지금 가장 한산한 서울": "Quietest in Seoul now",
   "관광특구·고궁·공원 중 지금 덜 붐비는 곳": "Tourist zones, palaces and parks that are quieter now",

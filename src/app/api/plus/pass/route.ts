@@ -5,11 +5,12 @@ import { opsAlert } from "@/lib/ops";
 import { confirmPass, startPass } from "@/lib/plus";
 import { errorJson, requireUser, unauthorized, withPlusCookie } from "@/lib/plus-http";
 import { tossEnabled } from "@/lib/toss";
+import { SALES_OPEN } from "@/lib/business";
 
 export async function GET(req: Request) {
   const limited = await rateLimit(req, "pay");
   if (limited) return limited;
-  if (!tossEnabled) return NextResponse.json({ error: "결제 준비 중이에요" }, { status: 503 });
+  if (!tossEnabled || !SALES_OPEN) return NextResponse.json({ error: "결제 준비 중이에요" }, { status: 503 });
   const user = await requireUser(req);
   if (!user) return unauthorized();
   try {

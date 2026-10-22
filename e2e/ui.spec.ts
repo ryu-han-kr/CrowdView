@@ -28,7 +28,7 @@ test("마이페이지에서 다크를 고르면 다크", async ({ page }) => {
 test("요금 안내: 로그인 전에는 결제창 대신 로그인으로", async ({ page }) => {
   await page.goto("/pricing");
   // 결제 키가 없으면 '준비 중', 있으면 '로그인하고 시작하기' — 어느 쪽이든 바로 결제가 열리지 않는다
-  await expect(page.getByText(/로그인하고 시작하기|결제 연동 준비 중/).first()).toBeVisible();
+  await expect(page.getByText(/로그인하고 시작하기|결제 연동 준비 중|결제 준비 중/).first()).toBeVisible();
 });
 
 test("코스 추천: 결과가 나온다", async ({ page }) => {

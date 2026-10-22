@@ -5,9 +5,10 @@ import { opsAlert } from "@/lib/ops";
 import { checkoutCustomerKey, subscribe } from "@/lib/plus";
 import { errorJson, requireUser, unauthorized, withPlusCookie } from "@/lib/plus-http";
 import { tossEnabled } from "@/lib/toss";
+import { SALES_OPEN } from "@/lib/business";
 
 export async function GET(req: Request) {
-  if (!tossEnabled) return NextResponse.json({ error: "결제 준비 중이에요" }, { status: 503 });
+  if (!tossEnabled || !SALES_OPEN) return NextResponse.json({ error: "결제 준비 중이에요" }, { status: 503 });
   const user = await requireUser(req);
   if (!user) return unauthorized();
   return NextResponse.json({ customerKey: checkoutCustomerKey(user.id) }, { headers: { "cache-control": "no-store" } });

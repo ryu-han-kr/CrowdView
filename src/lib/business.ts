@@ -19,6 +19,12 @@ export const BUSINESS = {
   url: "https://crowdview.app",
 } as const;
 
+/**
+ * 판매 열림: 통신판매업 신고번호가 들어가면 자동으로 열린다 (10/22: 토스 라이브 키는 넣었지만 신고증이 아직 → 결제 버튼 '준비 중').
+ * 결제 버튼(PlusCheckoutButton)과 결제 시작 API(/api/plus/pass·subscribe)가 함께 본다
+ */
+export const SALES_OPEN = BUSINESS.mailOrderNo !== "등록 예정";
+
 /** 약관·개인정보처리방침·환불정책 시행일 (출시일에 맞춰 바꾼다) */
 export const LEGAL_EFFECTIVE_DATE = "2026-11-01";
 
