@@ -399,8 +399,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                         (headcountInfo(crowd, { t, lang })?.text ?? t(level.desc))
                       )}
                       {crowd.avgWaitMin === undefined && headcountInfo(crowd)?.kind && <DataTag kind={headcountInfo(crowd)!.kind} />}
-                      {crowd.trend === "up" && <span className="text-red-600 dark:text-red-400"> · {t("늘어나는 중")}</span>}
-                      {crowd.trend === "down" && <span className="text-emerald-700"> · {t("줄어드는 중")}</span>}
+                      {crowd.trend === "up" && <span className="whitespace-nowrap text-red-600 dark:text-red-400"> · {t("늘어나는 중")}</span>}
+                      {crowd.trend === "down" && <span className="whitespace-nowrap text-emerald-700"> · {t("줄어드는 중")}</span>}
                     </>
                   ) : (
                     t(level.desc)

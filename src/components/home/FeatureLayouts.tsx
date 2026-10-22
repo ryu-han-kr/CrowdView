@@ -64,23 +64,27 @@ function Tag({ tag }: { tag: NonNullable<PhotoCardItem["tag"]> }) {
   );
 }
 
-/** 사진 위 아래쪽 흰 굵은 단계 줄 */
+/** 사진 위 아래쪽 흰 단계 알약 (UI QA 9차: 그림자 글씨 대신 흰 알약 — 사진이 밝아도 읽힌다) */
 function LevelLine({ item, big = false }: { item: PhotoCardItem; big?: boolean }) {
   const { t } = useI18n();
   const lv = item.score !== undefined ? levelOf(item.score) : undefined;
   if (!lv && !item.badge) return null;
   return (
-    <p className="truncate text-white drop-shadow">
+    <span
+      className={`inline-flex max-w-full items-center gap-1.5 rounded-full bg-white shadow-sm ${big ? "px-3 py-1.5" : "px-2.5 py-1"}`}
+    >
       {lv ? (
         <>
-          <span className="mr-1 inline-block h-2.5 w-2.5 rounded-full ring-2 ring-white/80" style={{ background: lv.color }} />
-          <b className={big ? "text-[20px] font-black" : "text-[15px] font-extrabold"}>{t(lv.label)}</b>
-          {item.people && <span className={`ml-1 font-bold ${big ? "text-[15px]" : "text-[12px]"}`}>{item.people}</span>}
+          <span className={`shrink-0 rounded-full ${big ? "h-2.5 w-2.5" : "h-2 w-2"}`} style={{ background: lv.color }} />
+          <b className={`shrink-0 font-extrabold ${big ? "text-[15px]" : "text-[13px]"}`} style={{ color: inkOf(lv.color) }}>
+            {t(lv.label)}
+          </b>
+          {item.people && <span className={`truncate font-bold text-gray-800 ${big ? "text-[14px]" : "text-[12px]"}`}>{item.people}</span>}
         </>
       ) : (
-        <b className="text-[14px] font-extrabold">{item.badge}</b>
+        <b className="truncate text-[13px] font-extrabold text-gray-900">{item.badge}</b>
       )}
-    </p>
+    </span>
   );
 }
 
@@ -143,7 +147,7 @@ export function FeatureGrid({
           <div className="absolute inset-x-4 bottom-4 md:inset-x-6 md:bottom-6">
             <p className="text-[24px] leading-tight font-black break-keep text-white drop-shadow md:text-[30px]">{big.title}</p>
             {big.sub && <p className="mt-0.5 truncate text-sm font-semibold text-white/90">{big.sub}</p>}
-            <div className="mt-1.5">
+            <div className="mt-2.5">
               <LevelLine item={big} big />
             </div>
           </div>
@@ -155,14 +159,13 @@ export function FeatureGrid({
               <CardLink item={it} className="group block">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 md:aspect-[5/4]">
                   <Photo item={it} sizes="(min-width: 768px) 25vw, 50vw" />
-                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/65 to-transparent" />
                   {it.tag && (
                     <div className="absolute top-2 left-2 scale-90 origin-top-left">
                       <Tag tag={it.tag} />
                     </div>
                   )}
                   {it.favId && <Heart id={it.favId} className="absolute top-2 right-2" />}
-                  <div className="absolute inset-x-2.5 bottom-2">
+                  <div className="absolute inset-x-2 bottom-2">
                     <LevelLine item={it} />
                   </div>
                 </div>
