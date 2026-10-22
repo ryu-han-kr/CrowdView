@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   sync:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crowdview]
     env:
       # 단계의 if 는 secrets를 직접 못 읽어서 job env로 넘긴다
       DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}

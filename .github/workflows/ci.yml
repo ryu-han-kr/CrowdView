@@ -1,7 +1,9 @@
 # PR·main 푸시마다 타입 검사 + 핵심 계산 테스트 (코스·지하철·예측·결제 규칙) + 화면 자동 시험(Playwright). 비밀 키가 필요 없다
 name: ci
 
-# 문서·참고 사진만 바뀐 PR은 건너뛴다 (비공개 저장소라 Actions 무료 시간이 월 2,000분)
+# 문서·참고 사진만 바뀐 PR은 건너뛴다.
+# 10/22부터 집 데스크탑(Windows) 자체 러너에서 돈다 (라벨 crowdview): 비공개 저장소의 GitHub 서버 무료 시간(월 2,000분)을 다 써서.
+# 데스크탑이 꺼져 있으면 켜질 때까지 대기한다
 on:
   pull_request:
     paths-ignore: ["docs/**", "**/*.md", "photo/**"]
@@ -11,7 +13,7 @@ on:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crowdview]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,7 +28,7 @@ jobs:
   e2e:
     # PR에서 이미 돌린 시험을 머지 뒤 main에서 또 돌리지 않는다 (9분 × 2)
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, crowdview]
     timeout-minutes: 25
     # 공공데이터 대신 tests/fixtures/normal 자료로 빌드·실행 → 화면 사이 숫자까지 비교 (e2e/fixtures.spec.ts)
     env:
@@ -39,7 +41,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: npx playwright install --with-deps chromium webkit
+      - run: npx playwright install chromium webkit
       - run: npx playwright test
       - if: failure()
         uses: actions/upload-artifact@v4
