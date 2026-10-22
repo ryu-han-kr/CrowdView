@@ -48,7 +48,12 @@ export async function getPlaceNews(placeId: string): Promise<PlaceNews | undefin
 }
 
 /** 뉴스 제목이 '행사·시즌 이벤트' 소식인지 */
-const EVENT_WORDS = /할로윈|핼러윈|크리스마스|축제|페스티벌|시즌|이벤트|퍼레이드|불꽃|개장|오픈|팝업|빛|라이트|단풍|벚꽃|눈썰매|야간|콘서트|공연|체험/;
+const EVENT_WORDS = /할로윈|핼러윈|크리스마스|축제|페스티벌|시즌|이벤트|퍼레이드|불꽃축제|불꽃쇼|개장|팝업|빛축제|라이트쇼|단풍|벚꽃|눈썰매|야간개장|콘서트|특별 공연/;
+/** 방문과 상관없는 기사 (운영 시험 10/22: "직원 소방 대결"이 이벤트로 잡힘) */
+const NOT_EVENT = /직원|사고|논란|소방|훈련|채용|주가|실적|부상|사망|화재|민원|소송|노조|적자|매각|과징금/;
+/** 커뮤니티 글은 소식으로 쓰지 않는다 */
+const COMMUNITY = /ruliweb|fmkorea|dcinside|theqoo|instiz|clien|ppomppu|pann.nate|bobaedream|mlbpark|inven|todayhumor|blog.|cafe./;
+const isEvent = (h: NewsHit) => EVENT_WORDS.test(h.title) && !NOT_EVENT.test(h.title);
 
 /** 소식을 볼 장소: 사람이 찾아가는 곳 (공항·행사 장소 제외), 스키장은 11~3월만 */
 function newsPlaces(month: number) {
@@ -67,15 +72,15 @@ async function refreshPlaceNews(today: string): Promise<TrendItem[]> {
     // Brave 무료 플랜은 1초에 1건 → 장소 사이 1.1초 (저장된 검색어면 바로 넘어간다)
     await new Promise((r) => setTimeout(r, 1100));
     // 12시간 저장된 예전 결과도 제목을 다시 다듬는다
-    const tidy = (xs: NewsHit[]) => xs.map((h) => ({ ...h, title: cleanTitle(strip(h.title)) }));
+    const tidy = (xs: NewsHit[]) => xs.map((h) => ({ ...h, title: cleanTitle(strip(h.title)) })).filter((h) => !COMMUNITY.test(h.source));
     const base = tidy(await searchNews(p.name, 7));
     const extra = p.category === "themepark" ? await (async () => (await new Promise((r) => setTimeout(r, 1100)), searchNews(`${short} 이벤트`, 7)))().then(tidy) : [];
-    const hits = [...extra.filter((h) => EVENT_WORDS.test(h.title)), ...base]
+    const hits = [...extra.filter(isEvent), ...base]
       .filter((h, i, arr) => h.title.includes(short) && arr.findIndex((x) => x.url === h.url) === i)
       .slice(0, 3);
     if (!hits.length) continue;
     await kv.set(newsKey(p.id), JSON.stringify({ date: today, hits } satisfies PlaceNews), 3 * 86_400).catch(() => {});
-    const ev = hits.find((h) => EVENT_WORDS.test(h.title));
+    const ev = hits.find(isEvent);
     if (ev)
       events.push({
         id: `news-${p.id}`,
