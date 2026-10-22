@@ -1,6 +1,7 @@
 // 예측 보정 신호 2가지 (QA 10/21 정확도 개선 3·4번). 키가 없으면 아무것도 하지 않는다.
 // 1) 네이버 데이터랩 검색어 트렌드: 최근 7일 검색이 그 전 4주보다 늘면 앞으로 7일 조금 더 붐빈다고 본다.
-//    키: NAVER_DATALAB_CLIENT_ID/SECRET, 없으면 네이버 로그인 앱 키(NAVER_CLIENT_ID/SECRET) — 같은 개발자센터 앱에 데이터랩을 켜 두면 된다
+//    네이버 클라우드(NCP) NAVER API HUB의 Search Trend로 부른다 (개발자센터 데이터랩은 10/22 신규 등록 불가 — 검색 계열 API가 NCP로 이관).
+//    키: NAVER_DATALAB_CLIENT_ID/SECRET(NCP 앱), 없으면 Papago 앱 키 — NCP 콘솔에서 그 앱에 Search Trend를 켜 두면 된다
 // 2) 나이스 학사일정 (NEIS_API_KEY): 서울·경기 초등학교 표본 중 쉬는 학교(방학·재량휴업) 비율 → 평일 놀이공원·워터파크·스키장 보정
 import { cached } from "../cached";
 import { addDays, kst } from "../time";
@@ -20,30 +21,38 @@ export function trendFrom(values: number[]): number | undefined {
   return Math.max(0.85, Math.min(1.2, Math.round(r * 100) / 100));
 }
 
+export const SEARCH_TREND_URL = "https://naverapihub.apigw.ntruss.com/search-trend/v1/search";
+
 /**
- * 데이터랩 키 (네이버 개발자센터 앱의 Client ID/Secret). 전용 키가 없으면 로그인 앱 키를 쓴다.
- * NCP(네이버 클라우드) 키(ID 10자·Secret 40자)는 데이터랩에서 401 — 10/21 운영에서 확인
+ * Search Trend 키 (NCP Application의 Client ID/Secret). 전용 키가 없으면 Papago(지도) 앱 키를 쓴다 — lib/name-translate와 같은 순서.
+ * 10/22: 개발자센터 로그인 앱 키는 'Scopes are Empty'(데이터랩 권한 없음), 신규 추가도 막혀 있다
  */
-export function naverDatalabKeys(): { id: string; secret: string; from: "datalab" | "login" } | undefined {
+export function naverDatalabKeys(): { id: string; secret: string; from: "datalab" | "papago" } | undefined {
   // 환경변수에 앞뒤 공백·줄바꿈이 섞여 들어가면 인증이 실패한다
   const id = process.env.NAVER_DATALAB_CLIENT_ID?.trim();
   const secret = process.env.NAVER_DATALAB_CLIENT_SECRET?.trim();
   if (id && secret) return { id, secret, from: "datalab" };
-  const loginId = process.env.NAVER_CLIENT_ID?.trim();
-  const loginSecret = process.env.NAVER_CLIENT_SECRET?.trim();
-  if (loginId && loginSecret) return { id: loginId, secret: loginSecret, from: "login" };
+  const pid = (process.env.PAPAGO_CLIENT_ID ?? process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID)?.trim();
+  const psecret = (process.env.PAPAGO_CLIENT_SECRET ?? process.env.PAPAGO_CLIENT_PASSWORD ?? process.env.NAVER_MAP_CLIENT_SECRET)?.trim();
+  if (pid && psecret) return { id: pid, secret: psecret, from: "papago" };
   return undefined;
 }
+
+/** NCP API Gateway 인증 헤더 */
+export const searchTrendHeaders = (k: { id: string; secret: string }) => ({
+  "X-NCP-APIGW-API-KEY-ID": k.id,
+  "X-NCP-APIGW-API-KEY": k.secret,
+  "content-type": "application/json",
+});
 
 export async function getSearchTrend(keyword: string): Promise<number | undefined> {
   const keys = naverDatalabKeys();
   if (!keys) return undefined;
-  const { id, secret } = keys;
   const today = kst().date;
   return cached(`trend:${keyword}`, 12 * HOUR, async () => {
-    const res = await fetch("https://openapi.naver.com/v1/datalab/search", {
+    const res = await fetch(SEARCH_TREND_URL, {
       method: "POST",
-      headers: { "X-Naver-Client-Id": id, "X-Naver-Client-Secret": secret, "content-type": "application/json" },
+      headers: searchTrendHeaders(keys),
       body: JSON.stringify({
         startDate: addDays(today, -35),
         endDate: addDays(today, -1),
