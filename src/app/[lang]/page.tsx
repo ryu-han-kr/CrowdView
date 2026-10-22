@@ -12,7 +12,9 @@ import { RecentRail } from "@/components/home/RecentRail";
 import { RankList, type RankItem } from "@/components/home/RankList";
 import { headcountInfo } from "@/lib/format";
 import { CATEGORY_TONE } from "@/lib/category-style";
-import { heroImage } from "@/lib/place-photos";
+import { heroImage, placePhotos } from "@/lib/place-photos";
+import { CollectionCarousel, ShortCardRail, ThemeTiles, type Collection, type ShortCard, type ThemeTile } from "@/components/home/HomeCollections";
+import { levelOf } from "@/lib/levels";
 import { CATEGORY_LABEL } from "@/lib/types";
 import { Glyph } from "@/components/Glyph";
 import { PLUS } from "@/lib/business";
@@ -26,7 +28,7 @@ import { placeHref } from "@/lib/places";
 import { getAllSeoulLive } from "@/lib/seoul-live";
 import { addDays, dateRange, daysUntil, kst } from "@/lib/time";
 import { LangSwitcher } from "@/components/LangSwitcher";
-import type { Lang } from "@/i18n/config";
+import { localePath, type Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { fmtAge, trRegion } from "@/i18n/patterns";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
@@ -223,6 +225,117 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       items={busyItems}
     />
   );
+  // ── 모음 섹션 (사용자 레퍼런스 10/22, photo/qa-ref/round3)
+  // 1) 테마파크·워터파크·스키장 세로 카드: 실측 먼저, 그다음 한산한 순
+  const leisure = places
+    .filter((p) => ["themepark", "waterpark", "ski"].includes(p.category) && crowd[p.id]?.open && heroImage(p))
+    .sort((a, b) => Number(crowd[b.id].source !== "model") - Number(crowd[a.id].source !== "model") || crowd[a.id].score - crowd[b.id].score)
+    .slice(0, 10);
+  const shortCards: ShortCard[] = leisure.map((p) => {
+    const c = crowd[p.id];
+    const lv = levelOf(c.score);
+    const live = c.source !== "model";
+    const hc = headcountInfo(c, { t, lang });
+    return {
+      id: p.id,
+      href: placeHref(p),
+      img: heroImage(p),
+      badge: live ? "LIVE" : t("예측"),
+      live,
+      headline: c.avgWaitMin !== undefined ? t("평균 대기 {n}분", { n: c.avgWaitMin }) : t("지금 {level}", { level: t(lv.label) }),
+      title: t(p.name),
+      boxLine: t(p.region),
+      boxValue: [t(lv.label), hc?.text].filter(Boolean).join(" · "),
+      boxColor: lv.color,
+    };
+  });
+  // 2) 테마 타일: 고른 주제로 바로 이동 (사진은 그 주제의 대표 장소)
+  const photoOf = (id: string, n = 0) => placePhotos(id)[n]?.src ?? places.find((x) => x.id === id)?.image;
+  const countCalm = (f: (p: (typeof places)[number]) => boolean) => places.filter((p) => f(p) && crowd[p.id]?.open && crowd[p.id].score < 40).length;
+  const themeTiles: ThemeTile[] = [
+    {
+      id: "aquarium",
+      href: localePath(lang, "/?q=" + encodeURIComponent(t("아쿠아리움")) + "#places"),
+      img: photoOf("aquaplanet-jeju"),
+      badge: t("추천"),
+      title: t("비 오는 날엔 아쿠아리움"),
+      sub: t("실내라 날씨 걱정 없는 {n}곳", { n: places.filter((p) => p.tags.includes("아쿠아리움")).length }),
+    },
+    {
+      id: "family",
+      href: localePath(lang, "/?cat=themepark#places"),
+      img: photoOf("everland"),
+      badge: t("가족"),
+      title: t("아이와 함께 테마파크"),
+      sub: t("지금 한산한 테마파크 {n}곳", { n: countCalm((p) => p.category === "themepark") }),
+    },
+    {
+      id: "palace",
+      href: localePath(lang, "/?cat=landmark#places"),
+      img: photoOf("gyeongbokgung"),
+      badge: t("추천"),
+      title: t("고궁·명소 산책"),
+      sub: t("경복궁부터 남산까지, 덜 붐빌 때 가기"),
+    },
+    {
+      id: "ski",
+      href: localePath(lang, "/?cat=ski#places"),
+      img: photoOf("phoenix"),
+      badge: t("시즌"),
+      title: t("올겨울 스키장"),
+      sub: t("개장 전에 미리 보는 혼잡 예측"),
+    },
+    {
+      id: "festival",
+      href: localePath(lang, "/events"),
+      img: photoOf("seoul-fireworks"),
+      badge: t("축제"),
+      title: t("이번 주 축제"),
+      sub: t("작년 방문객으로 본 예상 붐빔"),
+    },
+    {
+      id: "seoul",
+      href: localePath(lang, "/seoul"),
+      img: photoOf("seongsu", 1) ?? photoOf("hongdae"),
+      badge: t("실시간"),
+      title: t("서울 실시간 {n}곳", { n: SEOUL_AREAS.length }),
+      sub: t("강남역·성수·한강공원, 지금 몇 명?"),
+    },
+  ];
+  // 3) 지역 모음: 지역마다 지금 한산한 3곳 (왼쪽 큰 사진은 그 지역 대표 장소)
+  const REGION_SETS = ["서울", "경기", "부산", "제주", "강원"];
+  const collections: Collection[] = REGION_SETS.map((r) => {
+    const inR = places.filter((p) => p.region.startsWith(r) && crowd[p.id] && heroImage(p) && p.category !== "airport");
+    const top = [...inR].sort((a, b) => b.popularity - a.popularity)[0];
+    const items = [...inR]
+      .sort((a, b) => Number(crowd[b.id].open) - Number(crowd[a.id].open) || crowd[a.id].score - crowd[b.id].score)
+      .slice(0, 3)
+      .map((p) => {
+        const c = crowd[p.id];
+        const lv = levelOf(c.score);
+        return {
+          id: p.id,
+          href: placeHref(p),
+          img: heroImage(p),
+          title: t(p.name),
+          value: c.open ? [t(lv.label), headcountInfo(c, { t, lang })?.text].filter(Boolean).join(" · ") : t("운영 종료"),
+          color: c.open ? lv.color : "#6b7280",
+        };
+      });
+    return {
+      id: t(r),
+      title: t("{region} 지금 한산한 곳 모음", { region: t(r) }),
+      href: "/?q=" + encodeURIComponent(t(r)) + "#places",
+      img: top ? (placePhotos(top.id)[1]?.src ?? heroImage(top)) : undefined,
+      items,
+    };
+  }).filter((c) => c.items.length >= 3);
+  const shortRail = (
+    <ShortCardRail title={t("테마파크·워터파크 지금")} sub={t("실시간 대기와 예상 혼잡을 한눈에")} moreHref="/map" items={shortCards} />
+  );
+  const themeSection = <ThemeTiles title={t("오늘은 이런 곳 어때요?")} sub={t("주제를 고르면 바로 그 목록으로")} tiles={themeTiles} />;
+  const collectionSection = <CollectionCarousel title={t("지역별 한산한 곳 모음")} sub={t("지역을 고르면 지금 덜 붐비는 곳 3곳")} collections={collections} />;
+
   // 상태 알약: 실시간 자료 기준 시각 (NOL '공지' 줄 자리)
   const seoulTime = Object.values(seoul)[0]?.time?.slice(11, 16);
 
@@ -285,16 +398,22 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       {ko ? (
         <HomeList places={listPlaces} crowd={crowd}>
           {calmRail}
+          {shortRail}
           {busyList}
+          {themeSection}
           {festivalRail}
+          {collectionSection}
           {plusPromo}
           {landmarkRail}
         </HomeList>
       ) : (
         <>
           {landmarkRail}
+          {themeSection}
           {festivalRail}
           {calmRail}
+          {shortRail}
+          {collectionSection}
           {busyList}
           {plusPromo}
           <HomeList places={listPlaces} crowd={crowd} />

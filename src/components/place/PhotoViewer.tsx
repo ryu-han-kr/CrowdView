@@ -130,3 +130,62 @@ export function PhotoViewer({
     </DialogPrimitive.Root>
   );
 }
+
+/**
+ * 전체 사진 격자 (레퍼런스: 여기어때 '전체 사진' 창 — 위에 개수 칩, 3열 격자). 사진을 누르면 크게 보기로 넘어간다
+ */
+export function PhotoGrid({
+  photos,
+  open,
+  onOpenChange,
+  onPick,
+  title,
+}: {
+  photos: ViewerPhoto[];
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onPick: (i: number) => void;
+  title: string;
+}) {
+  const { t } = useI18n();
+  return (
+    <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
+      <DialogPrimitive.Portal>
+        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50" />
+        <DialogPrimitive.Content className="fixed inset-0 z-50 flex flex-col bg-white text-gray-900 outline-none md:inset-x-auto md:top-[5vh] md:bottom-[5vh] md:left-1/2 md:w-[min(1080px,92vw)] md:-translate-x-1/2 md:rounded-3xl">
+          <div className="flex items-center justify-between gap-3 px-5 pt-5">
+            <DialogPrimitive.Title className="text-lg font-extrabold">{t("전체 사진")}</DialogPrimitive.Title>
+            <DialogPrimitive.Description className="sr-only">{title}</DialogPrimitive.Description>
+            <DialogPrimitive.Close aria-label={t("닫기")} className="flex h-10 w-10 items-center justify-center rounded-full text-2xl leading-none hover:bg-gray-100">
+              ×
+            </DialogPrimitive.Close>
+          </div>
+          <div className="flex gap-2 border-b border-gray-100 px-5 pt-3 pb-4">
+            <span className="rounded-full bg-gray-900 px-3.5 py-1.5 text-sm font-bold text-white">
+              {t("대표 사진")} {photos.length}
+            </span>
+          </div>
+          <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
+            <p className="mb-3 text-base font-extrabold">{title}</p>
+            <ul className="grid grid-cols-2 gap-2 md:grid-cols-3">
+              {photos.map((p, i) => (
+                <li key={p.src}>
+                  <button onClick={() => onPick(i)} className="group relative block aspect-[3/2] w-full overflow-hidden rounded-xl bg-gray-100" aria-label={`${title} ${i + 1}/${photos.length}`}>
+                    <Image
+                      src={p.src}
+                      alt={p.alt ?? ""}
+                      fill
+                      sizes="(min-width: 768px) 340px, 50vw"
+                      unoptimized={!canOptimize(p.src)}
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
+  );
+}

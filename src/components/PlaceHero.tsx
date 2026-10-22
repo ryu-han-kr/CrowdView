@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "@/i18n/link";
 import { PhotoGallery } from "@/components/PhotoGallery";
-import { PhotoViewer, type ViewerPhoto } from "@/components/place/PhotoViewer";
+import { PhotoGrid, PhotoViewer, type ViewerPhoto } from "@/components/place/PhotoViewer";
 import { useI18n } from "@/i18n/client";
 import { canOptimize } from "@/lib/img";
 import { photoCreditText } from "@/lib/places";
@@ -45,6 +45,7 @@ export function PlaceHero({
   const { t, lp } = useI18n();
   const [y, setY] = useState(0);
   const [viewer, setViewer] = useState<number | null>(null);
+  const [grid, setGrid] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setY(window.scrollY);
@@ -134,6 +135,14 @@ export function PlaceHero({
             <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/35 to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/45 to-transparent" />
             {chipRow("absolute bottom-11 left-4 z-10")}
+            {photos.length > 1 && (
+              <button
+                onClick={() => setGrid(true)}
+                className="absolute right-4 bottom-11 z-10 flex items-center gap-1 rounded-full bg-black/55 px-3 py-1 text-[13px] font-bold text-white backdrop-blur-sm"
+              >
+                <Glyph e="🖼️" className="h-3.5 w-3.5" /> {t("전체 사진")} {photos.length}
+              </button>
+            )}
           </>
         ) : (
           <div className="flex h-full items-center justify-center">
@@ -162,7 +171,7 @@ export function PlaceHero({
                   className="object-cover transition duration-300 group-hover:scale-[1.03]"
                 />
                 <button
-                  onClick={() => setViewer(i)}
+                  onClick={() => (i === shown.length - 1 && photos.length > shown.length ? setGrid(true) : setViewer(i))}
                   className="absolute inset-0 cursor-zoom-in"
                   aria-label={`${name} ${t("사진")} ${i + 1}/${photos.length}`}
                 />
@@ -194,6 +203,16 @@ export function PlaceHero({
         )}
       </div>
 
+      <PhotoGrid
+        photos={photos}
+        open={grid}
+        onOpenChange={setGrid}
+        onPick={(i) => {
+          setGrid(false);
+          setViewer(i);
+        }}
+        title={name}
+      />
       <PhotoViewer
         photos={photos}
         open={viewer !== null}
