@@ -11,7 +11,7 @@ import { PlusPromo } from "@/components/home/PlusPromo";
 import { RecentRail } from "@/components/home/RecentRail";
 import { RankList, type RankItem } from "@/components/home/RankList";
 import { headcountInfo } from "@/lib/format";
-import { CATEGORY_TONE } from "@/lib/category-style";
+import { placeTag } from "@/lib/category-style";
 import { heroImage, placePhotos } from "@/lib/place-photos";
 import { FeatureGrid } from "@/components/home/FeatureLayouts";
 import { CollectionCarousel, ShortCardRail, ThemeTiles, type Collection, type ShortCard, type ThemeTile } from "@/components/home/HomeCollections";
@@ -25,7 +25,7 @@ import { LANDMARKS, REGIONS, dailyPick, inRegion } from "@/lib/korea";
 import { festivalCard, landmarkCard } from "@/lib/korea-cards";
 import { translateNames } from "@/lib/name-translate";
 import { getTrending } from "@/lib/trending";
-import { getLivePlaces } from "@/lib/place-info";
+import { getLivePlaces, isUpcomingEvent } from "@/lib/place-info";
 import { placeHref } from "@/lib/places";
 import { getAllSeoulLive } from "@/lib/seoul-live";
 import { addDays, dateRange, daysUntil, kst } from "@/lib/time";
@@ -59,7 +59,9 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const lang = (await params).lang as Lang;
   const t = getT(lang);
   const today = kst().date;
-  const [crowd, places, seoul, allFestivals] = await Promise.all([getAllCrowd(), getLivePlaces(), getAllSeoulLive(), getFestivals(30)]);
+  const [crowd, livePlaces, seoul, allFestivals] = await Promise.all([getAllCrowd(), getLivePlaces(), getAllSeoulLive(), getFestivals(30)]);
+  // 끝난 행사 장소는 홈에서 뺀다 (자체 QA 10/22: 10/10에 끝난 서울세계불꽃축제가 여의도 실시간 값으로 '원활'로 나와 한산한 곳 맨 앞에)
+  const places = livePlaces.filter((p) => p.category !== "event" || isUpcomingEvent(p, today));
   const live = Object.values(crowd).filter((c) => c.source !== "model");
   const newest = live.length ? Math.min(...live.map((c) => c.ageMinutes)) : null;
 
@@ -98,7 +100,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       title: t(p.name),
       sub: t(p.region),
       score: crowd[p.id].score,
-      tag: { label: t(CATEGORY_LABEL[p.category]), ...CATEGORY_TONE[p.category] },
+      tag: placeTag(p, t),
       favId: p.id,
       people: headcountInfo(crowd[p.id], { t, lang })?.text,
     }));
@@ -291,7 +293,9 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     sub: [x.period, x.region ? (trendTr.get(x.region) ?? trRegion(x.region, t)) : undefined].filter(Boolean).join(" · ") || undefined,
     note:
       x.kind === "event"
-        ? `AI · ${trendTr.get(x.reason) ?? x.reason}`
+        ? x.id.startsWith("news-")
+          ? `${t("뉴스")} · ${x.reason.split(" · ")[1] ?? ""}`
+          : `AI · ${trendTr.get(x.reason) ?? x.reason}`
         : x.rising && x.rising >= 1.5
           ? t("검색량 {n}배 ↑", { n: x.rising.toFixed(1) })
           : t("요즘 많이 찾는 곳"),

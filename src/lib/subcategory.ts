@@ -89,3 +89,19 @@ const BY_ID: Record<string, SubCategory> = {
 };
 
 export const subOf = (placeId: string): SubCategory | undefined => BY_ID[placeId];
+
+/** 세부 분류 3D 아이콘 (public/icons/3d, Fluent Emoji MIT). 없으면 상위 분류 아이콘 */
+export const SUB_ICON: Partial<Record<SubCategory, string>> = {
+  amusement: "rollercoaster",
+  aquarium: "sub-aquarium",
+  zoo: "sub-zoo",
+  folk: "sub-folk",
+  palace: "sub-palace",
+  tower: "sub-tower",
+  "cafe-street": "sub-cafe",
+  "youth-street": "sub-youth",
+  fireworks: "sub-fireworks",
+  lights: "sub-lights",
+  "indoor-waterpark": "sub-swim",
+  "outdoor-waterpark": "waterpark",
+};

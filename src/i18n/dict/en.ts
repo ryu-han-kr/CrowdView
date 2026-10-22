@@ -904,6 +904,8 @@ const dict: Dict = {
   "{name}에는 지금 약 {range}이 있고, 서울시 공식 혼잡 단계는 ‘{level}’이에요 ({time} 기준, 서울시 실시간 도시데이터).": "About {range} are at {name} now, and the Seoul official level is ‘{level}’ (as of {time}, Seoul real-time city data).",
   "데이터 출처·계산 방식": "Data sources & methodology",
   "예측 정확도": "Forecast accuracy",
+  "뉴스": "News",
+  "더 보기 ({n}곳 더)": "Show more ({n} more)",
   "검색해서 넣으면 코스에 꼭 넣고, 남는 시간은 한산한 곳으로 채워요 (최대 6곳)": "Search and add places: we include them and fill the rest with calm spots (up to 6)",
   "장소 이름 검색 (예: 더현대 서울, 국립중앙박물관)": "Search a place (e.g. The Hyundai Seoul, National Museum of Korea)",
   "찾는 중…": "Searching…",
