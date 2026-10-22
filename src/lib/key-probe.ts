@@ -136,6 +136,26 @@ const PROBES: Probe[] = [
     ok: (s, b) => s === 200 && b.includes('"items"'),
   },
   {
+    // Brave 뉴스 검색 (장소별 최근 소식·시즌 이벤트)
+    id: "brave",
+    env: "BRAVE_SEARCH_API_KEY",
+    url: () => `https://api.search.brave.com/res/v1/news/search?q=${encodeURIComponent("에버랜드")}&country=KR&search_lang=ko&count=1`,
+    init: (k) => ({ headers: { Accept: "application/json", "X-Subscription-Token": k } }),
+    ok: (s, b) => s === 200 && b.includes('"results"'),
+  },
+  {
+    // Tavily 검색 (Brave 대신). 확인 1번 = 1크레딧
+    id: "tavily",
+    env: "TAVILY_API_KEY",
+    url: () => "https://api.tavily.com/search",
+    init: (k) => ({
+      method: "POST",
+      headers: { "content-type": "application/json", Authorization: `Bearer ${k}` },
+      body: JSON.stringify({ query: "에버랜드", topic: "news", max_results: 1 }),
+    }),
+    ok: (s, b) => s === 200 && b.includes('"results"'),
+  },
+  {
     // AI 검색(요즘 뜨는 곳·이벤트 매일 갱신)용 Claude API 키
     id: "anthropic",
     env: "ANTHROPIC_API_KEY",
