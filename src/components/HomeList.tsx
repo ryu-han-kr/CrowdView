@@ -6,7 +6,7 @@ import { headcountInfo } from "@/lib/format";
 import { placeHref } from "@/lib/places";
 import { useFavorites } from "@/lib/prefs";
 import { CATEGORY_LABEL, type Category, type CrowdResult, type Place } from "@/lib/types";
-import { CATEGORY_TONE } from "@/lib/category-style";
+import { placeTag } from "@/lib/category-style";
 import { levelOf } from "@/lib/levels";
 import { ListCard } from "./ListCard";
 import type { PhotoCardItem } from "./home/PhotoRail";
@@ -50,6 +50,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "spot", label: "관광지" },
 ];
 const SPOT_PAGE = 30;
+const LIVE_PAGE = 12;
 
 type Filter = "all" | "fav" | Category;
 type Sort = "calm" | "busy";
@@ -88,6 +89,8 @@ export function HomeList({
   const [sub, setSub] = useState<SubCategory | "all">("all");
   const [region, setRegion] = useState<string>("all");
   const [spotShown, setSpotShown] = useState(SPOT_PAGE);
+  // 실시간 장소 목록도 12곳씩 (사용자 10/22: 45곳이 한 번에 늘어서 길고 조잡해 보임)
+  const [liveShown, setLiveShown] = useState(LIVE_PAGE);
   const [sort, setSort] = useState<Sort>("calm");
   const [view, setView] = useState<"list" | "map">("list");
   const { favorites } = useFavorites();
@@ -100,6 +103,7 @@ export function HomeList({
     const cat = params.get("cat") as Category | null;
     if (cat && CATEGORIES.includes(cat)) {
       setFilter(cat);
+      setTab("live");
       document.getElementById("places")?.scrollIntoView({ behavior: "smooth" });
     }
     const tb = params.get("tab") as Tab | null;
@@ -115,6 +119,7 @@ export function HomeList({
 
   useEffect(() => setSub("all"), [filter]);
   useEffect(() => setSpotShown(SPOT_PAGE), [region, query, tab]);
+  useEffect(() => setLiveShown(LIVE_PAGE), [filter, sub, query, sort]);
   const q = query.trim().toLowerCase();
   const hit = (xs: (string | undefined)[]) => !q || xs.some((s) => !!s && s.toLowerCase().includes(q));
   const list = places
@@ -150,7 +155,7 @@ export function HomeList({
       trend: c.open ? c.trend : undefined,
       score: c.open ? c.score : undefined,
       badge: c.open ? undefined : closedLabel(p, c.offSeason),
-      tag: { label: t(subOf(p.id) ? SUB_LABEL[subOf(p.id)!] : CATEGORY_LABEL[p.category]), ...CATEGORY_TONE[p.category] },
+      tag: placeTag(p, t),
       favId: p.id,
       lat: p.lat,
       lng: p.lng,
@@ -257,7 +262,7 @@ export function HomeList({
             ))}
           </div>
         )}
-        {(tab === "all" || tab === "live") && (
+        {(tab === "live" || !search) && (
         <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
           {chips.map((c) => (
             <button
@@ -275,7 +280,7 @@ export function HomeList({
         </div>
         )}
         {/* 세부 분류 (예: 테마파크 → 놀이공원·아쿠아리움·동물원·민속촌) */}
-        {(tab === "all" || tab === "live") && subs.length > 0 && (
+        {(tab === "live" || !search) && subs.length > 0 && (
           <div className="no-scrollbar mt-2 flex gap-1.5 overflow-x-auto">
             {(["all", ...subs] as const).map((x) => (
               <button
@@ -379,8 +384,9 @@ export function HomeList({
           />
         ) : (
           // 사진 왼쪽 · 글 오른쪽 가로 카드를 회색 구역 안에 (사용자 QA 10/22: 왼쪽→오른쪽으로 읽히게, 배경으로 구별)
+          <>
           <ul className="sector mt-4 grid grid-cols-[minmax(0,1fr)] gap-2.5 p-3 md:grid-cols-2 lg:grid-cols-3">
-            {cards.map((c) => (
+            {cards.slice(0, liveShown).map((c) => (
               <li key={c.id}>
                 <ListCard
                   item={{
@@ -400,6 +406,15 @@ export function HomeList({
               </li>
             ))}
           </ul>
+          {cards.length > liveShown && (
+            <button
+              onClick={() => setLiveShown((n) => n + LIVE_PAGE)}
+              className="mt-3 w-full rounded-2xl border border-gray-200 bg-white py-3 text-sm font-bold text-gray-800"
+            >
+              {t("더 보기 ({n}곳 더)", { n: cards.length - liveShown })}
+            </button>
+          )}
+          </>
         )}
       </section>
       )}
