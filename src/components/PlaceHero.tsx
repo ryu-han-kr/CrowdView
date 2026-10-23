@@ -100,7 +100,11 @@ export function PlaceHero({
       {/* 휴대폰 상단 바: 스크롤하면 흰 바탕 + 제목 */}
       <div
         className="fixed inset-x-0 top-0 z-30 mx-auto flex h-14 max-w-md items-center justify-between px-3 transition-colors md:hidden"
-        style={{ background: `rgb(255 255 255 / ${progress})`, boxShadow: progress >= 1 ? "0 1px 0 #e5e7eb" : "none" }}
+        // 바탕은 화면 면 색(--surface)을 스크롤만큼 (UI QA 13차: 다크 모드에서 흰 바에 흰 제목이라 안 보였다)
+        style={{
+          background: `color-mix(in srgb, var(--surface, #fff) ${Math.round(progress * 100)}%, transparent)`,
+          boxShadow: progress >= 1 ? "0 1px 0 var(--color-gray-200)" : "none",
+        }}
       >
         <button
           onClick={() => (history.length > 1 ? router.back() : router.push(lp("/")))}
