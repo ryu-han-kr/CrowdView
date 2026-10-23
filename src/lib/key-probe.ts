@@ -1,7 +1,7 @@
 // 새로 넣은 API 키가 실제로 되는지 서버에서 한 번 불러 본다 (Vercel의 Sensitive 값은 밖에서 읽을 수 없어 운영 서버에서만 확인 가능).
 // /api/health 의 keyProbe 로 보인다: 키 값은 절대 내보내지 않고 정상 여부와 원본 응답 앞부분(키는 가림)만. 30분 저장
 // 부를 때마다 돈·크레딧이 드는 키(Brave·Tavily)는 하루 1번만 확인하고 그 호출도 한도에 센다 (10/23: 상태 확인이 30분마다 Brave를 따로 불러 쓰고 있었다)
-import { APIS, beforeCall } from "./api-quota";
+import { APIS, beforeCall, QuotaError } from "./api-quota";
 import { kv } from "./cache";
 import { naverDatalabKeys, SEARCH_TREND_URL, searchTrendHeaders } from "./crowd/extra-signals";
 
@@ -197,8 +197,16 @@ async function probe(p: Probe): Promise<ProbeResult> {
   const key = p.key ? p.key() : process.env[p.env];
   if (!key) return { configured: false };
   const t0 = Date.now();
+  if (p.paid) {
+    try {
+      await beforeCall(APIS.find((a) => a.id === p.paid));
+    } catch (e) {
+      // 오늘 한도를 다 쓴 날은 확인을 건너뛴다 (키 고장이 아니다 → ok 비움, 저장 안 함)
+      if (e instanceof QuotaError) return { configured: true, sample: "오늘 한도를 다 써서 확인 건너뜀" };
+      throw e;
+    }
+  }
   try {
-    if (p.paid) await beforeCall(APIS.find((a) => a.id === p.paid));
     // 느린 원본을 가려내려고 넉넉히 30초 (화면에서 쓰는 호출은 lib/roads의 15초)
     const res = await fetch(p.url(key), { ...p.init?.(key), signal: AbortSignal.timeout(30_000) });
     const body = await res.text();
@@ -241,10 +249,10 @@ export async function probeKeys(): Promise<Record<string, ProbeResult>> {
 
 /** 사용량이 드는 키: 배포와 상관없이 하루 1번 (키가 없으면 부르지 않으니 저장도 안 한다) */
 async function paidProbe(p: Probe): Promise<ProbeResult> {
-  const k = `probe:paid:v1:${p.id}`;
+  const k = `probe:paid:v2:${p.id}`;
   const saved = await kv.get(k).catch(() => null);
   if (saved) return JSON.parse(saved);
   const r = await probe(p);
-  if (r.configured) await kv.set(k, JSON.stringify(r), 24 * 3600).catch(() => {});
+  if (r.configured && r.ok !== undefined) await kv.set(k, JSON.stringify(r), 24 * 3600).catch(() => {});
   return r;
 }
