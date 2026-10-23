@@ -151,7 +151,7 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
           {/* 점은 작게 보이되 누르는 칸은 24px (Lighthouse target-size: 6px 버튼은 누르기 어렵다) */}
           <div className="absolute bottom-0.5 left-[calc((100cqw-var(--w))/2+10px)] flex items-center md:bottom-1.5 md:left-[calc((100cqw-var(--w))/2+18px)]">
             {slides.map((s, i) => (
-              <button key={s.id} onClick={() => goTo(i)} aria-label={`${i + 1} / ${n}`} className="flex h-6 items-center px-[3px]">
+              <button key={s.id} onClick={() => goTo(i)} aria-label={`${i + 1} / ${n}`} className="flex h-6 min-w-6 items-center justify-center">
                 <span className={`block h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-white" : "w-1.5 bg-white/55"}`} />
               </button>
             ))}
