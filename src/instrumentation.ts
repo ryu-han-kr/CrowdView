@@ -2,7 +2,8 @@
 // 서버 오류에는 요청 주소·오류 내용만 담기고, 회원 정보(쿠키·IP)는 보내지 않는다 (Sentry 기본값: 개인정보 안 보냄)
 import type { Instrumentation } from "next";
 
-const dsn = process.env.SENTRY_DSN ?? process.env.NEXT_PUBLIC_SENTRY_DSN;
+// 운영(production)에서만 보낸다: 미리보기 배포·CI·로컬 빌드는 무료 한도(Developer: 오류 월 5천 건)를 쓰지 않게
+const dsn = process.env.VERCEL_ENV === "production" ? (process.env.SENTRY_DSN ?? process.env.NEXT_PUBLIC_SENTRY_DSN) : undefined;
 
 export async function register() {
   if (!dsn || process.env.NEXT_RUNTIME !== "nodejs") return;
@@ -10,7 +11,8 @@ export async function register() {
   Sentry.init({
     dsn,
     environment: process.env.VERCEL_ENV ?? "development",
-    tracesSampleRate: 0.05,
+    // 성능 추적은 1%만 (무료 한도 안에서). 무료 플랜은 한도를 넘으면 버려질 뿐 과금되지 않는다
+    tracesSampleRate: 0.01,
   });
 }
 
