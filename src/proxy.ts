@@ -36,6 +36,8 @@ function guessLang(request: NextRequest): Lang {
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const seg = pathname.split("/")[1];
+  // 공유 이미지(/ko/…/opengraph-image)는 넘기지 않는다 — 카카오톡 수집기는 이미지 주소의 308을 따라가지 않는다 (10/23)
+  if (seg === DEFAULT_LANG && /\/(opengraph|twitter)-image/.test(pathname)) return NextResponse.next();
   if (seg === DEFAULT_LANG) {
     const url = request.nextUrl.clone();
     url.pathname = pathname.slice(DEFAULT_LANG.length + 1) || "/";

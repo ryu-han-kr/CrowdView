@@ -34,6 +34,9 @@ export function pageMeta({
 }): Metadata {
   const l = (LANGS as readonly string[]).includes(lang) ? (lang as Lang) : DEFAULT_LANG;
   const url = `${SITE}${localePath(l, path)}`;
+  // 공유 미리보기 (카카오톡·페이스북 등): 페이지 사진이 없으면 사진 위 한글 제목 기본 썸네일 (public/og, 1200×630 JPG).
+  // 사용자 10/23: 카톡 링크에 썸네일이 안 떴다 — 예전 기본 이미지(/ko/opengraph-image/…)가 308로 넘어가 수집기가 못 읽었다
+  const img = image ?? `${SITE}/og/default-${l === "ko" ? "ko" : "en"}.jpg`;
   return {
     ...(title && { title: { absolute: `${title} | CrowdView` } }),
     ...(description && { description }),
@@ -45,13 +48,13 @@ export function pageMeta({
       locale: OG_LOCALE[l],
       ...(title && { title: `${title} | CrowdView` }),
       ...(description && { description }),
-      ...(image && { images: [{ url: image }] }),
+      images: [{ url: img, ...(!image && { width: 1200, height: 630 }) }],
     },
     twitter: {
       card: "summary_large_image",
       ...(title && { title: `${title} | CrowdView` }),
       ...(description && { description }),
-      ...(image && { images: [image] }),
+      images: [img],
     },
     ...(noindex && { robots: { index: false, follow: true } }),
   };
