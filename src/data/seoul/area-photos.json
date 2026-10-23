@@ -225,5 +225,33 @@
   "photographer": "어색하고좋은",
   "license": "CC BY-SA 4.0",
   "page": "https://commons.wikimedia.org/wiki/File:On_the_sky_seeing_for_Seoul_Children%E2%80%99s_Grand_Park20210616-003679.jpg"
+ },
+ "POI005": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Seoul_Eastern_Gangnam-gu_sunset_seen_from_Jamsil_Railway_Bridge_20230921.jpg/1280px-Seoul_Eastern_Gangnam-gu_sunset_seen_from_Jamsil_Railway_Bridge_20230921.jpg",
+  "title": "Seoul Eastern Gangnam-gu sunset seen from Jamsil Railway Bridge 20230921",
+  "photographer": "Ox1997cow",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Seoul_Eastern_Gangnam-gu_sunset_seen_from_Jamsil_Railway_Bridge_20230921.jpg"
+ },
+ "POI108": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Korea_Ichon_Hangang_Park_20140912_07_%2815210590851%29.jpg/1280px-Korea_Ichon_Hangang_Park_20140912_07_%2815210590851%29.jpg",
+  "title": "Korea Ichon Hangang Park 20140912 07 (15210590851)",
+  "photographer": "Republic of Korea",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Korea_Ichon_Hangang_Park_20140912_07_(15210590851).jpg"
+ },
+ "POI102": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Achasan.JPG/1280px-Achasan.JPG",
+  "title": "Achasan",
+  "photographer": "Kellnerp",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Achasan.JPG"
+ },
+ "POI093": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/Ttukseom_Hangang_Park_20260416_6.jpg/1280px-Ttukseom_Hangang_Park_20260416_6.jpg",
+  "title": "Ttukseom Hangang Park 20260416 6",
+  "photographer": "Motoko C. K.",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Ttukseom_Hangang_Park_20260416_6.jpg"
  }
 }
