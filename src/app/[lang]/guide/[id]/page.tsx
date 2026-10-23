@@ -119,7 +119,7 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
             unoptimized={!canOptimize(p.imgL)}
             className="object-cover"
           />
-          <span className="absolute right-3 bottom-2 rounded bg-black/40 px-1.5 py-0.5 text-[10px] text-white">{t("사진 한국관광공사")}</span>
+          <span className="absolute right-3 bottom-2 rounded bg-black/40 px-1.5 py-0.5 text-[10px] text-white">{p.credit ?? t("사진 한국관광공사")}</span>
         </div>
       )}
 

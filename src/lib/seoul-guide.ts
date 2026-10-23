@@ -11,6 +11,7 @@ import { distanceKm, type LatLng } from "./geo";
 import { LANDMARKS } from "./korea";
 import { SEOUL_AREAS, type SeoulArea } from "./seoul-areas";
 import areaPhotos from "@/data/seoul/area-photos.json";
+import guidePhotos from "@/data/seoul/guide-photos.json";
 
 export type GuideKind = "attraction" | "food" | "shopping" | "nature";
 export const GUIDE_KINDS: { id: GuideKind; label: string; emoji: string }[] = [
@@ -48,6 +49,8 @@ export interface GuidePlace {
   imgL?: string;
   /** 관광공사 contentid */
   tourId?: string;
+  /** 사진 출처 (없으면 한국관광공사) */
+  credit?: string;
 }
 
 // Visit Seoul '명소'에는 짐 보관소·관광안내소·지하철역·학교·세탁소 같은 곳이 섞여 있다 (QA: '수서역이 명소?').
@@ -107,12 +110,24 @@ function landmarkImg(p: GuidePlace): string | undefined {
   return undefined;
 }
 
+const GUIDE_PHOTOS = guidePhotos as Record<string, { src: string; credit: string; page: string }>;
+
 const cleaned = (guide as GuidePlace[]).flatMap((p) => {
   const kind = cleanKind(p);
   if (!kind) return [];
   const hit = matchTour(p);
   const lm = hit ? undefined : landmarkImg(p);
-  return [{ ...p, kind, ...(hit && { img: hit[5], imgL: hit[6], tourId: hit[0] }), ...(lm && { img: lm, imgL: lm }) }];
+  // 직접 고른 사진 (관광공사 사진이 약하거나 없는 곳, 위키미디어 커먼즈 — 출처 표시)
+  const own = GUIDE_PHOTOS[p.id];
+  return [
+    {
+      ...p,
+      kind,
+      ...(hit && { img: hit[5], imgL: hit[6], tourId: hit[0] }),
+      ...(lm && { img: lm, imgL: lm }),
+      ...(own && { img: own.src, imgL: own.src, credit: own.credit }),
+    },
+  ];
 });
 
 // 가이드에 없는 관광공사 서울 관광지·문화시설(사진 있는 곳)은 명소로 더한다 (QA: '명소라고 할 곳이 더 있을 텐데')
