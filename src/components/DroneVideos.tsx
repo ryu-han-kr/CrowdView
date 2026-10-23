@@ -52,7 +52,7 @@ export function DroneVideos({ videos, className = "" }: { videos: DroneVideo[]; 
           </figure>
         ))}
       </div>
-      <p className="mt-2 text-xs text-gray-400">{t("영상: 한국관광공사 (공공누리 제1유형)")}</p>
+      <p className="mt-2 text-xs text-gray-500">{t("영상: 한국관광공사 (공공누리 제1유형)")}</p>
     </section>
   );
 }
