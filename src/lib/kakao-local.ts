@@ -1,7 +1,8 @@
 // 카카오 로컬 키워드 검색 (코스 추천: 카페·백화점·애니 매장·플래그십, 가고 싶은 곳 검색).
 // REST API 키 = 카카오 로그인 앱의 client id (KAKAO_REST_API_KEY가 따로 있으면 그것). 앱 설정에서 '카카오맵' 사용을 켜야 된다.
 // 꺼져 있으면(403) 6시간 동안 부르지 않고 빈 결과 → 화면은 우리 자료만으로 동작한다
-import { APIS, beforeCall } from "./api-quota";
+// 한도: lib/api-quota 의 kakao-local (무료 쿼터의 1/5). 카카오가 429(쿼터 초과)를 주면 그날은 더 부르지 않는다
+import { APIS, beforeCall, markExhausted } from "./api-quota";
 import { cached } from "./cached";
 import { kv } from "./cache";
 
@@ -49,6 +50,10 @@ export function kakaoSearch(query: string, near?: { lat: number; lng: number; ra
       });
       if (res.status === 401 || res.status === 403) {
         await kv.set(OFF_KEY, "1", 6 * 3600).catch(() => {});
+        return [];
+      }
+      if (res.status === 429) {
+        await markExhausted(APIS.find((a) => a.id === "kakao-local"));
         return [];
       }
       if (!res.ok) throw new Error(`kakao ${res.status}`);

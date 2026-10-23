@@ -1,6 +1,6 @@
 // 새로 넣은 API 키가 실제로 되는지 서버에서 한 번 불러 본다 (Vercel의 Sensitive 값은 밖에서 읽을 수 없어 운영 서버에서만 확인 가능).
 // /api/health 의 keyProbe 로 보인다: 키 값은 절대 내보내지 않고 정상 여부와 원본 응답 앞부분(키는 가림)만. 30분 저장
-// 부를 때마다 돈·크레딧이 드는 키(Brave·Tavily)는 하루 1번만 확인하고 그 호출도 한도에 센다 (10/23: 상태 확인이 30분마다 Brave를 따로 불러 쓰고 있었다)
+// 부를 때마다 돈·크레딧·무료 쿼터가 드는 키(Brave·Tavily·카카오)는 하루 1번만 확인하고 그 호출도 한도에 센다 (10/23: 상태 확인이 30분마다 Brave를 따로 불러 쓰고 있었다)
 import { APIS, beforeCall, QuotaError } from "./api-quota";
 import { kv } from "./cache";
 import { naverDatalabKeys, SEARCH_TREND_URL, searchTrendHeaders } from "./crowd/extra-signals";
@@ -126,6 +126,7 @@ const PROBES: Probe[] = [
     // 카카오 로컬 키워드 검색 (코스 추천: 카페·백화점·애니 매장 찾기). REST API 키 = 카카오 로그인 앱의 client id
     id: "kakaoLocal",
     env: "KAKAO_REST_API_KEY",
+    paid: "kakao-local",
     key: () => process.env.KAKAO_REST_API_KEY || process.env.KAKAO_CLIENT_ID,
     url: () => `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent("성수 카페")}&size=1`,
     init: (k) => ({ headers: { Authorization: `KakaoAK ${k}` } }),
