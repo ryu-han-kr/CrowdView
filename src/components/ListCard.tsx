@@ -92,7 +92,7 @@ export function ListCard({ item }: { item: ListCardItem }) {
                   {item.level.label}
                 </b>
                 {item.people && <span className="truncate text-[13px] font-bold text-gray-800">{item.people}</span>}
-                {item.trend === "up" && <span className="shrink-0 text-xs font-bold text-red-600 dark:text-red-400">↑</span>}
+                {item.trend === "up" && <span className="shrink-0 text-xs font-bold text-red-700 dark:text-red-400">↑</span>}
                 {item.trend === "down" && <span className="shrink-0 text-xs font-bold text-emerald-700">↓</span>}
               </>
             ) : item.badge ? (
