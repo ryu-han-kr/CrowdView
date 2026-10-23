@@ -24,13 +24,18 @@ const clean = (src: string) => (src.includes("wikimedia.org") ? src.split("?")[0
 
 // 관광공사 관광사진 갤러리(전문 사진가 촬영, 공공누리 제1유형) — 있으면 맨 앞에 (사용자 10/22: 각 잡고 찍은 사진 위주로).
 // scripts/korea-data/pro-photos.mts 가 채운다
-const PRO = pro as Record<string, { src: string; title: string; photographer: string; month: string }[]>;
+const PRO = pro as Record<string, { src: string; w?: number; h?: number; title: string; photographer: string; month: string }[]>;
 const proPhotos = (id: string): PlacePhoto[] =>
-  (PRO[id] ?? []).map((p) => ({ src: p.src, credit: `한국관광공사 · ${p.photographer}`, license: "공공누리 제1유형", alt: p.title }));
+  (PRO[id] ?? []).map((p) => ({ src: p.src, w: p.w, h: p.h, credit: `한국관광공사 · ${p.photographer}`, license: "공공누리 제1유형", alt: p.title }));
+
+// 갤러리 사진이 기존 대표보다 못한 곳 (10/23 전후 비교: 2013년 공항 사진, 슬로프 근접샷 등) → 기존 대표를 첫 장으로 두고 갤러리 사진은 그 뒤에
+const KEEP_HERO = new Set(["korean-folk-village", "gimpo", "gimhae", "gyeongjuworld", "konjiam", "welli-hilli", "oakvalley", "alpensia"]);
 
 /** 장소의 고해상도 사진 (모자라면 빈 배열 → 기존 사진을 쓴다). 관광공사 전문 사진이 있으면 앞에, 겹치는 주소는 한 번 */
 export function placePhotos(id: string): PlacePhoto[] {
-  const list = [...proPhotos(id), ...(PHOTOS[id] ?? []).map((p) => ({ ...p, src: clean(p.src) }))].filter(
+  const own = (PHOTOS[id] ?? []).map((p) => ({ ...p, src: clean(p.src) }));
+  const ordered = KEEP_HERO.has(id) && own.length ? [own[0], ...proPhotos(id), ...own.slice(1)] : [...proPhotos(id), ...own];
+  const list = ordered.filter(
     (p, i, arr) => arr.findIndex((x) => x.src === p.src) === i,
   );
   return list.length >= MIN ? list.slice(0, 12) : [];
