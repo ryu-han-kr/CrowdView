@@ -1,5 +1,7 @@
 // 새로 넣은 API 키가 실제로 되는지 서버에서 한 번 불러 본다 (Vercel의 Sensitive 값은 밖에서 읽을 수 없어 운영 서버에서만 확인 가능).
 // /api/health 의 keyProbe 로 보인다: 키 값은 절대 내보내지 않고 정상 여부와 원본 응답 앞부분(키는 가림)만. 30분 저장
+// 부를 때마다 돈·크레딧이 드는 키(Brave·Tavily)는 하루 1번만 확인하고 그 호출도 한도에 센다 (10/23: 상태 확인이 30분마다 Brave를 따로 불러 쓰고 있었다)
+import { APIS, beforeCall } from "./api-quota";
 import { kv } from "./cache";
 import { naverDatalabKeys, SEARCH_TREND_URL, searchTrendHeaders } from "./crowd/extra-signals";
 
@@ -46,6 +48,8 @@ interface Probe {
   /** 값 대신 모양만 (글자 수·앞뒤 공백) — 키를 잘못 넣었는지 보려고 */
   shape?: () => Record<string, unknown>;
   ok: (status: number, body: string) => boolean;
+  /** 부를 때마다 사용량이 드는 키 → lib/api-quota 의 id. 하루 1번만 확인하고 한도에 센다 */
+  paid?: string;
 }
 
 const PROBES: Probe[] = [
@@ -140,13 +144,14 @@ const PROBES: Probe[] = [
     id: "ktoGallery",
     env: "DATA_GO_KR_KEY",
     url: (k) =>
-      `https://apis.data.go.kr/B551011/PhotoGalleryService1/gallerySearchList1?serviceKey=${encodeURIComponent(k)}&MobileOS=ETC&MobileApp=CrowdView&_type=json&numOfRows=1&keyword=${encodeURIComponent("에버랜드")}`,
+      `https://apis.data.go.kr/B551011/PhotoGalleryService1/gallerySearchList1?serviceKey=${encodeURIComponent(k)}&MobileOS=ETC&MobileApp=CrowdView&_type=json&numOfRows=1&keyword=${encodeURIComponent("경복궁")}`,
     ok: (s, b) => s === 200 && b.includes("galWebImageUrl"),
   },
   {
     // Brave 뉴스 검색 (장소별 최근 소식·시즌 이벤트)
     id: "brave",
     env: "BRAVE_SEARCH_API_KEY",
+    paid: "brave-search",
     url: () => `https://api.search.brave.com/res/v1/news/search?q=${encodeURIComponent("에버랜드")}&country=KR&search_lang=ko&count=1`,
     init: (k) => ({ headers: { Accept: "application/json", "X-Subscription-Token": k } }),
     ok: (s, b) => s === 200 && b.includes('"results"'),
@@ -155,6 +160,7 @@ const PROBES: Probe[] = [
     // Tavily 검색 (Brave 대신). 확인 1번 = 1크레딧
     id: "tavily",
     env: "TAVILY_API_KEY",
+    paid: "tavily",
     url: () => "https://api.tavily.com/search",
     init: (k) => ({
       method: "POST",
@@ -192,6 +198,7 @@ async function probe(p: Probe): Promise<ProbeResult> {
   if (!key) return { configured: false };
   const t0 = Date.now();
   try {
+    if (p.paid) await beforeCall(APIS.find((a) => a.id === p.paid));
     // 느린 원본을 가려내려고 넉넉히 30초 (화면에서 쓰는 호출은 lib/roads의 15초)
     const res = await fetch(p.url(key), { ...p.init?.(key), signal: AbortSignal.timeout(30_000) });
     const body = await res.text();
@@ -227,7 +234,17 @@ const PROBE_KEY = `probe:keys:v4:${process.env.VERCEL_DEPLOYMENT_ID ?? process.e
 export async function probeKeys(): Promise<Record<string, ProbeResult>> {
   const saved = await kv.get(PROBE_KEY).catch(() => null);
   if (saved) return JSON.parse(saved);
-  const results = Object.fromEntries(await Promise.all(PROBES.map(async (p) => [p.id, await probe(p)] as const)));
+  const results = Object.fromEntries(await Promise.all(PROBES.map(async (p) => [p.id, p.paid ? await paidProbe(p) : await probe(p)] as const)));
   await kv.set(PROBE_KEY, JSON.stringify(results), 30 * 60).catch(() => {});
   return results;
+}
+
+/** 사용량이 드는 키: 배포와 상관없이 하루 1번 (키가 없으면 부르지 않으니 저장도 안 한다) */
+async function paidProbe(p: Probe): Promise<ProbeResult> {
+  const k = `probe:paid:v1:${p.id}`;
+  const saved = await kv.get(k).catch(() => null);
+  if (saved) return JSON.parse(saved);
+  const r = await probe(p);
+  if (r.configured) await kv.set(k, JSON.stringify(r), 24 * 3600).catch(() => {});
+  return r;
 }

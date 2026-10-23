@@ -64,7 +64,10 @@ export const APIS: ApiInfo[] = [
   // NCP NAVER API HUB Search Trend: 월 5만 건 무료(사용자가 NCP 콘솔 한도도 5만으로 걸어 둠). 우리 쓰임은 월 2천 건 안팎
   { id: "naver-searchtrend", name: "네이버 검색어 트렌드 (NCP Search Trend)", monthlyLimit: Number(process.env.SEARCHTREND_MONTHLY_LIMIT) || 50_000 },
   // 무료 플랜 (사용자 10/22): 매월 초기화. 하루 몫을 나눠 한 달을 넘기지 않게
-  { id: "brave-search", name: "Brave Search (무료)", limit: Number(process.env.BRAVE_DAILY_LIMIT) || 60, monthlyLimit: Number(process.env.BRAVE_MONTHLY_LIMIT) || 2000 },
+  // 카카오 로컬 키워드 검색: 무료 쿼터 하루 10만 건(개발자 계정의 첫 활성화 앱만), 넘으면 건당 2원. 집계용 (docs/검색·지도-API-쿼터-2026-10-23.md)
+  { id: "kakao-local", name: "카카오 로컬 키워드 검색", limit: 100000 },
+  // Brave: 2026-02부터 새 가입은 무료 플랜 대신 매달 $5 크레딧(약 1,000건, 1,000건당 $5) → 넘으면 카드로 과금. 월 900·하루 30에서 멈춘다
+  { id: "brave-search", name: "Brave Search (월 $5 무료 크레딧)", limit: Number(process.env.BRAVE_DAILY_LIMIT) || 30, monthlyLimit: Number(process.env.BRAVE_MONTHLY_LIMIT) || 900 },
   { id: "tavily", name: "Tavily 검색 (무료)", limit: Number(process.env.TAVILY_DAILY_LIMIT) || 30, monthlyLimit: Number(process.env.TAVILY_MONTHLY_LIMIT) || 1000, unit: "크레딧" },
   { id: "papago", name: "Papago 번역 (글자 수)", limit: 30000, monthlyLimit: Number(process.env.PAPAGO_MONTHLY_LIMIT) || 300_000, unit: "자" },
 ];
