@@ -71,7 +71,8 @@ export function ListCard({ item }: { item: ListCardItem }) {
         </div>
         <div className="min-w-0 flex-1 py-0.5">
           {item.tag && (
-            <p className="flex items-center gap-1 text-[12px] font-extrabold" style={{ color: item.tag.color }}>
+            // 분류 이름은 회색 한 가지로 (UI QA 10차: 분류마다 색이 달라 목록이 산만했다. 색은 혼잡 단계에만)
+            <p className="flex items-center gap-1 text-[12px] font-bold text-gray-500">
               {item.tag.icon ? (
                 // eslint-disable-next-line @next/next/no-img-element -- 작은 고정 아이콘
                 <img src={`/icons/3d/${item.tag.icon}.webp`} alt="" width={16} height={16} className="h-4 w-4" />

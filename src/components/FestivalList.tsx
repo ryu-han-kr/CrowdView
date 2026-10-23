@@ -139,7 +139,11 @@ export function FestivalList({
                         href={hrefs[f.id]}
                         className="flex h-full gap-3 rounded-2xl bg-white p-2.5 pr-3 shadow-[0_1px_2px_rgb(15_23_42/0.06)] transition active:scale-[0.99] md:hover:shadow-md"
                       >
-                        <div className="h-[104px] w-[104px] shrink-0 overflow-hidden rounded-xl bg-gray-100">
+                        <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-xl bg-gray-100">
+                          {/* 진행 중·D-n은 사진 위 왼쪽 아래로 (UI QA 10차: 제목 옆에 두면 제목이 두 줄로 잘렸다) */}
+                          <span className="absolute bottom-1.5 left-1.5 z-10 rounded-md bg-gray-900/85 px-1.5 py-0.5 text-[11px] font-bold text-white">
+                            {dday <= 0 ? t("진행 중") : `D-${dday}`}
+                          </span>
                           {f.image ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={f.image} alt="" loading="lazy" className="h-full w-full object-cover" />
@@ -148,12 +152,7 @@ export function FestivalList({
                           )}
                         </div>
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-start justify-between gap-2">
-                            <p className="line-clamp-2 text-base leading-snug font-extrabold text-gray-950">{tr(f.title)}</p>
-                            <span className="shrink-0 rounded-full bg-gray-900 px-2 py-0.5 text-[11px] font-bold text-white">
-                              {dday <= 0 ? t("진행 중") : `D-${dday}`}
-                            </span>
-                          </div>
+                          <p className="line-clamp-2 text-base leading-snug font-extrabold break-keep text-gray-950">{tr(f.title)}</p>
                           <p className="mt-0.5 truncate text-[13px] font-medium text-gray-600">
                             {dateRange(f.start, f.end)} · {reg(f.region)}
                           </p>

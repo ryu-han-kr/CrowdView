@@ -36,8 +36,6 @@ const HERO: Record<string, PlacePhoto> = {
   gyeongbokgung: { src: "https://tong.visitkorea.or.kr/cms2/website/03/3551003.jpg", credit: "한국관광공사 · 서문교", license: "공공누리 제1유형", alt: "경복궁" },
   haeundae: { src: "https://tong.visitkorea.or.kr/cms2/website/59/3414759.jpg", credit: "한국관광공사 · 이명재", license: "공공누리 제1유형", alt: "해운대 일몰" },
   eworld: { src: "https://tong.visitkorea.or.kr/cms2/website/02/2951602.jpg", credit: "한국관광공사 · 앙지뉴 필름", license: "공공누리 제1유형", alt: "이월드" },
-  // 커먼즈 첫 장(벨루가 근접)보다 큰 수조 전경
-  "lotteworld-aquarium": { src: "https://tong.visitkorea.or.kr/cms/resource/45/2384845_image2_1.jpg", credit: "한국관광공사", license: "공공누리 제1유형" },
   "gwangju-familyland": { src: "https://tong.visitkorea.or.kr/cms/resource/01/3351301_image2_1.jpg", credit: "한국관광공사", license: "공공누리 제1유형", alt: "꽃밭과 대관람차가 보이는 광주패밀리랜드" },
 };
 
