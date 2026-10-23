@@ -145,7 +145,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                     </>
                   )}
                   {crowd.trend === "up" ? (
-                    <span className="whitespace-nowrap text-red-600 dark:text-red-400">{t("늘어나는 중")}</span>
+                    <span className="whitespace-nowrap text-red-700 dark:text-red-400">{t("늘어나는 중")}</span>
                   ) : crowd.trend === "down" ? (
                     <span className="whitespace-nowrap text-emerald-700">{t("줄어드는 중")}</span>
                   ) : (
@@ -328,7 +328,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                                 <li key={z.zone} className="rounded-2xl bg-gray-50 px-3 py-2">
                                   <p className="text-xs text-gray-500">{t("구역 {n}", { n: z.zone })}</p>
                                   <p className="text-sm">
-                                    <b className={pct < 10 ? "text-red-600 dark:text-red-400" : pct < 25 ? "text-orange-700 dark:text-orange-400" : "text-emerald-700"}>
+                                    <b className={pct < 10 ? "text-red-700 dark:text-red-400" : pct < 25 ? "text-orange-700 dark:text-orange-400" : "text-emerald-700"}>
                                       {t("{n}면", { n: z.free.toLocaleString() })}
                                     </b>
                                     <span className="text-[11px] text-gray-500"> / {z.total.toLocaleString()}</span>

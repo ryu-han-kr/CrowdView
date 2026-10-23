@@ -55,7 +55,7 @@ export function PlaceRow({ place, crowd }: { place: Place; crowd: CrowdResult })
               {info.kind && <DataTag kind={info.kind} />}
             </>
           )}
-          {crowd.open && crowd.trend === "up" && <span className="text-red-600 dark:text-red-400"> · {t("늘어나는 중")}</span>}
+          {crowd.open && crowd.trend === "up" && <span className="text-red-700 dark:text-red-400"> · {t("늘어나는 중")}</span>}
           {crowd.open && crowd.trend === "down" && <span className="text-emerald-700"> · {t("줄어드는 중")}</span>}
         </p>
       </div>

@@ -7,7 +7,7 @@ import { useI18n } from "@/i18n/client";
 import { canOptimize } from "@/lib/img";
 import { inkOf, levelOf } from "@/lib/levels";
 import { useFavorites } from "@/lib/prefs";
-import { TagLabel, type PhotoCardItem } from "./PhotoRail";
+import { shortPeople, TagLabel, type PhotoCardItem } from "./PhotoRail";
 
 // 배치 다양화 (사용자 10/22: 줄·정사각 격자만 있어 단조롭다)
 // - FeatureGrid: 큰 카드 1장 + 작은 카드 4장 (휴대폰: 위 큰 카드, 아래 2×2 / PC: 왼쪽 큰 카드, 오른쪽 2×2)
@@ -70,7 +70,7 @@ function LevelLine({ item, big = false }: { item: PhotoCardItem; big?: boolean }
           <b className={`shrink-0 font-extrabold ${big ? "text-[15px]" : "text-[13px]"}`} style={{ color: inkOf(lv.color) }}>
             {t(lv.label)}
           </b>
-          {item.people && <span className={`truncate font-bold text-gray-800 ${big ? "text-[14px]" : "text-[12px]"}`}>{item.people}</span>}
+          {item.people && <span className={`truncate font-bold text-gray-800 ${big ? "text-[14px]" : "text-[12px]"}`}>{big ? item.people : shortPeople(item.people)}</span>}
         </>
       ) : (
         <b className="truncate text-[13px] font-extrabold text-gray-900">{item.badge}</b>

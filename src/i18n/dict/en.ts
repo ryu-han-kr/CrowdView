@@ -372,7 +372,7 @@ const dict: Dict = {
   "{age} 실측": "Measured {age}",
   "{time} 기준": "as of {time}",
   "{min}~{max}명": "{min}–{max} people",
-  "약 {n}명": "about {n} people",
+  "약 {n}명": "~{n} people",
   "약 {v}": "about {v}",
   "{y}년 {m}월": "{m}/{y}",
   "{h} 대비": "vs {h}",

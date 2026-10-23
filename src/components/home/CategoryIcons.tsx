@@ -44,7 +44,10 @@ export function CategoryIcons({ t, lang }: { t: T; lang: Lang }) {
                   <img src={`/icons/3d/${it.icon}.webp`} alt="" width={40} height={40} className="h-10 w-10 md:h-11 md:w-11" />
                 </span>
               </span>
-              <span className="text-center text-[13px] font-semibold whitespace-nowrap text-gray-800 md:text-sm">{t(it.label)}</span>
+              {/* 칸 폭(72px) 안에서 두 줄까지 (UI QA 13차: 일본어 'スキー場ソウルリアルタイ…'처럼 이름이 옆 칸으로 넘쳤다) */}
+              <span className="line-clamp-2 w-full text-center text-[13px] leading-tight font-semibold break-keep text-gray-800 md:text-sm">
+                {t(it.label)}
+              </span>
             </>
           );
           return (
