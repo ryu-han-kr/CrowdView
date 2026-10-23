@@ -6,6 +6,7 @@ import { localePath } from "@/i18n/config";
 import Link from "@/i18n/link";
 import { useEffect, useState } from "react";
 import { FESTIVAL_CATEGORIES, festivalStatus, isLongRunning, type Festival, type FestivalCategory, type FestivalCrowd } from "@/lib/festivals";
+import { canOptimize } from "@/lib/img";
 import { useI18n } from "@/i18n/client";
 import { fmtPeople, trRegion } from "@/i18n/patterns";
 import { compactNumber } from "@/lib/format";
@@ -100,9 +101,13 @@ export function FestivalList({
           .filter((f) => f.image)
           .sort((a, b) => (lives[b.id]?.score ?? crowds[b.id]?.score ?? 0) - (lives[a.id]?.score ?? crowds[a.id]?.score ?? 0));
         if (withImg.length < 4) return null;
-        const [top, ...rest] = withImg;
+        // 큰 사진은 줄여 보낼 수 있는 사진(관광공사)으로: 서울시 문화 사이트 사진은 원본(최대 800KB)이라 휴대폰 첫 화면이 17초 걸렸다 (10/23 Lighthouse)
+        const heroIdx = Math.max(0, withImg.findIndex((f) => canOptimize(f.image!)));
+        const top = withImg[heroIdx];
+        const rest = withImg.filter((_, i) => i !== heroIdx);
         return (
           <SplitFeature
+            eager
             title={t("지금 가장 뜨거운 축제")}
             sub={t("실시간·작년 방문객으로 본 붐빔 순")}
             hero={{ img: top.image, title: tr(top.title), desc: `${dateRange(top.start, top.end)} · ${reg(top.region)}`, href: localePath(lang, hrefs[top.id]), cta: t("자세히 보기") }}

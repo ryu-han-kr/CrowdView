@@ -177,11 +177,14 @@ export function SplitFeature({
   sub,
   hero,
   items,
+  eager = false,
 }: {
   title: string;
   sub?: string;
   hero: { img?: string; title: string; desc?: string; href: string; cta: string };
   items: PhotoCardItem[];
+  /** 화면 맨 위에 올 때 (큰 사진이 첫 화면 LCP) */
+  eager?: boolean;
 }) {
   const { t } = useI18n();
   if (!items.length) return null;
@@ -191,7 +194,16 @@ export function SplitFeature({
       <div className="mt-3 overflow-hidden rounded-3xl border border-gray-200 bg-white md:grid md:grid-cols-[1fr_1.35fr]">
         <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[320px]">
           {hero.img && (
-            <Image src={hero.img} alt="" fill sizes="(min-width: 768px) 40vw, 100vw" unoptimized={!canOptimize(hero.img)} className="object-cover" />
+            <Image
+              src={hero.img}
+              alt=""
+              fill
+              sizes="(min-width: 768px) 40vw, 100vw"
+              loading={eager ? "eager" : "lazy"}
+              fetchPriority={eager ? "high" : "auto"}
+              unoptimized={!canOptimize(hero.img)}
+              className="object-cover"
+            />
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/10 to-black/45" />
           <div className="absolute top-5 right-5 left-5 md:top-8 md:left-8">

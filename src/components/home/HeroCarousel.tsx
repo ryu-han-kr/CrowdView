@@ -148,14 +148,12 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
       {n > 1 && (
         <>
           {/* 아래 점 (왼쪽) + 일시정지·번호 알약 (오른쪽, NOL 레퍼런스) */}
-          <div className="absolute bottom-3 left-[calc((100cqw-var(--w))/2+16px)] flex items-center gap-1.5 md:bottom-4 md:left-[calc((100cqw-var(--w))/2+24px)]">
+          {/* 점은 작게 보이되 누르는 칸은 24px (Lighthouse target-size: 6px 버튼은 누르기 어렵다) */}
+          <div className="absolute bottom-0.5 left-[calc((100cqw-var(--w))/2+10px)] flex items-center md:bottom-1.5 md:left-[calc((100cqw-var(--w))/2+18px)]">
             {slides.map((s, i) => (
-              <button
-                key={s.id}
-                onClick={() => goTo(i)}
-                aria-label={`${i + 1} / ${n}`}
-                className={`h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-white" : "w-1.5 bg-white/55"}`}
-              />
+              <button key={s.id} onClick={() => goTo(i)} aria-label={`${i + 1} / ${n}`} className="flex h-6 items-center px-[3px]">
+                <span className={`block h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-white" : "w-1.5 bg-white/55"}`} />
+              </button>
             ))}
           </div>
           <div className="absolute right-[calc((100cqw-var(--w))/2+12px)] bottom-2.5 flex items-center gap-1 md:right-[calc((100cqw-var(--w))/2+16px)] md:bottom-3">
