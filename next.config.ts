@@ -8,10 +8,17 @@ const nextConfig: NextConfig = {
     "/api/cron/cost-report": ["./assets/fonts/*.ttf"],
   },
   // 관광공사 사진을 화면 크기에 맞게 줄여(WebP·AVIF) 보낸다. 원본은 수백 KB라 홈·카드가 무거웠다.
-  // 사진은 잘 안 바뀌어서 7일 보관 (lib/img.ts canOptimize와 같은 목록). 서울시 문화 사이트 사진은 최적화 서버로 받아지지 않아 원본 그대로
+  // 사진은 잘 안 바뀌어서 7일 보관 (lib/img.ts canOptimize와 같은 목록). 서울시 문화 사이트 사진도 (아래 remotePatterns)
   images: {
     // 위키미디어 커먼즈: 장소 사진 (src/data/korea/place-photos.json, CC0·CC BY·CC BY-SA·공유 저작물만, 10/22)
-    remotePatterns: [new URL("https://tong.visitkorea.or.kr/**"), new URL("https://thumb.wikimedia.org/**"), new URL("https://upload.wikimedia.org/**")],
+    remotePatterns: [
+      new URL("https://tong.visitkorea.or.kr/**"),
+      new URL("https://thumb.wikimedia.org/**"),
+      new URL("https://upload.wikimedia.org/**"),
+      // 서울시 문화행사 사진 (getImage.do?atchFileId=…). 주소에 ? 가 있어 new URL 방식(검색어 없음만 허용)으로는 막혔다 (10/23).
+      // search를 비워 두면 어떤 검색어든 허용 → 원본 최대 786KB 포스터를 줄여 보낸다
+      { protocol: "https", hostname: "culture.seoul.go.kr", pathname: "/cmmn/file/getImage.do" },
+    ],
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 7 * 24 * 3600,
     // 만들어 주는 크기를 줄인다: Vercel은 원본 × 크기 × 품질 조합마다 변환 요금을 받는다 (기본 16가지 크기 → 7가지).
