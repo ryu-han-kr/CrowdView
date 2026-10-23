@@ -19,7 +19,7 @@ import { translateNames } from "@/lib/name-translate";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { SEOUL_GROUPS, getSeoulAreaExtra, getSeoulAreaLive, seoulGroup } from "@/lib/seoul-live";
 import { getSktCongestion } from "@/lib/skt";
-import { GUIDE, GUIDE_KINDS, TOILETS, nearest, photoNear } from "@/lib/seoul-guide";
+import { GUIDE, GUIDE_KINDS, TOILETS, nearest, areaPhoto } from "@/lib/seoul-guide";
 import { guideNames } from "@/lib/guide-names";
 import Image from "next/image";
 import { canOptimize } from "@/lib/img";
@@ -86,7 +86,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
   const group = SEOUL_GROUPS.find((g) => g.id === seoulGroup(area.name))!;
   const level = live && levelOf(live.score);
   // 이 지역 사진: 800m 안 가이드 명소의 관광공사 사진 (서울시 데이터에는 사진이 없다)
-  const heroImg = photoNear(area, 0.8, true);
+  const heroImg = areaPhoto(area, true);
   const people = (min: number, max: number) => t("{min}~{max}명", { min: compactNumber(min, lang), max: compactNumber(max, lang) });
 
   return (
