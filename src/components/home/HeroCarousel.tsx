@@ -131,7 +131,10 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
                   <span className="mb-2 flex w-fit items-stretch overflow-hidden rounded-md text-[11px] font-bold md:text-xs">
                     {/* 옆에 흐리게 보이는 배너(opacity 60%)에서는 빨간 바탕 글자 대비가 모자라 가운데 배너에만 */}
                     {s.live && current && <span className="bg-red-700 px-2 py-0.5 text-white">LIVE</span>}
-                    {s.tag && <span className={`px-2 py-0.5 ${s.live ? "bg-black/60 text-white" : "bg-white text-gray-900"}`}>{s.tag}</span>}
+                    {/* 영어에선 '실시간' 꼬리표도 'LIVE'라 두 번 나왔다 → 같으면 생략 */}
+                    {s.tag && !(s.live && s.tag.toUpperCase() === "LIVE") && (
+                      <span className={`px-2 py-0.5 ${s.live ? "bg-black/60 text-white" : "bg-white text-gray-900"}`}>{s.tag}</span>
+                    )}
                   </span>
                 )}
                 <p className="text-xl leading-snug font-extrabold break-keep [text-wrap:balance] md:text-4xl">{s.title}</p>
