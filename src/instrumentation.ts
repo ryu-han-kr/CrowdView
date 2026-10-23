@@ -13,6 +13,9 @@ export async function register() {
     environment: process.env.VERCEL_ENV ?? "development",
     // 성능 추적은 1%만 (무료 한도 안에서). 무료 플랜은 한도를 넘으면 버려질 뿐 과금되지 않는다
     tracesSampleRate: 0.01,
+    // 외부 API 요청에 추적 헤더(sentry-trace·baggage)를 붙이지 않는다.
+    // 10/23: 공공데이터포털이 baggage 헤더가 붙은 요청을 400(INVALID_REQUEST)으로 거부해 공항·기상 등 수집이 Sentry를 켠 뒤로 전부 실패했다
+    tracePropagationTargets: [],
   });
 }
 
