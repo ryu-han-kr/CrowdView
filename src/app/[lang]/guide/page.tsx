@@ -37,8 +37,9 @@ function fame(p: GuidePlace): number {
     (f) => f === n || (n.length >= 3 && f.startsWith(n) && f.length - n.length <= 6) || (n.startsWith(f) && /^[A-Za-z]+$/.test(n.slice(f.length))),
   );
   if (n.length >= 2 && exact >= 0) return exact / 100;
-  if (n.length >= 3 && FAMOUS.some((f) => n.startsWith(f) || f.includes(n))) return 1;
-  if (n.length >= 3 && AREAS.some((a) => a === n || n.includes(a))) return 2;
+  // 사진이 없는 곳은 이름이 알려져 있어도 사진 있는 곳 뒤로 (목록 위쪽이 아이콘으로 차지 않게)
+  if (n.length >= 3 && FAMOUS.some((f) => n.startsWith(f) || f.includes(n))) return p.img ? 1 : 3.5;
+  if (n.length >= 3 && AREAS.some((a) => n.startsWith(a))) return p.img ? 2 : 3.5;
   return p.img ? 3 : 4;
 }
 

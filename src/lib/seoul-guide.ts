@@ -94,11 +94,25 @@ function matchTour(p: GuidePlace): TourRow | undefined {
   return best?.row;
 }
 
+// 관광공사 자료에 사진이 없는 대표 명소(경복궁·창덕궁·롯데월드타워 등)는 명소 대표 사진을 쓴다 (UI QA: 기본순 맨 위가 아이콘이었다).
+// 같은 이름(괄호·영문 표기 차이만)일 때만 — '경복궁 집옥재'처럼 그 안의 작은 곳에는 쓰지 않는다
+const sq = (s: string) => s.replace(/[\s()·]/g, "");
+const LANDMARK_IMG = new Map(LANDMARKS.filter((l) => l.region === "서울").map((l) => [sq(l.n.ko), l.img]));
+function landmarkImg(p: GuidePlace): string | undefined {
+  const n = sq(p.t.ko?.n ?? "");
+  if (n.length < 2) return undefined;
+  for (const [name, img] of LANDMARK_IMG)
+    if (name === n || (n.length >= 3 && name.startsWith(n) && name.length - n.length <= 6) || (n.startsWith(name) && /^[A-Za-z]+$/.test(n.slice(name.length))))
+      return img;
+  return undefined;
+}
+
 const cleaned = (guide as GuidePlace[]).flatMap((p) => {
   const kind = cleanKind(p);
   if (!kind) return [];
   const hit = matchTour(p);
-  return [{ ...p, kind, ...(hit && { img: hit[5], imgL: hit[6], tourId: hit[0] }) }];
+  const lm = hit ? undefined : landmarkImg(p);
+  return [{ ...p, kind, ...(hit && { img: hit[5], imgL: hit[6], tourId: hit[0] }), ...(lm && { img: lm, imgL: lm }) }];
 });
 
 // 가이드에 없는 관광공사 서울 관광지·문화시설(사진 있는 곳)은 명소로 더한다 (QA: '명소라고 할 곳이 더 있을 텐데')
