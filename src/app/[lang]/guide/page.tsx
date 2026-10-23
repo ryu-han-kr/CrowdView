@@ -3,7 +3,9 @@ import { GuideList, type Row } from "@/components/GuideList";
 import { translateNames } from "@/lib/name-translate";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
-import { GUIDE, GUIDE_KINDS, RESERVATIONS } from "@/lib/seoul-guide";
+import { GUIDE, GUIDE_KINDS, RESERVATIONS, type GuidePlace } from "@/lib/seoul-guide";
+import { LANDMARKS } from "@/lib/korea";
+import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { guideNames } from "@/lib/guide-names";
 import { pageMeta } from "@/lib/seo";
 import { Glyph } from "@/components/Glyph";
@@ -22,6 +24,24 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   });
 }
 
+// '기본순'은 이름난 곳부터 (UI QA: 달마사·금선사처럼 덜 알려진 곳이 맨 위였다).
+// 서울 대표 명소와 이름이 같은 곳(명소 목록 순서) → 이름 일부가 겹치는 곳(경복궁 돌담길 등) → 서울 실시간 지역 이름 → 사진 있음 → 나머지
+const norm = (s: string) => s.replace(/[\s()·]/g, "");
+const FAMOUS = LANDMARKS.filter((l) => l.region === "서울").map((l) => norm(l.n.ko));
+const AREAS = SEOUL_AREAS.map((a) => norm(a.name.replace(/관광특구|역$/g, ""))).filter((n) => n.length >= 3);
+function fame(p: GuidePlace): number {
+  const n = norm(p.t.ko?.n ?? "");
+  // 같은 곳의 다른 표기: '동대문디자인플라자(DDP)' ↔ '동대문디자인플라자', '롯데월드타워' ↔ '롯데월드타워 서울스카이'
+  // (경복궁 집옥재·경복궁 돌담길처럼 대표 명소 안의 작은 곳은 다음 등급)
+  const exact = FAMOUS.findIndex(
+    (f) => f === n || (n.length >= 3 && f.startsWith(n) && f.length - n.length <= 6) || (n.startsWith(f) && /^[A-Za-z]+$/.test(n.slice(f.length))),
+  );
+  if (n.length >= 2 && exact >= 0) return exact / 100;
+  if (n.length >= 3 && FAMOUS.some((f) => n.startsWith(f) || f.includes(n))) return 1;
+  if (n.length >= 3 && AREAS.some((a) => a === n || n.includes(a))) return 2;
+  return p.img ? 3 : 4;
+}
+
 export default async function GuidePage({ params }: { params: Promise<{ lang: string }> }) {
   const lang = (await params).lang as Lang;
   const t = getT(lang);
@@ -31,7 +51,9 @@ export default async function GuidePage({ params }: { params: Promise<{ lang: st
     .sort((a, b) => a.rcptEnd.localeCompare(b.rcptEnd))
     .slice(0, 6);
   // 첫 탭(명소) 이름: 그 언어 글이 없는 곳은 이름만 번역 (다른 탭은 /data/guide-{lang}.json이 같은 방식)
-  const attractions = GUIDE.filter((p) => p.kind === "attraction" && (lang === "ko" || !p.id.startsWith("kt-")));
+  const attractions = GUIDE.filter((p) => p.kind === "attraction" && (lang === "ko" || !p.id.startsWith("kt-"))).sort(
+    (a, b) => fame(a) - fame(b),
+  );
   const [names, resTr] = await Promise.all([
     guideNames(attractions, lang),
     // 체험 이름·장소도 외국어로 (6건, Papago 캐시). 자체 QA 10/22: en·ja에 한글 그대로
