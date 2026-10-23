@@ -50,6 +50,21 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "spot", label: "관광지" },
 ];
 const SPOT_PAGE = 30;
+
+// 언어별로 한 번만 받는다
+const searchPromise: Record<string, Promise<SearchData | undefined>> = {};
+function useHomeSearch(enabled: boolean): SearchData | undefined {
+  const { lang } = useI18n();
+  const [data, setData] = useState<SearchData>();
+  useEffect(() => {
+    if (!enabled) return;
+    searchPromise[lang] ??= fetch(`/api/home-search/${lang}`)
+      .then((r) => (r.ok ? r.json() : undefined))
+      .catch(() => undefined);
+    searchPromise[lang].then(setData);
+  }, [lang, enabled]);
+  return data;
+}
 const LIVE_PAGE = 12;
 
 type Filter = "all" | "fav" | Category;
@@ -74,12 +89,13 @@ const CATEGORIES = Object.keys(CATEGORY_EMOJI) as Category[];
 export function HomeList({
   places,
   crowd,
-  search,
+  withSearch = false,
   children,
 }: {
   places: Place[];
   crowd: Record<string, CrowdResult>;
-  search?: SearchData;
+  /** 명소·축제·서울 지역 탭 (자료는 탭을 고르거나 검색할 때 /api/home-search/{lang} 에서 받는다) */
+  withSearch?: boolean;
   children?: React.ReactNode;
 }) {
   const [query, setQuery] = useUrlQuery();
@@ -174,6 +190,7 @@ export function HomeList({
   // 다른 탭: 명소·축제·서울 지역(서버) + 관광지(브라우저가 /data/spots-{lang}.json 을 받는다)
   const needSpots = tab === "spot" || (tab === "all" && !!q);
   const spots = useSpots(needSpots);
+  const search = useHomeSearch(withSearch && (!!q || (tab !== "all" && tab !== "live")));
   const inReg = (r?: string) => region === "all" || r === region;
   /* eslint-disable react-hooks/exhaustive-deps -- q·region에 따라 다시 거른다 */
   const landmarks = useMemo(() => (search?.landmarks ?? []).filter((x) => inReg(x.region) && hit([x.title, x.sub, ...(x.keys ?? [])])), [search, region, q]);
@@ -205,7 +222,7 @@ export function HomeList({
     seoul: seoulAreas.length,
     spot: spotItems.length,
   };
-  const tabs = search ? TABS : [];
+  const tabs = withSearch ? TABS : [];
   const regionChips = search && (tab === "landmark" || tab === "festival" || tab === "spot") ? search.regions : [];
 
   return (
@@ -285,7 +302,7 @@ export function HomeList({
             ))}
           </div>
         )}
-        {(tab === "live" || !search) && (
+        {(tab === "live" || !withSearch) && (
         <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
           {chips.map((c) => (
             <button
@@ -303,7 +320,7 @@ export function HomeList({
         </div>
         )}
         {/* 세부 분류 (예: 테마파크 → 놀이공원·아쿠아리움·동물원·민속촌) */}
-        {(tab === "live" || !search) && subs.length > 0 && (
+        {(tab === "live" || !withSearch) && subs.length > 0 && (
           <div className="no-scrollbar mt-2 flex gap-1.5 overflow-x-auto">
             {(["all", ...subs] as const).map((x) => (
               <button
