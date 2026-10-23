@@ -1,3 +1,5 @@
+import { DroneVideos } from "@/components/DroneVideos";
+import { videosFor } from "@/lib/kto-videos";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { translateNames } from "@/lib/name-translate";
@@ -338,6 +340,8 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
           )}
 
           <StayLinks ko={l.n.ko} en={l.n.en} lang={lang} t={t} at={l} className="mt-6" />
+
+          <DroneVideos videos={videosFor(l.id)} className="mt-8" />
 
           {others.length > 0 && (
             <section className="mt-8">
