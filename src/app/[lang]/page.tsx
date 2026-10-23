@@ -133,7 +133,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     {
       id: "airport",
       href: "/airport",
-      img: photoOf("icn-t1") ?? "/places/icn-t1.jpg",
+      // 출국장 줄 사진 대신 노을 진 터미널 (관광공사 관광사진 갤러리, UI QA 10차)
+      img: "https://tong.visitkorea.or.kr/cms2/website/14/2541314.jpg",
       live: true,
       tag: t("실시간"),
       title: t("인천공항 출국장, 지금 몇 분 기다릴까?"),
@@ -395,7 +396,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     {
       id: "seoul",
       href: localePath(lang, "/seoul"),
-      img: photoOf("seongsu", 1) ?? photoOf("hongdae"),
+      // 골목 일상 사진 대신 북촌 한옥 지붕 (관광사진 갤러리, UI QA 10차)
+      img: LANDMARKS.find((l) => l.id === "bukchon")?.img ?? photoOf("hongdae"),
       badge: t("실시간"),
       title: t("서울 실시간 {n}곳", { n: SEOUL_AREAS.length }),
       sub: t("강남역·성수·한강공원, 지금 몇 명?"),

@@ -133,14 +133,21 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                 <p className="mt-1 text-[16px] font-semibold text-gray-900">
                   {avgWait !== null && (
                     <>
-                      {t("평균 대기")} <b>{fmtMinutes(avgWait, t)}</b> ·{" "}
+                      <span className="whitespace-nowrap">
+                        {t("평균 대기")} <b>{fmtMinutes(avgWait, t)}</b>
+                      </span>{" "}
+                      ·{" "}
                     </>
                   )}
-                  {headcountInfo(crowd, { t, lang }) && !headcountInfo(crowd, { t, lang })!.kind && <>{headcountInfo(crowd, { t, lang })!.text} · </>}
+                  {headcountInfo(crowd, { t, lang }) && !headcountInfo(crowd, { t, lang })!.kind && (
+                    <>
+                      <span className="whitespace-nowrap">{headcountInfo(crowd, { t, lang })!.text}</span> ·{" "}
+                    </>
+                  )}
                   {crowd.trend === "up" ? (
-                    <span className="text-red-600 dark:text-red-400">{t("늘어나는 중")}</span>
+                    <span className="whitespace-nowrap text-red-600 dark:text-red-400">{t("늘어나는 중")}</span>
                   ) : crowd.trend === "down" ? (
-                    <span className="text-emerald-700">{t("줄어드는 중")}</span>
+                    <span className="whitespace-nowrap text-emerald-700">{t("줄어드는 중")}</span>
                   ) : (
                     t("변화 없음")
                   )}

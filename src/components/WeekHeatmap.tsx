@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@/i18n/client";
-import { deepOf, LEVELS, levelOf } from "@/lib/levels";
+import { inkOf, LEVELS, levelOf } from "@/lib/levels";
 
 export interface HeatDay {
   date: string;
@@ -65,7 +65,8 @@ export function WeekHeatmap({ days, nowHour }: { days: HeatDay[]; nowHour: numbe
                       <td
                         key={b}
                         className="rounded-lg py-2 text-[11px] font-bold whitespace-nowrap"
-                        style={past ? { background: `${l.color}33`, color: "#4b5563" } : { background: l.color, color: deepOf(l.color) }}
+                        // 진한 단계 색을 칸마다 꽉 채우면 표가 무거워 보인다 (UI QA 10차) → 옅은 바탕 + 진한 글씨 (목록의 단계 알약과 같은 방식)
+                        style={past ? { background: "#f3f4f6", color: "#6b7280" } : { background: `${l.color}2b`, color: inkOf(l.color) }}
                       >
                         {t(l.label)}
                       </td>
@@ -80,7 +81,7 @@ export function WeekHeatmap({ days, nowHour }: { days: HeatDay[]; nowHour: numbe
       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-600">
         {LEVELS.map((l) => (
           <span key={l.key} className="flex items-center gap-1">
-            <span className="h-3 w-3 rounded" style={{ background: l.color }} />
+            <span className="h-3 w-3 rounded" style={{ background: `${l.color}2b`, boxShadow: `inset 0 0 0 1.5px ${l.color}` }} />
             {t(l.label)}
           </span>
         ))}

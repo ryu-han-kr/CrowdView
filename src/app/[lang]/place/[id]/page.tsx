@@ -395,10 +395,11 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                     <>
                       {crowd.avgWaitMin !== undefined ? (
                         <>
-                          {t("놀이기구 평균 대기")} <b>{fmtMinutes(crowd.avgWaitMin, t)}</b>
+                          {t("놀이기구 평균 대기")} <b className="whitespace-nowrap">{fmtMinutes(crowd.avgWaitMin, t)}</b>
                         </>
                       ) : (
-                        (headcountInfo(crowd, { t, lang })?.text ?? t(level.desc))
+                        // 숫자와 단위가 줄바꿈으로 갈라지지 않게 (UI QA 10차: '851 / 명')
+                        <span className="whitespace-nowrap">{headcountInfo(crowd, { t, lang })?.text ?? t(level.desc)}</span>
                       )}
                       {crowd.avgWaitMin === undefined && headcountInfo(crowd)?.kind && <DataTag kind={headcountInfo(crowd)!.kind} />}
                       {crowd.trend === "up" && <span className="whitespace-nowrap text-red-600 dark:text-red-400"> · {t("늘어나는 중")}</span>}
