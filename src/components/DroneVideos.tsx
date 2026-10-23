@@ -27,7 +27,7 @@ export function DroneVideos({ videos, className = "" }: { videos: DroneVideo[]; 
   return (
     <section className={className}>
       <h2 className="text-xl font-extrabold tracking-tight">{t("드론 영상")}</h2>
-      <div className="no-scrollbar -mx-4 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 md:mx-0 md:grid md:grid-cols-3 md:px-0">
+      <div className="no-scrollbar -mx-5 mt-3 flex snap-x snap-mandatory scroll-px-5 gap-3 overflow-x-auto px-5 md:mx-0 md:grid md:grid-cols-3 md:px-0">
         {videos.map((v) => (
           <figure key={v.id} className="w-[78%] shrink-0 snap-start md:w-auto">
             <div className="relative aspect-video overflow-hidden rounded-2xl bg-gray-900">
