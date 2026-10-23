@@ -6,7 +6,7 @@ import { placeTag } from "@/lib/category-style";
 import { StayLinks } from "@/components/StayLinks";
 import type { Metadata } from "next";
 import placeImages from "@/data/korea/place-images.json";
-import { placePhotos } from "@/lib/place-photos";
+import { heroImage, placePhotos } from "@/lib/place-photos";
 import { breadcrumbLd, jsonLd, kstClock, pageMeta, SITE } from "@/lib/seo";
 import { HourlyChart } from "@/components/HourlyChart";
 import { LevelBadge } from "@/components/Level";
@@ -21,7 +21,9 @@ import { levelOf, valueFromScore, inkOf } from "@/lib/levels";
 import { closedToday, getLivePlace, isOngoingEvent } from "@/lib/place-info";
 import { CrowdMascot } from "@/components/place/CrowdMascot";
 import { ForecastTabs } from "@/components/place/ForecastTabs";
-import { CalendarHeatmap } from "@/components/place/CalendarHeatmap";
+import { MonthCalendar } from "@/components/place/MonthCalendar";
+import { HourTable } from "@/components/place/HourTable";
+import { YearOverview } from "@/components/place/YearOverview";
 import { AlertFab } from "@/components/place/AlertFab";
 import { WeekHeatmap } from "@/components/WeekHeatmap";
 import { PLACES, placeHref } from "@/lib/places";
@@ -142,7 +144,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         ? t("{name} 실시간 혼잡도", { name: t(place.name) })
         : t("{name} 혼잡 예측·방문 추천 시간", { name: t(place.name) }),
     description: t("{name} 지금 혼잡도와 오늘 시간대별 예측, 언제 가면 한산한지 알려드려요", { name: t(place.name) }),
-    image: place.image,
+    // 공유 미리보기: 대표 사진 (직접 고른 사진·관광사진 갤러리가 있으면 그것)
+    image: heroImage(place),
   });
 }
 
@@ -267,8 +270,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     holiday: d.reasons.some((r) => r.k.startsWith("🎌")),
     people: peopleText(d.peakScore),
   }));
-  // 석 달 달력 (13주): 월별·주별을 한 장으로 (사용자 QA 10/22, 레퍼런스 bklit UI 활동 달력)
-  const calCells = long.slice(0, 91).map((d) => ({
+  // 달력 칸: 한 달 달력(5주)·1년(365일)이 같이 쓴다 (사용자 10/23: 석 달 달력 → 한 달 달력 + 1년 탭)
+  const calCells = long.map((d) => ({
     date: d.date,
     peakScore: d.peakScore,
     peakLabel: formatHour(d.peakHour, lang),
@@ -468,6 +471,13 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 {dataGrade(crowd) !== "A" && ` · ${t("인원은 정원 기준으로 환산한 추정치예요")}`}
               </p>
             </div>
+              <AlertFab
+                placeId={place.id}
+                placeName={t(place.name)}
+                score={crowd.score}
+                closed={!isOpen}
+                enabled={authEnabled && pushEnabled && !beforeEvent}
+              />
           </section>
 
           <WeatherCard signals={signals} lang={lang} place={place} />
@@ -583,7 +593,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                         <p className="text-xl leading-snug font-extrabold text-emerald-800">
                           <Glyph e="★" className="mr-1 h-5 w-5 text-amber-400" />
                           {t("{hour}쯤 가면 가장 한산해요", { hour: formatHour(best.hour, lang) })}
-                          <span className="ml-1.5 align-middle text-sm font-bold" style={{ color: inkOf(levelOf(best.score).color) }}>
+                          <span className="ml-1.5 align-middle text-sm font-bold whitespace-nowrap" style={{ color: inkOf(levelOf(best.score).color) }}>
                             {t("예상 {level}", { level: t(levelOf(best.score).label) })}
                           </span>
                         </p>
@@ -617,6 +627,28 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                         unit={place.criteria?.unit === "분" ? "분" : "명"}
                       />
                     </div>
+                  </>
+                ),
+                big: (
+                  <>
+                    <HourlyChart
+                      points={hourly}
+                      highlightHour={Math.floor(now.hour)}
+                      estimated={isEstimated(crowd)}
+                      unit={place.criteria?.unit === "분" ? "분" : "명"}
+                    />
+                    <HourTable
+                      nowHour={Math.floor(now.hour)}
+                      rows={hourly
+                        .filter((h) => h.hour >= place.hours[0] && h.hour < Math.min(24, place.hours[1]))
+                        .map((h) => ({
+                          hour: h.hour,
+                          label: formatHour(h.hour, lang),
+                          score: h.score,
+                          value: h.people !== undefined ? (place.criteria?.unit === "분" ? fmtMinutes(h.people, t) : fmtPeople(h.people, t, lang)) : peopleText(h.score),
+                          forecast: h.forecast,
+                        }))}
+                    />
                   </>
                 ),
               },
@@ -657,17 +689,21 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 ),
               },
               {
-                id: "calendar",
-                label: t("석 달 달력"),
+                id: "month",
+                label: t("한 달"),
                 body: (
                   <>
-                    <p className="mb-3 text-sm font-medium text-gray-700">
-                      {t("앞으로 13주, 날마다 가장 붐빌 때의 예상 단계예요. 칸을 누르면 그날 이유가 보여요")}
-                    </p>
-                    <CalendarHeatmap cells={calCells} />
+                    <p className="mb-3 text-sm font-medium text-gray-700">{t("앞으로 5주, 날마다 가장 붐빌 때의 예상 단계예요. 날짜를 누르면 그날 이유가 보여요")}</p>
+                    <MonthCalendar cells={calCells.slice(0, 35)} />
                   </>
                 ),
-                big: <CalendarHeatmap cells={calCells} cell={30} />,
+                big: <MonthCalendar cells={calCells.slice(0, 35)} big />,
+              },
+              {
+                id: "year",
+                label: t("1년"),
+                body: <YearOverview cells={calCells} />,
+                big: <YearOverview cells={calCells} big />,
               },
               {
                 id: "how",
@@ -870,13 +906,6 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           </section>
         </div>
       </div>
-      <AlertFab
-        placeId={place.id}
-        placeName={t(place.name)}
-        score={crowd.score}
-        closed={!isOpen}
-        enabled={authEnabled && pushEnabled && !beforeEvent}
-      />
     </main>
   );
 }

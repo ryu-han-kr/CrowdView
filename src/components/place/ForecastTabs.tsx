@@ -31,7 +31,7 @@ export function ForecastTabs({ title, tabs }: { title: string; tabs: ForecastTab
           onClick={() => setBig(true)}
           className="shrink-0 rounded-full bg-gray-900 px-3.5 py-1.5 text-sm font-bold text-white transition active:scale-95"
         >
-          {t("크게 보기")} ⤢
+          {t("더 보기")} ›
         </button>
       </div>
       <div
@@ -73,7 +73,7 @@ export function ForecastTabs({ title, tabs }: { title: string; tabs: ForecastTab
           <SheetTitle>
             {title} · {cur.label}
           </SheetTitle>
-          <SheetDescription className="sr-only">{t("크게 보기")}</SheetDescription>
+          <SheetDescription className="sr-only">{t("더 보기")}</SheetDescription>
           <div className="no-scrollbar mt-3 flex gap-1 overflow-x-auto rounded-2xl bg-gray-100 p-1">
             {tabs.map((tab, i) => (
               <button
