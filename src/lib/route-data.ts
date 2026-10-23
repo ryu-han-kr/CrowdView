@@ -241,9 +241,26 @@ export async function getExtraCandidates(interests: Interest[]): Promise<Candida
 
 const KAKAO_QUERY: Partial<Record<Interest, string[]>> = {
   anime: ["애니메이트", "캐릭터샵", "피규어"],
-  department: ["백화점", "쇼핑몰"],
+  department: ["백화점", "아울렛", "복합쇼핑몰"],
   flagship: ["플래그십 스토어", "팝업스토어"],
 };
+
+// 카카오 분류(예: "가정,생활 > 백화점 > 현대백화점")로 관심사에 맞는 곳만 남긴다.
+// 10/23: 거리순 '백화점' 검색이 주류백화점·건축자재백화점·인터넷쇼핑몰을 먼저 돌려줬다 → 백화점은 분류가 맞는 것만, 정확도순으로
+const KAKAO_KEEP: Partial<Record<Interest, RegExp>> = {
+  anime: /(취미용품|장난감|완구|캐릭터|애니|만화)/,
+  department: /^(백화점|아울렛|복합쇼핑몰|쇼핑센터|대형쇼핑몰)$/,
+};
+const KAKAO_SORT: Partial<Record<Interest, "accuracy">> = { department: "accuracy" };
+/** 어느 관심사든 코스에 넣지 않을 분류·이름 (온라인 판매·부대시설·사무실) */
+const KAKAO_DROP = /(인터넷쇼핑몰|주차장|정보통신|광고|오피스텔|사무실|본사|물류|도매)/;
+
+export function kakaoFits(interest: Interest, k: { name: string; category: string }): boolean {
+  const segs = k.category.split(">").map((x) => x.trim());
+  if (segs.some((x) => KAKAO_DROP.test(x)) || KAKAO_DROP.test(k.name)) return false;
+  const keep = KAKAO_KEEP[interest];
+  return !keep || segs.some((x) => keep.test(x));
+}
 
 /** 카카오 장소 검색으로 출발지 둘레 5km의 애니·백화점·플래그십 후보 (카카오맵이 꺼져 있으면 []) */
 export async function getKakaoCandidates(interests: Interest[], start: LatLng): Promise<Candidate[]> {
@@ -253,8 +270,8 @@ export async function getKakaoCandidates(interests: Interest[], start: LatLng): 
   const out: Candidate[] = [];
   for (const interest of want)
     for (const q of KAKAO_QUERY[interest]!) {
-      for (const k of await kakaoSearch(q, { ...start, radius: 5000 }, 10)) {
-        if (out.some((x) => x.id === `kk-${k.id}`)) continue;
+      for (const k of await kakaoSearch(q, { ...start, radius: 5000, sort: KAKAO_SORT[interest] }, 15)) {
+        if (out.some((x) => x.id === `kk-${k.id}`) || !kakaoFits(interest, k)) continue;
         out.push({
           ...nearSeoul(k, seoul, beyond),
           id: `kk-${k.id}`,
