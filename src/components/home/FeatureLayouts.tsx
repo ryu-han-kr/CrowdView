@@ -87,6 +87,8 @@ function Photo({ item, sizes, eager }: { item: PhotoCardItem; sizes: string; eag
       fill
       sizes={sizes}
       loading={eager ? "eager" : "lazy"}
+      // 줄여 보낼 수 없는 원본 사진(서울시 문화 사이트 등)은 다른 그림보다 늦게
+      fetchPriority={eager ? "high" : canOptimize(item.img) ? "auto" : "low"}
       unoptimized={!canOptimize(item.img)}
       className="object-cover transition-transform duration-300 md:group-hover:scale-105"
     />

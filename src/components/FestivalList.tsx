@@ -150,8 +150,9 @@ export function FestivalList({
                             {dday <= 0 ? t("진행 중") : `D-${dday}`}
                           </span>
                           {f.image ? (
+                            // 서울시 문화 사이트 사진은 원본(수백 KB)이라 맨 위 큰 사진보다 늦게 받는다 (휴대폰 첫 화면 속도)
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={f.image} alt="" loading="lazy" className="h-full w-full object-cover" />
+                            <img src={f.image} alt="" loading="lazy" decoding="async" fetchPriority="low" className="h-full w-full object-cover" />
                           ) : (
                             <div className="flex h-full items-center justify-center text-3xl">{EMOJI[f.category]}</div>
                           )}
