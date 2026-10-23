@@ -2,27 +2,28 @@ import Link from "@/i18n/link";
 import type { T } from "@/i18n/translate";
 import { Glyph } from "@/components/Glyph";
 
-// 홈 중간의 Plus 혜택 배너: 혜택 3가지를 색 카드로 보여주고 요금 안내로 보낸다
+// 홈 중간의 Plus 혜택 배너: 혜택 3가지를 색 카드로 보여주고 요금 안내로 보낸다.
+// 카드 머리 색은 Plus 보라 계열 하나로 (UI QA 12차: 주황·파랑·남색이 제각각이라 다른 상품처럼 보였다)
 const CARDS = [
   {
     title: "광고 없이 깔끔하게",
     sub: "보고 싶은 정보만",
     emoji: "🚫",
-    head: "from-orange-500 to-amber-400",
+    head: "from-indigo-600 to-violet-500",
     points: ["모든 화면의 광고 제거", "혼잡도·예측을 더 넓게"],
   },
   {
     title: "붐비기 전에 알림",
     sub: "찜한 곳이 한산해지면",
     emoji: "🔔",
-    head: "from-indigo-600 to-blue-500",
+    head: "from-violet-600 to-fuchsia-500",
     points: ["찜한 곳 혼잡 알림", "축제·명소 혼잡 변화 알림"],
   },
   {
     title: "맞춤 여행 추천",
     sub: "덜 붐비는 순서로",
     emoji: "🧭",
-    head: "from-slate-700 to-slate-500",
+    head: "from-indigo-700 to-indigo-500",
     points: ["한산한 코스 전체 보기", "관심사·지역별 명소 추천"],
   },
 ];

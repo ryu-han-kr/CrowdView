@@ -77,13 +77,14 @@ export function CrowdReport({ placeId, askWait = false }: { placeId: string; ask
       ) : (
         <>
           <p className="mt-3 text-sm text-gray-700">{t("지금 여기 계세요? 체감 혼잡을 알려 주세요.")}</p>
-          <div className="mt-2 grid grid-cols-5 gap-1.5">
+          {/* 영어처럼 단계 이름이 길면 5칸 고정 대신 글자 길이대로 줄바꿈 (UI QA 12차: 'Comfortab / le'로 끊겼다) */}
+          <div className={`mt-2 gap-1.5 ${LEVELS.some((l) => t(l.label).length > 6) ? "flex flex-wrap" : "grid grid-cols-5"}`}>
             {LEVELS.map((l) => (
               <button
                 key={l.key}
                 onClick={() => setLevel(l.key)}
                 aria-pressed={level === l.key}
-                className={`min-h-11 rounded-xl px-1 text-[13px] font-bold ${level === l.key ? "text-white" : ""}`}
+                className={`min-h-11 min-w-0 rounded-xl px-1 text-[13px] font-bold whitespace-nowrap ${LEVELS.some((x) => t(x.label).length > 6) ? "flex-auto px-3" : ""} ${level === l.key ? "text-white" : ""}`}
                 style={level === l.key ? { background: l.color, color: deepOf(l.color) } : { background: `${l.color}1f`, color: inkOf(l.color) }}
               >
                 {t(l.label)}

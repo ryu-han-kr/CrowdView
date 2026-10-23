@@ -13,6 +13,9 @@ import type { HourPoint } from "@/lib/types";
 
 // 왼쪽 58px는 단계 이름 칸 (그래프 선과 글씨가 겹치지 않게 그림 밖에 둔다)
 const MARGIN = { top: 8, right: 10, bottom: 34, left: 66 };
+// 영어처럼 단계 이름이 긴 언어 ('Very crowded'): 왼쪽 칸을 넓히고 글자를 줄인다 (UI QA 12차: 이름이 그래프 안으로 넘쳤다)
+const WIDE_MARGIN = { ...MARGIN, left: 96 };
+const isWide = (labels: Record<number, string>) => Object.values(labels).some((x) => x.length > 6 && /[a-z]/i.test(x));
 
 const PEOPLE_NOTE: Record<NonNullable<HourPoint["peopleKind"]>, string> = {
   real: "실측·공식 예보",
@@ -68,6 +71,8 @@ export function LevelGradients({ id }: { id: string }) {
  */
 function LevelLines({ labels }: { labels: Record<number, string> }) {
   const { yScale, innerWidth } = useChart();
+  const M = isWide(labels) ? WIDE_MARGIN : MARGIN;
+  const fs = isWide(labels) ? 11 : 12.5;
   return (
     <g pointerEvents="none">
       {LEVELS.map((l, i) => {
@@ -77,8 +82,8 @@ function LevelLines({ labels }: { labels: Record<number, string> }) {
             {i > 0 && <line x1={0} x2={innerWidth} y1={yScale(l.min)} y2={yScale(l.min)} stroke="#eef0f3" strokeWidth="1" />}
             <rect x={-5} y={yScale(top) + 1} width={3} height={Math.max(1, yScale(l.min) - yScale(top) - 2)} rx={1.5} fill={l.color} />
             {/* 단계 이름: 왼쪽 칸 가운데에 옅은 색 알약 + 진한 글씨 (사용자 QA 10/22: 너무 왼쪽에 붙어 보였다) */}
-            <rect x={-MARGIN.left + 6} y={yScale((l.min + top) / 2) - 10} width={MARGIN.left - 16} height={20} rx={10} fill={l.color} fillOpacity={0.14} />
-            <text x={-MARGIN.left / 2 - 4} y={yScale((l.min + top) / 2) + 4.5} textAnchor="middle" fontSize="12.5" fontWeight="800" fill={inkOf(l.color)}>
+            <rect x={-M.left + 6} y={yScale((l.min + top) / 2) - 10} width={M.left - 16} height={20} rx={10} fill={l.color} fillOpacity={0.14} />
+            <text x={-M.left / 2 - 4} y={yScale((l.min + top) / 2) + 4.5} textAnchor="middle" fontSize={fs} fontWeight="800" fill={inkOf(l.color)}>
               {labels[l.key]}
             </text>
           </g>
@@ -139,6 +144,7 @@ export function HourlyChart({
   const [sel, setSel] = useState(nowIdx >= 0 ? nowIdx : points.reduce((m, p, i) => (p.score > points[m].score ? i : m), 0));
   const data = useMemo(() => points.map((p) => ({ date: hourDate(p.hour), score: p.score })), [points]);
   const levelLabels = useMemo(() => Object.fromEntries(LEVELS.map((l) => [l.key, t(l.label)])), [t]);
+  const margin = isWide(levelLabels) ? WIDE_MARGIN : MARGIN;
   const gid = `hc${useId().replace(/:/g, "")}`;
   const touch = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
@@ -149,7 +155,7 @@ export function HourlyChart({
     const r = el.getBoundingClientRect();
     // 글자 크기 설정(zoom)으로 화면 좌표와 CSS 크기가 다를 수 있어 여백도 같은 비율로
     const k = el.offsetWidth ? r.width / el.offsetWidth : 1;
-    const f = (clientX - r.left - MARGIN.left * k) / (r.width - (MARGIN.left + MARGIN.right) * k);
+    const f = (clientX - r.left - margin.left * k) / (r.width - (margin.left + margin.right) * k);
     setSel(Math.max(0, Math.min(points.length - 1, Math.round(f * (points.length - 1)))));
   };
   if (points.length === 0) return null;
@@ -206,7 +212,7 @@ export function HourlyChart({
       </div>
 
       <div role="img" aria-label={t("시간대별 혼잡도 그래프")} className="relative select-none">
-        <AreaChart data={data} yMax={100} margin={MARGIN} aspectRatio="2 / 1" animationDuration={700}>
+        <AreaChart data={data} yMax={100} margin={margin} aspectRatio="2 / 1" animationDuration={700}>
           <LevelGradients id={gid} />
           <LevelLines labels={levelLabels} />
           <Area
