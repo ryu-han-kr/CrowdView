@@ -95,7 +95,7 @@ export function PhotoCard({ item, rank, className = "" }: { item: PhotoCardItem;
                     <b className="shrink-0 text-[13px] font-extrabold" style={{ color: inkOf(lv.color) }}>
                       {t(lv.label)}
                     </b>
-                    {item.people && <span className="truncate text-[12px] font-bold text-gray-800">{item.people}</span>}
+                    {item.people && <span className="truncate text-[12px] font-bold text-gray-800">{shortPeople(item.people)}</span>}
                   </>
                 ) : (
                   <b className="truncate text-[13px] font-extrabold text-gray-900">{item.badge ?? item.note}</b>
@@ -228,3 +228,6 @@ export function TagLabel({ label, className = "" }: { label: string; className?:
     </span>
   );
 }
+
+/** 작은 사진 카드 알약: 영어 '~1.9K people'은 칸을 넘쳐 잘린다 → 숫자만 (UI QA 13차) */
+export const shortPeople = (s: string) => s.replace(/ people$/, "");

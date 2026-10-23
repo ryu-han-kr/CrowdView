@@ -107,7 +107,7 @@ export function ShortCardRail({ title, sub, moreHref, items }: { title: string; 
                   <span className="absolute bottom-2.5 left-2.5 flex max-w-[calc(100%-1.25rem)] items-center gap-1.5 rounded-full bg-white px-2.5 py-1 shadow-sm">
                     <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: c.boxColor }} />
                     <span className="truncate text-[13px] font-extrabold" style={{ color: inkOf(c.boxColor) }}>
-                      {c.boxValue}
+                      {c.boxValue.replace(/ people/, "")}
                     </span>
                   </span>
                 </div>

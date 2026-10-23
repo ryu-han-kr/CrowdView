@@ -912,7 +912,7 @@ export default {
   "{age} 실측": ["Measured {age}", "{age}実測", "{age}实测", "{age}實測"],
   "{time} 기준": ["as of {time}", "{time}時点", "截至{time}", "截至{time}"],
   "{min}~{max}명": ["{min}–{max} people", "{min}~{max}人", "{min}~{max}人", "{min}~{max}人"],
-  "약 {n}명": ["about {n} people", "約{n}人", "约{n}人", "約{n}人"],
+  "약 {n}명": ["~{n} people", "約{n}人", "约{n}人", "約{n}人"],
   "약 {v}": ["about {v}", "約{v}", "约{v}", "約{v}"],
   "{y}년 {m}월": ["{m}/{y}", "{y}年{m}月", "{y}年{m}月", "{y}年{m}月"],
   "{h} 대비": ["vs {h}", "{h}比", "较{h}", "較{h}"],

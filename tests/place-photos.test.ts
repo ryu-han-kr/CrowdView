@@ -7,8 +7,8 @@ import { placePhotos } from "@/lib/place-photos";
 const PRO = pro as Record<string, { src: string; w: number; h: number }[]>;
 
 test("갤러리 사진이 있으면 대표가 갤러리 첫 장 (크기 포함)", () => {
-  const list = placePhotos("seoul-grand-park");
-  assert.equal(list[0].src, PRO["seoul-grand-park"][0].src);
+  const list = placePhotos("aquaplanet-jeju");
+  assert.equal(list[0].src, PRO["aquaplanet-jeju"][0].src);
   assert.ok(list[0].w && list[0].h);
   assert.match(list[0].credit, /^한국관광공사 · /);
 });
