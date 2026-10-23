@@ -5,6 +5,7 @@ import Link from "@/i18n/link";
 import { Glyph } from "@/components/Glyph";
 import { useI18n } from "@/i18n/client";
 import { canOptimize } from "@/lib/img";
+import { NearImg } from "@/components/NearImg";
 import { inkOf, levelOf } from "@/lib/levels";
 import { useFavorites } from "@/lib/prefs";
 import { shortPeople, TagLabel, type PhotoCardItem } from "./PhotoRail";
@@ -80,6 +81,9 @@ function LevelLine({ item, big = false }: { item: PhotoCardItem; big?: boolean }
 }
 
 function Photo({ item, sizes, eager }: { item: PhotoCardItem; sizes: string; eager?: boolean }) {
+  // 줄여 보낼 수 없는 원본(서울시 문화 사이트)은 화면에 거의 다 왔을 때만
+  if (item.img && !eager && !canOptimize(item.img))
+    return <NearImg src={item.img} className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 md:group-hover:scale-105" />;
   return item.img ? (
     <Image
       src={item.img}

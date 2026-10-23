@@ -4,6 +4,7 @@ import Link from "@/i18n/link";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { canOptimize } from "@/lib/img";
+import { NearImg } from "@/components/NearImg";
 import { useI18n } from "@/i18n/client";
 import { inkOf, levelOf } from "@/lib/levels";
 import { useFavorites } from "@/lib/prefs";
@@ -49,13 +50,15 @@ export function PhotoCard({ item, rank, className = "" }: { item: PhotoCardItem;
   const body = (
     <>
       <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100">
-        {item.img ? (
+        {item.img && !canOptimize(item.img) ? (
+          // 줄여 보낼 수 없는 원본(서울시 축제 포스터)은 화면에 거의 다 왔을 때만
+          <NearImg src={item.img} className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 md:group-hover:scale-105" />
+        ) : item.img ? (
           <Image
             src={item.img}
             alt=""
             fill
             sizes="(min-width: 768px) 20vw, 45vw"
-            unoptimized={!canOptimize(item.img)}
             className="object-cover transition-transform duration-300 md:group-hover:scale-105"
           />
         ) : (
