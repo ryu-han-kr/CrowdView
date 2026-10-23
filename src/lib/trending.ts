@@ -67,8 +67,16 @@ async function refreshPlaceNews(today: string): Promise<TrendItem[]> {
   if (!webSearchEnabled()) return [];
   const month = Number(today.slice(5, 7));
   const events: TrendItem[] = [];
-  for (const p of newsPlaces(month)) {
+  // 하루에 절반씩 (짝수·홀수 날 번갈아) → 장소마다 이틀에 한 번, Brave 하루 약 20건 (월 $5 무료 크레딧 안). 소식은 3일 저장이라 빈틈 없음
+  const day = Math.floor(Date.parse(today) / 86_400_000);
+  for (const [i, p] of newsPlaces(month).entries()) {
     const short = p.name.replace(/\s*(어드벤처|스키장|해수욕장|카페거리|걷고싶은거리)$/, "");
+    // 오늘 차례가 아닌 곳은 저장해 둔 소식으로 행사 후보만 다시 고른다 (검색 안 함)
+    if (i % 2 !== day % 2) {
+      const ev = (await getPlaceNews(p.id))?.hits.find(isEvent);
+      if (ev) events.push(newsEvent(p, ev));
+      continue;
+    }
     // Brave 무료 플랜은 1초에 1건 → 장소 사이 1.1초 (저장된 검색어면 바로 넘어간다)
     await new Promise((r) => setTimeout(r, 1100));
     // 12시간 저장된 예전 결과도 제목을 다시 다듬는다
@@ -81,18 +89,21 @@ async function refreshPlaceNews(today: string): Promise<TrendItem[]> {
     if (!hits.length) continue;
     await kv.set(newsKey(p.id), JSON.stringify({ date: today, hits } satisfies PlaceNews), 3 * 86_400).catch(() => {});
     const ev = hits.find(isEvent);
-    if (ev)
-      events.push({
-        id: `news-${p.id}`,
-        kind: "event",
-        title: ev.title.length > 40 ? `${ev.title.slice(0, 39)}…` : ev.title,
-        href: placeHref(p),
-        img: heroImage(p),
-        region: p.region,
-        reason: `뉴스 · ${ev.source}`,
-      });
+    if (ev) events.push(newsEvent(p, ev));
   }
   return events;
+}
+
+function newsEvent(p: (typeof PLACES)[number], ev: NewsHit): TrendItem {
+  return {
+    id: `news-${p.id}`,
+    kind: "event",
+    title: ev.title.length > 40 ? `${ev.title.slice(0, 39)}…` : ev.title,
+    href: placeHref(p),
+    img: heroImage(p),
+    region: p.region,
+    reason: `뉴스 · ${ev.source}`,
+  };
 }
 
 const KEY = "trending:v1";
