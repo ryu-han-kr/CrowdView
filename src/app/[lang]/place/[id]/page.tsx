@@ -1,3 +1,5 @@
+import { DroneVideos } from "@/components/DroneVideos";
+import { videosFor } from "@/lib/kto-videos";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import { placeTag } from "@/lib/category-style";
@@ -686,6 +688,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           )}
 
           <StayLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} at={place} className="mt-6" />
+
+          <DroneVideos videos={videosFor(place.id)} className="mt-8" />
           <InlineAd className="mt-6" />
 
           {/* 함께 가면 좋은 곳 + 지금 덜 붐비는 근처 대안을 한 구역으로 (사용자 QA 10/22) */}
