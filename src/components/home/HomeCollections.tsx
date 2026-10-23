@@ -239,9 +239,11 @@ export function CollectionCarousel({ title, sub, collections }: { title: string;
                   )}
                 </div>
                 <p className="mt-2 line-clamp-2 text-[13px] leading-snug font-bold break-keep text-gray-900 md:text-[15px]">{x.title}</p>
+                {/* 단계와 인원을 두 줄로 (UI QA 12차: '원활 · 약 3,30…'처럼 인원이 잘렸다) */}
                 <p className="mt-0.5 truncate text-[14px] font-extrabold md:text-base" style={{ color: inkOf(x.color) }}>
-                  {x.value}
+                  {x.value.split(" · ")[0]}
                 </p>
+                {x.value.includes(" · ") && <p className="truncate text-[12px] font-bold text-gray-700 md:text-sm">{x.value.split(" · ").slice(1).join(" · ")}</p>}
               </Link>
             </li>
           ))}

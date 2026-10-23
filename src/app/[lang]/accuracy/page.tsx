@@ -117,7 +117,7 @@ export default async function AccuracyPage({ params }: { params: Promise<{ lang:
 
       {any ? (
         <div className="mt-8 overflow-x-auto rounded-2xl border border-gray-100 bg-white">
-          <table className="w-full text-left text-sm">
+          <table className="w-full min-w-[560px] text-left text-sm whitespace-nowrap">
             <thead className="bg-gray-50 text-xs text-gray-500">
               <tr>
                 <th className="px-3 py-2">{c.date}</th>
@@ -163,7 +163,7 @@ export default async function AccuracyPage({ params }: { params: Promise<{ lang:
       <p className="mt-2 max-w-3xl text-sm leading-relaxed text-gray-600">{c.modelLead}</p>
       {calibRows.length ? (
         <div className="mt-4 overflow-x-auto rounded-2xl border border-gray-100 bg-white">
-          <table className="w-full text-left text-sm">
+          <table className="w-full min-w-[560px] text-left text-sm whitespace-nowrap">
             <thead className="bg-gray-50 text-xs text-gray-500">
               <tr>
                 <th className="px-3 py-2">{c.place}</th>

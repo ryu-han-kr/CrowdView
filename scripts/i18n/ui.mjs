@@ -2610,4 +2610,5 @@ export default {
   "365일 한눈에": ["All 365 days at a glance", "365日を一目で", "一眼看365天", "一眼看365天"],
   "시간별 자세히": ["Hour by hour", "時間ごとの詳細", "逐小时详情", "逐小時詳情"],
   "앞으로 1년 중 {month}이 가장 덜 붐벼요": ["{month} is the least crowded month in the next year", "今後1年で{month}が最も混雑が少ないです", "未来一年中{month}最不拥挤", "未來一年中{month}最不擁擠"],
+  "판단 기준": ["How we judge", "判断基準", "判断标准", "判斷標準"],
 };

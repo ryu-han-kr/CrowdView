@@ -1198,6 +1198,7 @@ const dict: Dict = {
   "365일 한눈에": "All 365 days at a glance",
   "시간별 자세히": "Hour by hour",
   "앞으로 1년 중 {month}이 가장 덜 붐벼요": "{month} is the least crowded month in the next year",
+  "판단 기준": "How we judge",
   "한국민속촌": "Korean Folk Village",
   "서울대공원": "Seoul Grand Park",
   "롯데월드 아쿠아리움": "Lotte World Aquarium",

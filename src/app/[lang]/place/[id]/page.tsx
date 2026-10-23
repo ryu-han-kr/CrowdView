@@ -707,7 +707,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               },
               {
                 id: "how",
-                label: t("어떻게 판단하나요"),
+                label: t("판단 기준"),
                 body: <JudgementCard place={place} crowd={crowd} signals={signals} lang={lang} inline />,
               },
             ]}

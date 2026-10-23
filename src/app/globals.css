@@ -277,3 +277,9 @@ html[data-font="xl"] body {
 img:is([src*="visitkorea"], [src*="wikimedia"], [src*="%2Fplaces%2F"], [src^="/places/"], [src*="conlab.visitkorea"]) {
   filter: saturate(1.12) contrast(1.05) brightness(1.02);
 }
+
+/* ── 글 줄바꿈 (UI QA 12차: '…추정치예 / 요'처럼 마지막 줄에 한두 글자만 남지 않게). 지원하지 않는 브라우저는 그대로.
+   text-wrap(줄임말)은 줄바꿈 여부까지 바꿔 truncate·whitespace-nowrap을 풀어 버린다 → 방식(style)만 */
+:where(p, li, h1, h2, h3, figcaption, summary) {
+  text-wrap-style: pretty;
+}
