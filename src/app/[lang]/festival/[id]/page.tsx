@@ -105,8 +105,13 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
         <div>
           <div className="relative h-56 overflow-hidden rounded-3xl bg-gray-100 md:h-80">
             {f.image ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={f.image} alt={tr(f.title)} className="h-full w-full object-cover" />
+              // 축제 사진은 대개 포스터라 꽉 채우면 글씨가 잘린다 (UI QA 14차) → 전체를 보여 주고 빈 곳은 같은 사진을 흐리게
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={f.image} alt="" aria-hidden className="absolute inset-0 h-full w-full scale-125 object-cover opacity-70 blur-3xl" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={f.image} alt={tr(f.title)} className="relative h-full w-full object-contain" />
+              </>
             ) : (
               <div className="flex h-full items-center justify-center text-indigo-300">
                 <Glyph e={cat.emoji} className="h-20 w-20" />
@@ -142,7 +147,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
             </Row>
             <Row label={t("장소")}>
               {f.place ? tr(f.place) : (names.get(f.region) ?? trRegion(f.region, t))}
-              <a href={mapUrl} target="_blank" rel="noreferrer" className="ml-2 text-xs font-semibold text-indigo-600">
+              <a href={mapUrl} target="_blank" rel="noreferrer" className="ml-2 inline-block text-xs font-semibold whitespace-nowrap text-indigo-600">
                 {t("지도 보기")} ›
               </a>
             </Row>
