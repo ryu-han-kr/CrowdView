@@ -63,16 +63,7 @@ export function PhotoCard({ item, rank, className = "" }: { item: PhotoCardItem;
             <Glyph e={item.emoji ?? "📍"} className="h-12 w-12" />
           </div>
         )}
-        {item.tag && (
-          <span
-            className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-white/95 py-0.5 pr-2.5 pl-1 text-[12px] font-extrabold shadow-sm"
-            style={{ color: item.tag.color }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element -- 작은 고정 아이콘 */}
-            <img src={`/icons/3d/${item.tag.icon}.webp`} alt="" width={18} height={18} className="h-[18px] w-[18px]" />
-            {item.tag.label}
-          </span>
-        )}
+        {item.tag && <TagLabel label={item.tag.label} className="absolute top-2 left-2" />}
         {item.favId && (
           <button
             type="button"
@@ -223,5 +214,17 @@ export function PhotoRail({
           ))}
       </div>
     </section>
+  );
+}
+
+/**
+ * 사진 위 분류 이름 (아쿠아리움·놀이공원 등). 작은 반투명 글자로 두어, 아래 흰 혼잡 알약(원활 약 1,040명)이 먼저 읽히게 한다
+ * (사용자 10/23: 분류 칩과 혼잡 알약이 같은 크기라 무엇이 중요한지 안 보였다)
+ */
+export function TagLabel({ label, className = "" }: { label: string; className?: string }) {
+  return (
+    <span className={`rounded-md bg-black/40 px-1.5 py-0.5 text-[11px] leading-4 font-semibold text-white backdrop-blur-sm ${className}`}>
+      {label}
+    </span>
   );
 }
