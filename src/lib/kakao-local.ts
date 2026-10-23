@@ -1,6 +1,7 @@
 // 카카오 로컬 키워드 검색 (코스 추천: 카페·백화점·애니 매장·플래그십, 가고 싶은 곳 검색).
 // REST API 키 = 카카오 로그인 앱의 client id (KAKAO_REST_API_KEY가 따로 있으면 그것). 앱 설정에서 '카카오맵' 사용을 켜야 된다.
-// 꺼져 있으면(403) 6시간 동안 부르지 않고 빈 결과 → 화면은 우리 자료만으로 동작한다
+// 꺼져 있으면(401·403) 30분 동안 부르지 않고 빈 결과 → 화면은 우리 자료만으로 동작한다. 꺼진 이유(상태·카카오 메시지)는 OFF_KEY 값에 남는다
+// (10/23: 한 번 받은 403이 6시간 동안 남아, 카카오맵을 켠 뒤에도 코스·검색에 카카오 결과가 안 나왔다)
 // 한도: lib/api-quota 의 kakao-local (무료 쿼터의 1/5). 카카오가 429(쿼터 초과)를 주면 그날은 더 부르지 않는다
 import { APIS, beforeCall, markExhausted } from "./api-quota";
 import { cached } from "./cached";
@@ -18,7 +19,7 @@ export interface KakaoPlace {
 }
 
 const key = () => process.env.KAKAO_REST_API_KEY || process.env.KAKAO_CLIENT_ID;
-const OFF_KEY = "kakao:local:off";
+export const OFF_KEY = "kakao:local:off";
 
 /** 카카오 로컬을 지금 쓸 수 있는지 (키가 있고 최근에 403을 받지 않았으면) */
 export async function kakaoLocalOn(): Promise<boolean> {
@@ -49,7 +50,8 @@ export function kakaoSearch(query: string, near?: { lat: number; lng: number; ra
         signal: AbortSignal.timeout(6000),
       });
       if (res.status === 401 || res.status === 403) {
-        await kv.set(OFF_KEY, "1", 6 * 3600).catch(() => {});
+        const why = (await res.text().catch(() => "")).slice(0, 160);
+        await kv.set(OFF_KEY, `${res.status} ${new Date().toISOString()} ${why}`, 30 * 60).catch(() => {});
         return [];
       }
       if (res.status === 429) {

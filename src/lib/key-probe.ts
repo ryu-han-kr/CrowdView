@@ -3,6 +3,7 @@
 // 부를 때마다 돈·크레딧·무료 쿼터가 드는 키(Brave·Tavily·카카오)는 하루 1번만 확인하고 그 호출도 한도에 센다 (10/23: 상태 확인이 30분마다 Brave를 따로 불러 쓰고 있었다)
 import { APIS, beforeCall, QuotaError } from "./api-quota";
 import { kv } from "./cache";
+import { OFF_KEY as KAKAO_OFF_KEY } from "./kakao-local";
 import { naverDatalabKeys, SEARCH_TREND_URL, searchTrendHeaders } from "./crowd/extra-signals";
 
 export interface ProbeResult {
@@ -50,6 +51,8 @@ interface Probe {
   ok: (status: number, body: string) => boolean;
   /** 부를 때마다 사용량이 드는 키 → lib/api-quota 의 id. 하루 1번만 확인하고 한도에 센다 */
   paid?: string;
+  /** 확인이 정상일 때 할 일 (카카오: 예전에 걸린 '꺼짐' 표시를 지운다) */
+  onOk?: () => Promise<unknown>;
 }
 
 const PROBES: Probe[] = [
@@ -127,6 +130,7 @@ const PROBES: Probe[] = [
     id: "kakaoLocal",
     env: "KAKAO_REST_API_KEY",
     paid: "kakao-local",
+    onOk: () => kv.set(KAKAO_OFF_KEY, "", 1),
     key: () => process.env.KAKAO_REST_API_KEY || process.env.KAKAO_CLIENT_ID,
     url: () => `https://dapi.kakao.com/v2/local/search/keyword.json?query=${encodeURIComponent("성수 카페")}&size=1`,
     init: (k) => ({ headers: { Authorization: `KakaoAK ${k}` } }),
@@ -254,6 +258,7 @@ async function paidProbe(p: Probe): Promise<ProbeResult> {
   const saved = await kv.get(k).catch(() => null);
   if (saved) return JSON.parse(saved);
   const r = await probe(p);
+  if (r.ok) await p.onOk?.().catch(() => {});
   if (r.configured && r.ok !== undefined) await kv.set(k, JSON.stringify(r), 24 * 3600).catch(() => {});
   return r;
 }
