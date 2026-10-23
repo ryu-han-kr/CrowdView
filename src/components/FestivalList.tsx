@@ -7,6 +7,7 @@ import Link from "@/i18n/link";
 import { useEffect, useState } from "react";
 import { FESTIVAL_CATEGORIES, festivalStatus, isLongRunning, type Festival, type FestivalCategory, type FestivalCrowd } from "@/lib/festivals";
 import { canOptimize } from "@/lib/img";
+import { NearImg } from "@/components/NearImg";
 import { useI18n } from "@/i18n/client";
 import { fmtPeople, trRegion } from "@/i18n/patterns";
 import { compactNumber } from "@/lib/format";
@@ -150,9 +151,8 @@ export function FestivalList({
                             {dday <= 0 ? t("진행 중") : `D-${dday}`}
                           </span>
                           {f.image ? (
-                            // 서울시 문화 사이트 사진은 원본(수백 KB)이라 맨 위 큰 사진보다 늦게 받는다 (휴대폰 첫 화면 속도)
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={f.image} alt="" loading="lazy" decoding="async" fetchPriority="low" className="h-full w-full object-cover" />
+                            // 서울시 문화 사이트 사진은 원본(수백 KB)이라 화면에 거의 다 왔을 때만 받는다 (휴대폰 첫 화면 속도)
+                            <NearImg src={f.image} className="h-full w-full object-cover" />
                           ) : (
                             <div className="flex h-full items-center justify-center text-3xl">{EMOJI[f.category]}</div>
                           )}
