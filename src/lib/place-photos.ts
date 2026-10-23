@@ -31,10 +31,21 @@ const proPhotos = (id: string): PlacePhoto[] =>
 // 갤러리 사진이 기존 대표보다 못한 곳 (10/23 전후 비교: 2013년 공항 사진, 슬로프 근접샷 등) → 기존 대표를 첫 장으로 두고 갤러리 사진은 그 뒤에
 const KEEP_HERO = new Set(["korean-folk-village", "gimpo", "gimhae", "gyeongjuworld", "konjiam", "welli-hilli", "oakvalley", "alpensia"]);
 
+// 대표 사진을 직접 고른 곳 (사용자 10/23: 사진이 너무 일상적 → 관광사진 갤러리 후보를 눈으로 비교해 골랐다)
+const HERO: Record<string, PlacePhoto> = {
+  gyeongbokgung: { src: "https://tong.visitkorea.or.kr/cms2/website/03/3551003.jpg", credit: "한국관광공사 · 서문교", license: "공공누리 제1유형", alt: "경복궁" },
+  haeundae: { src: "https://tong.visitkorea.or.kr/cms2/website/59/3414759.jpg", credit: "한국관광공사 · 이명재", license: "공공누리 제1유형", alt: "해운대 일몰" },
+  eworld: { src: "https://tong.visitkorea.or.kr/cms2/website/02/2951602.jpg", credit: "한국관광공사 · 앙지뉴 필름", license: "공공누리 제1유형", alt: "이월드" },
+  // 커먼즈 첫 장(벨루가 근접)보다 큰 수조 전경
+  "lotteworld-aquarium": { src: "https://tong.visitkorea.or.kr/cms/resource/45/2384845_image2_1.jpg", credit: "한국관광공사", license: "공공누리 제1유형" },
+  "gwangju-familyland": { src: "https://tong.visitkorea.or.kr/cms/resource/01/3351301_image2_1.jpg", credit: "한국관광공사", license: "공공누리 제1유형", alt: "꽃밭과 대관람차가 보이는 광주패밀리랜드" },
+};
+
 /** 장소의 고해상도 사진 (모자라면 빈 배열 → 기존 사진을 쓴다). 관광공사 전문 사진이 있으면 앞에, 겹치는 주소는 한 번 */
 export function placePhotos(id: string): PlacePhoto[] {
   const own = (PHOTOS[id] ?? []).map((p) => ({ ...p, src: clean(p.src) }));
-  const ordered = KEEP_HERO.has(id) && own.length ? [own[0], ...proPhotos(id), ...own.slice(1)] : [...proPhotos(id), ...own];
+  const base = KEEP_HERO.has(id) && own.length ? [own[0], ...proPhotos(id), ...own.slice(1)] : [...proPhotos(id), ...own];
+  const ordered = HERO[id] ? [HERO[id], ...base] : base;
   const list = ordered.filter(
     (p, i, arr) => arr.findIndex((x) => x.src === p.src) === i,
   );

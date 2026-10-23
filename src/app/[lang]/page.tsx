@@ -17,6 +17,7 @@ import { FeatureGrid } from "@/components/home/FeatureLayouts";
 import { CollectionCarousel, ShortCardRail, ThemeTiles, type Collection, type ShortCard, type ThemeTile } from "@/components/home/HomeCollections";
 import { levelOf } from "@/lib/levels";
 import { CATEGORY_LABEL } from "@/lib/types";
+import { subOf } from "@/lib/subcategory";
 import { Glyph } from "@/components/Glyph";
 import { PLUS } from "@/lib/business";
 import { getAllCrowd } from "@/lib/crowd/service";
@@ -400,10 +401,9 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       sub: t("강남역·성수·한강공원, 지금 몇 명?"),
     },
   ];
-  // 3) 지역 모음: 지역마다 지금 한산한 3곳 (왼쪽 큰 사진은 그 지역 대표 장소)
-  const REGION_SETS = ["서울", "경기", "부산", "제주", "강원"];
-  const collections: Collection[] = REGION_SETS.map((r) => {
-    const inR = places.filter((p) => p.region.startsWith(r) && crowd[p.id] && heroImage(p) && p.category !== "airport");
+  // 3) 모음 배너: 지금 한산한 3곳 + 큰 배경 사진 (배경은 그 묶음에서 가장 유명한 곳의 두 번째 사진)
+  const makeCollection = (id: string, title: string, badge: string, href: string, pool: typeof places): Collection => {
+    const inR = pool.filter((p) => crowd[p.id] && heroImage(p) && p.category !== "airport");
     const top = [...inR].sort((a, b) => b.popularity - a.popularity)[0];
     const items = [...inR]
       .sort((a, b) => Number(crowd[b.id].open) - Number(crowd[a.id].open) || crowd[a.id].score - crowd[b.id].score)
@@ -421,18 +421,44 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         };
       });
     return {
-      id: t(r),
-      title: t("{region} 지금 한산한 곳 모음", { region: t(r) }),
-      href: "/?q=" + encodeURIComponent(t(r)) + "#places",
+      id,
+      title,
+      badge,
+      sub: t("지금 덜 붐비는 순 {n}곳", { n: items.length }),
+      href,
       img: top ? (placePhotos(top.id)[1]?.src ?? heroImage(top)) : undefined,
       items,
     };
-  }).filter((c) => c.items.length >= 3);
+  };
+  const REGION_SETS = ["서울", "경기", "부산", "제주", "강원"];
+  const collections: Collection[] = REGION_SETS.map((r) =>
+    makeCollection(
+      t(r),
+      t("{region} 지금 한산한 곳 모음", { region: t(r) }),
+      t("지역 모음"),
+      "/?q=" + encodeURIComponent(t(r)) + "#places",
+      places.filter((p) => p.region.startsWith(r)),
+    ),
+  ).filter((c) => c.items.length >= 3);
+  // 같은 양식, 다른 배경 (사용자 10/23): 테마마다 모음 배너
+  const THEME_SETS: { id: string; title: string; cat: string; test: (p: (typeof places)[number]) => boolean }[] = [
+    { id: t("놀이공원"), title: t("놀이공원 지금 한산한 곳 모음"), cat: "themepark", test: (p) => p.category === "themepark" && subOf(p.id) === "amusement" },
+    { id: t("워터파크"), title: t("워터파크 지금 한산한 곳 모음"), cat: "waterpark", test: (p) => p.category === "waterpark" },
+    { id: t("실내·아쿠아리움"), title: t("비 와도 좋은 실내 모음"), cat: "themepark", test: (p) => ["aquarium", "indoor-waterpark"].includes(subOf(p.id) ?? "") },
+    { id: t("거리·명소"), title: t("걷기 좋은 거리·명소 모음"), cat: "street", test: (p) => p.category === "street" || p.category === "landmark" || p.category === "beach" },
+    { id: t("스키장"), title: t("스키장 미리 보는 혼잡 모음"), cat: "ski", test: (p) => p.category === "ski" },
+  ];
+  const themeCollections: Collection[] = THEME_SETS.map((x) =>
+    makeCollection(x.id, x.title, t("테마 모음"), `/?cat=${x.cat}#places`, places.filter(x.test)),
+  ).filter((c) => c.items.length >= 3);
   const shortRail = (
     <ShortCardRail title={t("테마파크·워터파크 지금")} sub={t("실시간 대기와 예상 혼잡을 한눈에")} moreHref="/map" items={shortCards} />
   );
   const themeSection = <ThemeTiles title={t("오늘은 이런 곳 어때요?")} sub={t("주제를 고르면 바로 그 목록으로")} tiles={themeTiles} />;
   const collectionSection = <CollectionCarousel title={t("지역별 한산한 곳 모음")} sub={t("지역을 고르면 지금 덜 붐비는 곳 3곳")} collections={collections} />;
+  const themeCollectionSection = (
+    <CollectionCarousel title={t("테마별 한산한 곳 모음")} sub={t("테마를 고르면 지금 덜 붐비는 곳 3곳")} collections={themeCollections} />
+  );
 
   // 상태 알약: 실시간 자료 기준 시각 (NOL '공지' 줄 자리)
   const seoulTime = Object.values(seoul)[0]?.time?.slice(11, 16);
@@ -502,6 +528,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {festivalRail}
           {collectionSection}
           {plusPromo}
+          {themeCollectionSection}
           {landmarkRail}
         </HomeList>
       ) : (
@@ -512,6 +539,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {calmRail}
           {shortRail}
           {collectionSection}
+          {themeCollectionSection}
           {trendList}
           {plusPromo}
           <HomeList places={listPlaces} crowd={crowd} search={search} />

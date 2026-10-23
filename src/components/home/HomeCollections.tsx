@@ -136,29 +136,32 @@ export interface ThemeTile {
 }
 
 export function ThemeTiles({ title, sub, tiles }: { title: string; sub?: string; tiles: ThemeTile[] }) {
+  // 배너 레퍼런스(photo/5 BannerExample, 사용자 10/23): 사진 안에 작은 흰 배지 + 큰 흰 제목 + 작은 설명.
+  // 휴대폰은 옆으로 넘기는 가로 카드, PC는 3열
   return (
     <section className="mt-10 md:mt-14">
       <SectionHead title={title} sub={sub} />
-      <ul className="mt-3 grid grid-cols-3 gap-x-2.5 gap-y-4 md:grid-cols-6 md:gap-x-4">
+      <ul className="no-scrollbar -mx-5 mt-3 flex snap-x scroll-px-5 gap-2.5 overflow-x-auto px-5 md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:px-0">
         {tiles.map((x) => (
-          <li key={x.id}>
+          <li key={x.id} className="w-[78%] shrink-0 snap-start md:w-auto">
             {/* 홈 안의 파트 고르기(?cat=·?q=)는 새로 열어야 목록이 바뀐다 → a */}
-            <a href={x.href} className="group block">
-              <div className="relative aspect-square overflow-hidden rounded-2xl bg-gray-100">
-                {x.img && (
-                  <Image
-                    src={x.img}
-                    alt=""
-                    fill
-                    sizes="(min-width: 768px) 16vw, 33vw"
-                    unoptimized={!canOptimize(x.img)}
-                    className="object-cover transition-transform duration-300 md:group-hover:scale-105"
-                  />
-                )}
-                <span className="absolute top-2 left-2 rounded-md bg-white/95 px-1.5 py-0.5 text-[10px] font-extrabold text-gray-900">{x.badge}</span>
+            <a href={x.href} className="group relative block aspect-[16/10] overflow-hidden rounded-2xl bg-gray-800">
+              {x.img && (
+                <Image
+                  src={x.img}
+                  alt=""
+                  fill
+                  sizes="(min-width: 768px) 33vw, 80vw"
+                  unoptimized={!canOptimize(x.img)}
+                  className="object-cover transition-transform duration-300 md:group-hover:scale-105"
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/25 to-black/0" />
+              <div className="absolute inset-y-0 left-0 flex w-[78%] flex-col justify-center px-4 md:px-5">
+                <span className="self-start rounded-md bg-white px-1.5 py-0.5 text-[11px] font-extrabold text-gray-900">{x.badge}</span>
+                <p className="mt-2 line-clamp-2 text-[20px] leading-tight font-black break-keep text-white drop-shadow md:text-[22px]">{x.title}</p>
+                <p className="mt-1.5 line-clamp-2 text-[12px] leading-snug font-medium break-keep text-white/90 drop-shadow">{x.sub}</p>
               </div>
-              <p className="mt-1.5 line-clamp-2 text-[14px] leading-snug font-extrabold break-keep text-gray-950">{x.title}</p>
-              <p className="mt-0.5 line-clamp-2 text-[12px] leading-snug break-keep text-gray-600">{x.sub}</p>
             </a>
           </li>
         ))}
@@ -171,6 +174,10 @@ export function ThemeTiles({ title, sub, tiles }: { title: string; sub?: string;
 export interface Collection {
   id: string;
   title: string;
+  /** 제목 위 작은 흰 배지 (배너 레퍼런스 photo/5 BannerExample: 배지 + 큰 제목 + 작은 설명이 사진 안에) */
+  badge?: string;
+  /** 제목 아래 작은 설명 */
+  sub?: string;
   href: string;
   img?: string;
   items: { id: string; href: string; img?: string; title: string; value: string; color: string }[];
@@ -198,13 +205,17 @@ export function CollectionCarousel({ title, sub, collections }: { title: string;
         ))}
       </div>
       <div className="relative mt-3">
-        <div className="relative h-[240px] overflow-hidden rounded-3xl bg-gray-800 md:h-[340px]">
+        <div className="relative h-[260px] overflow-hidden rounded-3xl bg-gray-800 md:h-[360px]">
           {c.img && (
             <Image key={c.img} src={c.img} alt="" fill sizes="(min-width: 768px) 70vw, 100vw" unoptimized={!canOptimize(c.img)} className="object-cover" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/10 to-black/0" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/35 to-black/0" />
           <div className="absolute top-5 right-5 left-5 flex items-start justify-between gap-3 md:top-7 md:left-8 md:right-8">
-            <p className="text-[22px] leading-tight font-black break-keep text-white drop-shadow md:text-[28px]">{c.title}</p>
+            <div className="min-w-0">
+              {c.badge && <span className="inline-block rounded-md bg-white px-1.5 py-0.5 text-[11px] font-extrabold text-gray-900">{c.badge}</span>}
+              <p className="mt-1.5 text-[22px] leading-tight font-black break-keep text-white drop-shadow md:text-[28px]">{c.title}</p>
+              {c.sub && <p className="mt-1 text-[12px] font-semibold text-white/90 drop-shadow md:text-sm">{c.sub}</p>}
+            </div>
             <Link href={c.href} className="shrink-0 rounded-full bg-white/95 px-3.5 py-1.5 text-[13px] font-bold text-gray-900 shadow">
               {t("자세히 보기")} ›
             </Link>
