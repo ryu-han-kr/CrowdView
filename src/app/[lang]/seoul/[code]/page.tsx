@@ -19,7 +19,7 @@ import { translateNames } from "@/lib/name-translate";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { SEOUL_GROUPS, getSeoulAreaExtra, getSeoulAreaLive, seoulGroup } from "@/lib/seoul-live";
 import { getSktCongestion } from "@/lib/skt";
-import { GUIDE, GUIDE_KINDS, TOILETS, nearest, areaPhoto } from "@/lib/seoul-guide";
+import { GUIDE, GUIDE_KINDS, TOILETS, nearest, areaPhoto, areaPhotoCredit } from "@/lib/seoul-guide";
 import { guideNames } from "@/lib/guide-names";
 import Image from "next/image";
 import { canOptimize } from "@/lib/img";
@@ -112,7 +112,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
             unoptimized={!canOptimize(heroImg)}
             className="object-cover"
           />
-          <span className="absolute right-3 bottom-2 rounded bg-black/40 px-1.5 py-0.5 text-[10px] text-white">{t("주변 사진 · 한국관광공사")}</span>
+          <span className="absolute right-3 bottom-2 rounded bg-black/40 px-1.5 py-0.5 text-[10px] text-white">{areaPhotoCredit(area.code) ?? t("주변 사진 · 한국관광공사")}</span>
         </div>
       )}
       <script
@@ -143,7 +143,11 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-[15px] font-bold text-gray-800">{t("지금 인구")}</p>
-                  <p className="text-[30px] leading-tight font-black" style={{ color: inkOf(level.color) }}>
+                  {/* 숫자가 길면('2,500~3,000명') 글자를 줄여 '명'이 다음 줄로 혼자 넘어가지 않게 (UI QA 16차) */}
+                  <p
+                    className={`leading-tight font-black whitespace-nowrap ${people(live.min, live.max).length > 9 ? "text-[24px] md:text-[30px]" : "text-[30px]"}`}
+                    style={{ color: inkOf(level.color) }}
+                  >
                     {people(live.min, live.max)}
                   </p>
                   <p className="mt-1 text-[17px] font-semibold text-gray-900">

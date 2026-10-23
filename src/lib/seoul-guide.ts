@@ -193,7 +193,15 @@ const PHOTO_SPOTS: {
   })),
 ];
 // 서울 실시간 121곳 중 관광사진 갤러리에서 눈으로 고른 대표 사진 (UI QA 15차: 근처 가이드 사진이 매장 안·건물 근접처럼 일상적이었다)
-const AREA_PHOTOS = areaPhotos as Record<string, { src: string; title: string; photographer: string }>;
+// 관광공사 갤러리 사진은 license 없음(공공누리 제1유형), 위키미디어 커먼즈 사진은 license·page가 있다
+const AREA_PHOTOS = areaPhotos as Record<string, { src: string; title: string; photographer: string; license?: string; page?: string }>;
+
+/** 지역 사진 출처 문구 (고른 사진이 아니면 undefined → 화면은 '주변 사진 · 한국관광공사') */
+export function areaPhotoCredit(code: string): string | undefined {
+  const p = AREA_PHOTOS[code];
+  if (!p) return undefined;
+  return p.license ? `${p.photographer} · ${p.license}` : `한국관광공사 · ${p.photographer}`;
+}
 
 /** 역 이름인 지역 (seoul-live의 seoulGroup 'station'과 같은 규칙. 그 파일이 이 파일을 불러 순환이 생겨 여기 둔다) */
 const isStation = (name: string) => !/관광특구|공원|한강/.test(name) && (/역(\(|$|·)|역\s|입구\(|사거리역|네거리역/.test(name) || name.endsWith("역"));
