@@ -27,11 +27,16 @@ export async function kakaoLocalOn(): Promise<boolean> {
   return !(await kv.get(OFF_KEY).catch(() => null));
 }
 
-/** 키워드 검색. near가 있으면 그 둘레(radius m) 안을 가까운 순으로 */
-export function kakaoSearch(query: string, near?: { lat: number; lng: number; radius?: number }, size = 10): Promise<KakaoPlace[]> {
+/** 키워드 검색. near가 있으면 그 둘레(radius m) 안을 가까운 순으로 (sort "accuracy"면 둘레 안에서 정확도순) */
+export function kakaoSearch(
+  query: string,
+  near?: { lat: number; lng: number; radius?: number; sort?: "distance" | "accuracy" },
+  size = 10,
+): Promise<KakaoPlace[]> {
   const k = key();
   if (!k || process.env.NEXT_PHASE === "phase-production-build") return Promise.resolve([]);
-  const pos = near ? `${near.lat.toFixed(3)},${near.lng.toFixed(3)},${near.radius ?? 3000}` : "-";
+  const sort = near?.sort ?? "distance";
+  const pos = near ? `${near.lat.toFixed(3)},${near.lng.toFixed(3)},${near.radius ?? 3000}${sort === "accuracy" ? ":acc" : ""}` : "-";
   return cached(
     `kl:${query}:${pos}:${size}`,
     24 * 3600,
@@ -43,7 +48,7 @@ export function kakaoSearch(query: string, near?: { lat: number; lng: number; ra
         qs.set("x", String(near.lng));
         qs.set("y", String(near.lat));
         qs.set("radius", String(Math.min(20000, near.radius ?? 3000)));
-        qs.set("sort", "distance");
+        qs.set("sort", sort);
       }
       const res = await fetch(`https://dapi.kakao.com/v2/local/search/keyword.json?${qs}`, {
         headers: { Authorization: `KakaoAK ${k}` },
