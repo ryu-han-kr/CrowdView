@@ -40,7 +40,16 @@ const DEEP: Record<string, string> = {
   "#f97316": "#431407",
   "#ef4444": "#000000",
 };
+// 단계 색을 옅게 깐 칸(약 17%) 위 글자: ink보다 한 단계 진하게 (Tailwind 800, 대비 6 이상. UI QA 10차 주간 표)
+const TINT_INK: Record<string, string> = {
+  "#10b981": "#065f46",
+  "#84cc16": "#3f6212",
+  "#eab308": "#713f12",
+  "#f97316": "#9a3412",
+  "#ef4444": "#991b1b",
+};
 export const inkOf = (color: string) => INK[color.toLowerCase()] ?? color;
+export const tintInkOf = (color: string) => TINT_INK[color.toLowerCase()] ?? "#111827";
 export const deepOf = (color: string) => DEEP[color.toLowerCase()] ?? "#111827";
 
 export function levelOf(score: number): Level {

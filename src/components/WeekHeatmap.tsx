@@ -1,7 +1,7 @@
 "use client";
 
 import { useI18n } from "@/i18n/client";
-import { inkOf, LEVELS, levelOf } from "@/lib/levels";
+import { LEVELS, levelOf, tintInkOf } from "@/lib/levels";
 
 export interface HeatDay {
   date: string;
@@ -66,7 +66,7 @@ export function WeekHeatmap({ days, nowHour }: { days: HeatDay[]; nowHour: numbe
                         key={b}
                         className="rounded-lg py-2 text-[11px] font-bold whitespace-nowrap"
                         // 진한 단계 색을 칸마다 꽉 채우면 표가 무거워 보인다 (UI QA 10차) → 옅은 바탕 + 진한 글씨 (목록의 단계 알약과 같은 방식)
-                        style={past ? { background: "#f3f4f6", color: "#6b7280" } : { background: `${l.color}2b`, color: inkOf(l.color) }}
+                        style={past ? { background: "#f3f4f6", color: "#4b5563" } : { background: `${l.color}2b`, color: tintInkOf(l.color) }}
                       >
                         {t(l.label)}
                       </td>
