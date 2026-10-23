@@ -102,7 +102,8 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
       >
         {items.map((s, k) => {
           const current = k === pos;
-          const main = loop ? k === n : k === 0; // 처음 화면에 가운데 보이는 배너 (가장 큰 그림 → 먼저 받기)
+          // 처음 화면에 가운데 보이는 배너 (가장 큰 그림 → 먼저 받기). 무한 넘김용 복제본도 같은 그림이라 같이 (LCP 경고: 복제본이 lazy였다)
+          const main = s.id === items[loop ? n : 0].id;
           const near = Math.abs(k - pos) <= 1;
           return (
             <Link
