@@ -183,5 +183,47 @@
   "src": "https://tong.visitkorea.or.kr/cms2/website/47/1833647.jpg",
   "title": "올림픽공원",
   "photographer": "박은경"
+ },
+ "POI107": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Eungbongsan_Mountain_Spring_05_%2826135666756%29.jpg/1280px-Eungbongsan_Mountain_Spring_05_%2826135666756%29.jpg",
+  "title": "Eungbongsan Mountain Spring 05 (26135666756)",
+  "photographer": "Republic of Korea",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Eungbongsan_Mountain_Spring_05_(26135666756).jpg"
+ },
+ "POI109": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/04/Seoul_Sports_Complex.jpg/1280px-Seoul_Sports_Complex.jpg",
+  "title": "Seoul Sports Complex",
+  "photographer": "Seoul Institute",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Seoul_Sports_Complex.jpg"
+ },
+ "POI123": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/20240427_%EB%B3%B4%EB%9D%BC%EB%A7%A4%EA%B3%B5%EC%9B%90_%EC%97%B0%EB%AA%BB_2.jpg/1280px-20240427_%EB%B3%B4%EB%9D%BC%EB%A7%A4%EA%B3%B5%EC%9B%90_%EC%97%B0%EB%AA%BB_2.jpg",
+  "title": "20240427 보라매공원 연못 2",
+  "photographer": "Striker9498",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:20240427_%EB%B3%B4%EB%9D%BC%EB%A7%A4%EA%B3%B5%EC%9B%90_%EC%97%B0%EB%AA%BB_2.jpg"
+ },
+ "POI058": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/35/Garak_Market_Seoul.JPG/1280px-Garak_Market_Seoul.JPG",
+  "title": "Garak Market Seoul",
+  "photographer": "Stegano",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Garak_Market_Seoul.JPG"
+ },
+ "POI112": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0d/Cheonggyesan.jpg/1280px-Cheonggyesan.jpg",
+  "title": "Cheonggyesan",
+  "photographer": "Kellnerp",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Cheonggyesan.jpg"
+ },
+ "POI104": {
+  "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/On_the_sky_seeing_for_Seoul_Children%E2%80%99s_Grand_Park20210616-003679.jpg/1280px-On_the_sky_seeing_for_Seoul_Children%E2%80%99s_Grand_Park20210616-003679.jpg",
+  "title": "On the sky seeing for Seoul Children’s Grand Park20210616-003679",
+  "photographer": "어색하고좋은",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:On_the_sky_seeing_for_Seoul_Children%E2%80%99s_Grand_Park20210616-003679.jpg"
  }
 }
