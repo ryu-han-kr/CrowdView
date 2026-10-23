@@ -35,7 +35,7 @@ import { localePath, type Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { fmtAge, trRegion } from "@/i18n/patterns";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
-import { photoNear } from "@/lib/seoul-guide";
+import { areaPhoto } from "@/lib/seoul-guide";
 
 // ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 // (60초였을 때 ISR 쓰기 5일에 13만 건. 데이터는 10분마다 갱신되니 5분이면 충분)
@@ -205,7 +205,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     seoul: SEOUL_AREAS.map((a) => ({
       id: `seoul-${a.code}`,
       href: `/seoul/${a.code}`,
-      img: photoNear(a, 0.8),
+      img: areaPhoto(a),
       emoji: "📍",
       title: areaNames.get(a.name) ?? a.name,
       sub: t("서울 실시간"),

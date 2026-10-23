@@ -10,6 +10,7 @@ import toilets from "@/data/seoul/toilets.json";
 import { distanceKm, type LatLng } from "./geo";
 import { LANDMARKS } from "./korea";
 import { SEOUL_AREAS, type SeoulArea } from "./seoul-areas";
+import areaPhotos from "@/data/seoul/area-photos.json";
 
 export type GuideKind = "attraction" | "food" | "shopping" | "nature";
 export const GUIDE_KINDS: { id: GuideKind; label: string; emoji: string }[] = [
@@ -191,6 +192,21 @@ const PHOTO_SPOTS: {
     imgL: l.img,
   })),
 ];
+// 서울 실시간 121곳 중 관광사진 갤러리에서 눈으로 고른 대표 사진 (UI QA 15차: 근처 가이드 사진이 매장 안·건물 근접처럼 일상적이었다)
+const AREA_PHOTOS = areaPhotos as Record<string, { src: string; title: string; photographer: string }>;
+
+/** 역 이름인 지역 (seoul-live의 seoulGroup 'station'과 같은 규칙. 그 파일이 이 파일을 불러 순환이 생겨 여기 둔다) */
+const isStation = (name: string) => !/관광특구|공원|한강/.test(name) && (/역(\(|$|·)|역\s|입구\(|사거리역|네거리역/.test(name) || name.endsWith("역"));
+
+/**
+ * 서울 지역 사진: 고른 사진이 있으면 그것, 없으면 근처 가이드 사진.
+ * 역 주변은 근처 가이드 사진이 가게 간판·매장 안이라(교대역 다이빙 업체 로고 등) 사진 대신 아이콘을 보인다 (undefined)
+ */
+export function areaPhoto(a: LatLng & { name: string; code: string }, large = false): string | undefined {
+  if (AREA_PHOTOS[a.code]) return AREA_PHOTOS[a.code].src;
+  return isStation(a.name) ? undefined : photoNear(a, 0.8, large);
+}
+
 export function photoNear(p: LatLng & { name?: string }, maxKm = 0.6, large = false): string | undefined {
   const key = p.name ? norm(p.name.replace(/관광특구|역$|일대|거리$|공원$/g, "")) : "";
   type Hit = { s: (typeof PHOTO_SPOTS)[number]; km: number };

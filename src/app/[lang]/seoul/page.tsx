@@ -9,7 +9,7 @@ import { translateNames } from "@/lib/name-translate";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { getAllSeoulLive, SEOUL_GROUPS, seoulGroup } from "@/lib/seoul-live";
 import { compactNumber } from "@/lib/format";
-import { photoNear } from "@/lib/seoul-guide";
+import { areaPhoto } from "@/lib/seoul-guide";
 
 // 서울시 실시간 인구는 5분 단위 → 10분마다 다시 렌더링 (지역마다 10분 캐시라 서울시 호출도 10분에 한 번)
 export const revalidate = 600;
@@ -43,7 +43,7 @@ export default async function SeoulPage({ params }: { params: Promise<{ lang: st
     score: live[a.code]?.score,
     min: live[a.code]?.min,
     max: live[a.code]?.max,
-    img: photoNear(a, 0.8),
+    img: areaPhoto(a),
   }));
   const time = Object.values(live)[0]?.time;
 
