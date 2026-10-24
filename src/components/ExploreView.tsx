@@ -9,6 +9,7 @@ import { SpotMap, ViewToggle } from "./map/SpotMap";
 import { MoreSpots, spotCard, useSpots, type SpotRow } from "./MoreSpots";
 import { StickyBar } from "./StickyBar";
 import { Glyph } from "@/components/Glyph";
+import { EmptyState } from "@/components/EmptyState";
 
 export interface ExploreRegion {
   id: string;
@@ -135,7 +136,7 @@ export function ExploreView({
               </ul>
               </>
             ) : (
-              <p className="mt-4 empty-note p-6 text-center">{t("아직 고른 명소가 없어요. 축제를 확인해 보세요.")}</p>
+              <EmptyState name="fox" className="mt-4">{t("아직 고른 명소가 없어요. 축제를 확인해 보세요.")}</EmptyState>
             )}
           </section>
 
@@ -155,7 +156,7 @@ export function ExploreView({
                 ))}
               </ul>
             ) : (
-              <p className="mt-4 empty-note p-6 text-center">{t("앞으로 60일 안에 열리는 축제가 없어요.")}</p>
+              <EmptyState name="rabbit" pose="wait" className="mt-4">{t("앞으로 60일 안에 열리는 축제가 없어요.")}</EmptyState>
             )}
           </section>
 

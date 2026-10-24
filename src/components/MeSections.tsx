@@ -6,6 +6,7 @@ import { useI18n } from "@/i18n/client";
 import { usePicks, usePlans } from "@/lib/prefs";
 import { Glyph } from "@/components/Glyph";
 import { shareUrl } from "./ShareListButtons";
+import { EmptyState } from "@/components/EmptyState";
 
 /** 공유 코스는 30일 보관 (lib/route-share) */
 const KEEP_DAYS = 30;
@@ -60,7 +61,7 @@ export function SavedPlans() {
           })}
         </ul>
       ) : (
-        <p className="mt-2 empty-note">{t("추천 코스 결과에서 ‘저장’을 누르면 여기에 모여요.")}</p>
+        <EmptyState name="raccoon" pose="explore" size={84} className="mt-2">{t("추천 코스 결과에서 ‘저장’을 누르면 여기에 모여요.")}</EmptyState>
       )}
     </section>
   );
@@ -94,7 +95,7 @@ export function MyPicks() {
           </Link>
         </>
       ) : (
-        <p className="mt-2 empty-note">{t("목록의 ☆를 누르면 가고 싶은 곳을 여기에 모아 둘 수 있어요")}</p>
+        <EmptyState name="fox" pose="pick" size={84} className="mt-2">{t("목록의 ☆를 누르면 가고 싶은 곳을 여기에 모아 둘 수 있어요")}</EmptyState>
       )}
     </section>
   );

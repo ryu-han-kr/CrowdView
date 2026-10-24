@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { currentPosition, distanceKm, type LatLng } from "@/lib/geo";
 import { Glyph } from "@/components/Glyph";
+import { EmptyState } from "@/components/EmptyState";
 
 type Tab = "toilet" | "wifi" | "guide" | "culture" | "reservation";
 const TABS: { id: Tab; label: string; emoji: string; file: (lang: string) => string }[] = [
@@ -190,11 +191,11 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
 
       {error && <p className="mt-3 text-sm font-semibold text-red-600">{error}</p>}
       {!at ? (
-        <p className="mt-6 empty-note p-5">{t("내 위치를 켜거나 위에서 장소를 고르면 가까운 곳부터 보여드려요.")}</p>
+        <EmptyState className="mt-6">{t("내 위치를 켜거나 위에서 장소를 고르면 가까운 곳부터 보여드려요.")}</EmptyState>
       ) : !data[tab] ? (
         <p className="mt-6 text-sm text-gray-500">{t("불러오는 중…")}</p>
       ) : list.length === 0 ? (
-        <p className="mt-6 empty-note p-5">{t("3km 안에 찾는 곳이 없어요.")}</p>
+        <EmptyState pose="wait" className="mt-6">{t("3km 안에 찾는 곳이 없어요.")}</EmptyState>
       ) : (
         <ul className="mt-4 divide-y divide-gray-100 rounded-2xl border border-gray-100">
           {list.map((x) => {

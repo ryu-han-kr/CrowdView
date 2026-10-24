@@ -10,6 +10,7 @@ import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { getAllSeoulLive, SEOUL_GROUPS, seoulGroup } from "@/lib/seoul-live";
 import { compactNumber } from "@/lib/format";
 import { areaPhoto } from "@/lib/seoul-guide";
+import { PageHeader } from "@/components/PageHeader";
 
 // 서울시 실시간 인구는 5분 단위 → 10분마다 다시 렌더링 (지역마다 10분 캐시라 서울시 호출도 10분에 한 번)
 export const revalidate = 600;
@@ -49,10 +50,11 @@ export default async function SeoulPage({ params }: { params: Promise<{ lang: st
 
   return (
     <main className="px-5 pt-6 pb-8 md:px-0 md:pt-10">
-      <h1 className="text-2xl font-bold md:text-3xl">{t("서울 실시간 인구 {n}곳", { n: SEOUL_AREAS.length })}</h1>
-      <p className="mt-1 text-sm text-gray-500">
-        {t("관광특구·고궁·상권·공원·역 주변에 지금 몇 명이 있는지 5분마다 바뀌는 서울시 데이터로 보여드려요")}
-      </p>
+      <PageHeader title={t("서울 실시간 인구 {n}곳", { n: SEOUL_AREAS.length })} name="otter">
+        <p className="mt-1 text-sm text-gray-500">
+          {t("관광특구·고궁·상권·공원·역 주변에 지금 몇 명이 있는지 5분마다 바뀌는 서울시 데이터로 보여드려요")}
+        </p>
+      </PageHeader>
       {/* 배치 다양화 (사용자 10/22): 지금 가장 한산한 서울 — 큰 카드 1 + 작은 카드 4 (역 주변은 빼고, 사진 있는 곳) */}
       <FeatureGrid
         title={t("지금 가장 한산한 서울")}

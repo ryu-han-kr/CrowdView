@@ -7,6 +7,7 @@ import type { CrowdResult, Place } from "@/lib/types";
 import { PlaceRow } from "./PlaceRow";
 import { Glyph } from "@/components/Glyph";
 import { ShareListButton } from "./ShareListButtons";
+import { EmptyState } from "@/components/EmptyState";
 
 export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<string, CrowdResult> }) {
   const { favorites } = useFavorites();
@@ -51,7 +52,7 @@ export function MePanel({ places, crowd }: { places: Place[]; crowd: Record<stri
             ))}
           </ul>
         ) : (
-          <p className="mt-2 empty-note">{t("장소 상세 화면 오른쪽 위 🤍 를 누르면 여기에 모여요.")}</p>
+          <EmptyState pose="pick" size={84} className="mt-2">{t("장소 상세 화면 오른쪽 위 🤍 를 누르면 여기에 모여요.")}</EmptyState>
         )}
       </section>
 

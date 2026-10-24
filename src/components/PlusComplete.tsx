@@ -3,6 +3,7 @@
 import Link from "@/i18n/link";
 import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/i18n/client";
+import { Character } from "@/components/Character";
 import { confirmPassPayment, subscribePlus } from "@/lib/plus-browser";
 
 /**
@@ -49,11 +50,17 @@ export function PlusComplete() {
       });
   }, [t]);
 
-  if (state === "working") return <p className="text-sm text-gray-500">{t("결제를 마무리하는 중이에요…")}</p>;
+  if (state === "working")
+    return (
+      <>
+        <Character name="hamster" pose="wait" size={140} priority className="mx-auto" />
+        <p className="mt-2 text-sm text-gray-500">{t("결제를 마무리하는 중이에요…")}</p>
+      </>
+    );
   if (state === "error")
     return (
       <>
-        <p className="text-4xl">😥</p>
+        <Character name="hamster" pose="packed" size={140} priority className="mx-auto" />
         <h1 className="mt-3 text-xl font-bold">{t("결제를 마치지 못했어요")}</h1>
         <p className="mt-2 text-sm text-gray-500">{message}</p>
         <Link href="/pricing" className="mt-6 inline-block rounded-2xl bg-gray-900 px-5 py-3 text-sm font-bold text-white">
@@ -63,7 +70,7 @@ export function PlusComplete() {
     );
   return (
     <>
-      <p className="text-4xl">🎉</p>
+      <Character name="hamster" pose="done" size={160} priority className="mx-auto" />
       <h1 className="mt-3 text-xl font-bold">{t("Plus를 시작했어요")}</h1>
       <p className="mt-2 text-sm text-gray-500">{t("이제 광고 없이 보고, 장소 상세에서 혼잡 알림을 켤 수 있어요.")}</p>
       <Link href="/" className="mt-6 inline-block rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white">
