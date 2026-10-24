@@ -12,6 +12,7 @@ import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { SEOUL_GROUPS, getAllSeoulLive, seoulGroup } from "@/lib/seoul-live";
 import { kst, addDays, shortDate } from "@/lib/time";
 import { CATEGORY_LABEL } from "@/lib/types";
+import { PageHeader } from "@/components/PageHeader";
 
 // ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 // (60초였을 때 ISR 쓰기 5일에 13만 건. 데이터는 10분마다 갱신되니 5분이면 충분)
@@ -118,7 +119,7 @@ export default async function MapPage({ params }: { params: Promise<{ lang: stri
 
   return (
     <main className="pt-5 md:pt-8">
-      <h1 className="px-5 text-2xl font-bold md:px-0 md:text-3xl">{t("혼잡도 지도")}</h1>
+      <PageHeader title={t("혼잡도 지도")} name="hamster" pose="explore" size={68} className="px-5 md:px-0" />
       <div className="mt-1">
         <MapExplorer
           spots={spots}

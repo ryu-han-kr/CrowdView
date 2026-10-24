@@ -9,6 +9,8 @@ import { LevelBadge } from "@/components/Level";
 import { FESTIVAL_CATEGORIES, FESTIVAL_STEPS, festivalHref, festivalStatus, getFestival, getFestivalCrowd, getFestivalLive, isLongRunning, seoulAreaOf } from "@/lib/festivals";
 import { compactNumber } from "@/lib/format";
 import { LEVELS, levelOf, inkOf } from "@/lib/levels";
+import { CrowdMascot } from "@/components/place/CrowdMascot";
+import { Character } from "@/components/Character";
 import { daysUntil, kst } from "@/lib/time";
 import type { Lang } from "@/i18n/config";
 import { fmtPeople, trRegion } from "@/i18n/patterns";
@@ -167,16 +169,21 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
         <div className="mt-6 lg:mt-0">
           {live && (
             <section className="mb-4 rounded-3xl p-5" style={{ background: `${levelOf(live.score).color}14` }}>
-              <p className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
-                <span className="rounded bg-emerald-700 px-1.5 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
-                {t("지금 {area} 일대", { area: tr(live.area) })}
-              </p>
-              <p className="mt-1 text-2xl font-extrabold" style={{ color: inkOf(levelOf(live.score).color) }}>
-                {t(levelOf(live.score).label)}
-                <span className="ml-2 text-base font-semibold text-gray-900">
-                  {t("{min}~{max}명", { min: compactNumber(live.min, lang), max: compactNumber(live.max, lang) })}
-                </span>
-              </p>
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="flex items-center gap-1.5 text-xs font-medium text-gray-500">
+                    <span className="rounded bg-emerald-700 px-1.5 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
+                    {t("지금 {area} 일대", { area: tr(live.area) })}
+                  </p>
+                  <p className="mt-1 text-2xl font-extrabold" style={{ color: inkOf(levelOf(live.score).color) }}>
+                    {t(levelOf(live.score).label)}
+                    <span className="ml-2 text-base font-semibold text-gray-900">
+                      {t("{min}~{max}명", { min: compactNumber(live.min, lang), max: compactNumber(live.max, lang) })}
+                    </span>
+                  </p>
+                </div>
+                <CrowdMascot character="rabbit" score={live.score} size={96} className="-my-2 shrink-0" label={t(levelOf(live.score).label)} />
+              </div>
               {live.forecast.length > 0 && (
                 <ul className="no-scrollbar mt-3 flex gap-1.5 overflow-x-auto">
                   {live.forecast.slice(0, 8).map((p) => (
@@ -198,13 +205,18 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
           )}
           {skt && (
             <section className="mb-4 rounded-3xl p-5" style={{ background: `${levelOf(skt.score).color}14` }}>
-              <p className="text-xs font-medium text-gray-500">
-                <span className="mr-1 rounded bg-emerald-700 px-1 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
-                {t("지금 {area} 일대", { area: skt.poiName })}
-              </p>
-              <p className="mt-1 text-2xl font-extrabold" style={{ color: inkOf(levelOf(skt.score).color) }}>
-                {t(levelOf(skt.score).label)}
-              </p>
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-gray-500">
+                    <span className="mr-1 rounded bg-emerald-700 px-1 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
+                    {t("지금 {area} 일대", { area: skt.poiName })}
+                  </p>
+                  <p className="mt-1 text-2xl font-extrabold" style={{ color: inkOf(levelOf(skt.score).color) }}>
+                    {t(levelOf(skt.score).label)}
+                  </p>
+                </div>
+                <CrowdMascot character="rabbit" score={skt.score} size={88} className="-my-2 shrink-0" label={t(levelOf(skt.score).label)} />
+              </div>
               <p className="mt-2 text-[11px] text-gray-500">
                 {t("SK텔레콤 장소 혼잡도")} {skt.time && `· ${t("{time} 기준", { time: skt.time.slice(11) })}`}
               </p>
@@ -216,15 +228,27 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
             </p>
           )}
           <section className="rounded-3xl p-5" style={{ background: level ? `${level.color}14` : "#f9fafb" }}>
-            <p className="text-xs font-medium text-gray-500">
-              {t("지역 방문 증가 예상 (시군구 기준)")}
-              <DataTag />
-            </p>
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-xs font-medium text-gray-500">
+                  {t("지역 방문 증가 예상 (시군구 기준)")}
+                  <DataTag />
+                </p>
+                {crowd && level && (
+                  <p className="mt-1 text-2xl font-extrabold" style={{ color: inkOf(level.color) }}>
+                    {t(level.label)}
+                  </p>
+                )}
+              </div>
+              {/* 실시간 카드가 있으면 거기 토끼가 있으니 여기엔 예측 표정만 작게, 자료가 없으면 기다리는 토끼 */}
+              {crowd ? (
+                <CrowdMascot character="rabbit" score={crowd.score} size={live || skt ? 64 : 96} className="-my-2 shrink-0" label={level ? t(level.label) : undefined} />
+              ) : (
+                <Character name="rabbit" pose="wait" size={72} className="-my-2 shrink-0" />
+              )}
+            </div>
             {crowd && level ? (
               <>
-                <p className="mt-1 text-2xl font-extrabold" style={{ color: inkOf(level.color) }}>
-                  {t(level.label)}
-                </p>
                 <p className="mt-1 text-sm text-gray-700">
                   {t(
                     crowd.ratio >= 1

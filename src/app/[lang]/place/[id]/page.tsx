@@ -159,8 +159,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   if (!place || !crowd) notFound();
   if (place.category === "airport") redirect(localePath(lang, placeHref(place)));
   const [signals, [today], related, news] = await Promise.all([getSignals(place), getHistory(id, 1), getRelatedPlaces(place), getPlaceNews(id)]);
-  // 최근 소식 제목도 외국어로 (Papago 캐시)
-  const newsTr = news?.hits.length ? await translateNames(news.hits.map((h) => h.title), lang) : new Map<string, string>();
+  // 최근 소식 제목: 기사는 한국어라 제목 번역은 영어 화면만 (10/24 Papago 사용량: 날마다 바뀌는 제목을 4개 언어로 번역하던 것을 줄임)
+  const newsTr = news?.hits.length && lang === "en" ? await translateNames(news.hits.map((h) => h.title), lang) : new Map<string, string>();
   const relatedNames = await translateNames(
     related.flatMap((r) => [r.name, r.region]),
     lang,

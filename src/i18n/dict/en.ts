@@ -1206,6 +1206,7 @@ const dict: Dict = {
   "지금 서울은 많이 붐벼요": "Seoul is very busy right now",
   "늦은 밤, 서울은 조용히 쉬는 중": "Late night — Seoul is resting",
   "한산한 곳 {calm}곳 · 붐비는 곳 {busy}곳": "{calm} quiet · {busy} busy areas",
+  "지도를 불러오는 중…": "Loading the map…",
   "한국민속촌": "Korean Folk Village",
   "서울대공원": "Seoul Grand Park",
   "롯데월드 아쿠아리움": "Lotte World Aquarium",

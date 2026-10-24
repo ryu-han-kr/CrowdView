@@ -4,6 +4,7 @@
 // 네이버 지도 키가 없거나 실패하면 위치만 찍은 간단한 그림으로 대체
 import Link from "@/i18n/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Character } from "@/components/Character";
 import { useI18n } from "@/i18n/client";
 import { LEVELS, levelOf, deepOf } from "@/lib/levels";
 import { KEY_ID, loadSdk } from "@/lib/naver-map";
@@ -260,7 +261,18 @@ function NaverSpots({
     };
   }, [ready]);
 
-  return <div ref={el} className={`${heightClass} w-full`} />;
+  return (
+    <div className={`relative ${heightClass} w-full`}>
+      <div ref={el} className="h-full w-full" />
+      {/* 지도 SDK를 받는 동안: 지도를 펼친 햄스터 */}
+      {!ready && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-gray-50 text-sm text-gray-500">
+          <Character name="hamster" pose="explore" size={120} priority />
+          {t("지도를 불러오는 중…")}
+        </div>
+      )}
+    </div>
+  );
 }
 
 /** 지도 키가 없을 때: 위치를 비율대로 찍은 간단한 그림 */
