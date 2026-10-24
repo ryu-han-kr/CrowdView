@@ -110,14 +110,14 @@ function landmarkImg(p: GuidePlace): string | undefined {
   return undefined;
 }
 
-const GUIDE_PHOTOS = guidePhotos as Record<string, { src: string; credit: string; page: string }>;
+const GUIDE_PHOTOS = guidePhotos as Record<string, { src: string; credit?: string; page?: string }>;
 
 const cleaned = (guide as GuidePlace[]).flatMap((p) => {
   const kind = cleanKind(p);
   if (!kind) return [];
   const hit = matchTour(p);
   const lm = hit ? undefined : landmarkImg(p);
-  // 직접 고른 사진 (관광공사 사진이 약하거나 없는 곳, 위키미디어 커먼즈 — 출처 표시)
+  // 직접 고른 사진 (관광공사 갤러리는 credit 없음, 위키미디어 커먼즈는 출처 표시)
   const own = GUIDE_PHOTOS[p.id];
   return [
     {
