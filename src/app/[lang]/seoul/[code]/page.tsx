@@ -33,6 +33,7 @@ import { usualBand } from "@/lib/crowd/percentile";
 import { getHolidays } from "@/lib/crowd/signals";
 import { kst } from "@/lib/time";
 import { EmptyState } from "@/components/EmptyState";
+import { InlineAd } from "@/components/AdUnit";
 
 export const revalidate = 600;
 
@@ -257,6 +258,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
           <AlertButtons placeId={`seoul-${area.code}`} enabled={authEnabled && pushEnabled} />
           <CalmAlternatives character="otter" lat={area.lat} lng={area.lng} score={live?.score} selfId={`seoul-${area.code}`} lang={lang} />
           <StayLinks ko={area.name} en={enName} lang={lang} t={t} at={area} className="mt-4" />
+          <InlineAd className="mt-6" />
           <a
             href={`https://map.naver.com/p/search/${encodeURIComponent(area.name)}`}
             target="_blank"

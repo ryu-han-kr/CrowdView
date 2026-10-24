@@ -36,6 +36,7 @@ import { getT } from "@/i18n/server";
 import { fmtAge, trRegion } from "@/i18n/patterns";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { HomeGreeting } from "@/components/home/HomeGreeting";
+import { InlineAd } from "@/components/AdUnit";
 
 // ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 // (60초였을 때 ISR 쓰기 5일에 13만 건. 데이터는 10분마다 갱신되니 5분이면 충분)
@@ -505,6 +506,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {shortRail}
           {trendList}
           {themeSection}
+          <InlineAd className="mt-8" />
           {festivalRail}
           {collectionSection}
           {plusPromo}
@@ -515,6 +517,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         <>
           {landmarkRail}
           {themeSection}
+          <InlineAd className="mt-8" />
           {festivalRail}
           {calmRail}
           {shortRail}

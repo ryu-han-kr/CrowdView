@@ -17,6 +17,7 @@ export function AdRail({ side, slot = AD_SLOTS.rail }: { side: "left" | "right";
     >
       <AdUnit
         slot={slot}
+        name="rail"
         format="vertical"
         style={{ width: 160, height: 600 }}
         fallback={

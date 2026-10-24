@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { canOptimize } from "@/lib/img";
-import { StayLinks } from "@/components/StayLinks";
+import { StayLinks, TourLinks } from "@/components/StayLinks";
+import { InlineAd } from "@/components/AdUnit";
 import { notFound } from "next/navigation";
 import Link from "@/i18n/link";
 import { FaqBlock } from "@/components/FaqBlock";
@@ -174,7 +175,9 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
         </div>
 
         <div className="mt-8 space-y-8 lg:mt-0">
+          {p.kind === "attraction" && <TourLinks ko={guideText(p, "ko").text.n} en={guideText(p, "en").text.n} lang={lang} t={t} />}
           {p.kind !== "food" && <StayLinks ko={guideText(p, "ko").text.n} en={guideText(p, "en").text.n} lang={lang} t={t} at={at} />}
+          <InlineAd />
           {toilets.length > 0 && (
             <section>
               <div className="flex items-center justify-between">
