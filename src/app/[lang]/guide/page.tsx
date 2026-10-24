@@ -7,6 +7,7 @@ import { GUIDE, GUIDE_KINDS, RESERVATIONS } from "@/lib/seoul-guide";
 import { guideNames } from "@/lib/guide-names";
 import { pageMeta } from "@/lib/seo";
 import { Glyph } from "@/components/Glyph";
+import { PageHeader } from "@/components/PageHeader";
 
 // 정적 데이터 + 하루 한 번 다시 그림 (체험 예약 마감 순서만 바뀐다)
 export const revalidate = 3600;
@@ -41,8 +42,9 @@ export default async function GuidePage({ params }: { params: Promise<{ lang: st
   const rt = (x: string) => resTr.get(x) ?? x;
   return (
     <main className="px-5 pt-6 pb-10 md:px-0 md:pt-10">
-      <h1 className="text-2xl font-bold md:text-3xl">{t("서울 여행 가이드")}</h1>
-      <p className="mt-1 mb-5 text-sm text-gray-500">{t("명소·맛집·쇼핑·자연 + 그 동네의 지금 혼잡도")}</p>
+      <PageHeader title={t("서울 여행 가이드")} name="fox" pose="explore" className="mb-5">
+        <p className="mt-1 text-sm text-gray-500">{t("명소·맛집·쇼핑·자연 + 그 동네의 지금 혼잡도")}</p>
+      </PageHeader>
       <GuideList
         initial={attractions.map((p) => [p.id, p.kind, names.get(p.id) ?? p.id, p.lat ?? null, p.lng ?? null, p.gu ?? null, p.img ?? null] as Row)}
         counts={Object.fromEntries(

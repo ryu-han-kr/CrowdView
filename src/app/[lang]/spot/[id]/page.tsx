@@ -210,7 +210,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
                 </p>
                 <p className="mt-1 text-[17px] font-semibold text-gray-900">{t(nowOpen ? nowLevel.desc : "운영 시간 {from} ~ {to}", { from: formatHour(model.place.hours[0], lang), to: formatHour(model.place.hours[1], lang) })}</p>
               </div>
-              <CrowdMascot score={nowScore} closed={!nowOpen} size={112} className="-my-1 shrink-0" label={nowOpen ? t(nowLevel.label) : t("운영 시간 아님")} />
+              <CrowdMascot character="fox" score={nowScore} closed={!nowOpen} size={112} className="-my-1 shrink-0" label={nowOpen ? t(nowLevel.label) : t("운영 시간 아님")} />
             </div>
             {/* 단계 색이 옅게 깔린 배경이라 회색 500은 대비가 모자랄 때가 있다 (axe color-contrast) */}
             <p className="sector-box mt-3 text-[13px] text-gray-700">
@@ -230,7 +230,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
             <RoadSection lat={l.lat} lng={l.lng} lang={lang} />
           </Suspense>
           {nowOpen && (
-            <CalmAlternatives lat={l.lat} lng={l.lng} score={nowScore} selfId={place ? place.id : area ? `seoul-${area.code}` : `spot-${l.id}`} lang={lang} />
+            <CalmAlternatives character="fox" lat={l.lat} lng={l.lng} score={nowScore} selfId={place ? place.id : area ? `seoul-${area.code}` : `spot-${l.id}`} lang={lang} />
           )}
           <a
             href={landmarkMapHref(l, lang)}

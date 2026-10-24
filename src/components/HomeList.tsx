@@ -16,6 +16,7 @@ import { useUrlQuery } from "./useUrlQuery";
 import { Glyph } from "@/components/Glyph";
 import { SUBS_OF, SUB_EMOJI, SUB_LABEL, subOf, type SubCategory } from "@/lib/subcategory";
 import { useSpots, type SpotRow } from "./MoreSpots";
+import { EmptyState } from "@/components/EmptyState";
 
 /** 홈 통합 검색의 다른 탭 항목 (서버에서 만든 명소·축제·서울 지역) */
 export interface SearchItem {
@@ -406,7 +407,7 @@ export function HomeList({
           </div>
         </div>
         {!list.length ? (
-          <p className="mt-4 empty-note p-6 text-center">{t("‘{q}’에 맞는 장소가 없어요.", { q: query })}</p>
+          <EmptyState className="mt-4">{t("‘{q}’에 맞는 장소가 없어요.", { q: query })}</EmptyState>
         ) : view === "map" ? (
           <SpotMap
             spots={cards.map((c) => ({
@@ -487,9 +488,9 @@ function ResultList({
         {title} {!loading && <span className="text-base font-semibold text-gray-500">{t("{n}곳", { n: count })}</span>}
       </h2>
       {loading ? (
-        <p className="mt-4 empty-note p-6 text-center">{t("불러오는 중…")}</p>
+        <EmptyState pose="wait" className="mt-4">{t("불러오는 중…")}</EmptyState>
       ) : !items.length ? (
-        <p className="mt-4 empty-note p-6 text-center">{empty}</p>
+        <EmptyState className="mt-4">{empty}</EmptyState>
       ) : (
         <ul className="sector mt-4 grid grid-cols-[minmax(0,1fr)] gap-2.5 p-3 md:grid-cols-2 lg:grid-cols-3">
           {items.map((x) => {

@@ -17,6 +17,7 @@ import { LevelBadge } from "./Level";
 import { Glyph } from "@/components/Glyph";
 
 import { dateRange, shortDate } from "@/lib/time";
+import { EmptyState } from "@/components/EmptyState";
 
 const EMOJI = Object.fromEntries(FESTIVAL_CATEGORIES.map((c) => [c.id, c.emoji])) as Record<FestivalCategory, string>;
 
@@ -211,9 +212,9 @@ export function FestivalList({
         </details>
       )}
       {list.length === 0 && (
-        <p className="mt-8 text-center text-sm text-gray-500">
+        <EmptyState name="rabbit" pose="wait" className="mt-8">
           {category === "all" ? t("이 지역에는 예정된 축제가 없어요.") : t("이 종류의 축제가 없어요.")}
-        </p>
+        </EmptyState>
       )}
     </>
   );

@@ -5,6 +5,7 @@ import { getT } from "@/i18n/server";
 import { translateNames } from "@/lib/name-translate";
 import { START_HUBS } from "@/lib/route-data";
 import { pageMeta } from "@/lib/seo";
+import { PageHeader } from "@/components/PageHeader";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const lang = (await params).lang;
@@ -24,8 +25,9 @@ export default async function NearPage({ params }: { params: Promise<{ lang: str
   return (
     <main className="px-5 pt-6 pb-10 md:px-0 md:pt-10">
       <div className="mx-auto max-w-3xl">
-        <h1 className="text-2xl font-bold md:text-3xl">{t("내 주변 찾기")}</h1>
-        <p className="mt-1 mb-5 text-sm text-gray-500">{t("화장실·와이파이·명소·맛집·문화공간을 가까운 순으로")}</p>
+        <PageHeader title={t("내 주변 찾기")} name="hamster" pose="explore" className="mb-5">
+          <p className="mt-1 text-sm text-gray-500">{t("화장실·와이파이·명소·맛집·문화공간을 가까운 순으로")}</p>
+        </PageHeader>
         <NearbyFinder hubs={START_HUBS} names={names} />
       </div>
     </main>

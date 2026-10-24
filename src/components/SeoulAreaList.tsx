@@ -15,6 +15,7 @@ import { LevelBadge } from "./Level";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
 import { useUrlQuery } from "./useUrlQuery";
 import { Glyph } from "@/components/Glyph";
+import { EmptyState } from "@/components/EmptyState";
 
 export interface SeoulAreaRow {
   code: string;
@@ -182,7 +183,7 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
           })}
         </ul>
       )}
-      {list.length === 0 && <p className="mt-8 text-center text-sm text-gray-500">{t("찾는 지역이 없어요.")}</p>}
+      {list.length === 0 && <EmptyState name="otter" className="mt-8">{t("찾는 지역이 없어요.")}</EmptyState>}
     </FilterLayout>
   );
 }

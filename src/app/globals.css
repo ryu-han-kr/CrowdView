@@ -42,6 +42,26 @@ body {
   animation: pulse-ring 1.8s ease-out infinite;
 }
 
+/* 혼잡도 캐릭터가 살짝 숨 쉬듯 들썩임 (발끝 기준). 움직임 줄이기 설정이면 멈춤 */
+@keyframes mascot-bob {
+  0%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+  50% {
+    transform: translateY(-3%) scale(1.01, 0.99);
+  }
+}
+.mascot-bob {
+  transform-origin: 50% 100%;
+  animation: mascot-bob 2.8s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mascot-bob {
+    animation: none;
+  }
+}
+
 /* ── 누를 때·마우스를 올렸을 때 반응 (모든 링크·버튼·탭 공통)
    - 누르는 순간: 살짝 작아지고 어두워진다 (모바일 터치 포함)
    - 마우스를 올리면: 살짝 어두워지고, 카드형 링크는 그림자와 함께 떠오른다

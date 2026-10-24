@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import { inkOf } from "@/lib/levels";
 import { CrowdMascot } from "@/components/place/CrowdMascot";
+import { EmptyState } from "@/components/EmptyState";
 import Link from "@/i18n/link";
 import { notFound } from "next/navigation";
 import { AirportPaxChart } from "@/components/AirportPaxChart";
@@ -153,7 +154,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                   )}
                 </p>
               </div>
-              <CrowdMascot score={crowd.score} closed={!crowd.open} size={104} className="-my-1 shrink-0" label={crowd.open ? t(level.label) : t("운영 종료")} />
+              <CrowdMascot character="raccoon" score={crowd.score} closed={!crowd.open} size={104} className="-my-1 shrink-0" label={crowd.open ? t(level.label) : t("운영 종료")} />
             </div>
             <p className={`sector-box mt-3 text-[13px] ${crowd.stale ? "font-semibold text-amber-800" : "text-gray-700"}`}>
               {crowd.source === "model"
@@ -403,5 +404,9 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
 }
 
 function Empty({ children }: { children: React.ReactNode }) {
-  return <p className="empty-note">{children}</p>;
+  return (
+    <EmptyState name="raccoon" pose="wait" size={72}>
+      {children}
+    </EmptyState>
+  );
 }

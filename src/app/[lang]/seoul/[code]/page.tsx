@@ -32,6 +32,7 @@ import { cellOf } from "@/lib/crowd/model";
 import { usualBand } from "@/lib/crowd/percentile";
 import { getHolidays } from "@/lib/crowd/signals";
 import { kst } from "@/lib/time";
+import { EmptyState } from "@/components/EmptyState";
 
 export const revalidate = 600;
 
@@ -154,7 +155,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
                     {t("서울시 단계")}: <b>{t(live.level)}</b>
                   </p>
                 </div>
-                <CrowdMascot score={live.score} size={104} className="-my-1 shrink-0" label={t(live.level)} />
+                <CrowdMascot character="otter" score={live.score} size={104} className="-my-1 shrink-0" label={t(live.level)} />
               </div>
               {band && (
                 <p className="mt-1 text-sm font-semibold">
@@ -167,7 +168,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
               </p>
             </section>
           ) : (
-            <p className="empty-note">{t("지금은 서울시 데이터를 받지 못했어요. 잠시 후 다시 확인해 주세요.")}</p>
+            <EmptyState name="otter" pose="wait">{t("지금은 서울시 데이터를 받지 못했어요. 잠시 후 다시 확인해 주세요.")}</EmptyState>
           )}
 
           {skt && (
@@ -254,7 +255,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
             );
           })()}
           <AlertButtons placeId={`seoul-${area.code}`} enabled={authEnabled && pushEnabled} />
-          <CalmAlternatives lat={area.lat} lng={area.lng} score={live?.score} selfId={`seoul-${area.code}`} lang={lang} />
+          <CalmAlternatives character="otter" lat={area.lat} lng={area.lng} score={live?.score} selfId={`seoul-${area.code}`} lang={lang} />
           <StayLinks ko={area.name} en={enName} lang={lang} t={t} at={area} className="mt-4" />
           <a
             href={`https://map.naver.com/p/search/${encodeURIComponent(area.name)}`}

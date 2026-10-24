@@ -20,6 +20,7 @@ import { sitePeople, siteShare } from "@/lib/crowd/provider";
 import { levelOf, valueFromScore, inkOf } from "@/lib/levels";
 import { closedToday, getLivePlace, isOngoingEvent } from "@/lib/place-info";
 import { CrowdMascot } from "@/components/place/CrowdMascot";
+import { categoryCharacter } from "@/lib/characters";
 import { ForecastTabs } from "@/components/place/ForecastTabs";
 import { MonthCalendar } from "@/components/place/MonthCalendar";
 import { HourTable } from "@/components/place/HourTable";
@@ -406,14 +407,14 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                       )}
                       {crowd.avgWaitMin === undefined && headcountInfo(crowd)?.kind && <DataTag kind={headcountInfo(crowd)!.kind} />}
                       {crowd.trend === "up" && <span className="whitespace-nowrap text-red-700 dark:text-red-400"> · {t("늘어나는 중")}</span>}
-                      {crowd.trend === "down" && <span className="whitespace-nowrap text-emerald-700"> · {t("줄어드는 중")}</span>}
+                      {crowd.trend === "down" && <span className="whitespace-nowrap text-emerald-800 dark:text-emerald-400"> · {t("줄어드는 중")}</span>}
                     </>
                   ) : (
                     t(level.desc)
                   )}
                 </p>
               </div>
-              {!beforeEvent && <CrowdMascot score={crowd.score} closed={!isOpen} size={112} className="-my-1 shrink-0" label={t(level.label)} />}
+              {!beforeEvent && <CrowdMascot score={crowd.score} closed={!isOpen} size={112} className="-my-1 shrink-0" label={t(level.label)} character={categoryCharacter(place.category)} />}
             </div>
             {crowd.area && isOpen && !beforeEvent && (
               <p className="mt-2 text-sm text-gray-600">
@@ -474,9 +475,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               <AlertFab
                 placeId={place.id}
                 placeName={t(place.name)}
-                score={crowd.score}
-                closed={!isOpen}
                 enabled={authEnabled && pushEnabled && !beforeEvent}
+                character={categoryCharacter(place.category)}
               />
           </section>
 
@@ -738,6 +738,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 score={isOpen ? crowd.score : undefined}
                 selfId={place.id}
                 lang={lang}
+                character={categoryCharacter(place.category)}
                 className="sector mt-8"
               />
             )
@@ -751,6 +752,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   score={isOpen ? crowd.score : undefined}
                   selfId={place.id}
                   lang={lang}
+                  character={categoryCharacter(place.category)}
                   className="sector-box mt-3"
                 />
               )}

@@ -5,7 +5,8 @@ import { AlertButtons } from "@/components/AlertButtons";
 import { Glyph } from "@/components/Glyph";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { useI18n } from "@/i18n/client";
-import { CrowdMascot } from "./CrowdMascot";
+import type { CharacterName } from "@/lib/characters";
+import { Character } from "@/components/Character";
 
 /**
  * 혼잡 알림 버튼. 처음엔 오른쪽 아래에 떠 있었는데, 차트 오른쪽 아래(21시·'시간을 눌러 자세히')를 덮어
@@ -14,15 +15,13 @@ import { CrowdMascot } from "./CrowdMascot";
 export function AlertFab({
   placeId,
   placeName,
-  score,
-  closed,
   enabled,
+  character = "hamster",
 }: {
   placeId: string;
   placeName: string;
-  score: number;
-  closed: boolean;
   enabled: boolean;
+  character?: CharacterName;
 }) {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
@@ -42,7 +41,7 @@ export function AlertFab({
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent>
           <div className="flex items-center gap-3">
-            <CrowdMascot score={score} closed={closed} size={72} />
+            <Character name={character} pose="alert" size={80} className="shrink-0" />
             <div className="min-w-0">
               <SheetTitle>{t("혼잡 알림")}</SheetTitle>
               <SheetDescription className="mt-1">

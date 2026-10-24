@@ -6,6 +6,7 @@ import { useI18n } from "@/i18n/client";
 import { useSession } from "@/lib/auth-client";
 import { usePlus } from "@/lib/plus-client";
 import { Glyph } from "@/components/Glyph";
+import { EmptyState } from "@/components/EmptyState";
 
 interface AlertRow {
   placeId: string;
@@ -82,7 +83,7 @@ export function AlertsList({ enabled }: { enabled: boolean }) {
           ))}
         </ul>
       ) : (
-        <p className="mt-2 empty-note">{t("장소나 서울 실시간 지역 화면에서 🔔 알림을 켜면 여기에 모여요.")}</p>
+        <EmptyState pose="alert" size={84} className="mt-2">{t("장소나 서울 실시간 지역 화면에서 🔔 알림을 켜면 여기에 모여요.")}</EmptyState>
       )}
     </section>
   );

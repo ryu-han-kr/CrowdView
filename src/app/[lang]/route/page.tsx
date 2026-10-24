@@ -7,6 +7,7 @@ import { START_HUBS } from "@/lib/route-data";
 import { kakaoLocalOn } from "@/lib/kakao-local";
 import { pageMeta } from "@/lib/seo";
 import { KstNote } from "@/components/LocalTime";
+import { PageHeader } from "@/components/PageHeader";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const lang = (await params).lang;
@@ -33,9 +34,10 @@ export default async function RoutePage({ params }: { params: Promise<{ lang: st
   );
   return (
     <main className="px-5 pt-6 pb-10 md:px-0 md:pt-10">
-      <h1 className="text-2xl font-bold md:text-3xl">{t("한산한 코스 추천")}</h1>
-      <KstNote className="mt-1" />
-      <p className="mt-1 mb-6 text-sm text-gray-500">{t("가고 싶은 종류와 시간만 고르면, 도착할 때 덜 붐비는 순서로 이어 드려요")}</p>
+      <PageHeader title={t("한산한 코스 추천")} name="raccoon" pose="explore" className="mb-6">
+        <KstNote className="mt-1" />
+        <p className="mt-1 text-sm text-gray-500">{t("가고 싶은 종류와 시간만 고르면, 도착할 때 덜 붐비는 순서로 이어 드려요")}</p>
+      </PageHeader>
       <RoutePlanner hubs={START_HUBS} names={names} kakao={await kakaoLocalOn()} />
     </main>
   );
