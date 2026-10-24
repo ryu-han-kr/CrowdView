@@ -11,6 +11,10 @@ interface KV {
   /** by(기본 1)만큼 올리고 새 값을 돌려준다. 처음 만들 때만 만료 시간을 건다 (API 호출 수 집계용) */
   incr(key: string, ttlSeconds: number, by?: number): Promise<number>;
   decr(key: string, by?: number): Promise<number>;
+  /**
+   * 여러 명령을 요청 1번에 (Upstash pipeline). 메모리 모드는 이용 집계(lib/traffic)에 쓰는 HINCRBY·HGETALL·PFADD·PFCOUNT·EXPIRE만 흉내 낸다
+   */
+  pipeline(commands: (string | number)[][]): Promise<unknown[]>;
 }
 
 function memoryKV(): KV {
@@ -47,6 +51,38 @@ function memoryKV(): KV {
       store.set(key, { v: String(n), exp: hit?.exp ?? Date.now() + 86_400_000 });
       return n;
     },
+    async pipeline(commands) {
+      const m = globalThis as unknown as { __crowdHash?: Map<string, Map<string, number>>; __crowdSet?: Map<string, Set<string>> };
+      const hashes = (m.__crowdHash ??= new Map());
+      const sets = (m.__crowdSet ??= new Map());
+      return commands.map(([cmd, key, ...args]) => {
+        const k = String(key);
+        switch (String(cmd).toUpperCase()) {
+          case "HINCRBY": {
+            const h = hashes.get(k) ?? new Map<string, number>();
+            hashes.set(k, h);
+            const n = (h.get(String(args[0])) ?? 0) + Number(args[1]);
+            h.set(String(args[0]), n);
+            return n;
+          }
+          case "HGETALL":
+            return [...(hashes.get(k) ?? new Map()).entries()].flat().map(String);
+          case "PFADD": {
+            const st = sets.get(k) ?? new Set<string>();
+            sets.set(k, st);
+            const before = st.size;
+            args.forEach((a) => st.add(String(a)));
+            return st.size > before ? 1 : 0;
+          }
+          case "PFCOUNT":
+            return sets.get(k)?.size ?? 0;
+          case "EXPIRE":
+            return 1;
+          default:
+            throw new Error(`memory pipeline: ${cmd} 지원 안 함`);
+        }
+      });
+    },
   };
 }
 
@@ -77,6 +113,17 @@ function upstashKV(url: string, token: string): KV {
       return n;
     },
     decr: async (key, by = 1) => Number(await call(["DECRBY", key, by], true)),
+    pipeline: async (commands) => {
+      if (!commands.length) return [];
+      const res = await fetch(`${url}/pipeline`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "X-Request-Id": crypto.randomUUID() },
+        body: JSON.stringify(commands),
+        signal: AbortSignal.timeout(3000),
+      });
+      if (!res.ok) throw new Error(`redis pipeline ${res.status}`);
+      return ((await res.json()) as { result?: unknown; error?: string }[]).map((r) => r.result);
+    },
   };
 }
 

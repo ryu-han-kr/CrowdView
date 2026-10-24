@@ -21,6 +21,7 @@ import { KstNote } from "@/components/LocalTime";
 import { Glyph } from "@/components/Glyph";
 import { FestivalActions } from "@/components/FestivalActions";
 import { TrackRecent } from "@/components/TrackRecent";
+import { InlineAd } from "@/components/AdUnit";
 
 export const revalidate = 3600;
 
@@ -310,6 +311,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
             </p>
           )}
           <StayLinks ko={f.region} en={enRegion} lang={lang} t={t} className="mt-6" />
+          <InlineAd className="mt-6" />
         </div>
       </div>
     </main>

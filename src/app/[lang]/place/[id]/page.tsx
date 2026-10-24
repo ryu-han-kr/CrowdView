@@ -3,7 +3,7 @@ import { videosFor } from "@/lib/kto-videos";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import { placeTag } from "@/lib/category-style";
-import { StayLinks } from "@/components/StayLinks";
+import { StayLinks, TourLinks } from "@/components/StayLinks";
 import type { Metadata } from "next";
 import placeImages from "@/data/korea/place-images.json";
 import { heroImage, placePhotos } from "@/lib/place-photos";
@@ -724,7 +724,11 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             />
           )}
 
-          <StayLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} at={place} className="mt-6" />
+          {["themepark", "waterpark", "ski", "landmark"].includes(place.category) && (
+            <TourLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} className="mt-6" />
+          )}
+          <StayLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} at={place} className="mt-4" />
+          <InlineAd className="mt-6" />
 
           <DroneVideos videos={videosFor(place.id)} className="mt-8" />
           <InlineAd className="mt-6" />

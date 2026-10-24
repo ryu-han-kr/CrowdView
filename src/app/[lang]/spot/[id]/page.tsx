@@ -6,7 +6,7 @@ import { translateNames } from "@/lib/name-translate";
 import spotImages from "@/data/korea/spot-images.json";
 import { notFound } from "next/navigation";
 import { CalmAlternatives } from "@/components/CalmAlternatives";
-import { StayLinks } from "@/components/StayLinks";
+import { StayLinks, TourLinks } from "@/components/StayLinks";
 import Link from "@/i18n/link";
 import { DEFAULT_LANG, type Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
@@ -35,6 +35,7 @@ import spotKto from "@/data/korea/spot-kto.json";
 import { getConcentration } from "@/lib/crowd/signals";
 import { kst } from "@/lib/time";
 import { compactNumber } from "@/lib/format";
+import { InlineAd } from "@/components/AdUnit";
 
 const SPOT_KTO = spotKto as Record<string, { areaCd: string; signguCd: string; name: string }>;
 
@@ -339,7 +340,9 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
             </section>
           )}
 
-          <StayLinks ko={l.n.ko} en={l.n.en} lang={lang} t={t} at={l} className="mt-6" />
+          <TourLinks ko={l.n.ko} en={l.n.en} lang={lang} t={t} className="mt-6" />
+          <StayLinks ko={l.n.ko} en={l.n.en} lang={lang} t={t} at={l} className="mt-4" />
+          <InlineAd className="mt-6" />
 
           <DroneVideos videos={videosFor(l.id)} className="mt-8" />
 

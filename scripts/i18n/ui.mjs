@@ -2623,4 +2623,7 @@ export default {
   "앗, 화면을 불러오지 못했어요": ["Oops, this page couldn't load", "あっ、画面を読み込めませんでした", "哎呀，页面没能加载", "哎呀，頁面沒能載入"],
   "잠시 뒤 다시 시도해 주세요. 계속되면 다른 화면을 먼저 둘러보세요.": ["Please try again in a moment. If it keeps happening, look around other pages first.", "しばらくしてからもう一度お試しください。続く場合は先に他の画面をご覧ください。", "请稍后再试。如果一直这样，可以先看看其他页面。", "請稍後再試。如果一直這樣，可以先看看其他頁面。"],
   "오류 번호 {id}": ["Error ID {id}", "エラー番号 {id}", "错误编号 {id}", "錯誤編號 {id}"],
+  "투어·입장권 찾기": ["Find tours & tickets", "ツアー・入場券を探す", "查找门票和行程", "查找門票和行程"],
+  "‘{name}’ 입장권·투어를 각 예약 사이트에서 바로 검색해요. 할인가가 있는지 비교해 보세요.": ["Search tickets and tours for ‘{name}’ on each booking site and compare discounts.", "「{name}」の入場券・ツアーを各予約サイトで検索できます。割引価格を比べてみてください。", "在各预订网站直接搜索“{name}”的门票和行程，比较是否有折扣。", "在各預訂網站直接搜尋「{name}」的門票和行程，比較是否有折扣。"],
+  "일부는 제휴 링크라, 예약하면 CrowdView가 수수료를 받을 수 있어요 (가격은 같아요)": ["Some are affiliate links — CrowdView may earn a commission if you book (same price for you)", "一部はアフィリエイトリンクで、予約するとCrowdViewが手数料を受け取ることがあります（価格は同じです）", "部分为联盟链接，预订后CrowdView可能获得佣金（价格不变）", "部分為聯盟連結，預訂後CrowdView可能獲得佣金（價格不變）"],
 };
