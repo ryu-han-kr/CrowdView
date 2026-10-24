@@ -66,6 +66,25 @@ def drop_side_bits(pic: Image.Image, reach: int = 60) -> Image.Image:
     if gaps: a[:, : gaps[-1], 3] = 0
     gaps = [x for x in range(w - reach, w - 1) if not filled[x] and filled[x + 1 :].any()]
     if gaps: a[:, gaps[0] + 1 :, 3] = 0
+    # 빈 세로줄 없이 옆에 붙은 조각: 발밑 그림자 줄(아래 30px)을 빼고 이어진 덩어리를 보고, 양끝에 닿았는데 몸통과 안 이어진 것을 지운다
+    rows = np.where((a[..., 3] > 40).any(axis=1))[0]
+    if not len(rows): return Image.fromarray(a)
+    cut_y = int(rows.max()) - 30
+    m = np.where(a[..., 3] > 40, 255, 0).astype(np.uint8)
+    m[cut_y:] = 0
+    mi = Image.fromarray(m).copy()
+    ys = np.where(m[:, w // 2] > 0)[0]
+    if len(ys): ImageDraw.floodfill(mi, (w // 2, int(ys.max())), 128)
+    # 끝에서 40px 안에만 있는 좁은 조각만 (말풍선처럼 안쪽까지 들어온 자기 그림은 둔다)
+    for x in (*range(4), *range(w - 4, w)):
+        for y in range(cut_y):
+            if mi.getpixel((x, y)) != 255: continue
+            ImageDraw.floodfill(mi, (x, y), 60)
+            part = np.array(mi) == 60
+            cols = np.where(part.any(axis=0))[0]
+            narrow = cols.max() < 40 if x < w // 2 else cols.min() > w - 40
+            if narrow: a[part, 3] = 0
+            ImageDraw.floodfill(mi, (x, y), 30)
     return Image.fromarray(a)
 
 def main(src, out):
