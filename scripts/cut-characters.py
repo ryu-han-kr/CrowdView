@@ -57,6 +57,17 @@ def cut(cell: Image.Image, grow: int = GROW, label: bool = True):
     else: print("  이름표 못 찾음")
     return Image.fromarray(rgba)
 
+def drop_side_bits(pic: Image.Image, reach: int = 60) -> Image.Image:
+    """칸 양옆 reach px 안에서 빈 세로줄로 몸통과 떨어진 조각(옆 칸에서 넘어온 그림)을 지운다"""
+    a = np.array(pic)
+    filled = (a[..., 3] > 40).sum(axis=0) > 0
+    w = len(filled)
+    gaps = [x for x in range(1, reach) if not filled[x] and filled[:x].any()]
+    if gaps: a[:, : gaps[-1], 3] = 0
+    gaps = [x for x in range(w - reach, w - 1) if not filled[x] and filled[x + 1 :].any()]
+    if gaps: a[:, gaps[0] + 1 :, 3] = 0
+    return Image.fromarray(a)
+
 def main(src, out):
     os.makedirs(out, exist_ok=True)
     for f in os.listdir(src):
@@ -72,6 +83,7 @@ def main(src, out):
                 if key in CUT_BOTTOM: cell = cell.crop((0, 0, cell.width, CUT_BOTTOM[key]))
                 pic = cut(cell, GROW_MORE.get(key, GROW), key not in CUT_BOTTOM)
                 if not pic.getchannel("A").getbbox(): print("  빈 칸", name, r, c); continue
+                pic = drop_side_bits(pic)
                 bb = pic.getchannel("A").getbbox()
                 canvas = Image.new("RGBA", (W, H))
                 body = pic.crop((0, max(0, bb[3] - FOOT), pic.width, bb[3]))

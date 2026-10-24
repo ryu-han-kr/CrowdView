@@ -30,3 +30,13 @@ const BY_CATEGORY: Partial<Record<Category, CharacterName>> = {
 export function categoryCharacter(category: Category): CharacterName {
   return BY_CATEGORY[category] ?? "hamster";
 }
+
+/** 주소 → 그 화면 주제 캐릭터 (대기·오류 화면용). 앞의 언어 코드(/en 등)는 무시 */
+export function pathCharacter(pathname: string): CharacterName {
+  const p = pathname.replace(/^\/(en|ja|zh-CN|zh-TW|ko)(?=\/|$)/, "");
+  if (/^\/(guide|spot)/.test(p)) return "fox";
+  if (/^\/seoul/.test(p)) return "otter";
+  if (/^\/(festival|events)/.test(p)) return "rabbit";
+  if (/^\/(airport|route)/.test(p)) return "raccoon";
+  return "hamster";
+}
