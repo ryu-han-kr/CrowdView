@@ -56,8 +56,31 @@ body {
   transform-origin: 50% 100%;
   animation: mascot-bob 2.8s ease-in-out infinite;
 }
+/* 대기 화면 '…' 점이 하나씩 늘어남 */
+@keyframes loading-dots {
+  0% {
+    content: "";
+  }
+  33% {
+    content: ".";
+  }
+  66% {
+    content: "..";
+  }
+  100% {
+    content: "...";
+  }
+}
+.loading-dots::after {
+  display: inline-block;
+  width: 1.2em;
+  text-align: left;
+  content: "...";
+  animation: loading-dots 1.2s steps(1, end) infinite;
+}
 @media (prefers-reduced-motion: reduce) {
-  .mascot-bob {
+  .mascot-bob,
+  .loading-dots::after {
     animation: none;
   }
 }
