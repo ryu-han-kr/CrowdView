@@ -68,7 +68,8 @@ export const APIS: ApiInfo[] = [
   // 무료의 1/5(하루 2만·월 50만)에서 멈춘다 → 카카오 쪽 유료 설정을 켜 둬도 과금 구간에 닿지 않는다. 더 쓰려면 KAKAO_DAILY_LIMIT·KAKAO_MONTHLY_LIMIT
   { id: "kakao-local", name: "카카오 로컬 키워드 검색", limit: Number(process.env.KAKAO_DAILY_LIMIT) || 20_000, monthlyLimit: Number(process.env.KAKAO_MONTHLY_LIMIT) || 500_000 },
   // Brave: 2026-02부터 새 가입은 무료 플랜 대신 매달 $5 크레딧(약 1,000건, 1,000건당 $5) → 넘으면 카드로 과금. 월 900·하루 30에서 멈춘다
-  { id: "brave-search", name: "Brave Search (월 $5 무료 크레딧)", limit: Number(process.env.BRAVE_DAILY_LIMIT) || 30, monthlyLimit: Number(process.env.BRAVE_MONTHLY_LIMIT) || 900 },
+  // 하루 30건 고정 (사용자 10/24). 운영 환경변수가 50으로 잡혀 하루 45건까지 나갔다 → 환경변수로는 30보다 올릴 수 없게
+  { id: "brave-search", name: "Brave Search (월 $5 무료 크레딧)", limit: Math.min(Number(process.env.BRAVE_DAILY_LIMIT) || 30, 30), monthlyLimit: Number(process.env.BRAVE_MONTHLY_LIMIT) || 900 },
   { id: "tavily", name: "Tavily 검색 (무료)", limit: Number(process.env.TAVILY_DAILY_LIMIT) || 30, monthlyLimit: Number(process.env.TAVILY_MONTHLY_LIMIT) || 1000, unit: "크레딧" },
   { id: "papago", name: "Papago 번역 (글자 수)", limit: 30000, monthlyLimit: Number(process.env.PAPAGO_MONTHLY_LIMIT) || 300_000, unit: "자" },
 ];

@@ -59,16 +59,23 @@ export const viewport: Viewport = {
   themeColor: "#ffffff",
 };
 
+const FONT_CSS = "/fonts/pretendard-1.3.9/pretendard.css";
+
 export default async function RootLayout({ children, params }: { children: React.ReactNode; params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   if (!isLang(lang)) notFound();
   return (
     <html lang={lang} suppressHydrationWarning>
       <head>
+        {/* 글꼴 선언(49KB)은 첫 화면을 막지 않게 따로: 미리 받아 두고 아래 스크립트가 붙인다 (스크립트로 붙인 CSS는 화면을 막지 않는다) */}
+        <link rel="preload" href={FONT_CSS} as="style" />
+        <noscript>
+          <link rel="stylesheet" href={FONT_CSS} />
+        </noscript>
         {/* 화면 테마(라이트·다크 고정)를 그리기 전에 적용해 깜빡이지 않게. 저장 값이 없으면 시스템 설정(자동) */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem("cv:theme");if(t==="dark"||t==="auto")document.documentElement.dataset.theme=t;var f=localStorage.getItem("cv:font");if(f==="l"||f==="xl")document.documentElement.dataset.font=f}catch(e){}if(/(?:^|; *)cv-plus=1(?:;|$)/.test(document.cookie))document.documentElement.dataset.plus="1"`,
+            __html: `(function(){var l=document.createElement("link");l.rel="stylesheet";l.href="${FONT_CSS}";document.head.appendChild(l)})();try{var t=localStorage.getItem("cv:theme");if(t==="dark"||t==="auto")document.documentElement.dataset.theme=t;var f=localStorage.getItem("cv:font");if(f==="l"||f==="xl")document.documentElement.dataset.font=f}catch(e){}if(/(?:^|; *)cv-plus=1(?:;|$)/.test(document.cookie))document.documentElement.dataset.plus="1"`,
           }}
         />
         {/* 관광공사 사진은 주소가 바뀌어 사라지기도 한다(10/20 3,047장 중 236장 404) → 깨진 사진은 숨겨 카드의 색 배경이 보이게 */}
