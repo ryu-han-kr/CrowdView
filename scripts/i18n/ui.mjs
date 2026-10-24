@@ -2611,4 +2611,11 @@ export default {
   "시간별 자세히": ["Hour by hour", "時間ごとの詳細", "逐小时详情", "逐小時詳情"],
   "앞으로 1년 중 {month}이 가장 덜 붐벼요": ["{month} is the least crowded month in the next year", "今後1年で{month}が最も混雑が少ないです", "未来一年中{month}最不拥挤", "未來一年中{month}最不擁擠"],
   "판단 기준": ["How we judge", "判断基準", "判断标准", "判斷標準"],
+  "지금 서울은 한산해요": ["Seoul is quiet right now", "今のソウルは空いています", "首尔现在人很少", "首爾現在人很少"],
+  "지금 서울은 여유로운 편이에요": ["Seoul is fairly relaxed right now", "今のソウルは比較的ゆったりしています", "首尔现在比较宽松", "首爾現在比較寬鬆"],
+  "지금 서울은 평소 수준이에요": ["Seoul is at its usual level right now", "今のソウルはいつも通りです", "首尔现在是平常水平", "首爾現在是平常水準"],
+  "지금 서울은 붐비는 편이에요": ["Seoul is fairly busy right now", "今のソウルはやや混んでいます", "首尔现在比较拥挤", "首爾現在比較擁擠"],
+  "지금 서울은 많이 붐벼요": ["Seoul is very busy right now", "今のソウルはとても混んでいます", "首尔现在非常拥挤", "首爾現在非常擁擠"],
+  "늦은 밤, 서울은 조용히 쉬는 중": ["Late night — Seoul is resting", "深夜、ソウルは静かに休み中", "深夜，首尔正在安静休息", "深夜，首爾正在安靜休息"],
+  "한산한 곳 {calm}곳 · 붐비는 곳 {busy}곳": ["{calm} quiet · {busy} busy areas", "空いている所 {calm}か所・混んでいる所 {busy}か所", "人少 {calm}处 · 拥挤 {busy}处", "人少 {calm}處 · 擁擠 {busy}處"],
 };

@@ -35,6 +35,7 @@ import { localePath, type Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { fmtAge, trRegion } from "@/i18n/patterns";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
+import { HomeGreeting } from "@/components/home/HomeGreeting";
 
 // ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 // (60초였을 때 ISR 쓰기 5일에 13만 건. 데이터는 10분마다 갱신되니 5분이면 충분)
@@ -419,6 +420,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   // 상태 알약: 실시간 자료 기준 시각 (NOL '공지' 줄 자리)
   const seoulTime = Object.values(seoul)[0]?.time?.slice(11, 16);
+  const seoulScores = Object.values(seoul).map((s) => s.score);
 
   return (
     <main className="px-5 pt-5 pb-4 md:px-0 md:pt-8">
@@ -456,22 +458,43 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       </header>
 
       <HeroCarousel slides={slides} />
-      {newest !== null && (
-        <Link
-          href="/methodology"
-          className="mt-3 flex items-center gap-2 rounded-2xl bg-indigo-50/70 px-3.5 py-2.5 text-xs text-gray-700 md:mt-4 md:text-sm"
-        >
-          <span className="shrink-0 rounded-full bg-indigo-600 px-2 py-0.5 text-[11px] font-bold text-white">LIVE</span>
-          <span className="relative flex h-2 w-2 shrink-0">
-            <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-emerald-400" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-          </span>
-          <span className="min-w-0 truncate">
-            {t("{age} 갱신", { age: fmtAge(newest, t) })}
-            {seoulTime && ` · ${t("서울시 {time} 기준", { time: seoulTime })}`} · {t("공항·놀이공원·서울 121곳 실측")}
-          </span>
-          <span className="ml-auto shrink-0 text-gray-400">›</span>
-        </Link>
+      {seoulScores.length ? (
+        <HomeGreeting
+          scores={seoulScores}
+          hour={kst().hour}
+          t={t}
+          live={
+            <>
+              <span className="shrink-0 rounded-full bg-indigo-600 px-1.5 py-px text-[10px] font-bold text-white">LIVE</span>
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-emerald-400" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
+              <span className="min-w-0 truncate">
+                {newest !== null && t("{age} 갱신", { age: fmtAge(newest, t) })}
+                {seoulTime && `${newest !== null ? " · " : ""}${t("서울시 {time} 기준", { time: seoulTime })}`}
+              </span>
+            </>
+          }
+        />
+      ) : (
+        newest !== null && (
+          <Link
+            href="/methodology"
+            className="mt-3 flex items-center gap-2 rounded-2xl bg-indigo-50/70 px-3.5 py-2.5 text-xs text-gray-700 md:mt-4 md:text-sm"
+          >
+            <span className="shrink-0 rounded-full bg-indigo-600 px-2 py-0.5 text-[11px] font-bold text-white">LIVE</span>
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-emerald-400" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+            </span>
+            <span className="min-w-0 truncate">
+              {t("{age} 갱신", { age: fmtAge(newest, t) })}
+              {seoulTime && ` · ${t("서울시 {time} 기준", { time: seoulTime })}`} · {t("공항·놀이공원·서울 121곳 실측")}
+            </span>
+            <span className="ml-auto shrink-0 text-gray-400">›</span>
+          </Link>
+        )
       )}
       <CategoryIcons t={t} lang={lang} />
       <RecentRail />
