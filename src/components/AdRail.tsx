@@ -1,14 +1,16 @@
 "use client";
 
 import { useI18n } from "@/i18n/client";
-import { AD_SLOTS, AdUnit } from "./AdUnit";
+import { ADSENSE_CLIENT, AD_SLOTS, AdUnit } from "./AdUnit";
 
 /**
  * PC 양옆 세로 광고 칸 (160×600). 가운데 콘텐츠(1152px) 바깥에 여유가 있는 2xl(1536px) 이상에서만 보인다.
- * 모바일·앱 화면에는 나오지 않는다. 애드센스 설정(AdUnit)이 있으면 광고, 없으면 자리 표시, Plus 회원은 숨김.
+ * 휴대폰 화면에는 나오지 않는다(휴대폰은 InlineAd). 애드센스 설정(AdUnit)이 있으면 광고, 없으면 개발·미리보기에서만 자리 표시
+ * (운영에서 키가 없을 때 이용자에게 빈 점선 상자가 보였다, 10/24), Plus 회원은 숨김.
  */
 export function AdRail({ side, slot = AD_SLOTS.rail }: { side: "left" | "right"; slot?: string }) {
   const { t } = useI18n();
+  if (!ADSENSE_CLIENT && process.env.NEXT_PUBLIC_VERCEL_ENV === "production") return null;
   return (
     <aside
       aria-label={t("광고")}
