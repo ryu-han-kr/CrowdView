@@ -2618,4 +2618,5 @@ export default {
   "지금 서울은 많이 붐벼요": ["Seoul is very busy right now", "今のソウルはとても混んでいます", "首尔现在非常拥挤", "首爾現在非常擁擠"],
   "늦은 밤, 서울은 조용히 쉬는 중": ["Late night — Seoul is resting", "深夜、ソウルは静かに休み中", "深夜，首尔正在安静休息", "深夜，首爾正在安靜休息"],
   "한산한 곳 {calm}곳 · 붐비는 곳 {busy}곳": ["{calm} quiet · {busy} busy areas", "空いている所 {calm}か所・混んでいる所 {busy}か所", "人少 {calm}处 · 拥挤 {busy}处", "人少 {calm}處 · 擁擠 {busy}處"],
+  "지도를 불러오는 중…": ["Loading the map…", "地図を読み込み中…", "正在加载地图…", "正在載入地圖…"],
 };

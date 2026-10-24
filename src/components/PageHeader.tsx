@@ -7,12 +7,15 @@ export function PageHeader({
   title,
   name,
   pose = "base",
+  size = 88,
   className = "",
   children,
 }: {
   title: ReactNode;
   name: CharacterName;
   pose?: Pose;
+  /** 캐릭터 높이(px) */
+  size?: number;
   className?: string;
   /** 제목 아래 설명 */
   children?: ReactNode;
@@ -23,7 +26,7 @@ export function PageHeader({
         <h1 className="text-2xl font-bold md:text-3xl">{title}</h1>
         {children}
       </div>
-      <Character name={name} pose={pose} size={88} priority className="-mt-4 -mb-1 shrink-0" />
+      <Character name={name} pose={pose} size={size} priority className="-mt-4 -mb-1 shrink-0" />
     </div>
   );
 }
