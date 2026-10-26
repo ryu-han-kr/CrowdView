@@ -48,7 +48,6 @@ export function generateStaticParams({ params }: { params: { lang: string } }) {
 export async function generateMetadata({ params }: { params: Promise<{ lang: string; code: string }> }): Promise<Metadata> {
   const { lang, code } = await params;
   const t = getT(lang);
-  const crowdPage = CROWD_PAGES.find((c) => c.kind === "seoul" && c.id === area.code);
   const area = SEOUL_AREAS.find((a) => a.code === code);
   if (!area) return {};
   const name = (await translateNames([area.name], lang as Lang)).get(area.name) ?? area.name;
@@ -66,6 +65,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
   const t = getT(lang);
   const area = SEOUL_AREAS.find((a) => a.code === code);
   if (!area) notFound();
+  const crowdPage = CROWD_PAGES.find((c) => c.kind === "seoul" && c.id === area.code);
   // 서울시(KT 기반) + SK텔레콤 장소 혼잡도(키가 있을 때)를 함께 보여준다
   const [live, names, skt, extra, holidays] = await Promise.all([
     getSeoulAreaLive(area.code),

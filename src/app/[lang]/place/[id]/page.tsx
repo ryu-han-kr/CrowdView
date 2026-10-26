@@ -139,7 +139,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const place = PLACES.find((p) => p.id === id);
   if (!place) return {};
   const t = getT(lang);
-  const crowdPage = CROWD_PAGES.find((c) => c.kind === "place" && c.id === place.id);
   return pageMeta({
     lang,
     path: placeHref(place),
@@ -161,6 +160,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   // 운영 시간·행사 일정은 한국관광공사 TourAPI 값 (없으면 places.ts의 임의 값)
   const [place, crowd] = await Promise.all([getLivePlace(id), getCrowd(id)]);
   if (!place || !crowd) notFound();
+  const crowdPage = CROWD_PAGES.find((c) => c.kind === "place" && c.id === place.id);
   if (place.category === "airport") redirect(localePath(lang, placeHref(place)));
   const [signals, [today], related, news] = await Promise.all([getSignals(place), getHistory(id, 1), getRelatedPlaces(place), getPlaceNews(id)]);
   // 최근 소식 제목: 기사는 한국어라 제목 번역은 영어 화면만 (10/24 Papago 사용량: 날마다 바뀌는 제목을 4개 언어로 번역하던 것을 줄임)
