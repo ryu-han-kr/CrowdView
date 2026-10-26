@@ -1,10 +1,10 @@
 import { PageTheme } from "@/components/PageTheme";
 import { WebVitals } from "@/components/WebVitals";
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import { notFound } from "next/navigation";
 import { AdRail } from "@/components/AdRail";
 import { BottomNav, TopNav } from "@/components/BottomNav";
+import { AdSenseLoader } from "@/components/AdSenseLoader";
 import { NavProgress } from "@/components/NavProgress";
 import { ErrorReporter } from "@/components/ErrorReporter";
 import { FavoritesSync } from "@/components/FavoritesSync";
@@ -95,15 +95,7 @@ export default async function RootLayout({ children, params }: { children: React
       </head>
       <body className="relative isolate bg-white font-sans antialiased">
         {/* 구글 애드센스 (발행자 ID가 있을 때만). EEA·영국 이용자 동의 화면은 애드센스 콘솔 '개인 정보 보호 및 메시지'에서 켠다 */}
-        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && (
-          <Script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`}
-            crossOrigin="anonymous"
-            // 사용자 10/26 성능: 첫 화면 그리기를 막지 않게 화면이 다 뜬 뒤에 (Lighthouse 홈 LCP 11초의 주범이 광고 스크립트 221KB)
-            strategy="lazyOnload"
-          />
-        )}
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && <AdSenseLoader client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT} />}
         <I18nProvider lang={lang} dict={getDict(lang)}>
           <NavProgress />
           <PageTheme />
