@@ -102,7 +102,7 @@ export async function NearbyChips({ className = "", ...opts }: NearbyOpts & { cl
                 {t(lv.label)}
               </span>
             )}
-            <span className="text-[12px] font-medium text-gray-400">{t("{km}km", { km: it.km < 10 ? it.km.toFixed(1) : it.km.toFixed(0) })}</span>
+            <span className="text-[12px] font-medium text-gray-500">{t("{km}km", { km: it.km < 10 ? it.km.toFixed(1) : it.km.toFixed(0) })}</span>
           </Link>
         );
       })}
