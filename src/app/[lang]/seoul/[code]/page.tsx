@@ -8,6 +8,7 @@ import { authEnabled } from "@/lib/auth";
 import { notFound } from "next/navigation";
 import Link from "@/i18n/link";
 import { LevelBadge } from "@/components/Level";
+import { CROWD_PAGES } from "@/lib/crowd-pages";
 import { FaqBlock } from "@/components/FaqBlock";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
@@ -64,6 +65,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
   const t = getT(lang);
   const area = SEOUL_AREAS.find((a) => a.code === code);
   if (!area) notFound();
+  const crowdPage = CROWD_PAGES.find((c) => c.kind === "seoul" && c.id === area.code);
   // 서울시(KT 기반) + SK텔레콤 장소 혼잡도(키가 있을 때)를 함께 보여준다
   const [live, names, skt, extra, holidays] = await Promise.all([
     getSeoulAreaLive(area.code),
@@ -329,6 +331,14 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
               : []),
           ]}
         />
+      )}
+      {/* 질문형 SEO 페이지로 내부 링크 (10/26: 검색로봇이 /crowd 161쪽을 홈·푸터에서만 발견해 뒤로 밀렸다) */}
+      {crowdPage && (
+        <p className="mt-4 text-sm">
+          <Link href={`/crowd/${crowdPage.slug}`} className="font-semibold text-indigo-700">
+            {t("{name} 지금 붐비나요?", { name: t(area.name) })} ›
+          </Link>
+        </p>
       )}
       <p className="mt-8 text-center text-[11px] text-gray-500">{t("서울시 실시간 도시데이터 (통신사 기지국 기반 추정 인구)")}</p>
     </main>
