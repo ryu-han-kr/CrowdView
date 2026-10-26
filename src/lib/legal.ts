@@ -1,6 +1,6 @@
 // 이용약관·개인정보처리방침·환불정책 본문 (한국어 원문이 기준).
 // 사업자 정보는 lib/business.ts 에서 가져온다. 법률 검토 전 초안이므로 출시 전에 한 번 검토받는다.
-import { BUSINESS, LEGAL_EFFECTIVE_DATE, PLUS } from "./business";
+import { BUSINESS, LEGAL_EFFECTIVE_DATE, PLUS, PRIVACY_EFFECTIVE_DATE, PRIVACY_NOTICE_DATE } from "./business";
 
 export interface LegalSection {
   title: string;
@@ -10,6 +10,10 @@ export interface LegalSection {
 
 export interface LegalDoc {
   title: string;
+  /** 없으면 LEGAL_EFFECTIVE_DATE */
+  effectiveDate?: string;
+  /** 개정 안내 (공지일·바뀌는 내용). 시행 뒤에도 개정 이력으로 남긴다 */
+  revision?: { noticeDate: string; changes: string[] };
   sections: LegalSection[];
 }
 
@@ -152,6 +156,13 @@ export const REFUND: LegalDoc = {
 
 export const PRIVACY: LegalDoc = {
   title: "개인정보처리방침",
+  effectiveDate: PRIVACY_EFFECTIVE_DATE,
+  revision: {
+    noticeDate: PRIVACY_NOTICE_DATE,
+    changes: [
+      "4. 쿠키와 기기 저장소에 '이용 통계' 항목 추가: 방문 수를 세는 무작위 번호(누구인지 알 수 없음)와 날짜별 횟수만 남긴다는 내용",
+    ],
+  },
   sections: [
     {
       title: "1. 처리하는 개인정보와 목적",
@@ -223,6 +234,13 @@ export const PRIVACY: LegalDoc = {
         "개인정보 침해 신고·상담: 개인정보침해신고센터(privacy.kisa.or.kr, 국번없이 118), 개인정보분쟁조정위원회(kopico.go.kr, 1833-6972)",
       ],
     },
-    { title: "부칙", body: [`이 개인정보처리방침은 ${LEGAL_EFFECTIVE_DATE}부터 시행합니다.`] },
+    {
+      title: "부칙",
+      body: [
+        `이 개인정보처리방침은 ${PRIVACY_EFFECTIVE_DATE}부터 시행합니다.`,
+        `- ${LEGAL_EFFECTIVE_DATE} 제정`,
+        `- ${PRIVACY_EFFECTIVE_DATE} 개정 (${PRIVACY_NOTICE_DATE} 공지): 4. 쿠키와 기기 저장소에 '이용 통계' 추가`,
+      ],
+    },
   ],
 };

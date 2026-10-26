@@ -28,6 +28,10 @@ export const SALES_OPEN = BUSINESS.mailOrderNo !== "등록 예정";
 /** 약관·개인정보처리방침·환불정책 시행일. 처음 시행하는 방침이라 게시일(10/22)로. 이후 바꿀 때는 7일 전(불리한 변경은 30일 전) 공지하고 새 날짜로 */
 export const LEGAL_EFFECTIVE_DATE = "2026-10-22";
 
+/** 개인정보처리방침만 따로 개정: 10/26 공지 → 7일 뒤 시행 (익명 이용 통계 한 줄 추가, 이용자에게 불리하지 않은 변경) */
+export const PRIVACY_NOTICE_DATE = "2026-10-26";
+export const PRIVACY_EFFECTIVE_DATE = "2026-11-02";
+
 /** 유료 플랜 */
 export const PLUS = {
   name: "CrowdView Plus",
