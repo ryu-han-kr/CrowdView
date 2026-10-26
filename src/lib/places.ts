@@ -1,6 +1,5 @@
 import { makeT, type T } from "../i18n/translate";
 import placeKto from "../data/korea/place-kto.json";
-import photoCredits from "../data/korea/photo-credits.json";
 import type { Place } from "./types";
 
 /** 사진 경로: public/places/{id}.jpg (한국관광공사). 관광공사 사진이 없는 곳은 위키미디어 공용 사진(출처 표시), 그것도 없으면 색 배경 */
@@ -32,7 +31,6 @@ const SKI_KTO: Record<string, number> = {
   alpensia: 898016,
 };
 
-const PHOTO_CREDITS = photoCredits as Record<string, { author: string; license: string; url: string }>;
 
 const PLACE_KTO = placeKto as Record<string, NonNullable<Place["kto"]>>;
 
@@ -905,25 +903,8 @@ const BASE_PLACES: Place[] = [
 // 행사는 열리는 곳(부산불꽃축제 → 광안리해수욕장)의 집중률
 export const PLACES: Place[] = BASE_PLACES.map((p) => (p.kto || !PLACE_KTO[p.id] ? p : { ...p, kto: PLACE_KTO[p.id] }));
 
-/** 사진 출처 한 줄 (예: 사진 한국관광공사, 사진 Kimhs5400 · CC BY 4.0) */
-export function imageCreditText(p: Place, t: T = makeT(undefined)): string {
-  return p.imageCredit ? t("사진 {author} · {license}", { author: p.imageCredit.author, license: p.imageCredit.license }) : t("사진 한국관광공사");
-}
-
-/**
- * 사진 여러 장 넘겨 보기의 장마다 출처: 관광공사 주소 → 한국관광공사, 우리가 받아 둔 위키미디어 사진 → 그 작성자·라이선스,
- * 그 밖(대표 사진) → 장소의 출처
- */
-export function photoCreditText(src: string, p: Place, t: T = makeT(undefined)): string {
-  if (src.startsWith("https://tong.visitkorea.or.kr/")) return t("사진 한국관광공사");
-  const c = PHOTO_CREDITS[src];
-  return c ? t("사진 {author} · {license}", { author: c.author, license: c.license }) : imageCreditText(p, t);
-}
-
-/** 공항은 공항 탭 상세로, 나머지는 장소 상세로 */
-export function placeHref(p: Place): string {
-  return p.category === "airport" ? `/airport/${p.id}` : `/place/${p.id}`;
-}
+// 주소·사진 출처 함수는 lib/place-href 로 옮겼다 (브라우저 컴포넌트가 장소 자료 없이 쓰게). 서버 쪽 호출은 여기서 그대로 꺼내 쓴다
+export { placeHref, imageCreditText, photoCreditText } from "./place-href";
 
 export function getPlace(id: string): Place | undefined {
   return PLACES.find((p) => p.id === id);

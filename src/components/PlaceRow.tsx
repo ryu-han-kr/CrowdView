@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "@/i18n/link";
 import type { CrowdResult, Place } from "@/lib/types";
 import { LevelBadge } from "./Level";
-import { placeHref } from "@/lib/places";
+import { placeHref } from "@/lib/place-href";
 import { headcountInfo, isEstimated } from "@/lib/format";
 import { DataTag } from "./DataTag";
 import { useI18n } from "@/i18n/client";

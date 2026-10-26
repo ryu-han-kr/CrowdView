@@ -8,7 +8,7 @@ import { PhotoGallery } from "@/components/PhotoGallery";
 import { PhotoGrid, PhotoViewer, type ViewerPhoto } from "@/components/place/PhotoViewer";
 import { useI18n } from "@/i18n/client";
 import { canOptimize } from "@/lib/img";
-import { photoCreditText } from "@/lib/places";
+import { photoCreditText } from "@/lib/place-href";
 import { useFavorites } from "@/lib/prefs";
 import type { Place } from "@/lib/types";
 import { Glyph } from "@/components/Glyph";
