@@ -31,7 +31,6 @@ export function AlertFab({
     <>
       <button
         onClick={() => setOpen(true)}
-        aria-label={t("혼잡 알림 설정")}
         className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2.5 text-[15px] font-bold text-white shadow-sm transition active:scale-[0.98]"
       >
         <Glyph e="🔔" className="h-4 w-4" />

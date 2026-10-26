@@ -9,6 +9,10 @@ async function seoulListLevels(page: Page) {
   await page.goto("/seoul");
   const cards = page.locator('a[data-place-id^="seoul-"]').filter({ visible: true });
   await expect(cards.first()).toBeVisible();
+  // 목록은 20곳씩 보여 준다(10/26 화면 길이 축소) → '더 보기'를 끝까지 눌러 121곳을 전부 편 뒤 센다
+  const more = page.getByRole("button", { name: /더 보기/ });
+  for (let i = 0; i < 12 && (await more.count()); i++) await more.first().click();
+  await expect(more).toHaveCount(0);
   return Object.fromEntries(
     await cards.evaluateAll((as) => as.map((a) => [a.getAttribute("data-place-id")!, a.getAttribute("data-level")!] as const)),
   ) as Record<string, string>;

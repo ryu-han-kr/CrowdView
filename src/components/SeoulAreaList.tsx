@@ -4,7 +4,7 @@ import { ListCard } from "@/components/ListCard";
 import Link from "@/i18n/link";
 import Image from "next/image";
 import { canOptimize } from "@/lib/img";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { compactNumber } from "@/lib/format";
 import { currentPosition, distanceKm, type LatLng } from "@/lib/geo";
@@ -49,6 +49,10 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
   };
   const [q, setQ] = useUrlQuery();
   const [view, setView] = useState<"list" | "map">("list");
+  // 121곳을 한 번에 깔면 휴대폰 19화면 분량 (사용자 10/26) → 20곳씩, 조건을 바꾸면 처음부터
+  const PAGE = 20;
+  const [shown, setShown] = useState(PAGE);
+  useEffect(() => setShown(PAGE), [groups, levels, sort, q]);
   const list = useMemo(() => {
     const needle = q.trim().toLowerCase();
     const tr = (ko: string) => names[ko] ?? ko;
@@ -147,7 +151,7 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
       ) : (
         // 사진 왼쪽 · 글 오른쪽 가로 카드를 회색 구역 안에 (사용자 QA 10/22, 홈 '전체 장소'와 같은 모양)
         <ul className="sector mt-3 grid grid-cols-[minmax(0,1fr)] gap-2.5 p-3 md:grid-cols-2">
-          {list.map((r, i) => {
+          {list.slice(0, shown).map((r, i) => {
             const g = SEOUL_GROUPS.find((x) => x.id === r.group);
             const lv = r.score !== undefined ? levelOf(r.score) : undefined;
             return (
@@ -182,6 +186,15 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
             );
           })}
         </ul>
+      )}
+      {view === "list" && list.length > shown && (
+        <button
+          type="button"
+          onClick={() => setShown((n) => n + PAGE)}
+          className="mt-3 w-full rounded-2xl border border-gray-200 bg-white py-3 text-sm font-semibold text-gray-800"
+        >
+          {t("더 보기 ({n}곳 더)", { n: list.length - shown })}
+        </button>
       )}
       {list.length === 0 && <EmptyState name="otter" className="mt-8">{t("찾는 지역이 없어요.")}</EmptyState>}
     </FilterLayout>

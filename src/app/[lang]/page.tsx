@@ -88,6 +88,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   // 목록·카드는 고해상도 대표 사진으로 (사용자 QA 10/22: 사진이 비슷해 구별이 어렵다). 서버에서 바꿔 넘겨 사진 목록 JSON이 브라우저로 가지 않게
   const listPlaces = places.map((p) => ({ ...p, image: heroImage(p) }));
+  // 홈 목록은 지금 값만 쓴다 → 시간대 배열(45곳 × 18점)·구역은 빼서 HTML을 줄인다 (사용자 10/26 성능)
+  const listCrowd = Object.fromEntries(Object.entries(crowd).map(([id, c]) => [id, { ...c, hourly: [], zones: undefined }]));
   // 고해상도 사진 (place-photos 의 n번째, 없으면 기존 대표 사진)
   const photoOf = (id: string, n = 0) => placePhotos(id)[n]?.src ?? places.find((x) => x.id === id)?.image;
   // 지금 한산한 명소 (사진 있는 우리 장소)
@@ -202,7 +204,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         items={calmCards.slice(0, 5)}
         className={ko ? "mt-6 md:mt-10" : undefined}
       />
-      {calmCards.length > 5 && <PhotoRail title={t("여기도 한산해요")} items={calmCards.slice(5)} />}
     </>
   );
   const plusPromo = <PlusPromo t={t} price={PLUS.priceKrw.toLocaleString()} />;
@@ -399,25 +400,11 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       places.filter((p) => p.region.startsWith(r)),
     ),
   ).filter((c) => c.items.length >= 3);
-  // 같은 양식, 다른 배경 (사용자 10/23): 테마마다 모음 배너
-  const THEME_SETS: { id: string; title: string; cat: string; test: (p: (typeof places)[number]) => boolean }[] = [
-    { id: t("놀이공원"), title: t("놀이공원 지금 한산한 곳 모음"), cat: "themepark", test: (p) => p.category === "themepark" && subOf(p.id) === "amusement" },
-    { id: t("워터파크"), title: t("워터파크 지금 한산한 곳 모음"), cat: "waterpark", test: (p) => p.category === "waterpark" },
-    { id: t("실내·아쿠아리움"), title: t("비 와도 좋은 실내 모음"), cat: "themepark", test: (p) => ["aquarium", "indoor-waterpark"].includes(subOf(p.id) ?? "") },
-    { id: t("거리·명소"), title: t("걷기 좋은 거리·명소 모음"), cat: "street", test: (p) => p.category === "street" || p.category === "landmark" || p.category === "beach" },
-    { id: t("스키장"), title: t("스키장 미리 보는 혼잡 모음"), cat: "ski", test: (p) => p.category === "ski" },
-  ];
-  const themeCollections: Collection[] = THEME_SETS.map((x) =>
-    makeCollection(x.id, x.title, t("테마 모음"), `/?cat=${x.cat}#places`, places.filter(x.test)),
-  ).filter((c) => c.items.length >= 3);
   const shortRail = (
     <ShortCardRail title={t("테마파크·워터파크 지금")} sub={t("실시간 대기와 예상 혼잡을 한눈에")} moreHref="/map" items={shortCards} />
   );
   const themeSection = <ThemeTiles title={t("오늘은 이런 곳 어때요?")} sub={t("주제를 고르면 바로 그 목록으로")} tiles={themeTiles} />;
   const collectionSection = <CollectionCarousel title={t("지역별 한산한 곳 모음")} sub={t("지역을 고르면 지금 덜 붐비는 곳 3곳")} collections={collections} />;
-  const themeCollectionSection = (
-    <CollectionCarousel title={t("테마별 한산한 곳 모음")} sub={t("테마를 고르면 지금 덜 붐비는 곳 3곳")} collections={themeCollections} />
-  );
 
   // 상태 알약: 실시간 자료 기준 시각 (NOL '공지' 줄 자리)
   const seoulTime = Object.values(seoul)[0]?.time?.slice(11, 16);
@@ -501,7 +488,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       <RecentRail />
 
       {ko ? (
-        <HomeList places={listPlaces} crowd={crowd} withSearch>
+        <HomeList places={listPlaces} crowd={listCrowd} withSearch>
           {calmRail}
           {shortRail}
           {trendList}
@@ -510,7 +497,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {festivalRail}
           {collectionSection}
           {plusPromo}
-          {themeCollectionSection}
           {landmarkRail}
         </HomeList>
       ) : (
@@ -522,10 +508,9 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {calmRail}
           {shortRail}
           {collectionSection}
-          {themeCollectionSection}
           {trendList}
           {plusPromo}
-          <HomeList places={listPlaces} crowd={crowd} withSearch />
+          <HomeList places={listPlaces} crowd={listCrowd} withSearch />
         </>
       )}
     </main>
