@@ -25,7 +25,8 @@ export function Character({
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={characterSrc(name, pose)}
+      // 100px 이하 자리는 작은 판(150×200)으로: 300×400 원본은 2배 화면에서도 남는다 (10/26 Lighthouse '사진 크기' 17~22KB 낭비)
+      src={size <= 100 ? characterSrc(name, pose).replace(/\.webp$/, ".sm.webp") : characterSrc(name, pose)}
       width={Math.round(size * 0.75)}
       height={size}
       alt={label ?? ""}
