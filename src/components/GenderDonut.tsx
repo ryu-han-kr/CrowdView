@@ -5,8 +5,9 @@ import { PieChart } from "@/components/charts/pie-chart";
 import { PieSlice } from "@/components/charts/pie-slice";
 import { useI18n } from "@/i18n/client";
 
-const MALE = "#38bdf8";
-const FEMALE = "#f472b6";
+// 사용자 10/26: 하늘·분홍 조합이 튀어서 사이트 차트 색(인디고 계열)으로 통일
+const MALE = "#4f46e5";
+const FEMALE = "#c084fc";
 
 /**
  * 성별 비율 도넛 (Bklit Pie) + 가운데 많은 쪽 비율. male·female은 %나 인원 어느 쪽이든 (비율로 계산)

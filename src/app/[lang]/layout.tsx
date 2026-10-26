@@ -63,6 +63,8 @@ export const viewport: Viewport = {
 };
 
 const FONT_CSS = "/fonts/pretendard-1.3.9/pretendard.css";
+// 제목 서체 (Wanted Sans Variable, 92조각). 본문 Pretendard와 같은 방식으로 비동기 로드
+const HEAD_FONT_CSS = "/fonts/wanted-sans/WantedSansVariable.css";
 
 export default async function RootLayout({ children, params }: { children: React.ReactNode; params: Promise<{ lang: string }> }) {
   const { lang } = await params;
@@ -78,7 +80,7 @@ export default async function RootLayout({ children, params }: { children: React
         {/* 화면 테마(라이트·다크 고정)를 그리기 전에 적용해 깜빡이지 않게. 저장 값이 없으면 시스템 설정(자동) */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var l=document.createElement("link");l.rel="stylesheet";l.href="${FONT_CSS}";document.head.appendChild(l)})();try{var t=localStorage.getItem("cv:theme");if(t==="dark"||t==="auto")document.documentElement.dataset.theme=t;var f=localStorage.getItem("cv:font");if(f==="l"||f==="xl")document.documentElement.dataset.font=f}catch(e){}if(/(?:^|; *)cv-plus=1(?:;|$)/.test(document.cookie))document.documentElement.dataset.plus="1"`,
+            __html: `(function(){["${FONT_CSS}","${HEAD_FONT_CSS}"].forEach(function(h){var l=document.createElement("link");l.rel="stylesheet";l.href=h;document.head.appendChild(l)})})();try{var t=localStorage.getItem("cv:theme");if(t==="dark"||t==="auto")document.documentElement.dataset.theme=t;var f=localStorage.getItem("cv:font");if(f==="l"||f==="xl")document.documentElement.dataset.font=f}catch(e){}if(/(?:^|; *)cv-plus=1(?:;|$)/.test(document.cookie))document.documentElement.dataset.plus="1"`,
           }}
         />
         {/* 관광공사 사진은 주소가 바뀌어 사라지기도 한다(10/20 3,047장 중 236장 404) → 깨진 사진은 숨겨 카드의 색 배경이 보이게 */}
