@@ -9,7 +9,7 @@ import { LEVELS, levelOf } from "@/lib/levels";
 import type { CrowdResult, Place } from "@/lib/types";
 import { LevelBadge } from "./Level";
 import { PlaceThumb } from "./PlaceRow";
-import { placeHref } from "@/lib/places";
+import { placeHref } from "@/lib/place-href";
 import { headcountInfo, isEstimated } from "@/lib/format";
 import { DataTag } from "./DataTag";
 

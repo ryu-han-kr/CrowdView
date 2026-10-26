@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { headcountInfo } from "@/lib/format";
-import { placeHref } from "@/lib/places";
+import { placeHref } from "@/lib/place-href";
 import { useFavorites } from "@/lib/prefs";
 import { CATEGORY_LABEL, type Category, type CrowdResult, type Place } from "@/lib/types";
 import { placeTag } from "@/lib/category-style";
