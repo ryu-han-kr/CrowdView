@@ -6,27 +6,30 @@ import { useI18n } from "@/i18n/client";
 import { stripLang } from "@/i18n/config";
 import { NavAuth } from "./AuthButtons";
 import { LangSwitcher } from "./LangSwitcher";
+import { SolarIcon } from "@/components/icons/SolarIcon";
+import type { SolarName } from "@/components/icons/solar";
 
-export const TABS = [
-  { href: "/", label: "홈", icon: "M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" },
-  { href: "/map", label: "지도", icon: "M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Zm0 0v14m6-12v14" },
-  { href: "/airport", label: "공항", icon: "M10.5 3.5a1.5 1.5 0 0 1 3 0V9l7 4v2l-7-2v4.5l2 1.5v1.5l-3.5-1-3.5 1V19l2-1.5V13l-7 2v-2l7-4z" },
+// 아이콘은 Solar(채운 모양). 사용자 10/26: 속이 빈 선 아이콘이 밋밋해 보여 전부 채운 모양으로
+export const TABS: { href: string; label: string; icon: SolarName; desktopOnly?: boolean }[] = [
+  { href: "/", label: "홈", icon: "home-2" },
+  { href: "/map", label: "지도", icon: "map" },
+  { href: "/airport", label: "공항", icon: "plane" },
   // 서울 실시간은 PC 상단 메뉴에만 (모바일 하단 탭은 그대로, 홈의 카드로 들어간다)
   // '지역 여행'은 홈 통합 검색 탭(명소·축제·관광지 + 지역 칩)으로 옮겼다 (사용자 10/22). /explore 주소는 그대로 둔다
-  { href: "/guide", label: "여행 가이드", icon: "M4 19.5V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-1.5Zm0 0A2 2 0 0 1 6 17h12M9 7h6", desktopOnly: true },
+  { href: "/guide", label: "여행 가이드", icon: "book-2", desktopOnly: true },
   {
     href: "/route",
     label: "추천 코스",
-    icon: "M6 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm12-10a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM6 15V9a4 4 0 0 1 4-4h2m2 14h-2a4 4 0 0 1-4-4m10-6v6a4 4 0 0 1-4 4",
+    icon: "route",
     desktopOnly: true,
   },
   {
     href: "/seoul",
     label: "서울 실시간",
-    icon: "M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z",
+    icon: "map-point",
     desktopOnly: true,
   },
-  { href: "/me", label: "마이", icon: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm-8 9a8 8 0 0 1 16 0" },
+  { href: "/me", label: "마이", icon: "user" },
 ];
 
 /** 이벤트·장소 상세는 홈에서 들어가므로 홈 탭을 켠다 */
@@ -60,17 +63,7 @@ export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
                   active ? "bg-indigo-50 text-indigo-600" : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                 }`}
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  className="hidden h-5 w-5 xl:block"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={1.9}
-                  strokeLinejoin="round"
-                  strokeLinecap="round"
-                >
-                  <path d={tab.icon} />
-                </svg>
+                <SolarIcon name={tab.icon} className="hidden h-5 w-5 xl:block" />
                 {t(tab.label)}
               </Link>
             );
@@ -116,17 +109,7 @@ export function BottomNav() {
                     home && active ? "bg-indigo-600 text-white" : active ? "bg-indigo-50" : ""
                   }`}
                 >
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={active ? 2.2 : 1.8}
-                    strokeLinejoin="round"
-                    strokeLinecap="round"
-                  >
-                    <path d={tab.icon} />
-                  </svg>
+                  <SolarIcon name={tab.icon} className="h-6 w-6" />
                 </span>
                 {t(MOBILE_LABEL[tab.href] ?? tab.label)}
               </Link>

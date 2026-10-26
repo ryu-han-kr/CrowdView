@@ -9,10 +9,13 @@ import type { Category } from "@/lib/types";
 export type CharacterName = "hamster" | "otter" | "fox" | "rabbit" | "raccoon";
 export type Pose = "base" | "calm" | "normal" | "busy" | "packed" | "explore" | "pick" | "wait" | "alert" | "done";
 
-/** 혼잡도 단계 → 포즈 (1 쾌적 = 한산, 2 원활 = 기본 웃음, 3~5 = 보통·혼잡·매우 혼잡, 운영 시간 아님 = 조는 모습) */
+/**
+ * 혼잡도 단계 → 포즈 (1 쾌적 = 기지개, 2 원활 = 지도 들고 나들이, 3 보통 = 손 모으고 두리번, 4 혼잡 = 땀, 5 매우 혼잡 = 깔림, 운영 시간 아님 = 조는 모습)
+ * 사용자 10/26: 원활(base)과 보통(normal)이 같은 포즈라 구분이 안 됨 → 원활은 explore 컷으로
+ */
 export function crowdPose(score: number, closed = false): Pose {
   if (closed) return "wait";
-  return (["calm", "base", "normal", "busy", "packed"] as const)[levelOf(score).key - 1];
+  return (["calm", "explore", "normal", "busy", "packed"] as const)[levelOf(score).key - 1];
 }
 
 /** 포즈 → 움직임 클래스 (globals.css). 쾌적·보통·혼잡이 한눈에 다르게: 쾌적 느긋한 흔들, 원활 통통, 보통 두리번, 혼잡 눌리듯, 매우 혼잡 덜덜 (사용자 10/26) */

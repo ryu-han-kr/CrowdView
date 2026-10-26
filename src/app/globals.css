@@ -310,38 +310,47 @@ body {
   inherits: true;
   initial-value: #e3efff;
 }
-/* 사용자 QA 10/22: 위쪽 하늘색 그라데이션이 화면을 흐리게 만들어 걷어 냄. 흰 바탕 + 회색 구역(sector)으로 구분한다 */
+/* 사용자 10/26 (UI 개편 초안 '안3 선명한 글로우'): 10/22에 걷어 냈던 위쪽 그라데이션을 두 배 진하게 되살린다.
+   흐릿한 하늘색 대신 하늘·인디고가 또렷하게 번지고, 아래로 갈수록 바탕색으로 녹는다. 다크 모드는 dark.css가 따로 그린다 */
 .page-glow {
-  background: none;
+  --glow-a: #bae6fd;
+  --glow-b: #a5b4fc;
+  --glow-c: rgba(224, 231, 255, 0.55);
+  background: radial-gradient(120% 60% at 50% -10%, var(--glow-a) 0%, var(--glow-b) 38%, var(--glow-c) 62%, transparent 88%);
 }
-/* 홈만 머리 쪽에 한 가지 색 띠 (사용자 10/22: 흰 바탕만이면 허전) — 흐리게 번지는 그라데이션 대신 또렷한 색 면이 배너 중간에서 끝난다 */
+/* 홈은 인디고를 조금 더 세게 (첫 화면 인상) */
 body[data-page="home"] .page-glow {
-  background: linear-gradient(#e8ebff, #e8ebff) top / 100% 230px no-repeat;
+  --glow-a: #a5b4fc;
+  --glow-b: #c7d2fe;
+  --glow-c: rgba(232, 235, 255, 0.7);
 }
-@media (min-width: 768px) {
-  body[data-page="home"] .page-glow {
-    background-size: 100% 320px;
-  }
+/* 지도·서울 실시간은 하늘·민트 쪽, 가이드·코스·마이는 인디고 쪽 */
+body[data-page="map"] .page-glow,
+body[data-page="seoul"] .page-glow {
+  --glow-a: #bae6fd;
+  --glow-b: #99f6e4;
+  --glow-c: rgba(226, 244, 255, 0.6);
 }
-/* 페이지마다 하늘색 안에서 아주 조금만 다르게 (모두 흰 바탕 + 밝은 파랑) */
-body[data-page="map"],
-body[data-page="seoul"] {
-  --glow-a: rgba(125, 211, 252, 0.55);
-  --glow-b: rgba(153, 246, 228, 0.4);
-  --glow-c: #e2f4ff;
-}
-body[data-page="explore"],
-body[data-page="guide"],
-body[data-page="route"],
-body[data-page="me"] {
-  --glow-a: rgba(147, 197, 253, 0.52);
-  --glow-b: rgba(165, 180, 252, 0.4);
-  --glow-c: #e5efff;
+body[data-page="explore"] .page-glow,
+body[data-page="guide"] .page-glow,
+body[data-page="route"] .page-glow,
+body[data-page="me"] .page-glow {
+  --glow-a: #c7d2fe;
+  --glow-b: #a5b4fc;
+  --glow-c: rgba(229, 239, 255, 0.6);
 }
 
+/* 제목 서체: Wanted Sans (원티드랩, OFL, public/fonts/wanted-sans — 글자 범위별 조각, 레이아웃이 비동기로 불러온다).
+   사용자 10/26: 제목과 본문을 다른 서체로. 본문은 Pretendard 유지(가독성 1순위) */
+main h1,
+main h2,
+main h3,
+.font-display {
+  font-family: "Wanted Sans Variable", var(--font-sans);
+}
 /* 페이지 큰 제목: 모든 화면에서 같은 크기·굵기·자간 (Tailwind 크기 클래스보다 우선) */
 main h1 {
-  font-size: 1.625rem;
+  font-size: 1.75rem;
   line-height: 1.25;
   font-weight: 800;
   letter-spacing: -0.035em;
