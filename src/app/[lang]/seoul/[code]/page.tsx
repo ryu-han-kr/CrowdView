@@ -275,7 +275,12 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
         {live && live.forecast.length > 0 && (
           <section className="mt-6 lg:mt-0">
             <h2 className="text-lg font-bold">{t("앞으로 12시간")}</h2>
-            <p className="text-xs text-gray-500">{t("서울시 AI 예측 인구")}</p>
+            <p className="text-xs text-gray-500">
+              {t("서울시 AI 예측 인구")} ·{" "}
+              <Link href={`/history/seoul/${area.code}`} className="font-semibold text-indigo-600">
+                {t("지난 날짜 실제 기록 보기")} ›
+              </Link>
+            </p>
             <ul className="mt-3 divide-y divide-gray-100 rounded-2xl border border-gray-100">
               {live.forecast.map((f) => (
                 <li key={f.time} className="flex items-center gap-3 px-4 py-2.5 text-sm">

@@ -88,3 +88,18 @@ test("요약: 빈 입력", () => {
   const s = summarizeArchive([]);
   assert.deepEqual(s, { snapshots: 0, places: [], seoul: [] });
 });
+
+test("시간대별 평균: KST 시간으로 묶고, 문 닫은 장소 스냅샷은 빼고, 없는 시간은 -1", async () => {
+  const { hourlyScores } = await import("@/lib/archive-summary");
+  const m = hourlyScores([
+    { kind: "place", at: "2026-10-25T01:00:00Z", placeId: "everland", score: 40 }, // 10시 KST
+    { kind: "place", at: "2026-10-25T01:30:00Z", placeId: "everland", score: 60 },
+    { kind: "place", at: "2026-10-25T14:00:00Z", placeId: "everland", score: 0, open: false }, // 23시, 문 닫음
+    { kind: "seoul", at: "2026-10-25T15:10:00Z", code: "POI001", area: "강남", score: 33, min: 1, max: 2 }, // 0시 KST
+  ]);
+  const ev = m.get("place:everland")!;
+  assert.equal(ev[10], 50);
+  assert.equal(ev[23], -1);
+  assert.equal(ev.filter((v) => v >= 0).length, 1);
+  assert.equal(m.get("seoul:POI001")![0], 33);
+});

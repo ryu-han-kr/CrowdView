@@ -16,6 +16,7 @@ const FIXED_MONTHLY: { name: string; note: string; krw: number }[] = [
   // 10/20 Pay as you go로 전환 (10만 명령당 $0.2, 상한 $20). 빌드 중 저장 생략 뒤 예상 월 50~150만 명령
   { name: "Upstash Redis", note: "Pay as you go 10만 명령당 $0.2 (월 상한 $20)", krw: 3_000 },
   { name: "Neon Postgres", note: "Free (0.5GB)", krw: 0 },
+  { name: "Cloudflare R2", note: "5분 원본 보관, 10GB까지 무료 (1년 약 1.1GB)", krw: 0 },
   { name: "Sentry", note: "Developer 무료 (월 5천 오류)", krw: 0 },
   { name: "Resend", note: "무료 (월 3,000통)", krw: 0 },
   { name: "공공데이터·서울시 API", note: "무료 (하루 한도, 2쪽 참고)", krw: 0 },

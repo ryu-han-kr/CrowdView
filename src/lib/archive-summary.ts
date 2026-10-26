@@ -179,3 +179,18 @@ const pad = (s: string, w: number, right: boolean) => {
   const gap = " ".repeat(Math.max(0, w - width(s)));
   return right ? gap + s : s + gap;
 };
+
+/** 시간대(KST 0~23시)별 평균 점수, 키는 "place:<id>" / "seoul:<code>". 장소는 문 연 스냅샷만, 자료 없는 시간은 -1 (지난 기록 화면의 하루 띠) */
+export function hourlyScores(lines: ArchiveLine[]): Map<string, number[]> {
+  const sums = new Map<string, { s: number[]; n: number[] }>();
+  for (const l of lines) {
+    if (l.kind === "place" && l.open === false) continue;
+    const key = l.kind === "place" ? `place:${l.placeId}` : `seoul:${l.code}`;
+    const h = new Date(Date.parse(l.at) + 9 * 3600_000).getUTCHours();
+    const a = sums.get(key) ?? { s: Array(24).fill(0), n: Array(24).fill(0) };
+    a.s[h] += l.score;
+    a.n[h]++;
+    sums.set(key, a);
+  }
+  return new Map([...sums].map(([k, a]) => [k, a.s.map((s, i) => (a.n[i] ? Math.round(s / a.n[i]) : -1))]));
+}
