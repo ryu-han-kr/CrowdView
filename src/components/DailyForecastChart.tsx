@@ -6,13 +6,13 @@ import { Area } from "@/components/charts/area";
 import { useChart } from "@/components/charts/chart-context";
 import { useI18n } from "@/i18n/client";
 import { levelOf, inkOf } from "@/lib/levels";
-import { LevelGradients } from "@/components/HourlyChart";
+import { ChartBubble, LevelGradients } from "@/components/HourlyChart";
 
 const MARGIN = { top: 12, right: 12, bottom: 30, left: 12 };
 const day = (date: string) => new Date(`${date}T00:00:00Z`);
 
 /** 고른 날: 세로선 + 단계 색 점 */
-function Selected({ date, value }: { date: string; value: number }) {
+function Selected({ date, value, lines }: { date: string; value: number; lines: string[] }) {
   const { xScale, yScale, innerHeight } = useChart();
   const x = xScale(day(date));
   const color = levelOf(value).color;
@@ -20,6 +20,7 @@ function Selected({ date, value }: { date: string; value: number }) {
     <g pointerEvents="none">
       <line x1={x} x2={x} y1={0} y2={innerHeight} stroke={color} strokeOpacity="0.5" strokeWidth="2" />
       <circle cx={x} cy={yScale(value)} r="6" fill={color} stroke="#fff" strokeWidth="2.5" />
+      <ChartBubble x={x} y={yScale(value)} lines={lines} />
     </g>
   );
 }
@@ -99,7 +100,7 @@ export function DailyForecastChart({ days, weekdays }: { days: { date: string; v
           <LevelGradients id={gid} />
           <Area dataKey="value" fill={`url(#${gid}-fill)`} stroke={`url(#${gid}-stroke)`} strokeWidth={3} />
           <DayAxis dates={days.map((x) => x.date)} />
-          <Selected date={d.date} value={d.value} />
+          <Selected date={d.date} value={d.value} lines={[label(sel), `${t(lv.label)} · ${Math.round(d.value)}%`]} />
         </AreaChart>
         <div
           ref={touch}

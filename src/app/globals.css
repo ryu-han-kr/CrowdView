@@ -108,6 +108,83 @@ body {
 .mascot-host:active .mascot {
   animation: mascot-hop 0.7s ease-in-out;
 }
+/* 단계별 움직임 (사용자 10/26: 쾌적·보통 그림 차이가 약함) — 포즈마다 다른 리듬으로 단계가 몸짓으로 읽히게.
+   쾌적: 느긋하게 좌우 흔들 · 보통: 두리번 · 혼잡: 눌리듯 찌그러짐 · 매우 혼잡: 덜덜 떨림 (원활은 mascot-bob 통통) */
+@keyframes mascot-sway {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+@keyframes mascot-look {
+  0%,
+  45%,
+  100% {
+    transform: none;
+  }
+  15% {
+    transform: rotate(-6deg) translateX(-2%);
+  }
+  30% {
+    transform: rotate(6deg) translateX(2%);
+  }
+}
+@keyframes mascot-squeeze {
+  0%,
+  100% {
+    transform: none;
+  }
+  50% {
+    transform: scale(1.06, 0.94);
+  }
+}
+@keyframes mascot-jitter {
+  0%,
+  100% {
+    transform: none;
+  }
+  25% {
+    transform: translateX(-1.5%) rotate(-1.5deg);
+  }
+  75% {
+    transform: translateX(1.5%) rotate(1.5deg);
+  }
+}
+.mascot.mascot-lv-calm {
+  animation:
+    mascot-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+    mascot-sway 3.2s 0.6s ease-in-out infinite;
+}
+.mascot.mascot-lv-normal {
+  animation:
+    mascot-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+    mascot-look 3s 0.6s ease-in-out infinite;
+}
+.mascot.mascot-lv-busy {
+  animation:
+    mascot-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+    mascot-squeeze 1.3s 0.6s ease-in-out infinite;
+}
+.mascot.mascot-lv-packed {
+  animation:
+    mascot-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+    mascot-jitter 0.35s 0.6s linear infinite;
+}
+/* 캐릭터 발밑 단계 색 기운: 흰 털이 바탕에 묻히지 않고, 색만 봐도 단계가 읽힌다 */
+.mascot-aura {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  bottom: 3%;
+  height: 52%;
+  border-radius: 50%;
+  filter: blur(14px);
+  opacity: 0.5;
+  pointer-events: none;
+}
 @media (hover: hover) {
   .mascot:hover,
   a:hover .mascot,
@@ -140,6 +217,10 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .mascot,
   .mascot.mascot-bob,
+  .mascot.mascot-lv-calm,
+  .mascot.mascot-lv-normal,
+  .mascot.mascot-lv-busy,
+  .mascot.mascot-lv-packed,
   .mascot:hover,
   .mascot:active,
   a:hover .mascot,
