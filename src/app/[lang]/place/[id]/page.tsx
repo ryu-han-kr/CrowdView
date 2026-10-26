@@ -42,7 +42,7 @@ import { SeoulPeopleProfile, VisitorProfile } from "@/components/VisitorProfile"
 import { WeatherCard } from "@/components/WeatherCard";
 import { RoadSection } from "@/components/RoadCard";
 import { InlineAd } from "@/components/AdUnit";
-import { NearbyRail } from "@/components/NearbyRail";
+import { NearbyChips, NearbyRail } from "@/components/NearbyRail";
 import { FaqBlock } from "@/components/FaqBlock";
 import { CalmAlternatives } from "@/components/CalmAlternatives";
 import { CrowdReport } from "@/components/CrowdReport";
@@ -480,6 +480,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 character={categoryCharacter(place.category)}
               />
           </section>
+          <Suspense fallback={null}>
+            <NearbyChips lat={place.lat} lng={place.lng} lang={lang} exclude={[placeHref(place)]} className="mt-3" />
+          </Suspense>
 
           <WeatherCard signals={signals} lang={lang} place={place} />
           {/* 가는 길 도로 상황 (국가교통정보센터): 늦게 와도 페이지는 먼저 */}

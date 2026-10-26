@@ -2626,6 +2626,9 @@ export default {
   "투어·입장권 찾기": ["Find tours & tickets", "ツアー・入場券を探す", "查找门票和行程", "查找門票和行程"],
   "‘{name}’ 입장권·투어를 각 예약 사이트에서 바로 검색해요. 할인가가 있는지 비교해 보세요.": ["Search tickets and tours for ‘{name}’ on each booking site and compare discounts.", "「{name}」の入場券・ツアーを各予約サイトで検索できます。割引価格を比べてみてください。", "在各预订网站直接搜索“{name}”的门票和行程，比较是否有折扣。", "在各預訂網站直接搜尋「{name}」的門票和行程，比較是否有折扣。"],
   "가까운 순 · 사진 위는 지금 혼잡도": ["Closest first · crowd level now on each photo", "近い順・写真の上は今の混雑度", "按距离排序 · 照片上为当前拥挤度", "按距離排序 · 照片上為目前擁擠度"],
+  "한산한 순 · 사진 위는 지금 혼잡도": ["Quietest first · crowd level now on each photo", "空いている順・写真の上は今の混雑度", "按清静程度排序 · 照片上为当前拥挤度", "按清靜程度排序 · 照片上為目前擁擠度"],
+  "지금 한산한 서울 명소": ["Quiet Seoul spots right now", "今空いているソウルの名所", "现在人少的首尔景点", "現在人少的首爾景點"],
+  "근처": ["Nearby", "近く", "附近", "附近"],
   "이 축제 근처 가볼 곳": ["Places to visit near this festival", "この祭りの近くの見どころ", "此庆典附近景点", "此慶典附近景點"],
   "일부는 제휴 링크라, 예약하면 CrowdView가 수수료를 받을 수 있어요 (가격은 같아요)": ["Some are affiliate links — CrowdView may earn a commission if you book (same price for you)", "一部はアフィリエイトリンクで、予約するとCrowdViewが手数料を受け取ることがあります（価格は同じです）", "部分为联盟链接，预订后CrowdView可能获得佣金（价格不变）", "部分為聯盟連結，預訂後CrowdView可能獲得佣金（價格不變）"],
 };
