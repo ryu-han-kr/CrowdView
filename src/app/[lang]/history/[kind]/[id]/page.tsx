@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "@/i18n/link";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
+import { InlineAd } from "@/components/AdUnit";
 import { DailyTable, WeekdayHourHeatmap } from "@/components/history/HistoryViews";
 import { getDaily } from "@/lib/archive-daily";
 import { translateNames } from "@/lib/name-translate";
@@ -62,6 +63,7 @@ export default async function HistoryDetail({ params }: { params: Promise<{ lang
         <>
           <WeekdayHourHeatmap rows={rows} lang={lang} t={t} />
           <DailyTable rows={rows} lang={lang} t={t} unit={x.unit} />
+          <InlineAd className="mt-6" />
         </>
       ) : (
         <p className="mt-6 rounded-2xl bg-gray-50 p-4 text-sm text-gray-600">{t("아직 정리된 기록이 없어요. 내일부터 날짜별로 보여요.")}</p>
