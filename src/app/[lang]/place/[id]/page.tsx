@@ -44,6 +44,7 @@ import { WeatherCard } from "@/components/WeatherCard";
 import { RoadSection } from "@/components/RoadCard";
 import { InlineAd } from "@/components/AdUnit";
 import { NearbyChips, NearbyRail } from "@/components/NearbyRail";
+import { CROWD_PAGES } from "@/lib/crowd-pages";
 import { FaqBlock } from "@/components/FaqBlock";
 import { CalmAlternatives } from "@/components/CalmAlternatives";
 import { CrowdReport } from "@/components/CrowdReport";
@@ -138,6 +139,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const place = PLACES.find((p) => p.id === id);
   if (!place) return {};
   const t = getT(lang);
+  const crowdPage = CROWD_PAGES.find((c) => c.kind === "place" && c.id === place.id);
   return pageMeta({
     lang,
     path: placeHref(place),
@@ -800,6 +802,14 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               },
             ]}
           />
+          {/* 질문형 SEO 페이지로 내부 링크 (10/26: 검색로봇이 /crowd 161쪽을 홈·푸터에서만 발견해 뒤로 밀렸다) */}
+          {crowdPage && (
+            <p className="mt-4 text-sm">
+              <Link href={`/crowd/${crowdPage.slug}`} className="font-semibold text-indigo-700">
+                {t("{name} 지금 붐비나요?", { name: t(place.name) })} ›
+              </Link>
+            </p>
+          )}
 
           {/* 최근 소식 (Brave·Tavily 뉴스 검색, 하루 한 번 — lib/trending) */}
           {news && news.hits.length > 0 && (

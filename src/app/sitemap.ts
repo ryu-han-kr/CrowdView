@@ -47,10 +47,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // 질문형 검색 페이지 ("Is Myeongdong crowded right now?")
     entry("/crowd", "hourly", 0.8),
     ...CROWD_PAGES.map((p) => entry(`/crowd/${p.slug}`, "hourly", 0.7)),
-    ...(history.length ? [entry("/history", "daily", 0.6), ...history.map((h) => entry(`/history/${h.kind}/${h.id}`, "daily", 0.5))] : []),
+    ...(history.length ? [entry("/history", "daily", 0.6)] : []),
     entry("/near", "weekly", 0.7),
     // 가이드는 주 1회 데이터 갱신 시각
-    ...GUIDE.map((p) => entry(`/guide/${p.id}`, "weekly", 0.5, synced)),
+    // 구글 서치콘솔 10/26: 3,110개가 '발견됨 – 색인 안 됨'. 새 사이트에 얇은 페이지가 많으면 핵심까지 늦어진다 →
+    // 가이드는 사진이 있거나 명소인 것만(2,608 → 약 800), 지난 기록은 목록만 제출. 페이지 자체는 그대로 열려 있다
+    ...GUIDE.filter((p) => p.img || p.kind === "attraction").map((p) => entry(`/guide/${p.id}`, "weekly", 0.5, synced)),
     entry("/events", "daily", 0.9),
     entry("/airport", "hourly", 0.8),
     entry("/map", "hourly", 0.7),
