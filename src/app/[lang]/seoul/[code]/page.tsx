@@ -34,7 +34,7 @@ import { getHolidays } from "@/lib/crowd/signals";
 import { kst } from "@/lib/time";
 import { EmptyState } from "@/components/EmptyState";
 import { InlineAd } from "@/components/AdUnit";
-import { NearbyRail } from "@/components/NearbyRail";
+import { NearbyChips, NearbyRail } from "@/components/NearbyRail";
 
 export const revalidate = 600;
 
@@ -172,6 +172,7 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
           ) : (
             <EmptyState name="otter" pose="wait">{t("지금은 서울시 데이터를 받지 못했어요. 잠시 후 다시 확인해 주세요.")}</EmptyState>
           )}
+          <NearbyChips lat={area.lat} lng={area.lng} lang={lang} exclude={[`/seoul/${area.code}`]} className="mt-3" />
 
           {skt && (
             <section className="mt-3 flex items-center justify-between rounded-2xl border border-gray-100 px-4 py-3">
