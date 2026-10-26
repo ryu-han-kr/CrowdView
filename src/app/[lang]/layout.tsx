@@ -46,6 +46,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       other: {
         ...(process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION && { "naver-site-verification": process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION }),
         ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION && { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }),
+        // 애드센스 사이트 소유 확인 (10/26)
+        ...(process.env.NEXT_PUBLIC_ADSENSE_CLIENT && { "google-adsense-account": process.env.NEXT_PUBLIC_ADSENSE_CLIENT }),
       },
     },
     formatDetection: { telephone: false },
