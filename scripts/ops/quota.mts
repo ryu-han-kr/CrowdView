@@ -25,3 +25,16 @@ for (const d of (await getTraffic(days.length)).reverse()) {
   const r = dayRevenue(d);
   console.log(`${d.date.slice(5)} | ${d.uv} | ${d.sessions} | ${d.pv} | ${r.total.toFixed(1)}원 (${r.ads.toFixed(1)}+${r.affiliate.toFixed(1)}) | ${r.perUser.toFixed(1)}원 | ${r.affiliatePotential.toFixed(1)}원`);
 }
+
+// 들어온 페이지별 '다음 페이지로 넘어간 비율' (10/26부터 집계)
+const sum: Record<string, [number, number]> = {};
+for (const d of await getTraffic(days.length))
+  for (const [k, n] of Object.entries(d.f)) {
+    const m = k.match(/^(land|deep):(.+)$/);
+    if (m) (sum[m[2]] ??= [0, 0])[m[1] === "land" ? 0 : 1] += n;
+  }
+if (Object.keys(sum).length) {
+  console.log(`\n들어온 페이지 | 방문 | 다음 페이지로 | 비율`);
+  for (const [p, [land, deep]] of Object.entries(sum).sort((a, b) => b[1][0] - a[1][0]))
+    console.log(`${p} | ${land} | ${deep} | ${land ? Math.round((deep / land) * 100) : 0}%`);
+}
