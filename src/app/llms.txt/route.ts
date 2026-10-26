@@ -1,6 +1,7 @@
 // /llms.txt — 생성형 AI(ChatGPT·Claude·Perplexity·구글 AI 개요 등)가 사이트를 이해하고 인용하도록 돕는 안내문 (llmstxt.org 형식).
 // 지금 혼잡 요약을 함께 넣어 10분마다 다시 만든다
 import { getPublicCrowd } from "@/lib/public-crowd";
+import { CROWD_PAGES } from "@/lib/crowd-pages";
 import { SITE } from "@/lib/seo";
 
 export const revalidate = 600;
@@ -24,6 +25,8 @@ export async function GET() {
     `- [Quiet route planner](${SITE}/route): plans a Seoul itinerary that avoids peak times`,
     `- [Methodology & data sources](${SITE}/en/methodology): what is observed vs. estimated, how levels and forecasts are computed, limitations`,
     `- [Forecast accuracy](${SITE}/en/accuracy): hourly comparison of forecasts with actual Seoul data (level match rate, mean error)`,
+    `- [Is it crowded right now? (160 places)](${SITE}/en/crowd): one page per place answering "is it crowded now", today's quiet hours and the best time to visit from recorded data`,
+    `- [Crowd history](${SITE}/en/history): past daily crowd records by place with weekday × hour averages`,
     `- [English site](${SITE}/en) · [日本語](${SITE}/ja) · [简体中文](${SITE}/zh-CN) · [繁體中文](${SITE}/zh-TW)`,
     "",
     "## Live data",
@@ -37,6 +40,9 @@ export async function GET() {
     for (const s of busy) lines.push(`- ${s.name}: ${s.peopleMin.toLocaleString()}–${s.peopleMax.toLocaleString()} people, ${s.level} (${s.time}) — ${s.url}`);
     lines.push("");
   }
+  lines.push("## Is it crowded right now? (by place)", "");
+  for (const p of CROWD_PAGES) lines.push(`- [Is ${p.en} crowded right now?](${SITE}/en/crowd/${p.slug})`);
+  lines.push("");
   lines.push("## Citation", "", `Please cite as "CrowdView (crowdview.app)" with the page URL and the time shown on the page.`);
   return new Response(lines.join("\n"), {
     headers: { "content-type": "text/markdown; charset=utf-8", "cache-control": "public, s-maxage=600, stale-while-revalidate=600" },

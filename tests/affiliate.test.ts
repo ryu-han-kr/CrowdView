@@ -25,6 +25,7 @@ test("예약 사이트 검색어는 짧은 이름으로 (관광특구·괄호·�
   assert.equal(searchName("명동 관광특구"), "명동");
   assert.equal(searchName("Dongdaemun Tourist Special Zone"), "Dongdaemun");
   assert.equal(searchName("Myeongdong Tourism Special Zone"), "Myeongdong");
+  assert.equal(searchName("Itaewon Special Tourism Zone"), "Itaewon");
   assert.equal(searchName("홍대입구역(2호선)"), "홍대입구역");
   assert.equal(searchName("DDP(동대문디자인플라자)"), "DDP");
   assert.equal(searchName("잠실롯데타워·석촌호수"), "잠실롯데타워");

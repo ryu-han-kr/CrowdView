@@ -6,6 +6,7 @@ import { SITE, languageAlternates } from "@/lib/seo";
 import { GUIDE, GUIDE_SYNCED_AT } from "@/lib/seoul-guide";
 import { LANDMARKS } from "@/lib/korea";
 import { getDailyIndex } from "@/lib/archive-daily";
+import { CROWD_PAGES } from "@/lib/crowd-pages";
 
 // 축제 목록이 6시간마다 바뀌어 하루 몇 번만 다시 만든다
 export const revalidate = 21600;
@@ -43,6 +44,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/explore", "daily", 0.8),
     entry("/methodology", "monthly", 0.6, new Date("2026-10-17T00:00:00+09:00")),
     entry("/accuracy", "daily", 0.5),
+    // 질문형 검색 페이지 ("Is Myeongdong crowded right now?")
+    entry("/crowd", "hourly", 0.8),
+    ...CROWD_PAGES.map((p) => entry(`/crowd/${p.slug}`, "hourly", 0.7)),
     ...(history.length ? [entry("/history", "daily", 0.6), ...history.map((h) => entry(`/history/${h.kind}/${h.id}`, "daily", 0.5))] : []),
     entry("/near", "weekly", 0.7),
     // 가이드는 주 1회 데이터 갱신 시각

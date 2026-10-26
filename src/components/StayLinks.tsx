@@ -30,7 +30,7 @@ export function searchName(name: string): string {
     .split("·")[0]
     .trim()
     .replace(/\s*(관광특구|특구)$/, "")
-    .replace(/\s+(Tourist|Tourism)?\s*Special\s*(Tourist\s*)?Zone$/i, "")
+    .replace(/\s+(Tourist|Tourism)?\s*Special\s*(Tourist|Tourism)?\s*Zone$/i, "")
     .trim();
   return short || name;
 }
