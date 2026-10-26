@@ -5,6 +5,7 @@ import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { SITE, languageAlternates } from "@/lib/seo";
 import { GUIDE, GUIDE_SYNCED_AT } from "@/lib/seoul-guide";
 import { LANDMARKS } from "@/lib/korea";
+import { getDailyIndex } from "@/lib/archive-daily";
 
 // 축제 목록이 6시간마다 바뀌어 하루 몇 번만 다시 만든다
 export const revalidate = 21600;
@@ -30,6 +31,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   });
 
   const festivals = await getFestivals(60).catch(() => []);
+  // 지난 혼잡 기록: 정리된 기록이 있는 곳만 (lib/archive-daily)
+  const history = await getDailyIndex().catch(() => []);
   const festivalPaths = [...new Set(festivals.map(festivalHref))].filter((p) => p.startsWith("/festival/"));
 
   return [
@@ -40,6 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/explore", "daily", 0.8),
     entry("/methodology", "monthly", 0.6, new Date("2026-10-17T00:00:00+09:00")),
     entry("/accuracy", "daily", 0.5),
+    ...(history.length ? [entry("/history", "daily", 0.6), ...history.map((h) => entry(`/history/${h.kind}/${h.id}`, "daily", 0.5))] : []),
     entry("/near", "weekly", 0.7),
     // 가이드는 주 1회 데이터 갱신 시각
     ...GUIDE.map((p) => entry(`/guide/${p.id}`, "weekly", 0.5, synced)),

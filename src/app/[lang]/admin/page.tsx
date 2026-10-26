@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { AdminActions } from "@/components/AdminActions";
+import { AdminOverview } from "@/components/admin/AdminOverview";
 import { currentAdmin } from "@/lib/admin";
 import { dbEnabled } from "@/lib/db";
 import { listSubscribers, recentPayments } from "@/lib/plus";
@@ -33,7 +34,8 @@ export default async function AdminPage() {
       </p>
 
       <NoTrack />
-      <section className="mt-6">
+      <AdminOverview />
+      <section className="mt-8">
         <h2 className="text-lg font-bold">이용·기대수익 (최근 14일)</h2>
         <p className="mt-1 text-xs text-gray-500">
           순방문자는 하루에 여러 번 와도 1명, 방문은 탭을 새로 열 때마다 1번, 페이지뷰는 화면을 넘길 때마다 1. 애드센스는 페이지뷰(채워진 광고 노출)에,

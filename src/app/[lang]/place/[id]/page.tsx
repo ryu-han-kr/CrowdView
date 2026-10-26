@@ -665,6 +665,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               },
             ]}
           />
+          <Link href={`/history/place/${place.id}`} className="mt-2 inline-block text-sm font-semibold text-indigo-600">
+            {t("지난 날짜 실제 기록 보기")} ›
+          </Link>
 
           {signals.localPop && <VisitorProfile pop={signals.localPop} lang={lang} />}
           {/* 서울 장소: 주변 지역의 지금 성별·연령 (서울시 실시간) */}
