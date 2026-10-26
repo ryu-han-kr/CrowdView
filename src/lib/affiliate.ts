@@ -10,14 +10,22 @@ const PARAMS: Record<string, string | undefined> = {
   hotels: process.env.NEXT_PUBLIC_AFF_EXPEDIA,
   klook: process.env.NEXT_PUBLIC_AFF_KLOOK,
   kkday: process.env.NEXT_PUBLIC_AFF_KKDAY,
+  // 광고 링크(myrealt.rip/…)를 풀면 나오는 "utm_source=mktpartner&t_scope=604800&mylink_id=…"
   myrealtrip: process.env.NEXT_PUBLIC_AFF_MYREALTRIP,
   getyourguide: process.env.NEXT_PUBLIC_AFF_GETYOURGUIDE,
 };
 
+/** 원래 주소를 업체 중계 주소로 감싸야 집계되는 곳 (10/26 마이리얼트립: 광고 링크가 bridge 주소로 감싼 형태) */
+const WRAP: Record<string, (href: string) => string> = {
+  myrealtrip: (href) => `https://www.myrealtrip.com/main/bridge/marketing?return_url=${encodeURIComponent(href)}`,
+};
+
 export const isAffiliate = (id: string) => !!PARAMS[id]?.trim();
 
-/** 제휴 값이 있으면 주소 뒤에 붙인다 */
+/** 제휴 값이 있으면 주소 뒤에 붙이고, 중계 주소가 필요한 업체는 그걸로 감싼다 */
 export function withAffiliate(id: string, href: string): string {
   const p = PARAMS[id]?.trim().replace(/^[?&]/, "");
-  return p ? `${href}${href.includes("?") ? "&" : "?"}${p}` : href;
+  if (!p) return href;
+  const tagged = `${href}${href.includes("?") ? "&" : "?"}${p}`;
+  return WRAP[id] ? WRAP[id](tagged) : tagged;
 }
