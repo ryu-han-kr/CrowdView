@@ -20,7 +20,24 @@ const EXPEDIA_HOST: Record<Lang, string> = {
 
 type Tile = { id: string; label: string; href: string; icon?: string };
 
-export function stayLinks(ko: string, en: string, lang: Lang, at?: LatLng): Tile[] {
+/**
+ * 예약 사이트 검색어로 쓸 짧은 이름 (10/26 링크 점검: 'Myeongdong Tourism Special Zone'은 Klook 결과 0건·Trip.com 투어는 상하이가 나왔다).
+ * 관광특구 꼬리, 괄호 설명, '·'로 이은 두 번째 이름을 뗀다
+ */
+export function searchName(name: string): string {
+  const short = name
+    .replace(/\s*\(.*?\)\s*/g, " ")
+    .split("·")[0]
+    .trim()
+    .replace(/\s*(관광특구|특구)$/, "")
+    .replace(/\s+(Tourist|Tourism)?\s*Special\s*(Tourist\s*)?Zone$/i, "")
+    .trim();
+  return short || name;
+}
+
+export function stayLinks(koName: string, enName: string, lang: Lang, at?: LatLng): Tile[] {
+  const ko = searchName(koName);
+  const en = searchName(enName);
   const k = encodeURIComponent(ko);
   // 해외 사이트는 영어 이름 + 나라로 (한국어 화면이면 한국어 이름)
   const q = lang === "ko" ? ko : `${en}, South Korea`;
@@ -35,7 +52,8 @@ export function stayLinks(ko: string, en: string, lang: Lang, at?: LatLng): Tile
         : `https://www.agoda.com/${AGODA_LANG[lang]}/search?textToSearch=${g}`,
     },
     { id: "booking", label: "Booking.com", href: `https://www.booking.com/searchresults.html?ss=${g}&lang=${BOOKING_LANG[lang]}` },
-    { id: "trip", label: "Trip.com", href: `https://${TRIP_HOST[lang]}/hotels/list?keyword=${lang === "ko" ? k : encodeURIComponent(en)}` },
+    // 숙소 목록(hotels/list?keyword=)은 이름을 못 알아듣고 엉뚱한 지역을 보여 줘서(10/26 '롯데월드' → 평창) 통합 검색으로
+    { id: "trip", label: "Trip.com", href: `https://${TRIP_HOST[lang]}/global-search/searchlist/search?keyword=${lang === "ko" ? k : encodeURIComponent(en)}` },
     { id: "airbnb", label: "Airbnb", href: lang === "ko" ? `https://www.airbnb.co.kr/s/${k}/homes` : `https://www.airbnb.com/s/${g}/homes` },
     { id: "expedia", label: "Expedia", href: `https://${EXPEDIA_HOST[lang]}/Hotel-Search?destination=${g}` },
     { id: "hotels", label: "Hotels.com", href: `https://www.hotels.com/Hotel-Search?destination=${g}` },
@@ -56,7 +74,7 @@ const KLOOK_LANG: Record<Lang, string> = { ko: "ko", en: "en-US", ja: "ja", "zh-
 const KKDAY_LANG: Record<Lang, string> = { ko: "ko", en: "en", ja: "ja", "zh-CN": "zh-cn", "zh-TW": "zh-tw" };
 
 export function tourLinks(ko: string, en: string, lang: Lang): Tile[] {
-  const q = encodeURIComponent(lang === "ko" ? ko : en);
+  const q = encodeURIComponent(searchName(lang === "ko" ? ko : en));
   const global: Tile[] = [
     { id: "klook", label: "Klook", href: `https://www.klook.com/${KLOOK_LANG[lang]}/search/result/?query=${q}` },
     { id: "kkday", label: "KKday", href: `https://www.kkday.com/${KKDAY_LANG[lang]}/product/productlist?keyword=${q}` },
