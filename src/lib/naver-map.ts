@@ -8,11 +8,9 @@ declare global {
   }
 }
 
-export const KEY_ID = process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID;
+import { KEY_ID, sdkUrl } from "./naver-map-url";
+export { KEY_ID, sdkUrl };
 const SCRIPT_ID = "naver-maps-sdk";
-
-/** 지도 글자 언어 (네이버 지도는 ko·en·ja·zh 지원) */
-const mapLanguage = (lang: string) => (lang.startsWith("zh") ? "zh" : lang);
 
 export function loadSdk(keyId: string, lang: string): Promise<void> {
   if (window.naver?.maps) return Promise.resolve();
@@ -21,7 +19,7 @@ export function loadSdk(keyId: string, lang: string): Promise<void> {
     if (!script) {
       script = document.createElement("script");
       script.id = SCRIPT_ID;
-      script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${keyId}&language=${mapLanguage(lang)}`;
+      script.src = sdkUrl(keyId, lang);
       script.async = true;
       document.head.appendChild(script);
     }

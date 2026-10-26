@@ -70,8 +70,9 @@ export function PhotoGallery({
               src={src}
               alt={photos.length > 1 ? `${alt} ${t("사진")} ${i + 1}/${photos.length}` : alt}
               fill
+              // 첫 장은 priority: <head>에 preload가 들어가 HTML을 읽자마자 받기 시작한다 (10/26 Lighthouse: 요청 시작이 3.7초 늦었다)
+              priority={i === 0}
               loading={i === 0 ? "eager" : "lazy"}
-              fetchPriority={i === 0 ? "high" : "auto"}
               sizes={sizes}
               unoptimized={!canOptimize(src)}
               className="object-cover"
