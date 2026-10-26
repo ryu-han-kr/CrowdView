@@ -623,6 +623,8 @@ const dict: Dict = {
   "시간대별 혼잡도 그래프": "Hourly crowd chart",
   "지난 시간 (추정)": "Past hours (est.)",
   "시간을 눌러 자세히": "Tap an hour for details",
+  "칸을 눌러 자세히": "Tap a cell for details",
+  "지난 시간": "Past hours",
   "실측·공식 예보": "Measured / official forecast",
   "생활인구 패턴 기반": "Based on mobile population patterns",
   "인원": "People",

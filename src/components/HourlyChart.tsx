@@ -27,8 +27,36 @@ const PEOPLE_NOTE: Record<NonNullable<HourPoint["peopleKind"]>, string> = {
 /** 시간 → 차트 x값 (Bklit 차트는 시간축이라 날짜로 바꿔 넣는다) */
 const hourDate = (h: number) => new Date(Date.UTC(2000, 0, 1, h));
 
-/** 고른 시간: 세로선 + 단계 색 점 */
-function Selected({ hour, score }: { hour: number; score: number }) {
+/** 글자 폭 어림 (12px 기준): 한글·한자·가나는 한 글자가 거의 정사각형, 그 밖은 절반쯤 */
+const textWidth = (s: string) =>
+  [...s].reduce((w, c) => w + (/[\u1100-\u11ff\u3130-\u318f\uac00-\ud7af\u3040-\u30ff\u4e00-\u9fff]/.test(c) ? 12 : 6.6), 0);
+
+/**
+ * 고른 점 위 말풍선 (사용자 10/26: 올린 자리에서 바로 읽히게). 위가 모자라면 아래로, 양 끝에선 안쪽으로 밀어 넣는다.
+ * 차트 안(useChart)에서만 쓴다. 색은 차트 토큰이라 다크 모드에서도 뒤집힌다
+ */
+export function ChartBubble({ x, y, lines }: { x: number; y: number; lines: string[] }) {
+  const { innerWidth } = useChart();
+  const pad = 9;
+  const w = Math.max(...lines.map(textWidth)) + pad * 2;
+  const h = lines.length * 15 + pad * 2 - 4;
+  const left = Math.max(-4, Math.min(innerWidth - w + 4, x - w / 2));
+  const above = y - 16 - h >= -4;
+  const top = above ? y - 16 - h : y + 16;
+  return (
+    <g pointerEvents="none" transform={`translate(${left}, ${top})`} style={{ transition: "transform 0.12s ease" }}>
+      <rect width={w} height={h} rx="9" fill="var(--chart-foreground)" />
+      {lines.map((s, i) => (
+        <text key={i} x={pad} y={pad + 11 + i * 15} fontSize={i === 0 ? 12.5 : 11.5} fontWeight={i === 0 ? 700 : 500} fill="var(--chart-background)">
+          {s}
+        </text>
+      ))}
+    </g>
+  );
+}
+
+/** 고른 시간: 세로선 + 단계 색 점 + 말풍선 */
+function Selected({ hour, score, lines }: { hour: number; score: number; lines: string[] }) {
   const { xScale, yScale, innerHeight } = useChart();
   const x = xScale(hourDate(hour));
   const color = levelOf(score).color;
@@ -37,6 +65,7 @@ function Selected({ hour, score }: { hour: number; score: number }) {
       <line x1={x} x2={x} y1={0} y2={innerHeight} stroke={color} strokeOpacity="0.5" strokeWidth="2" />
       <circle cx={x} cy={yScale(score)} r="11" fill={color} fillOpacity="0.18" />
       <circle cx={x} cy={yScale(score)} r="6" fill={color} stroke="#fff" strokeWidth="2.5" />
+      <ChartBubble x={x} y={yScale(score)} lines={lines} />
     </g>
   );
 }
@@ -225,7 +254,14 @@ export function HourlyChart({
             dashArray="6,5"
           />
           <HourAxis hours={points.map((x) => x.hour)} nowIdx={nowIdx} nowLabel={t("지금")} />
-          <Selected hour={p.hour} score={p.score} />
+          <Selected
+            hour={p.hour}
+            score={p.score}
+            lines={[
+              `${formatHour(p.hour, lang)} · ${t(level.label)}`,
+              p.people !== undefined ? (p.peopleKind === "est" ? t("약 {v}", { v: val(p.people) }) : val(p.people)) : t("혼잡 지수 {n}", { n: p.score }),
+            ]}
+          />
         </AreaChart>
         {/* 누르기·밀기 영역: 가로로 밀면 시간이 바뀌고, 세로로 밀면 화면이 스크롤된다 */}
         <div

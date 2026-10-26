@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "@/i18n/link";
 import type { T } from "@/i18n/translate";
-import { crowdPose } from "@/lib/characters";
+import { crowdPose, poseMotionClass } from "@/lib/characters";
 import { levelOf } from "@/lib/levels";
 import { Character } from "@/components/Character";
 
@@ -29,7 +29,7 @@ export function HomeGreeting({ scores, hour, live, t }: { scores: number[]; hour
       className="mt-3 flex items-center gap-3 overflow-hidden rounded-3xl py-2 pr-4 pl-2 md:mt-4"
       style={{ background: `color-mix(in oklab, ${lv.color} 13%, var(--surface, #fff))` }}
     >
-      <Character name="hamster" pose={night ? "wait" : crowdPose(mid)} size={96} priority className="mascot-bob -my-1 shrink-0" />
+      <Character name="hamster" pose={night ? "wait" : crowdPose(mid)} size={96} priority className={`${night ? "mascot-bob" : poseMotionClass(crowdPose(mid))} -my-1 shrink-0`} />
       <span className="min-w-0 flex-1">
         <span className="block text-[17px] leading-snug font-extrabold">{night ? t("늦은 밤, 서울은 조용히 쉬는 중") : t(LINE[lv.key])}</span>
         <span className="mt-0.5 block text-sm text-gray-700">

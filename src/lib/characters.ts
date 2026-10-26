@@ -15,6 +15,11 @@ export function crowdPose(score: number, closed = false): Pose {
   return (["calm", "base", "normal", "busy", "packed"] as const)[levelOf(score).key - 1];
 }
 
+/** 포즈 → 움직임 클래스 (globals.css). 쾌적·보통·혼잡이 한눈에 다르게: 쾌적 느긋한 흔들, 원활 통통, 보통 두리번, 혼잡 눌리듯, 매우 혼잡 덜덜 (사용자 10/26) */
+export function poseMotionClass(pose: Pose): string {
+  return ({ calm: "mascot-lv-calm", normal: "mascot-lv-normal", busy: "mascot-lv-busy", packed: "mascot-lv-packed" } as Partial<Record<Pose, string>>)[pose] ?? "mascot-bob";
+}
+
 export function characterSrc(name: CharacterName, pose: Pose) {
   return `/characters/${name}/${pose}.webp`;
 }
