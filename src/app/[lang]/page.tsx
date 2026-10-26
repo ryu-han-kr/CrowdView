@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import { getT as getMetaT } from "@/i18n/server";
 import { jsonLd, SITE } from "@/lib/seo";
-import { HomeList } from "@/components/HomeList";
+import { HomeList, type HomePlace } from "@/components/HomeList";
 import { CategoryIcons } from "@/components/home/CategoryIcons";
 import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
 import { PhotoRail, type PhotoCardItem } from "@/components/home/PhotoRail";
@@ -87,7 +87,20 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   ];
 
   // 목록·카드는 고해상도 대표 사진으로 (사용자 QA 10/22: 사진이 비슷해 구별이 어렵다). 서버에서 바꿔 넘겨 사진 목록 JSON이 브라우저로 가지 않게
-  const listPlaces = places.map((p) => ({ ...p, image: heroImage(p) }));
+  // 홈 목록(브라우저 컴포넌트)에는 쓰는 필드만 넘긴다 — 설명·기준·영업시간까지 보내면 HTML이 30KB 넘게 커진다 (10/26 성능)
+  const listPlaces: HomePlace[] = places.map((p) => ({
+    id: p.id,
+    name: p.name,
+    category: p.category,
+    region: p.region,
+    lat: p.lat,
+    lng: p.lng,
+    emoji: p.emoji,
+    tags: p.tags,
+    image: heroImage(p),
+    eventDate: p.eventDate,
+    eventEndDate: p.eventEndDate,
+  }));
   // 홈 목록은 지금 값만 쓴다 → 시간대 배열(45곳 × 18점)·구역은 빼서 HTML을 줄인다 (사용자 10/26 성능)
   const listCrowd = Object.fromEntries(Object.entries(crowd).map(([id, c]) => [id, { ...c, hourly: [], zones: undefined }]));
   // 고해상도 사진 (place-photos 의 n번째, 없으면 기존 대표 사진)

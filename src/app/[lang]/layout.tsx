@@ -5,11 +5,9 @@ import { notFound } from "next/navigation";
 import { AdRail } from "@/components/AdRail";
 import { BottomNav, TopNav } from "@/components/BottomNav";
 import { AdSenseLoader } from "@/components/AdSenseLoader";
+import { LazySyncs } from "@/components/LazySyncs";
 import { NavProgress } from "@/components/NavProgress";
 import { ErrorReporter } from "@/components/ErrorReporter";
-import { FavoritesSync } from "@/components/FavoritesSync";
-import { PicksSync } from "@/components/PicksSync";
-import { PlansSync } from "@/components/PlansSync";
 import { authEnabled } from "@/lib/auth";
 import { SiteFooter } from "@/components/SiteFooter";
 import { I18nProvider } from "@/i18n/client";
@@ -72,18 +70,15 @@ export default async function RootLayout({ children, params }: { children: React
   return (
     <html lang={lang} suppressHydrationWarning>
       <head>
-        {/* 글꼴 선언(49KB)은 첫 화면을 막지 않게 따로: 미리 받아 두고 아래 스크립트가 붙인다 (스크립트로 붙인 CSS는 화면을 막지 않는다) */}
-        <link rel="preload" href={FONT_CSS} as="style" />
-        {/* 제목 서체는 자주 쓰는 한글 조각 2개(88·87)만 미리 받아 첫 그림 뒤 글자가 바뀌며 흔들리는 것을 줄인다 (10/26 서울 화면 CLS 0.054 원인) */}
-        <link rel="preload" href="/fonts/wanted-sans/woff2/WantedSansVariable.split.88.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        <link rel="preload" href="/fonts/wanted-sans/woff2/WantedSansVariable.split.87.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        {/* 글꼴 선언 CSS는 화면이 다 뜨고 한가할 때 붙인다 (10/26 성능: 한글 조각 23개 600KB가 최상 우선순위로 본문·사진과 경쟁해 첫 그림을 밀어냈다).
+            첫 방문은 기기 한글 글꼴(font-display optional), 다음 화면·재방문부터 Pretendard·Wanted Sans */}
         <noscript>
           <link rel="stylesheet" href={FONT_CSS} />
         </noscript>
         {/* 화면 테마(라이트·다크 고정)를 그리기 전에 적용해 깜빡이지 않게. 저장 값이 없으면 시스템 설정(자동) */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){["${FONT_CSS}","${HEAD_FONT_CSS}"].forEach(function(h){var l=document.createElement("link");l.rel="stylesheet";l.href=h;document.head.appendChild(l)})})();try{var t=localStorage.getItem("cv:theme");if(t==="dark"||t==="auto")document.documentElement.dataset.theme=t;var f=localStorage.getItem("cv:font");if(f==="l"||f==="xl")document.documentElement.dataset.font=f}catch(e){}if(/(?:^|; *)cv-plus=1(?:;|$)/.test(document.cookie))document.documentElement.dataset.plus="1"`,
+            __html: `(function(){function add(){["${FONT_CSS}","${HEAD_FONT_CSS}"].forEach(function(h){var l=document.createElement("link");l.rel="stylesheet";l.href=h;document.head.appendChild(l)})}function idle(){("requestIdleCallback"in window)?requestIdleCallback(add,{timeout:3000}):setTimeout(add,1500)}if(document.readyState==="complete")idle();else window.addEventListener("load",idle,{once:true})})();try{var t=localStorage.getItem("cv:theme");if(t==="dark"||t==="auto")document.documentElement.dataset.theme=t;var f=localStorage.getItem("cv:font");if(f==="l"||f==="xl")document.documentElement.dataset.font=f}catch(e){}if(/(?:^|; *)cv-plus=1(?:;|$)/.test(document.cookie))document.documentElement.dataset.plus="1"`,
           }}
         />
         {/* 관광공사 사진은 주소가 바뀌어 사라지기도 한다(10/20 3,047장 중 236장 404) → 깨진 사진은 숨겨 카드의 색 배경이 보이게 */}
@@ -103,9 +98,7 @@ export default async function RootLayout({ children, params }: { children: React
           <WebVitals />
           <TrafficBeacon />
           <TopNav authEnabled={authEnabled} />
-          {authEnabled && <FavoritesSync />}
-          {authEnabled && <PicksSync />}
-          {authEnabled && <PlansSync />}
+          {authEnabled && <LazySyncs />}
           {/* 모바일: 가운데 448px 앱 화면 그대로 / 태블릿·PC: 넓은 웹 화면 */}
           {/* 태블릿·PC: 화면 위쪽 은은한 파랑 그라데이션 (아래로 갈수록 흰색) */}
           <div aria-hidden className="page-glow pointer-events-none absolute inset-x-0 top-0 -z-10 hidden h-[640px] md:block" />

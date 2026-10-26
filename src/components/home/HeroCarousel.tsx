@@ -120,7 +120,8 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
                 alt=""
                 fill
                 sizes="(min-width: 768px) 900px, 84vw"
-                loading={main || near ? "eager" : "lazy"}
+                // 현재 장만 즉시 (10/26 성능: 양옆 2장까지 즉시 받던 것을 넘길 때로)
+                loading={main ? "eager" : "lazy"}
                 fetchPriority={main ? "high" : "auto"}
                 unoptimized={!canOptimize(s.img)}
                 className="object-cover"

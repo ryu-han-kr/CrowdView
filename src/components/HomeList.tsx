@@ -87,13 +87,16 @@ const CATEGORIES = Object.keys(CATEGORY_EMOJI) as Category[];
  * 홈의 전체 장소: 검색 + 파트 칩 + 한산한/붐비는 순 + 목록(사진 카드)·지도 전환.
  * 검색 중이거나 파트를 고르면 추천 섹션(children)은 숨긴다
  */
+/** 홈 목록이 쓰는 장소 필드만 (page.tsx가 이 모양으로 잘라 보낸다) */
+export type HomePlace = Pick<Place, "id" | "name" | "category" | "region" | "lat" | "lng" | "emoji" | "tags" | "image" | "eventDate" | "eventEndDate">;
+
 export function HomeList({
   places,
   crowd,
   withSearch = false,
   children,
 }: {
-  places: Place[];
+  places: HomePlace[];
   crowd: Record<string, CrowdResult>;
   /** 명소·축제·서울 지역 탭 (자료는 탭을 고르거나 검색할 때 /api/home-search/{lang} 에서 받는다) */
   withSearch?: boolean;

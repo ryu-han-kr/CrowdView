@@ -349,7 +349,8 @@ export function RoutePlanner({ hubs, names = {}, kakao = false }: { hubs: Hub[];
 
         <div>
           <p className="text-sm font-bold">{t("일정")}</p>
-          <div className="mt-2 flex gap-2">
+          {/* 기기 글꼴(웹폰트 오기 전)에서는 칩 4개가 390px를 6px 넘쳐 가로 스크롤이 생겼다 (10/26 e2e) → 좁으면 줄바꿈 */}
+          <div className="mt-2 flex flex-wrap gap-2">
             {[
               [180, "3시간"],
               [240, "반나절 (4시간)"],
