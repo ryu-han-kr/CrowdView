@@ -99,6 +99,8 @@ export function BottomNav() {
             <li key={tab.href}>
               <Link
                 href={tab.href}
+                // 하단 탭 5개를 한가할 때 미리 받으면 화면 JS 5벌이 더 내려온다 (10/26 성능) → 누를 때 받는다
+                prefetch={false}
                 aria-current={active ? "page" : undefined}
                 className={`flex h-16 flex-col items-center justify-center gap-0.5 text-[11px] font-medium ${
                   active ? "text-indigo-600" : "text-gray-600"
