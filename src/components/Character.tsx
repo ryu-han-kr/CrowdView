@@ -33,7 +33,7 @@ export function Character({
       loading={priority ? "eager" : "lazy"}
       decoding="async"
       draggable={false}
-      className={`select-none object-contain ${className}`}
+      className={`mascot select-none object-contain ${className}`}
     />
   );
 }

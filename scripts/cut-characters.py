@@ -10,6 +10,7 @@ SHEETS = {  # 파일 앞부분 → 캐릭터 이름
 }
 POSES = ["base", "calm", "normal", "busy", "packed", "explore", "pick", "wait", "alert", "done"]
 W, H, FOOT = 300, 400, 392
+TOP, SIDE = 4, 4  # 칸 위·양옆 최소 여백
 GROW = 3
 GROW_MORE = {"raccoon-alert": 25}  # 얼굴 윤곽선이 끊겨 배경이 새는 컷
 CUT_BOTTOM = {"raccoon-alert": 380}  # 크게 막으면 이름표와 붙어서 미리 잘라 둠
@@ -95,6 +96,7 @@ def main(src, out):
         im = Image.open(os.path.join(src, f)).convert("RGB")
         sw, sh = im.size
         cw = sw / 5
+        pics = {}
         for r, (y0, y1) in enumerate([(0, int(sh * 0.512)), (int(sh * 0.512), sh)]):
             for c in range(5):
                 cell = im.crop((int(c * cw) + 2, y0, int((c + 1) * cw) - 2, y1))
@@ -103,11 +105,15 @@ def main(src, out):
                 pic = cut(cell, GROW_MORE.get(key, GROW), key not in CUT_BOTTOM)
                 if not pic.getchannel("A").getbbox(): print("  빈 칸", name, r, c); continue
                 pic = drop_side_bits(pic)
-                bb = pic.getchannel("A").getbbox()
-                canvas = Image.new("RGBA", (W, H))
-                body = pic.crop((0, max(0, bb[3] - FOOT), pic.width, bb[3]))
-                canvas.paste(body, ((W - body.width) // 2, FOOT - body.height), body)
-                canvas.save(os.path.join(out, f"{name}-{POSES[r * 5 + c]}.png"))
-        print(name)
+                pics[key] = pic.crop(pic.getchannel("A").getbbox())
+        # 10/26: 키 큰 포즈(귀·말풍선)가 400px 칸 위로 잘리던 것 → 그 캐릭터 포즈 전체를 같은 비율로 줄여 가장 큰 컷도 다 들어가게
+        # (포즈끼리 크기가 같아 화면에서 바뀌어도 튀지 않는다)
+        k = min(1.0, min((FOOT - TOP) / p.height for p in pics.values()), min((W - 2 * SIDE) / p.width for p in pics.values()))
+        for key, body in pics.items():
+            if k < 1: body = body.resize((round(body.width * k), round(body.height * k)), Image.LANCZOS)
+            canvas = Image.new("RGBA", (W, H))
+            canvas.paste(body, ((W - body.width) // 2, FOOT - body.height), body)
+            canvas.save(os.path.join(out, f"{key}.png"))
+        print(name, f"x{k:.2f}")
 
 main(sys.argv[1], sys.argv[2])
