@@ -58,6 +58,10 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
   const [view, setView] = useState<"list" | "map">("list");
   // 한산한 순: 그 동네(1km 안 서울 실시간 지역) 지금 단계가 낮은 곳부터. 맛집이면 '지금 덜 붐비는 맛집'
   const [calmFirst, setCalmFirst] = useState(false);
+  // 명소 100곳 넘게 한 번에 깔면 휴대폰 19화면 분량 (사용자 10/26) → 24곳씩, 조건을 바꾸면 처음부터
+  const PAGE = 24;
+  const [shown, setShown] = useState(PAGE);
+  useEffect(() => setShown(PAGE), [kinds, gus, levels, calmFirst]);
 
   useEffect(() => {
     fetch(`/data/guide-${lang}.json`)
@@ -217,7 +221,7 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
             <>
               {/* 사진 카드 (관광공사 사진이 있는 곳 — 없으면 종류 그림). 글만 늘어선 목록이 데이터베이스 같다는 QA 반영 */}
               <ul className="sector mt-3 grid grid-cols-[minmax(0,1fr)] gap-2.5 p-3 md:grid-cols-2">
-                {list.slice(0, 120).map((r, i) => {
+                {list.slice(0, shown).map((r, i) => {
                   const level = levelOf(r);
                   const kind = KINDS.find((k) => k.id === r[1]);
                   return (
@@ -241,6 +245,15 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
                   );
                 })}
               </ul>
+              {list.length > shown && (
+                <button
+                  type="button"
+                  onClick={() => setShown((n) => n + PAGE)}
+                  className="mt-3 w-full rounded-2xl border border-gray-200 bg-white py-3 text-sm font-semibold text-gray-800"
+                >
+                  {t("더 보기 ({n}곳 더)", { n: list.length - shown })}
+                </button>
+              )}
               {list.length > 120 && <p className="mt-3 text-center text-xs text-gray-500">{t("이름이나 구로 더 좁혀 보세요")}</p>}
             </>
           )}

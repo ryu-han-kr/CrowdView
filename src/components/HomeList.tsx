@@ -50,7 +50,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "seoul", label: "서울 지역" },
   { id: "spot", label: "관광지" },
 ];
-const SPOT_PAGE = 30;
+const SPOT_PAGE = 12;
 
 // 언어별로 한 번만 받는다
 const searchPromise: Record<string, Promise<SearchData | undefined>> = {};
@@ -66,7 +66,7 @@ function useHomeSearch(enabled: boolean): SearchData | undefined {
   }, [lang, enabled]);
   return data;
 }
-const LIVE_PAGE = 12;
+const LIVE_PAGE = 8;
 
 type Filter = "all" | "fav" | Category;
 type Sort = "calm" | "busy";

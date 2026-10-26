@@ -77,7 +77,8 @@ export function tourLinks(ko: string, en: string, lang: Lang): Tile[] {
   const q = encodeURIComponent(searchName(lang === "ko" ? ko : en));
   const global: Tile[] = [
     { id: "klook", label: "Klook", href: `https://www.klook.com/${KLOOK_LANG[lang]}/search/result/?query=${q}` },
-    { id: "kkday", label: "KKday", href: `https://www.kkday.com/${KKDAY_LANG[lang]}/product/productlist?keyword=${q}` },
+    // KKday는 대행사를 거쳐야 제휴가 돼서 보류 중 — 제휴 값이 들어오기 전엔 안 보인다 (사용자 10/26)
+    ...(isAffiliate("kkday") ? [{ id: "kkday", label: "KKday", href: `https://www.kkday.com/${KKDAY_LANG[lang]}/product/productlist?keyword=${q}` }] : []),
     { id: "trip-tour", label: "Trip.com", icon: "trip", href: `https://${TRIP_HOST[lang]}/things-to-do/list?keyword=${q}` },
   ];
   if (lang === "ko") return [{ id: "myrealtrip", label: "마이리얼트립", href: `https://www.myrealtrip.com/search?q=${q}` }, ...global];
@@ -112,7 +113,7 @@ function LinkTiles({ title, glyph, desc, links, t, className }: { title: string;
         ))}
       </ul>
       {/* 공정위 추천·보증 심사지침: 대가를 받는 링크임을 알린다 */}
-      {aff && <p className="mt-2 text-[11px] text-gray-400">{t("일부는 제휴 링크라, 예약하면 CrowdView가 수수료를 받을 수 있어요 (가격은 같아요)")}</p>}
+      {aff && <p className="mt-2 text-xs text-gray-500">{t("일부는 제휴 링크라, 예약하면 CrowdView가 수수료를 받을 수 있어요 (가격은 같아요)")}</p>}
     </section>
   );
 }

@@ -344,7 +344,6 @@ body[data-page="me"] .page-glow {
    사용자 10/26: 제목과 본문을 다른 서체로. 본문은 Pretendard 유지(가독성 1순위) */
 main h1,
 main h2,
-main h3,
 .font-display {
   font-family: "Wanted Sans Variable", var(--font-sans);
 }

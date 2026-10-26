@@ -74,6 +74,9 @@ export default async function RootLayout({ children, params }: { children: React
       <head>
         {/* 글꼴 선언(49KB)은 첫 화면을 막지 않게 따로: 미리 받아 두고 아래 스크립트가 붙인다 (스크립트로 붙인 CSS는 화면을 막지 않는다) */}
         <link rel="preload" href={FONT_CSS} as="style" />
+        {/* 제목 서체는 자주 쓰는 한글 조각 2개(88·87)만 미리 받아 첫 그림 뒤 글자가 바뀌며 흔들리는 것을 줄인다 (10/26 서울 화면 CLS 0.054 원인) */}
+        <link rel="preload" href="/fonts/wanted-sans/woff2/WantedSansVariable.split.88.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/wanted-sans/woff2/WantedSansVariable.split.87.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <noscript>
           <link rel="stylesheet" href={FONT_CSS} />
         </noscript>
@@ -97,7 +100,8 @@ export default async function RootLayout({ children, params }: { children: React
             async
             src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`}
             crossOrigin="anonymous"
-            strategy="afterInteractive"
+            // 사용자 10/26 성능: 첫 화면 그리기를 막지 않게 화면이 다 뜬 뒤에 (Lighthouse 홈 LCP 11초의 주범이 광고 스크립트 221KB)
+            strategy="lazyOnload"
           />
         )}
         <I18nProvider lang={lang} dict={getDict(lang)}>
