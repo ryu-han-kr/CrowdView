@@ -22,6 +22,7 @@ import { Glyph } from "@/components/Glyph";
 import { FestivalActions } from "@/components/FestivalActions";
 import { TrackRecent } from "@/components/TrackRecent";
 import { InlineAd } from "@/components/AdUnit";
+import { NearbyRail } from "@/components/NearbyRail";
 
 export const revalidate = 3600;
 
@@ -310,6 +311,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
               <LevelBadge score={crowd.score} /> {t("은 평소 대비 방문객 증가율로 정한 단계예요.")}
             </p>
           )}
+          {f.lat && f.lng && <NearbyRail lat={f.lat} lng={f.lng} lang={lang} title={t("이 축제 근처 가볼 곳")} />}
           <StayLinks ko={f.region} en={enRegion} lang={lang} t={t} className="mt-6" />
           <InlineAd className="mt-6" />
         </div>

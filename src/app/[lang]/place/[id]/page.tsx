@@ -42,6 +42,7 @@ import { SeoulPeopleProfile, VisitorProfile } from "@/components/VisitorProfile"
 import { WeatherCard } from "@/components/WeatherCard";
 import { RoadSection } from "@/components/RoadCard";
 import { InlineAd } from "@/components/AdUnit";
+import { NearbyRail } from "@/components/NearbyRail";
 import { FaqBlock } from "@/components/FaqBlock";
 import { CalmAlternatives } from "@/components/CalmAlternatives";
 import { CrowdReport } from "@/components/CrowdReport";
@@ -724,6 +725,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             />
           )}
 
+          <NearbyRail lat={place.lat} lng={place.lng} lang={lang} exclude={[placeHref(place)]} />
           {["themepark", "waterpark", "ski", "landmark"].includes(place.category) && (
             <TourLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} className="mt-6" />
           )}

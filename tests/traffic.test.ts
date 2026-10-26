@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { getTraffic, isBot, recordBeacon } from "@/lib/traffic";
 import { dayRevenue } from "@/lib/revenue";
+import { pageType } from "@/lib/page-type";
 
 const base = { lang: "ko", mobile: true, plus: false, session: false, pv: 1, ads: [] as string[], aff: [] as string[] };
 
@@ -35,4 +36,20 @@ test("봇·자동화 브라우저는 세지 않는다", () => {
   assert.ok(isBot("Mozilla/5.0 (compatible; Googlebot/2.1)"));
   assert.ok(isBot("Mozilla/5.0 ... HeadlessChrome/130.0"));
   assert.ok(!isBot("Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148"));
+});
+
+test("페이지 종류: 언어 앞칸을 떼고 첫 칸, 들어온 페이지·두 번째 페이지로 넘어간 방문을 센다", async () => {
+  assert.equal(pageType("/"), "home");
+  assert.equal(pageType("/en"), "home");
+  assert.equal(pageType("/zh-TW/spot/gyeongbokgung"), "spot");
+  assert.equal(pageType("/place/everland"), "place");
+  assert.equal(pageType("/ads.txt"), "other");
+  await recordBeacon({ ...base, vid: "cccccccc33", session: true, pages: ["spot"], land: "spot" });
+  await recordBeacon({ ...base, vid: "cccccccc33", pages: ["place", "bogus"], deep: "spot" });
+  const [today] = await getTraffic(1);
+  assert.equal(today.f["land:spot"], 1);
+  assert.equal(today.f["p:place"], 1);
+  assert.equal(today.f["p:bogus"], undefined);
+  assert.equal(today.f["deep:spot"], 1);
+  assert.equal(today.f.deep, 1);
 });

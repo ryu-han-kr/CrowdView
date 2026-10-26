@@ -34,6 +34,7 @@ import { getHolidays } from "@/lib/crowd/signals";
 import { kst } from "@/lib/time";
 import { EmptyState } from "@/components/EmptyState";
 import { InlineAd } from "@/components/AdUnit";
+import { NearbyRail } from "@/components/NearbyRail";
 
 export const revalidate = 600;
 
@@ -257,7 +258,8 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
           })()}
           <AlertButtons placeId={`seoul-${area.code}`} enabled={authEnabled && pushEnabled} />
           <CalmAlternatives character="otter" lat={area.lat} lng={area.lng} score={live?.score} selfId={`seoul-${area.code}`} lang={lang} />
-          <StayLinks ko={area.name} en={enName} lang={lang} t={t} at={area} className="mt-4" />
+          <NearbyRail lat={area.lat} lng={area.lng} lang={lang} exclude={[`/seoul/${area.code}`]} />
+          <StayLinks ko={area.name} en={enName} lang={lang} t={t} at={area} className="mt-6" />
           <InlineAd className="mt-6" />
           <a
             href={`https://map.naver.com/p/search/${encodeURIComponent(area.name)}`}

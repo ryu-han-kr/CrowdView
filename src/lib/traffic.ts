@@ -5,6 +5,7 @@
 import { kv } from "./cache";
 import { addDays, kst } from "./time";
 import { LANGS } from "@/i18n/config";
+import { PAGE_TYPES } from "./page-type";
 
 const TTL = 400 * 86_400;
 const dayKey = (date: string) => `t:${date}`;
@@ -29,6 +30,12 @@ export interface Beacon {
   ads: string[];
   /** 누른 제휴 링크들 */
   aff: string[];
+  /** 이번에 본 페이지 종류들 */
+  pages?: string[];
+  /** 이 탭의 첫 페이지 종류 (방문 1번과 함께) */
+  land?: string;
+  /** 이 탭에서 두 번째 페이지로 넘어갔으면 첫 페이지 종류 (이탈하지 않은 방문) */
+  deep?: string;
 }
 
 /** 봇·자동화 브라우저(검색엔진, Lighthouse, Playwright 화면 확인)는 세지 않는다 */
@@ -46,6 +53,10 @@ export async function recordBeacon(b: Beacon): Promise<void> {
   add(b.mobile ? "pv:m" : "pv:d", pv);
   if (b.plus) add("pv:plus", pv);
   if (b.session) add("ses");
+  const known = (p?: string) => !!p && (PAGE_TYPES as readonly string[]).includes(p);
+  for (const p of (b.pages ?? []).slice(0, 20)) if (known(p)) add(`p:${p}`);
+  if (b.session && known(b.land)) add(`land:${b.land}`);
+  if (known(b.deep)) add("deep"), add(`deep:${b.deep}`);
   for (const s of b.ads.slice(0, 5)) if ((AD_SLOT_NAMES as readonly string[]).includes(s)) add(`ad:${s}`), add(`ad:${lang}`);
   for (const a of b.aff.slice(0, 5)) if ((AFF_PARTNERS as readonly string[]).includes(a)) add(`aff:${a}`);
   const cmds: (string | number)[][] = Object.entries(inc).map(([f, n]) => ["HINCRBY", key, f, n]);

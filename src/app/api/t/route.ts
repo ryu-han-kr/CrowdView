@@ -14,6 +14,9 @@ export async function POST(req: Request) {
     pv: Number(b.pv ?? 0),
     ads: Array.isArray(b.ads) ? b.ads.map(String) : [],
     aff: Array.isArray(b.aff) ? b.aff.map(String) : [],
+    pages: Array.isArray(b.pages) ? b.pages.map(String) : [],
+    land: typeof b.land === "string" ? b.land : undefined,
+    deep: typeof b.deep === "string" ? b.deep : undefined,
   }).catch(() => {});
   return new Response(null, { status: 204 });
 }

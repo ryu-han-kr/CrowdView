@@ -36,6 +36,7 @@ import { getConcentration } from "@/lib/crowd/signals";
 import { kst } from "@/lib/time";
 import { compactNumber } from "@/lib/format";
 import { InlineAd } from "@/components/AdUnit";
+import { NearbyRail } from "@/components/NearbyRail";
 
 const SPOT_KTO = spotKto as Record<string, { areaCd: string; signguCd: string; name: string }>;
 
@@ -137,9 +138,6 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
     .filter((p) => p.forecast && p.hour >= model.place.hours[0] && p.hour <= last)
     .sort((a, b) => a.score - b.score)[0];
 
-  const others = LANDMARKS.filter((x) => x.region === l.region && x.id !== l.id)
-    .sort((a, b) => distanceKm(a, l) - distanceKm(b, l))
-    .slice(0, 6);
   const rows: [string, string | undefined][] = [
     [t("주소"), info?.addr],
     [t("이용 시간"), info?.usetime],
@@ -344,23 +342,9 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
           <StayLinks ko={l.n.ko} en={l.n.en} lang={lang} t={t} at={l} className="mt-4" />
           <InlineAd className="mt-6" />
 
-          <DroneVideos videos={videosFor(l.id)} className="mt-8" />
+          <NearbyRail lat={l.lat} lng={l.lng} lang={lang} exclude={[`/spot/${l.id}`, ...(live ? [live.href] : [])]} />
 
-          {others.length > 0 && (
-            <section className="mt-8">
-              <h2 className="text-lg font-bold">{t("{region}의 다른 명소", { region: t(l.region) })}</h2>
-              <ul className="mt-2 divide-y divide-gray-100 rounded-2xl border border-gray-100">
-                {others.map((o) => (
-                  <li key={o.id}>
-                    <Link href={`/spot/${o.id}`} className="flex items-center justify-between px-4 py-3 text-sm hover:bg-gray-50">
-                      <span className="truncate font-semibold">{o.n[lang] ?? o.n.ko}</span>
-                      <span className="shrink-0 text-xs text-gray-500">{t("{km}km", { km: distanceKm(o, l).toFixed(0) })}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
+          <DroneVideos videos={videosFor(l.id)} className="mt-8" />
 
           {/* 정보 (장소 상세와 같은 자리·모양) */}
           <section className="mt-8 space-y-3 text-sm">
