@@ -12,8 +12,9 @@ import { HourlyChart } from "@/components/HourlyChart";
 import { LevelBadge } from "@/components/Level";
 import { PlaceHero } from "@/components/PlaceHero";
 import { forecastForDate, forecastReasons, weekForecast } from "@/lib/crowd/model";
-import { UpcomingHours, WeekForecast } from "@/components/PlaceForecast";
-import { getDaySummaries, getHistory, type HistoryPoint } from "@/lib/crowd/history";
+import { UpcomingHours } from "@/components/PlaceForecast";
+import { TripWatchButton } from "@/components/TripWatchButton";
+import { getHistory, type HistoryPoint } from "@/lib/crowd/history";
 import { getSignals } from "@/lib/crowd/signals";
 import { getCrowd } from "@/lib/crowd/service";
 import { sitePeople, siteShare } from "@/lib/crowd/provider";
@@ -231,11 +232,6 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     if (v === undefined) return undefined;
     return unit === "분" ? t("대기 약 {n}", { n: fmtMinutes(v, t) }) : t("약 {v}", { v: fmtPeople(v, t, lang) });
   };
-  const peopleShort = (score: number) => {
-    const v = peopleAt(score);
-    if (v === undefined) return undefined;
-    return unit === "분" ? t("{n}분", { n: v }) : compactNumber(v, lang);
-  };
   const calmest = week.reduce((a, b) => (b.peakScore < a.peakScore ? b : a));
   const todayPeak = week[0];
   const todayReasons = forecastReasons(place, todayPeak.date, todayPeak.peakHour + 0.5, signals);
@@ -258,20 +254,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const upcoming = hourly
     .filter((p) => p.hour >= Math.floor(now.hour) && p.hour >= place.hours[0] && p.hour <= lastHour)
     .map((p) => ({ hour: p.hour, label: formatHour(p.hour, lang), score: p.score }));
-  // 더보기: 앞으로 30일 달력 · 12개월 월평균 (가장 붐빌 때 기준, 추정)
+  // 한 달·1년 탭: 날마다 가장 붐빌 때 (추정)
   const long = weekForecast(place, signals, 365);
-  // 달력 칸마다 '그날 이유'(공휴일·비·관광공사 예측 등)도 같이 (레퍼런스: Undercover Tourist 혼잡 달력)
-  const monthCells = long.slice(0, 30).map((d) => ({
-    date: d.date,
-    day: Number(d.date.slice(8, 10)),
-    dow: new Date(`${d.date}T00:00:00Z`).getUTCDay(),
-    peakScore: d.peakScore,
-    peakLabel: formatHour(d.peakHour, lang),
-    long: `${Number(d.date.slice(5, 7))}/${Number(d.date.slice(8, 10))} (${weekday(d.date, lang, "short")})`,
-    reasons: d.reasons.map((r) => trReason(r, t)),
-    holiday: d.reasons.some((r) => r.k.startsWith("🎌")),
-    people: peopleText(d.peakScore),
-  }));
   // 달력 칸: 한 달 달력(5주)·1년(365일)이 같이 쓴다 (사용자 10/23: 석 달 달력 → 한 달 달력 + 1년 탭)
   const calCells = long.map((d) => ({
     date: d.date,
@@ -281,23 +265,6 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     reasons: d.reasons.map((r) => trReason(r, t)),
     people: peopleText(d.peakScore),
   }));
-  // 요일별 평균 (레퍼런스: Queue-Times 통계 '요일별 평균 혼잡'). 실측 하루 요약이 요일마다 3일 이상 쌓였으면 실측, 아니면 앞으로 12주 예측
-  const sums = await getDaySummaries(place.id);
-  const dowOf = (date: string) => new Date(`${date}T00:00:00Z`).getUTCDay();
-  const realByDow = [0, 1, 2, 3, 4, 5, 6].map((w) => sums.filter(([d]) => dowOf(d) === w).map(([, , mean]) => mean));
-  const weekdayReal = realByDow.every((xs) => xs.length >= 3);
-  const modelByDow: number[][] = [[], [], [], [], [], [], []];
-  if (!weekdayReal)
-    for (const d of long.slice(0, 84)) {
-      const open = forecastForDate(place, d.date).filter((p) => p.hour >= place.hours[0] && p.hour < Math.min(24, place.hours[1]));
-      if (open.length) modelByDow[dowOf(d.date)].push(open.reduce((a, p) => a + p.score, 0) / open.length);
-    }
-  const weekdayBars = (weekdayReal ? realByDow : modelByDow)
-    .map((xs, w) => ({
-      label: new Intl.DateTimeFormat(lang, { weekday: "short", timeZone: "UTC" }).format(new Date(Date.UTC(2026, 0, 4 + w))),
-      avg: xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : 0,
-    }))
-    .map((b) => ({ ...b, people: b.avg ? peopleText(b.avg) : undefined, peopleShort: b.avg ? peopleShort(b.avg) : undefined }));
   // 놀이기구 구역별 평균 대기 (구역을 아는 공원만)
   const areas = [...new Set((crowd.zones ?? []).map((z) => z.area).filter((a): a is string => !!a))]
     .map((name) => {
@@ -669,26 +636,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                         : t("이번 주는 {day}이 가장 한산해요", { day: dayName(calmest.date, t, lang) })}{" "}
                       <LevelBadge score={calmest.peakScore} />
                     </p>
-                    <div className="mt-6">
-                      <WeekForecast
-                        week={week.map((d) => ({
-                          date: d.date,
-                          short: shortDay(d.date, t, lang),
-                          long: `${Number(d.date.slice(5, 7))}/${Number(d.date.slice(8, 10))} (${weekday(d.date, lang, "short")})`,
-                          peakScore: d.peakScore,
-                          peakLabel: formatHour(d.peakHour, lang),
-                          reasons: d.reasons.map((r) => trReason(r, t)),
-                          people: peopleText(d.peakScore),
-                          peopleShort: peopleShort(d.peakScore),
-                        }))}
-                        month={monthCells}
-                        weekdays={weekdayBars}
-                        weekdaysReal={weekdayReal}
-                        calmestDate={calmest.date}
-                        placeId={place.id}
-                        tripEnabled={authEnabled && pushEnabled}
-                      />
-                    </div>
+                    {/* 아래 막대 그래프(이번 주 다시 한 번 + 더보기 달력)는 위 히트맵·한 달 탭과 겹쳐 뺐다 (사용자 10/26). 날짜 알림 버튼만 남김 */}
+                    <TripWatchButton placeId={place.id} date={calmest.date} enabled={authEnabled && pushEnabled} />
                   </>
                 ),
               },
