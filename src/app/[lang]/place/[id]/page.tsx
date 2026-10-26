@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 import placeImages from "@/data/korea/place-images.json";
 import { heroImage, placePhotos } from "@/lib/place-photos";
 import { breadcrumbLd, jsonLd, kstClock, pageMeta, SITE } from "@/lib/seo";
-import { HourlyChart } from "@/components/HourlyChart";
+import { HourlyChart } from "@/components/charts/lazy";
 import { LevelBadge } from "@/components/Level";
 import { PlaceHero } from "@/components/PlaceHero";
 import { forecastForDate, forecastReasons, weekForecast } from "@/lib/crowd/model";

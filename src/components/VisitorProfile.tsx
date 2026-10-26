@@ -2,7 +2,7 @@ import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { formatHour } from "@/i18n/translate";
 import type { LocalPop } from "@/lib/crowd/busan-pop";
-import { GenderDonut } from "@/components/GenderDonut";
+import { GenderDonut } from "@/components/charts/lazy";
 
 /** 연령대 가로 막대: 가장 많은 연령대는 진하게 + 이름 굵게 */
 function AgeBars({ ages, t }: { ages: { label: string; pct: number }[]; t: ReturnType<typeof getT> }) {
