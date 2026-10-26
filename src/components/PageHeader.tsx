@@ -7,7 +7,7 @@ export function PageHeader({
   title,
   name,
   pose = "base",
-  size = 88,
+  size = 100,
   className = "",
   children,
 }: {
@@ -21,7 +21,7 @@ export function PageHeader({
   children?: ReactNode;
 }) {
   return (
-    <div className={`flex items-end gap-3 ${className}`}>
+    <div className={`mascot-host flex items-end gap-3 ${className}`}>
       <div className="min-w-0 flex-1">
         <h1 className="text-2xl font-bold md:text-3xl">{title}</h1>
         {children}
