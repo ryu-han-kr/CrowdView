@@ -10,7 +10,8 @@ import { ADSENSE_CLIENT, AD_SLOTS, AdUnit } from "./AdUnit";
  */
 export function AdRail({ side, slot = AD_SLOTS.rail }: { side: "left" | "right"; slot?: string }) {
   const { t } = useI18n();
-  if (!ADSENSE_CLIENT && process.env.NEXT_PUBLIC_VERCEL_ENV === "production") return null;
+  // 게시자 ID만 있고 광고 단위가 아직 없을 때(심사 중)도 운영에서는 그리지 않는다
+  if ((!ADSENSE_CLIENT || !slot) && process.env.NEXT_PUBLIC_VERCEL_ENV === "production") return null;
   return (
     <aside
       aria-label={t("광고")}
