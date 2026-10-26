@@ -9,6 +9,7 @@ import { pageMeta } from "@/lib/seo";
 import { KstNote } from "@/components/LocalTime";
 import { PageHeader } from "@/components/PageHeader";
 import { NearbyRail } from "@/components/NearbyRail";
+import { InlineAd } from "@/components/AdUnit";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const lang = (await params).lang;
@@ -42,6 +43,7 @@ export default async function RoutePage({ params }: { params: Promise<{ lang: st
       <RoutePlanner hubs={START_HUBS} names={names} kakao={await kakaoLocalOn()} />
       {/* 코스를 짜지 않고 나가는 방문이 많아(10/26 다음 페이지로 0%) 바로 누를 곳을 사진으로. 서울시청 기준 15km, 한산한 순 */}
       <NearbyRail lat={37.5663} lng={126.9779} lang={lang} maxKm={15} quiet title={t("지금 한산한 서울 명소")} />
+      <InlineAd className="mt-8" />
     </main>
   );
 }
