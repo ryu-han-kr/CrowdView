@@ -330,8 +330,9 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const used = new Set<string>();
   const uniq = (list: (HeroSlide | undefined | false)[]) =>
     list
-      .filter((s): s is HeroSlide => !!s && !!s.img && !used.has(s.href))
-      .filter((s) => (used.add(s.href), true))
+      // 같은 곳이 주소만 달리(예: 요즘 뜨는 곳 링크) 두 번 나오지 않게 제목으로도 거른다
+      .filter((s): s is HeroSlide => !!s && !!s.img && !used.has(s.href) && !used.has(s.title))
+      .filter((s) => (used.add(s.href), used.add(s.title), true))
       .slice(0, 6);
   const calm1 = calmCards[0];
   const busy1 = busyItems[0];
