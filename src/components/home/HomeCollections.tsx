@@ -204,50 +204,57 @@ export function CollectionCarousel({ title, sub, collections }: { title: string;
           </button>
         ))}
       </div>
-      <div className="relative mt-3">
-        <div className="relative h-[260px] overflow-hidden rounded-3xl bg-gray-800 md:h-[360px]">
-          {c.img && (
-            <Image key={c.img} src={c.img} alt="" fill sizes="(min-width: 768px) 70vw, 100vw" unoptimized={!canOptimize(c.img)} className="object-cover" />
-          )}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/35 to-black/0" />
-          <div className="absolute top-5 right-5 left-5 flex items-start justify-between gap-3 md:top-7 md:left-8 md:right-8">
-            <div className="min-w-0">
-              {c.badge && <span className="inline-block rounded-md bg-white px-1.5 py-0.5 text-[11px] font-extrabold text-gray-900">{c.badge}</span>}
-              <p className="mt-1.5 text-[22px] leading-tight font-black break-keep text-white drop-shadow md:text-[28px]">{c.title}</p>
-              {c.sub && <p className="mt-1 text-[12px] font-semibold text-white/90 drop-shadow md:text-sm">{c.sub}</p>}
-            </div>
-            <Link href={c.href} className="shrink-0 rounded-full bg-white/95 px-3.5 py-1.5 text-[13px] font-bold text-gray-900 shadow">
-              {t("자세히 보기")} ›
-            </Link>
-          </div>
-        </div>
-        {/* 작은 카드 3장이 큰 사진 아래쪽에 겹쳐 올라온다 */}
-        <ul className="relative -mt-24 grid grid-cols-3 gap-2.5 px-3 md:-mt-36 md:gap-5 md:px-8">
-          {c.items.map((x) => (
-            <li key={x.id}>
-              <Link href={x.href} className="group block">
-                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100 shadow-lg ring-[3px] ring-white">
-                  {x.img && (
-                    <Image
-                      src={x.img}
-                      alt=""
-                      fill
-                      sizes="(min-width: 768px) 20vw, 30vw"
-                      unoptimized={!canOptimize(x.img)}
-                      className="object-cover transition-transform duration-300 md:group-hover:scale-105"
-                    />
-                  )}
+      {/* PC는 지역 모음 두 개를 나란히 작게 (경수님 QA #13 10/27: PC에서 사진이 너무 커서 2개 배치) */}
+      <div className="relative mt-3 md:grid md:grid-cols-2 md:gap-5">
+        {[c, collections.length > 1 ? collections[(i + 1) % collections.length] : undefined].map((p, k) =>
+          p ? (
+            <div key={p.id} className={k ? "hidden md:block" : ""}>
+              <div className="relative h-[260px] overflow-hidden rounded-3xl bg-gray-800 md:h-[240px]">
+                {p.img && (
+                  <Image key={p.img} src={p.img} alt="" fill sizes="(min-width: 768px) 560px, 100vw" unoptimized={!canOptimize(p.img)} className="object-cover" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/35 to-black/0" />
+                <div className="absolute top-5 right-5 left-5 flex items-start justify-between gap-3 md:top-5 md:left-6 md:right-6">
+                  <div className="min-w-0">
+                    {p.badge && <span className="inline-block rounded-md bg-white px-1.5 py-0.5 text-[11px] font-extrabold text-gray-900">{p.badge}</span>}
+                    <p className="mt-1.5 text-[22px] leading-tight font-black break-keep text-white drop-shadow md:text-[24px]">{p.title}</p>
+                    {p.sub && <p className="mt-1 text-[12px] font-semibold text-white/90 drop-shadow md:text-sm">{p.sub}</p>}
+                  </div>
+                  <Link href={p.href} className="shrink-0 rounded-full bg-white/95 px-3.5 py-1.5 text-[13px] font-bold text-gray-900 shadow">
+                    {t("자세히 보기")} ›
+                  </Link>
                 </div>
-                <p className="mt-2 line-clamp-2 text-[13px] leading-snug font-bold break-keep text-gray-900 md:text-[15px]">{x.title}</p>
-                {/* 단계와 인원을 두 줄로 (UI QA 12차: '원활 · 약 3,30…'처럼 인원이 잘렸다) */}
-                <p className="mt-0.5 truncate text-[14px] font-extrabold md:text-base" style={{ color: inkOf(x.color) }}>
-                  {x.value.split(" · ")[0]}
-                </p>
-                {x.value.includes(" · ") && <p className="truncate text-[12px] font-bold text-gray-700 md:text-sm">{x.value.split(" · ").slice(1).join(" · ")}</p>}
-              </Link>
-            </li>
-          ))}
-        </ul>
+              </div>
+              {/* 작은 카드 3장이 큰 사진 아래쪽에 겹쳐 올라온다 */}
+              <ul className="relative -mt-24 grid grid-cols-3 gap-2.5 px-3 md:-mt-28 md:gap-3 md:px-5">
+                {p.items.map((x) => (
+                  <li key={x.id}>
+                    <Link href={x.href} className="group block">
+                      <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-gray-100 shadow-lg ring-[3px] ring-white">
+                        {x.img && (
+                          <Image
+                            src={x.img}
+                            alt=""
+                            fill
+                            sizes="(min-width: 768px) 170px, 30vw"
+                            unoptimized={!canOptimize(x.img)}
+                            className="object-cover transition-transform duration-300 md:group-hover:scale-105"
+                          />
+                        )}
+                      </div>
+                      <p className="mt-2 line-clamp-2 text-[13px] leading-snug font-bold break-keep text-gray-900 md:text-[15px]">{x.title}</p>
+                      {/* 단계와 인원을 두 줄로 (UI QA 12차: '원활 · 약 3,30…'처럼 인원이 잘렸다) */}
+                      <p className="mt-0.5 truncate text-[14px] font-extrabold md:text-base" style={{ color: inkOf(x.color) }}>
+                        {x.value.split(" · ")[0]}
+                      </p>
+                      {x.value.includes(" · ") && <p className="truncate text-[12px] font-bold text-gray-700 md:text-sm">{x.value.split(" · ").slice(1).join(" · ")}</p>}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null,
+        )}
         {collections.length > 1 && <Arrows onPrev={() => go(-1)} onNext={() => go(1)} top="top-1/2" />}
       </div>
     </section>
