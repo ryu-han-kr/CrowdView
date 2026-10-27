@@ -233,8 +233,17 @@ export function HomeList({
     <>
       <StickyBar id="places" className="-mx-5 mt-8 scroll-mt-16 px-5 pt-3 pb-3 md:mx-0 md:mt-10 md:px-0">
         {/* 위에 붙어 따라올 땐 검색창을 접고 탭 줄만 (UI QA 9차: 붙은 줄이 화면 1/3을 가렸다). 검색어가 있으면 그대로 */}
+        {/* 휴대폰은 홈 머리의 검색창(HomeSearchInput) 하나만 (10/27 홈 2차) → 여기선 검색어 표시줄, 검색창은 PC */}
+        {withSearch && query && (
+          <div className="flex items-center gap-2 text-sm md:hidden">
+            <span className="min-w-0 flex-1 truncate font-semibold">{t("'{q}' 검색 결과", { q: query })}</span>
+            <button onClick={() => setQuery("")} className="shrink-0 rounded-full bg-gray-100 px-2.5 py-1 text-xs text-gray-700">
+              {t("검색어 지우기")}
+            </button>
+          </div>
+        )}
         <label
-          className={`flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-3 ${query ? "" : "group-data-[stuck=true]/sticky:hidden"}`}
+          className={`items-center gap-2 rounded-2xl bg-gray-100 px-4 py-3 ${withSearch ? "hidden md:flex" : "flex"} ${query ? "" : "group-data-[stuck=true]/sticky:hidden"}`}
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-gray-500" fill="none" stroke="currentColor" strokeWidth={2}>
             <circle cx="11" cy="11" r="7" />

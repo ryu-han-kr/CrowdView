@@ -98,9 +98,9 @@ export function ShortCardRail({ title, sub, moreHref, items }: { title: string; 
                     />
                   )}
                   <span
-                    className={`absolute top-2.5 left-2.5 flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-extrabold text-white ${c.live ? "bg-red-600" : "bg-black/60"}`}
+                    className={`absolute top-2.5 left-2.5 flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-extrabold text-white ${c.live ? "bg-indigo-600" : "bg-black/60"}`}
                   >
-                    {c.live && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
+                    {c.live && <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />}
                     {c.badge}
                   </span>
                   {/* 사진 위엔 지금 단계 알약 하나만 (참고: 여기어때 평점 알약) */}
