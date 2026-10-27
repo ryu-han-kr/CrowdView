@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "@/i18n/link";
 import { notFound } from "next/navigation";
 import { AdminActions } from "@/components/AdminActions";
 import { AdminOverview } from "@/components/admin/AdminOverview";
@@ -34,6 +35,11 @@ export default async function AdminPage() {
       </p>
 
       <NoTrack />
+      <p className="mt-3 text-sm">
+        <Link href="/admin/status" className="font-semibold text-indigo-600">
+          연동·권한 상태 (API 키·제휴·광고·분석·인프라) ›
+        </Link>
+      </p>
       <AdminOverview />
       <section className="mt-8">
         <h2 className="text-lg font-bold">이용·기대수익 (최근 14일)</h2>
