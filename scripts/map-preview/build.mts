@@ -4,11 +4,19 @@
 // 지도 자료: southkorea/southkorea-maps (통계청 2013 시도 경계, 단순화) — skorea-provinces.json
 import fs from "node:fs";
 import sharp from "sharp";
-const { MAP_PREVIEW_H, MAP_PREVIEW_W, projectToPreview } = await import("../../src/lib/map-preview.ts");
+const { MAP_PREVIEW_H, MAP_PREVIEW_W, projectToPreview } =
+  await import("../../src/lib/map-preview.ts");
 
 type Ring = [number, number][];
-const geo = JSON.parse(fs.readFileSync(new URL("./skorea-provinces.json", import.meta.url), "utf8")) as {
-  features: { geometry: { type: "Polygon" | "MultiPolygon"; coordinates: Ring[] | Ring[][] } }[];
+const geo = JSON.parse(
+  fs.readFileSync(new URL("./skorea-provinces.json", import.meta.url), "utf8"),
+) as {
+  features: {
+    geometry: {
+      type: "Polygon" | "MultiPolygon";
+      coordinates: Ring[] | Ring[][];
+    };
+  }[];
 };
 
 const SEA = "#e9f0fa";
@@ -25,7 +33,10 @@ const ringPath = (ring: Ring) =>
 
 const paths: string[] = [];
 for (const f of geo.features) {
-  const polys = f.geometry.type === "Polygon" ? [f.geometry.coordinates as Ring[]] : (f.geometry.coordinates as Ring[][]);
+  const polys =
+    f.geometry.type === "Polygon"
+      ? [f.geometry.coordinates as Ring[]]
+      : (f.geometry.coordinates as Ring[][]);
   for (const poly of polys) paths.push(poly.map(ringPath).join(""));
 }
 
@@ -39,4 +50,6 @@ ${paths.map((d) => `<path d="${d}"/>`).join("\n")}
 fs.mkdirSync("public/map", { recursive: true });
 const out = "public/map/korea.webp";
 await sharp(Buffer.from(svg)).webp({ quality: 82, effort: 6 }).toFile(out);
-console.log(`${out} ${MAP_PREVIEW_W}×${MAP_PREVIEW_H} ${fs.statSync(out).size}B`);
+console.log(
+  `${out} ${MAP_PREVIEW_W}×${MAP_PREVIEW_H} ${fs.statSync(out).size}B`,
+);
