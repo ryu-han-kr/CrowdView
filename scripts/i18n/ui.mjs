@@ -1,6 +1,11 @@
 // 화면 문구 번역 원본: 한국어 → [English, 日本語, 简体中文, 繁體中文]
 // 수정 후 `node scripts/i18n/build.mjs` 로 src/i18n/dict/*.ts 를 다시 만든다
 export default {
+  // ── 홈 배너 두 개 (app/[lang]/page.tsx, 10/27)
+  "요즘 뜨는 곳 1위": ["#1 trending", "いま話題No.1", "热门第1名", "熱門第1名"],
+  "지금 붐비는 곳": ["Busy right now", "いま混雑中", "当前拥挤", "目前擁擠"],
+  "실시간 대기": ["Live wait times", "リアルタイム待ち時間", "实时排队", "即時排隊"],
+  "{name}, 지금 한산해요": ["{name} is quiet right now", "{name}はいま空いています", "{name}现在人少", "{name}現在人少"],
   // ── 결제·해지·환불 확인 창 (components/ConfirmSheet.tsx)
   "처리 중…": ["Processing…", "処理中…", "处理中…", "處理中…"],
   // 주차장 실시간 주차 (lib/crowd/parking, 하이원)

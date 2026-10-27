@@ -2,6 +2,10 @@
 import type { Dict } from "../translate";
 
 const dict: Dict = {
+  "요즘 뜨는 곳 1위": "#1 trending",
+  "지금 붐비는 곳": "Busy right now",
+  "실시간 대기": "Live wait times",
+  "{name}, 지금 한산해요": "{name} is quiet right now",
   "처리 중…": "Processing…",
   "{lot} {n}/{total}면 주차 중": "{lot}: {n}/{total} spaces occupied",
   "공공데이터 실측": "Public data, measured",
