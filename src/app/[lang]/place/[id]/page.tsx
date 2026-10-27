@@ -552,6 +552,12 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             </section>
           )}
 
+          {/* 입장권·숙소 칸은 '지금 혼잡도' 바로 아래 — 결정 직후가 예약 전환이 가장 높다 (경수님 QA #24, 10/27) */}
+          {["themepark", "waterpark", "ski", "landmark"].includes(place.category) && (
+            <TourLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} className="mt-6" />
+          )}
+          <StayLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} at={place} className="mt-4" />
+
           {/* 혼잡 예측: 오늘·이번 주·석 달 달력·판단 기준을 탭 하나로 + 크게 보기 (사용자 QA 10/22) */}
           <ForecastTabs
             title={t("언제 가면 한산할까")}
@@ -683,10 +689,6 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           )}
 
           <NearbyRail lat={place.lat} lng={place.lng} lang={lang} exclude={[placeHref(place)]} />
-          {["themepark", "waterpark", "ski", "landmark"].includes(place.category) && (
-            <TourLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} className="mt-6" />
-          )}
-          <StayLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} at={place} className="mt-4" />
           <InlineAd className="mt-6" />
 
           <DroneVideos videos={videosFor(place.id)} className="mt-8" />
