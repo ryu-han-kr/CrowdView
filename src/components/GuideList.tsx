@@ -24,6 +24,7 @@ const KINDS = [
   { id: "food", label: "맛집", emoji: "🍽️" },
   { id: "shopping", label: "쇼핑", emoji: "🛍️" },
   { id: "nature", label: "자연", emoji: "🌳" },
+  { id: "fun", label: "놀이·체험", emoji: "🎢" },
 ];
 const LEVEL_COLOR: Record<string, string> = {
   여유: "#10b981",

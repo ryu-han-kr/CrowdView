@@ -70,12 +70,11 @@ export function YearOverview({ cells, big = false }: { cells: CalCell[]; big?: b
         </p>
       </div>
 
-      {big && (
-        <div className="mt-6">
-          <p className="mb-2 text-base font-extrabold">{t("365일 한눈에")}</p>
-          <CalendarHeatmap cells={cells} cell={14} />
-        </div>
-      )}
+      {/* 365일 잔디 달력은 기본 화면에도 (경수님 QA #6 10/27: '1년이 성의 없다' → GitHub 출석 달력 1년판 + 커서 효과) */}
+      <div className="mt-6">
+        <p className="mb-2 text-base font-extrabold">{t("365일 한눈에")}</p>
+        <CalendarHeatmap cells={cells} cell={big ? 16 : 13} />
+      </div>
     </div>
   );
 }

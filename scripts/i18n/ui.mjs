@@ -2705,4 +2705,8 @@ export default {
   // ── Plus 표시 (QA #2, 10/27)
   "Plus면 고른 날짜가 한산해질 때 알림을 받고, 광고 없이 봐요": ["With Plus, get alerts when your chosen date turns quiet and browse ad-free","Plusなら選んだ日が空いたときに通知が届き、広告なしで見られます","Plus 会员可在所选日期变清静时收到提醒，并无广告浏览","Plus 會員可在所選日期變清靜時收到提醒，並無廣告瀏覽"],
   "Plus 이용 중": ["Plus active","Plus利用中","Plus 使用中","Plus 使用中"],
+  // ── QA 묶음 2 (10/27)
+  "제휴 링크로 예약해도 가격은 같아요": ["Booking through our partner links costs the same","提携リンクから予約しても料金は同じです","通过合作链接预订价格相同","透過合作連結預訂價格相同"],
+  "‘{name}’ 근처 숙소를 여기서 바로 찾아보세요. 할인된 가격이 있는지 한 번에 비교할 수 있어요.": ["Find stays near ‘{name}’ right here and compare discounted rates at a glance.","「{name}」周辺の宿をここで探せます。割引料金があるか一度に比べられます。","在这里查找“{name}”附近住宿，一次比较是否有优惠价。","在這裡查找「{name}」附近住宿，一次比較是否有優惠價。"],
+  "‘{name}’ 입장권·투어를 여기서 예약하면 할인된 가격으로 찾아볼 수 있어요.": ["Book ‘{name}’ tickets and tours here to find discounted prices.","「{name}」のチケット・ツアーはここで予約すると割引価格で探せます。","在这里预订“{name}”门票和行程可找到优惠价。","在這裡預訂「{name}」門票和行程可找到優惠價。"],
 };

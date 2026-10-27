@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type PointerEvent } from "react";
 import { useI18n } from "@/i18n/client";
 import { deepOf, inkOf, LEVELS, levelOf } from "@/lib/levels";
 
@@ -22,6 +22,18 @@ export interface CalCell {
 export function CalendarHeatmap({ cells, cell = 18 }: { cells: CalCell[]; cell?: number }) {
   const { t, lang } = useI18n();
   const [sel, setSel] = useState(0);
+  // 올린 칸 말풍선 (경수님 QA #6: GitHub 출석 달력처럼 커지고 날·단계·인원이 뜬다)
+  const outer = useRef<HTMLDivElement>(null);
+  const [hot, setHot] = useState<{ idx: number; x: number; y: number; align: "left" | "center" | "right" } | null>(null);
+  const show = (e: PointerEvent<HTMLButtonElement>, idx: number) => {
+    const o = outer.current;
+    if (!o) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    const or = o.getBoundingClientRect();
+    const cx = r.left - or.left + r.width / 2;
+    const f = cx / or.width;
+    setHot({ idx, x: f < 0.25 ? r.left - or.left : f > 0.75 ? r.right - or.left : cx, y: r.top - or.top, align: f < 0.25 ? "left" : f > 0.75 ? "right" : "center" });
+  };
   if (!cells.length) return null;
   const dowOf = (d: string) => new Date(`${d}T00:00:00Z`).getUTCDay();
   // 월요일 시작 주 (bklit·깃허브처럼). 첫 주 앞은 빈칸
@@ -39,8 +51,28 @@ export function CalendarHeatmap({ cells, cell = 18 }: { cells: CalCell[]; cell?:
   const lv = levelOf(c.peakScore);
   const calm = cells.reduce((a, b) => (b.peakScore < a.peakScore ? b : a));
 
+  const hotCell = hot ? cells[hot.idx] : null;
   return (
-    <div>
+    <div ref={outer} className="relative" onPointerLeave={() => setHot(null)}>
+      {hot && hotCell && (
+        <div
+          className="pointer-events-none absolute z-20 rounded-xl px-3 py-1.5 text-xs leading-snug whitespace-nowrap shadow-lg"
+          style={{
+            left: hot.x,
+            top: hot.y,
+            transform: `translate(${hot.align === "left" ? "0" : hot.align === "right" ? "-100%" : "-50%"}, calc(-100% - 8px))`,
+            background: "var(--chart-foreground)",
+            color: "var(--chart-background)",
+          }}
+          role="status"
+        >
+          <b className="block text-[13px]">
+            {hotCell.long} · {t(levelOf(hotCell.peakScore).label)}
+          </b>
+          {t("가장 붐빌 때 {hour}", { hour: hotCell.peakLabel })}
+          {hotCell.people ? ` · ${hotCell.people}` : ""}
+        </div>
+      )}
       <div className="no-scrollbar overflow-x-auto pb-1">
         <div className="inline-grid" style={{ gridTemplateColumns: `auto repeat(${weeks.length}, ${cell}px)`, columnGap: gap, rowGap: gap }}>
           {/* 달 이름 줄 */}
@@ -75,9 +107,11 @@ export function CalendarHeatmap({ cells, cell = 18 }: { cells: CalCell[]; cell?:
                   <button
                     key={i}
                     onClick={() => setSel(idx)}
+                    onPointerEnter={(e) => e.pointerType === "mouse" && show(e, idx)}
+                    onPointerDown={(e) => show(e, idx)}
                     aria-label={`${x.long} ${t(l.label)}`}
                     aria-pressed={idx === sel}
-                    className="rounded-[4px] transition hover:scale-110"
+                    className={`rounded-[4px] transition-transform duration-150 ${hot?.idx === idx ? "relative z-10 scale-150 shadow-md" : ""}`}
                     style={{
                       width: cell,
                       height: cell,

@@ -1,32 +1,29 @@
 import type { ReactNode } from "react";
 import type { CharacterName, Pose } from "@/lib/characters";
-import { Character } from "./Character";
 
-/** 탭 화면 머리: 제목·설명 왼쪽, 화면 주제 캐릭터 오른쪽 (발끝을 설명 아랫줄에 맞춤) */
+/**
+ * 탭 화면 머리 (홈·지도·가이드·코스·서울·마이 공통): 화면 색 막대 + 제목 + 설명.
+ * 10/27 경수님 QA #4: 화면마다 제목 위치·크기·색이 달랐다 → 한 부품으로 통일. 색은 body[data-page]의 --page-accent.
+ * QA #5: 캐릭터는 장소 상세 포토카드·대기 화면에서만 → 여기선 안 그린다 (name·pose는 호환용으로 받기만)
+ */
 export function PageHeader({
   title,
-  name,
-  pose = "base",
-  size = 100,
   className = "",
   children,
 }: {
   title: ReactNode;
-  name: CharacterName;
+  name?: CharacterName;
   pose?: Pose;
-  /** 캐릭터 높이(px) */
   size?: number;
   className?: string;
   /** 제목 아래 설명 */
   children?: ReactNode;
 }) {
   return (
-    <div className={`mascot-host flex items-end gap-3 ${className}`}>
-      <div className="min-w-0 flex-1">
-        <h1 className="text-2xl font-bold md:text-3xl">{title}</h1>
-        {children}
-      </div>
-      <Character name={name} pose={pose} size={size} priority className="-mt-4 -mb-1 shrink-0" />
+    <div className={`page-head ${className}`}>
+      <span aria-hidden className="page-head-bar" />
+      <h1 className="page-title">{title}</h1>
+      {children}
     </div>
   );
 }

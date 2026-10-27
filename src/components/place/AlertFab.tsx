@@ -40,7 +40,6 @@ export function AlertFab({
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent>
           <div className="flex items-center gap-3">
-            <Character name={character} pose="alert" size={80} className="shrink-0" />
             <div className="min-w-0">
               <SheetTitle>{t("혼잡 알림")}</SheetTitle>
               <SheetDescription className="mt-1">

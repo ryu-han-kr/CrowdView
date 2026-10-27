@@ -1,12 +1,10 @@
 import type { ReactNode } from "react";
 import type { CharacterName, Pose } from "@/lib/characters";
-import { Character } from "./Character";
+import { Glyph } from "@/components/Glyph";
 
-/** 비어 있는 목록·찾는 결과 없음 안내: 점선 상자(empty-note) 안에 캐릭터 + 문구 */
+/** 비어 있는 목록·찾는 결과 없음 안내: 점선 상자(empty-note) 안에 아이콘 + 문구 (캐릭터는 상세·대기 화면에서만, QA #5 10/27) */
 export function EmptyState({
-  name = "hamster",
   pose = "explore",
-  size = 96,
   className = "",
   children,
 }: {
@@ -16,9 +14,12 @@ export function EmptyState({
   className?: string;
   children: ReactNode;
 }) {
+  const icon = pose === "wait" ? "⏳" : pose === "packed" ? "🧳" : pose === "alert" ? "🔔" : "🔍";
   return (
-    <div className={`empty-note flex flex-col items-center gap-1 px-5 pt-3 pb-5 text-center ${className}`}>
-      <Character name={name} pose={pose} size={size} />
+    <div className={`empty-note flex flex-col items-center gap-2 px-5 pt-5 pb-5 text-center ${className}`}>
+      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-50 text-indigo-500">
+        <Glyph e={icon} className="h-5 w-5" />
+      </span>
       <div>{children}</div>
     </div>
   );

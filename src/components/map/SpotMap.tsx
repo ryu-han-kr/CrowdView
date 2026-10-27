@@ -200,10 +200,19 @@ function NaverSpots({
     if (!map || !maps) return;
     for (const m of markersRef.current) m.setMap(null);
     const zoom = map.getZoom();
+    // 보이는 범위(여백 30%) 밖의 핀은 만들지 않는다 — 2,500곳을 매번 다 만들면 확대·축소 때마다 느렸다 (QA #25)
+    const b = map.getBounds?.();
+    const inView = (sp: MapSpot) => {
+      if (!b?.getSW) return true;
+      const sw = b.getSW(), ne = b.getNE();
+      const dy = (ne.y - sw.y) * 0.3, dx = (ne.x - sw.x) * 0.3;
+      return sp.lat >= sw.y - dy && sp.lat <= ne.y + dy && sp.lng >= sw.x - dx && sp.lng <= ne.x + dx;
+    };
     // 화면에서 약 60px 크기의 칸 (경도 기준 근사)
     const cell = spots.length > CLUSTER_FROM && zoom < 16 ? (60 * 360) / (256 * 2 ** zoom) : 0;
     const groups = new Map<string, MapSpot[]>();
     for (const sp of spots) {
+      if (!inView(sp)) continue;
       const key = cell ? `${Math.floor(sp.lat / cell)}:${Math.floor(sp.lng / cell)}` : sp.id;
       groups.set(key, [...(groups.get(key) ?? []), sp]);
     }
@@ -271,7 +280,8 @@ function NaverSpots({
     const map = mapRef.current;
     const maps = window.naver?.maps;
     if (!map || !maps) return;
-    const listener = maps.Event.addListener(map, "zoom_changed", () => drawRef.current());
+    // 확대·이동이 끝났을 때(idle) 한 번만. zoom_changed 는 바퀴 한 번에 여러 번 와서 그때마다 전부 다시 그렸다
+    const listener = maps.Event.addListener(map, "idle", () => drawRef.current());
     // 지도 인증이 실패하면(키·도메인 문제) 그림 지도로 바뀌며 이 지도가 먼저 정리돼, 리스너를 지울 때 네이버 SDK가 오류를 던진다
     // → 지도 화면 전체가 오류 화면이 되던 것 (10/21 고정 자료 시험에서 발견)
     return () => {
@@ -289,8 +299,8 @@ function NaverSpots({
         <MapPreview spots={spots} hidden={hideOverlay} onPainted={() => setPainted(true)} />
       ) : (
         !hideOverlay && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-gray-50 text-sm text-gray-500">
-            <Character name="hamster" pose="explore" size={120} priority />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gray-50 text-sm text-gray-500">
+            <span className="wait-ring h-8 w-8 rounded-full border-[3px] border-indigo-200 border-t-indigo-600" aria-hidden />
             {t("지도를 불러오는 중…")}
           </div>
         )

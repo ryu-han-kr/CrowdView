@@ -12,9 +12,9 @@ import { LEVELS, levelOf, inkOf } from "@/lib/levels";
 import type { HourPoint } from "@/lib/types";
 
 // 왼쪽 58px는 단계 이름 칸 (그래프 선과 글씨가 겹치지 않게 그림 밖에 둔다)
-const MARGIN = { top: 8, right: 10, bottom: 34, left: 66 };
+const MARGIN = { top: 8, right: 10, bottom: 34, left: 78 };
 // 영어처럼 단계 이름이 긴 언어 ('Very crowded'): 왼쪽 칸을 넓히고 글자를 줄인다 (UI QA 12차: 이름이 그래프 안으로 넘쳤다)
-const WIDE_MARGIN = { ...MARGIN, left: 96 };
+const WIDE_MARGIN = { ...MARGIN, left: 108 };
 const isWide = (labels: Record<number, string>) => Object.values(labels).some((x) => x.length > 6 && /[a-z]/i.test(x));
 
 const PEOPLE_NOTE: Record<NonNullable<HourPoint["peopleKind"]>, string> = {
@@ -62,9 +62,10 @@ function Selected({ hour, score, lines }: { hour: number; score: number; lines: 
   const color = levelOf(score).color;
   return (
     <g pointerEvents="none">
-      <line x1={x} x2={x} y1={0} y2={innerHeight} stroke={color} strokeOpacity="0.5" strokeWidth="2" />
-      <circle cx={x} cy={yScale(score)} r="11" fill={color} fillOpacity="0.18" />
-      <circle cx={x} cy={yScale(score)} r="6" fill={color} stroke="#fff" strokeWidth="2.5" />
+      {/* 커서를 올리면 점이 커지고 고리가 퍼진다 (경수님 QA #6 10/27: 확대 효과). 위치 전환은 0.15초 */}
+      <line x1={x} x2={x} y1={0} y2={innerHeight} stroke={color} strokeOpacity="0.5" strokeWidth="2" style={{ transition: "x1 0.15s, x2 0.15s" }} />
+      <circle cx={x} cy={yScale(score)} r="16" fill={color} fillOpacity="0.14" className="chart-pulse" style={{ transformOrigin: `${x}px ${yScale(score)}px`, transition: "cx 0.15s, cy 0.15s" }} />
+      <circle cx={x} cy={yScale(score)} r="8" fill={color} stroke="#fff" strokeWidth="3" style={{ transition: "cx 0.15s, cy 0.15s" }} />
       <ChartBubble x={x} y={yScale(score)} lines={lines} />
     </g>
   );
@@ -101,7 +102,7 @@ export function LevelGradients({ id }: { id: string }) {
 function LevelLines({ labels }: { labels: Record<number, string> }) {
   const { yScale, innerWidth } = useChart();
   const M = isWide(labels) ? WIDE_MARGIN : MARGIN;
-  const fs = isWide(labels) ? 11 : 12.5;
+  const fs = isWide(labels) ? 11 : 12;
   return (
     <g pointerEvents="none">
       {LEVELS.map((l, i) => {
@@ -206,7 +207,8 @@ export function HourlyChart({
   return (
     <div>
       {/* 고른 시간 상세 */}
-      <div className="mb-2 flex items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3" aria-live="polite">
+      {/* 높이를 고정해 셋째 줄이 있고 없고에 따라 그래프가 위아래로 밀리지 않게 (QA #19) */}
+      <div className="mb-2 flex min-h-[92px] items-center gap-3 rounded-2xl bg-gray-50 px-4 py-3" aria-live="polite">
         <div className="min-w-0 flex-1">
           <p className="text-sm text-gray-600">
             <b className="text-gray-900">{formatHour(p.hour, lang)}</b> {sel === nowIdx ? `· ${t("지금")}` : ""} ·{" "}
@@ -221,7 +223,7 @@ export function HourlyChart({
             )}
           </p>
           {/* 인원이 있으면 인원의 출처를, 없을 때만 혼잡 지수를 (점수로 판단하지 않게) */}
-          <p className="text-xs text-gray-500">
+          <p className="min-h-4 text-xs text-gray-500">
             {p.people === undefined && t("혼잡 지수 {n}", { n: p.score })}
             {p.peopleKind && SHOW_DATA_LABELS && (
               <span className={p.peopleKind === "est" ? "text-amber-700" : undefined}>
