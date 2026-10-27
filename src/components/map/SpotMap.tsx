@@ -220,13 +220,16 @@ function NaverSpots({
       if (g.length === 1) {
         const sp = g[0];
         const label = `${sp.name}${sp.score !== undefined ? ` · ${t(levelOf(sp.score).label)}` : ""}`;
+        // 확대할수록 핀을 크게, 바깥 흰 고리 + 진한 그림자로 지도 위에서 잘 보이게 (경수님 10/27: 클로즈업 때 동그라미가 잘 안 보임)
+        const pin = zoom >= 16 ? 44 : zoom >= 14 ? 38 : 30;
+        const ring = zoom >= 14 ? 4 : 3;
         const marker = new maps.Marker({
           map,
           position: new maps.LatLng(sp.lat, sp.lng),
           title: label,
           icon: {
-            content: `<div role="img" aria-label="${label.replace(/"/g, "&quot;")}" data-place-id="${sp.id}" data-level="${sp.score !== undefined ? levelOf(sp.score).key : "none"}" style="width:28px;height:28px;border-radius:9999px;background:#fff;border:3px solid ${pinColor(sp.score)};display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer">${sp.emoji ?? ""}</div>`,
-            anchor: new maps.Point(14, 14),
+            content: `<div role="img" aria-label="${label.replace(/"/g, "&quot;")}" data-place-id="${sp.id}" data-level="${sp.score !== undefined ? levelOf(sp.score).key : "none"}" style="width:${pin}px;height:${pin}px;border-radius:9999px;background:linear-gradient(${pinColor(sp.score)}33,${pinColor(sp.score)}33),#fff;border:${ring}px solid ${pinColor(sp.score)};display:flex;align-items:center;justify-content:center;font-size:${Math.round(pin * 0.5)}px;box-shadow:0 0 0 2px #fff,0 3px 10px rgba(0,0,0,.4);cursor:pointer">${sp.emoji ?? ""}</div>`,
+            anchor: new maps.Point(pin / 2, pin / 2),
           },
         });
         maps.Event.addListener(marker, "click", () => onSelect(sp.id));

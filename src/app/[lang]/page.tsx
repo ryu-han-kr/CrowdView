@@ -39,6 +39,7 @@ import { HomeGreeting } from "@/components/home/HomeGreeting";
 import { InlineAd } from "@/components/AdUnit";
 import { HomeSearchInput } from "@/components/home/HomeSearchInput";
 import { LiveBadge } from "@/components/LiveBadge";
+import { PageHeader } from "@/components/PageHeader";
 
 // ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 // (60초였을 때 ISR 쓰기 5일에 13만 건. 데이터는 10분마다 갱신되니 5분이면 충분)
@@ -388,7 +389,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const seoulScores = Object.values(seoul).map((s) => s.score);
 
   return (
-    <main className="px-5 pt-5 pb-4 md:px-0 md:pt-8">
+    <main className="px-5 pt-5 pb-4 md:px-0 md:pt-10">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -410,10 +411,13 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           <HomeSearchInput />
           <LangSwitcher iconOnly />
         </div>
-        <h1 className="sr-only md:not-sr-only md:text-2xl md:font-bold">{ko ? t("지금 어디가 한산할까?") : t("한산할 때 즐기는 한국 여행")}</h1>
-        <p className="mt-0.5 hidden text-sm text-gray-500 md:block">
-          {ko ? t("공항·놀이공원·명소·축제의 실시간 혼잡도와 AI 예측을 한눈에") : t("명소·축제 안내와 실시간 혼잡도를 한 곳에서")}
-        </p>
+        <h1 className="sr-only md:hidden">{ko ? t("지금 어디가 한산할까?") : t("한산할 때 즐기는 한국 여행")}</h1>
+        {/* PC 제목: 다른 탭 화면과 같은 머리(색 막대·크기·위 여백 pt-10) — 경수님 10/27: 홈 제목만 거리가 달랐다 */}
+        <PageHeader title={ko ? t("지금 어디가 한산할까?") : t("한산할 때 즐기는 한국 여행")} className="hidden md:flex">
+          <p className="mt-1 text-sm text-gray-500">
+            {ko ? t("공항·놀이공원·명소·축제의 실시간 혼잡도와 AI 예측을 한눈에") : t("명소·축제 안내와 실시간 혼잡도를 한 곳에서")}
+          </p>
+        </PageHeader>
       </header>
 
       <HeroCarousel slides={slides} />
