@@ -1,6 +1,7 @@
 import { makeT, type T } from "../i18n/translate";
 import placeKto from "../data/korea/place-kto.json";
 import type { Place } from "./types";
+import { GOOGLE_PHOTO } from "./places-google";
 
 /** 사진 경로: public/places/{id}.jpg (한국관광공사). 관광공사 사진이 없는 곳은 위키미디어 공용 사진(출처 표시), 그것도 없으면 색 배경 */
 // 사진이 없는 곳(오락실·일부 클라이밍장: 관광공사 자료 없음, 매장 사진은 구글 플레이스 API 키가 오면 받는다 10/27)
@@ -28,6 +29,7 @@ const NO_PHOTO = new Set<string>([
   "boulderfriends-hongdae",
   "peakers-jongno",
 ]);
+const GOOGLE_CREDIT: Place["imageCredit"] = { author: "Google 지도", license: "Google", url: "https://www.google.com/maps" };
 const LEISURE_CREDITS: Record<string, Place["imageCredit"]> = {
   "caribbean-bay": {
     author: "박은영",
@@ -85,7 +87,9 @@ function leisure(
       provisional: true,
     },
     ...o,
-    image: NO_PHOTO.has(id) ? undefined : `/places/${id}.jpg`,
+    // 관광공사 사진이 없는 곳은 구글 지도 사진 (api/gphoto, 10/27)
+    image: GOOGLE_PHOTO.has(id) ? `/api/gphoto/${id}` : NO_PHOTO.has(id) ? undefined : `/places/${id}.jpg`,
+    ...(GOOGLE_PHOTO.has(id) && { imageCredit: GOOGLE_CREDIT }),
     ...(LEISURE_CREDITS[id] && { imageCredit: LEISURE_CREDITS[id] }),
   };
 }

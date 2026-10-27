@@ -73,7 +73,7 @@ export const INTEGRATIONS: Integration[] = [
   { id: "expedia", group: "affiliate", name: "익스피디아·호텔스닷컴", env: ["NEXT_PUBLIC_AFF_EXPEDIA"], manual: "pending", note: "링크프라이스에서 승인 대기 (10/27 신청)" },
   // ── 광고
   { id: "adsense", group: "ads", name: "구글 애드센스", env: ["NEXT_PUBLIC_ADSENSE_CLIENT"], account: G, note: "사이트 연결됨", url: "https://adsense.google.com" },
-  { id: "adsense-slots", group: "ads", name: "애드센스 광고 단위 2개 (목록 사이·옆 레일)", env: ["NEXT_PUBLIC_ADSENSE_SLOT_INLINE", "NEXT_PUBLIC_ADSENSE_SLOT_RAIL"], manual: "todo", todo: "애드센스 → 광고 → 광고 단위 기준 → 디스플레이 2개 → data-ad-slot 숫자 전달", url: "https://adsense.google.com" },
+  { id: "adsense-slots", group: "ads", name: "애드센스 광고 단위 2개 (목록 사이·옆 레일)", env: ["NEXT_PUBLIC_ADSENSE_SLOT_INLINE", "NEXT_PUBLIC_ADSENSE_SLOT_RAIL"], note: "10/27 반영: one(1956945389)=목록 사이, two(9643863714)=옆 레일", url: "https://adsense.google.com" },
   // ── 분석
   { id: "search-console", group: "analytics", name: "구글 서치콘솔", env: [], manual: "ok", note: "DNS 소유 확인. 색인 요청은 하루 3~5개", todo: "10/28~29 '페이지' 색인 수 확인", url: "https://search.google.com/search-console" },
   { id: "naver-webmaster", group: "analytics", name: "네이버 서치어드바이저", env: ["NEXT_PUBLIC_NAVER_SITE_VERIFICATION"], url: "https://searchadvisor.naver.com" },

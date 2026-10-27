@@ -46,8 +46,8 @@ export const APIS: ApiInfo[] = [
   { id: "kto-tour", name: "관광공사 TourAPI(축제·운영시간)", prefix: "/B551011/KorService2/", dataset: "15101578", limit: 1000 }, // 운영계정 신청 중 (승인되면 100,000)
   { id: "kto-related", name: "관광공사 연관 관광지", prefix: "/B551011/TarRlteTarService1/", dataset: "15128560", limit: 1000 }, // 운영계정 신청 중 (승인되면 100,000)
   { id: "kto-datalab", name: "관광공사 데이터랩(지역 방문자)", prefix: "/B551011/DataLabService/", dataset: "15101972", limit: 1000 }, // 운영계정 신청 중 (승인되면 100,000)
-  // 강원랜드 광장주차장 실시간 주차 (하이원 보조 지표). 개발계정 5,000/일, 요청 주소는 PARKING_HIGH1_URL (lib/crowd/parking)
-  { id: "parking-high1", name: "강원랜드 광장주차장 실시간 주차", dataset: "15168488", limit: 5000 },
+  // 강원랜드 광장주차장 실시간 주차 (하이원 보조 지표). 10/27 운영계정 승인 10만/일, 요청 주소는 PARKING_HIGH1_URL (lib/crowd/parking)
+  { id: "parking-high1", name: "강원랜드 광장주차장 실시간 주차", dataset: "15168488", limit: 100000 },
   { id: "busan-pop", name: "부산시 생활인구", prefix: "/6260000/", limit: 100000 },
   // 공공데이터포털 밖
   { id: "seoul-citydata", name: "서울시 실시간 도시데이터" },
@@ -71,6 +71,8 @@ export const APIS: ApiInfo[] = [
   // 하루 30건 고정 (사용자 10/24). 처음(10/22) 기본값이 60이라 10/22·23에 하루 45건 나갔다 (운영 환경변수는 없음) → 환경변수로도 30보다 못 올리게
   { id: "brave-search", name: "Brave Search (월 $5 무료 크레딧)", limit: Math.min(Number(process.env.BRAVE_DAILY_LIMIT) || 30, 30), monthlyLimit: Number(process.env.BRAVE_MONTHLY_LIMIT) || 900 },
   { id: "tavily", name: "Tavily 검색 (무료)", limit: Number(process.env.TAVILY_DAILY_LIMIT) || 30, monthlyLimit: Number(process.env.TAVILY_MONTHLY_LIMIT) || 1000, unit: "크레딧" },
+  // 구글 플레이스 (New) 사진 없는 장소 사진 (api/gphoto). 검색 1 + 사진 1을 2로 센다. 사진 월 1,000장 무료 → 월 1,800(사진 900장)에서 멈춘다
+  { id: "google-places", name: "구글 플레이스 사진 (검색+사진)", limit: 120, monthlyLimit: 1800 },
   { id: "papago", name: "Papago 번역 (글자 수)", limit: 30000, monthlyLimit: Number(process.env.PAPAGO_MONTHLY_LIMIT) || 300_000, unit: "자" },
 ];
 
