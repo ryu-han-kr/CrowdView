@@ -28,7 +28,20 @@ const SLIDE_MS = 450; // 한 장 넘어가는 시간
  * 큰 포토 배너: 휴대폰은 가운데 한 장 + 양옆 배너가 살짝, PC는 두 장 나란히 (QA #8 PC 레퍼런스 10/27). 자동으로 넘어가고, 화살표·점·밀어서 넘기기.
  * 목록을 3벌 이어 붙여 가운데 벌을 보여 주고, 끝을 넘어가면 애니메이션 없이 가운데 벌의 같은 배너로 되돌린다 (끝없이 이어지게)
  */
-export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
+export function HeroCarousel({
+  slides: all,
+  layout = "peek",
+  eager = true,
+  startDelay = 0,
+}: {
+  slides: HeroSlide[];
+  /** peek: 휴대폰 가운데 한 장 + 양옆 살짝, PC 두 장 나란히 / single: 칸 폭 그대로 한 장씩 (PC 홈 배너 두 개, 경수님 10/27) */
+  layout?: "peek" | "single";
+  /** 첫 배너 사진을 바로 받을지. 화면에 숨겨진(display:none) 배너는 false로 두어 받지 않게 한다 */
+  eager?: boolean;
+  /** 자동 넘김 시작을 늦춘다 (나란히 놓인 두 배너가 동시에 넘어가지 않게) */
+  startDelay?: number;
+}) {
   const { t } = useI18n();
   // Plus 회원에게는 Plus 홍보 배너를 빼고 보여 준다
   const plus = usePlus();
@@ -46,13 +59,19 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
   // 자동 넘김 (직접 넘긴 직후 잠깐 쉬고, 탭이 안 보일 때는 브라우저가 알아서 늦춘다)
   useEffect(() => {
     if (!loop || paused) return;
-    const id = setInterval(() => {
-      if (Date.now() < holdUntil.current) return;
-      setAnimate(true);
-      setPos((p) => p + 1);
-    }, AUTO_MS);
-    return () => clearInterval(id);
-  }, [loop, paused]);
+    let id: ReturnType<typeof setInterval> | undefined;
+    const start = setTimeout(() => {
+      id = setInterval(() => {
+        if (Date.now() < holdUntil.current) return;
+        setAnimate(true);
+        setPos((p) => p + 1);
+      }, AUTO_MS);
+    }, startDelay);
+    return () => {
+      clearTimeout(start);
+      clearInterval(id);
+    };
+  }, [loop, paused, startDelay]);
 
   // 가운데 벌을 벗어나면 넘김이 끝난 뒤 같은 배너 자리로 순간 이동
   useEffect(() => {
@@ -83,7 +102,11 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
   return (
     <section
       // 배너 폭 --w: 휴대폰 84%(양옆에 이전·다음 배너가 살짝), PC는 절반씩 두 장. --off: 현재 배너의 왼쪽 위치
-      className="relative -mx-5 overflow-hidden [--gap:8px] [--off:calc((100cqw-var(--w))/2)] [--w:84cqw] [container-type:inline-size] md:mx-0 md:[--gap:16px] md:[--off:0px] md:[--w:calc((100cqw-var(--gap))/2)]"
+      className={
+        layout === "single"
+          ? "relative overflow-hidden rounded-3xl [--gap:0px] [--off:0px] [--w:100cqw] [container-type:inline-size]"
+          : "relative -mx-5 overflow-hidden [--gap:8px] [--off:calc((100cqw-var(--w))/2)] [--w:84cqw] [container-type:inline-size] md:mx-0 md:[--gap:16px] md:[--off:0px] md:[--w:calc((100cqw-var(--gap))/2)]"
+      }
       aria-roledescription="carousel"
       onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
       onTouchEnd={(e) => {
@@ -104,7 +127,7 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
         {items.map((s, k) => {
           const current = k === pos;
           // PC에서 오른쪽에 함께 보이는 두 번째 배너 (휴대폰에선 옆에 흐리게 보이는 배너)
-          const second = loop && k === pos + 1;
+          const second = layout === "peek" && loop && k === pos + 1;
           // 처음 화면에 가운데 보이는 배너 (가장 큰 그림 → 먼저 받기). 무한 넘김용 복제본도 같은 그림이라 같이 (LCP 경고: 복제본이 lazy였다)
           const main = s.id === items[loop ? n : 0].id;
           const near = Math.abs(k - pos) <= 1;
@@ -124,8 +147,8 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
                 fill
                 sizes="(min-width: 768px) 560px, 84vw"
                 // 현재 장만 즉시 (10/26 성능: 양옆 2장까지 즉시 받던 것을 넘길 때로)
-                loading={main ? "eager" : "lazy"}
-                fetchPriority={main ? "high" : "auto"}
+                loading={main && eager ? "eager" : "lazy"}
+                fetchPriority={main && eager ? "high" : "auto"}
                 unoptimized={!canOptimize(s.img)}
                 className="object-cover"
               />

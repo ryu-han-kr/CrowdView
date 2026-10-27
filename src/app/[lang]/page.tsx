@@ -6,6 +6,9 @@ import { jsonLd, SITE } from "@/lib/seo";
 import { HomeList, type HomePlace } from "@/components/HomeList";
 import { CategoryIcons } from "@/components/home/CategoryIcons";
 import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
+
+// 나란히 놓인 두 배너가 동시에 넘어가지 않게 오른쪽은 반 박자 늦게
+const AUTO_HALF = 1750;
 import { PhotoRail, type PhotoCardItem } from "@/components/home/PhotoRail";
 import { PlusPromo } from "@/components/home/PlusPromo";
 import { RecentRail } from "@/components/home/RecentRail";
@@ -187,9 +190,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     sub: t("지하철 이동시간과 식사 시간까지 맞춰 드려요"),
   };
   const ko = lang === "ko";
-  const slides = (ko ? [...crowdSlides, ...travelSlides, routeSlide, plusSlide] : [...travelSlides, routeSlide, ...crowdSlides, plusSlide]).filter(
-    (s): s is HeroSlide => !!s,
-  );
 
   const festivalRail = (
     <PhotoRail
@@ -325,6 +325,44 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       boxColor: lv.color,
     };
   });
+  // 큰 배너 두 개 (경수님 10/27): PC는 왼쪽 '지금 혼잡'·오른쪽 '여행·소식'을 나란히, 각각 최대 6장. 같은 곳이 두 배너에 겹치지 않게.
+  // 휴대폰은 한 배너에 둘을 번갈아 섞어 보여 준다
+  const used = new Set<string>();
+  const uniq = (list: (HeroSlide | undefined | false)[]) =>
+    list
+      .filter((s): s is HeroSlide => !!s && !!s.img && !used.has(s.href))
+      .filter((s) => (used.add(s.href), true))
+      .slice(0, 6);
+  const calm1 = calmCards[0];
+  const busy1 = busyItems[0];
+  const trend1 = trendItems.find((x) => x.img && !x.external);
+  const ride1 = shortCards.find((c) => c.live) ?? shortCards[0];
+  const crowdBanner = uniq([
+    ...crowdSlides,
+    ride1 && { id: "ride", href: ride1.href, img: ride1.img!, live: ride1.live, tag: t("실시간 대기"), title: ride1.title, sub: `${ride1.headline} · ${ride1.boxValue}` },
+    calm1 && { id: "calm", href: calm1.href, img: calm1.img!, tag: t("지금 한산한 명소"), title: t("{name}, 지금 한산해요", { name: calm1.title }), sub: calm1.sub },
+    busy1 && { id: "busy", href: busy1.href, img: busy1.img!, live: true, tag: t("지금 붐비는 곳"), title: busy1.title, sub: busy1.sub },
+    trend1 && { id: "trend", href: trend1.href, img: trend1.img!, tag: t("요즘 뜨는 곳 1위"), title: trend1.title, sub: trend1.sub },
+  ]);
+  const nextFestival = topFestivals.find((f) => f !== hotFestival && f.image);
+  const travelBanner = uniq([
+    ...travelSlides,
+    nextFestival && {
+      id: "festival2",
+      href: festivalHref(nextFestival),
+      img: nextFestival.image!,
+      tag: nextFestival.start <= today ? t("진행 중 축제") : t("다가오는 축제"),
+      title: names.get(nextFestival.title) ?? nextFestival.title,
+      sub: `${dateRange(nextFestival.start, nextFestival.end)} · ${names.get(nextFestival.region) ?? trRegion(nextFestival.region, t)}`,
+    },
+    routeSlide,
+    plusSlide,
+  ]);
+  const [firstBanner, secondBanner] = ko ? [crowdBanner, travelBanner] : [travelBanner, crowdBanner];
+  const mobileSlides = Array.from({ length: Math.max(firstBanner.length, secondBanner.length) }, (_, i) => [firstBanner[i], secondBanner[i]])
+    .flat()
+    .filter((s): s is HeroSlide => !!s);
+
   // 2) 테마 타일: 고른 주제로 바로 이동 (사진은 그 주제의 대표 장소)
   const countCalm = (f: (p: (typeof places)[number]) => boolean) => places.filter((p) => f(p) && crowd[p.id]?.open && crowd[p.id].score < 40).length;
   const themeTiles: ThemeTile[] = [
@@ -462,7 +500,14 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         </PageHeader>
       </header>
 
-      <HeroCarousel slides={slides} />
+      <div className="md:hidden">
+        <HeroCarousel slides={mobileSlides} />
+      </div>
+      {/* PC: 배너 두 개를 나란히, 서로 다른 내용 (휴대폰용 배너가 첫 사진을 받으므로 여기는 lazy) */}
+      <div className="hidden gap-4 md:grid md:grid-cols-2">
+        <HeroCarousel slides={firstBanner} layout="single" eager={false} />
+        <HeroCarousel slides={secondBanner} layout="single" eager={false} startDelay={AUTO_HALF} />
+      </div>
       {seoulScores.length ? (
         <HomeGreeting
           scores={seoulScores}
