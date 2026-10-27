@@ -14,7 +14,7 @@ import { headcountInfo } from "@/lib/format";
 import { placeTag } from "@/lib/category-style";
 import { heroImage, placePhotos } from "@/lib/place-photos";
 import { FeatureGrid } from "@/components/home/FeatureLayouts";
-import { CollectionCarousel, ShortCardRail, ThemeTiles, type Collection, type ShortCard, type ThemeTile } from "@/components/home/HomeCollections";
+import { ShortCardRail, ThemeTiles, type ShortCard, type ThemeTile } from "@/components/home/HomeCollections";
 import { levelOf } from "@/lib/levels";
 import { CATEGORY_LABEL } from "@/lib/types";
 import { subOf } from "@/lib/subcategory";
@@ -37,6 +37,8 @@ import { fmtAge, trRegion } from "@/i18n/patterns";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { HomeGreeting } from "@/components/home/HomeGreeting";
 import { InlineAd } from "@/components/AdUnit";
+import { HomeSearchInput } from "@/components/home/HomeSearchInput";
+import { LiveBadge } from "@/components/LiveBadge";
 
 // ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 // (60초였을 때 ISR 쓰기 5일에 13만 건. 데이터는 10분마다 갱신되니 5분이면 충분)
@@ -374,50 +376,11 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       sub: t("강남역·성수·한강공원, 지금 몇 명?"),
     },
   ];
-  // 3) 모음 배너: 지금 한산한 3곳 + 큰 배경 사진 (배경은 그 묶음에서 가장 유명한 곳의 두 번째 사진)
-  const makeCollection = (id: string, title: string, badge: string, href: string, pool: typeof places): Collection => {
-    const inR = pool.filter((p) => crowd[p.id] && heroImage(p) && p.category !== "airport");
-    const top = [...inR].sort((a, b) => b.popularity - a.popularity)[0];
-    const items = [...inR]
-      .sort((a, b) => Number(crowd[b.id].open) - Number(crowd[a.id].open) || crowd[a.id].score - crowd[b.id].score)
-      .slice(0, 3)
-      .map((p) => {
-        const c = crowd[p.id];
-        const lv = levelOf(c.score);
-        return {
-          id: p.id,
-          href: placeHref(p),
-          img: heroImage(p),
-          title: t(p.name),
-          value: c.open ? [t(lv.label), headcountInfo(c, { t, lang })?.text].filter(Boolean).join(" · ") : t("운영 종료"),
-          color: c.open ? lv.color : "#6b7280",
-        };
-      });
-    return {
-      id,
-      title,
-      badge,
-      sub: t("지금 덜 붐비는 순 {n}곳", { n: items.length }),
-      href,
-      img: top ? (placePhotos(top.id)[1]?.src ?? heroImage(top)) : undefined,
-      items,
-    };
-  };
-  const REGION_SETS = ["서울", "경기", "부산", "제주", "강원"];
-  const collections: Collection[] = REGION_SETS.map((r) =>
-    makeCollection(
-      t(r),
-      t("{region} 지금 한산한 곳 모음", { region: t(r) }),
-      t("지역 모음"),
-      "/?q=" + encodeURIComponent(t(r)) + "#places",
-      places.filter((p) => p.region.startsWith(r)),
-    ),
-  ).filter((c) => c.items.length >= 3);
+  // '지역별 한산한 곳 모음' 구역은 10/27 홈 2차(구역 축소)에서 뺐다 — 전체 목록의 지역 검색과 겹쳤다
   const shortRail = (
     <ShortCardRail title={t("테마파크·워터파크 지금")} sub={t("실시간 대기와 예상 혼잡을 한눈에")} moreHref="/map" items={shortCards} />
   );
   const themeSection = <ThemeTiles title={t("오늘은 이런 곳 어때요?")} sub={t("주제를 고르면 바로 그 목록으로")} tiles={themeTiles} />;
-  const collectionSection = <CollectionCarousel title={t("지역별 한산한 곳 모음")} sub={t("지역을 고르면 지금 덜 붐비는 곳 3곳")} collections={collections} />;
 
   // 상태 알약: 실시간 자료 기준 시각 (NOL '공지' 줄 자리)
   const seoulTime = Object.values(seoul)[0]?.time?.slice(11, 16);
@@ -443,13 +406,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           <Link href="/" className="shrink-0 text-xl font-extrabold tracking-tight">
             <span className="text-indigo-600">Crowd</span>View
           </Link>
-          <a
-            href="#places"
-            className="flex min-w-0 flex-1 items-center gap-2 rounded-full border-2 border-indigo-500 bg-white px-4 py-2.5 text-[15px] text-gray-500"
-          >
-            <span className="min-w-0 flex-1 truncate">{t("장소·지역 검색")}</span>
-            <Glyph e="🔍" className="h-5 w-5 shrink-0 text-indigo-600" />
-          </a>
+          <HomeSearchInput />
           <LangSwitcher iconOnly />
         </div>
         <h1 className="sr-only md:not-sr-only md:text-2xl md:font-bold">{ko ? t("지금 어디가 한산할까?") : t("한산할 때 즐기는 한국 여행")}</h1>
@@ -466,11 +423,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           t={t}
           live={
             <>
-              <span className="shrink-0 rounded-full bg-indigo-600 px-1.5 py-px text-[10px] font-bold text-white">LIVE</span>
-              <span className="relative flex h-2 w-2 shrink-0">
-                <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-emerald-400" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-              </span>
+              <LiveBadge />
               <span className="min-w-0 truncate">
                 {newest !== null && t("{age} 갱신", { age: fmtAge(newest, t) })}
                 {seoulTime && `${newest !== null ? " · " : ""}${t("서울시 {time} 기준", { time: seoulTime })}`}
@@ -484,11 +437,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
             href="/methodology"
             className="mt-3 flex items-center gap-2 rounded-2xl bg-indigo-50/70 px-3.5 py-2.5 text-xs text-gray-700 md:mt-4 md:text-sm"
           >
-            <span className="shrink-0 rounded-full bg-indigo-600 px-2 py-0.5 text-[11px] font-bold text-white">LIVE</span>
-            <span className="relative flex h-2 w-2 shrink-0">
-              <span className="pulse-ring absolute inline-flex h-full w-full rounded-full bg-emerald-400" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-            </span>
+            <LiveBadge />
             <span className="min-w-0 truncate">
               {t("{age} 갱신", { age: fmtAge(newest, t) })}
               {seoulTime && ` · ${t("서울시 {time} 기준", { time: seoulTime })}`} · {t("공항·놀이공원·서울 121곳 실측")}
@@ -508,9 +457,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {themeSection}
           <InlineAd className="mt-8" />
           {festivalRail}
-          {collectionSection}
           {plusPromo}
-          {landmarkRail}
         </HomeList>
       ) : (
         <>
@@ -520,7 +467,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {festivalRail}
           {calmRail}
           {shortRail}
-          {collectionSection}
           {trendList}
           {plusPromo}
           <HomeList places={listPlaces} crowd={listCrowd} withSearch />
