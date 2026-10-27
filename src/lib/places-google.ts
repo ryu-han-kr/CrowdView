@@ -1,4 +1,6 @@
 // 관광공사 사진이 없어 구글 플레이스 사진을 쓰는 장소 (lib/places NO_PHOTO와 같은 목록, api/gphoto/[id]).
+import climbingGyms from "../data/korea/climbing-gyms.json";
+
 // 브라우저에서도 읽는 목록이라 환경변수로 켜고 끄지 않는다. 키가 없으면 api가 404 → 깨진 사진은 숨겨져 색 배경이 보인다
 export const GOOGLE_PHOTO = new Set<string>([
   "zzang-arcade-cheonho",
@@ -23,4 +25,6 @@ export const GOOGLE_PHOTO = new Set<string>([
   "seoulforest-climbing-jongno",
   "boulderfriends-hongdae",
   "peakers-jongno",
+  // 전국 클라이밍장 (lib/places climbingGyms)
+  ...climbingGyms.map((g) => g.id),
 ]);

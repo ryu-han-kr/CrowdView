@@ -88,7 +88,8 @@ const SOURCE_LABEL: Record<CrowdResult["source"], string> = {
 // 빌드 때는 한국어만 미리 만들고 다른 언어는 처음 열 때 만든다 (빌드 페이지 약 1,300개 → 500개 아래, Vercel 빌드 시간 절약)
 export function generateStaticParams({ params }: { params: { lang: string } }) {
   if (params.lang !== DEFAULT_LANG) return [];
-  return PLACES.map((p) => ({ id: p.id }));
+  // 클라이밍장 159곳(climb-*)은 처음 열 때 만든다 (빌드 시간·빌드 중 API 호출을 늘리지 않게)
+  return PLACES.filter((p) => !p.id.startsWith("climb-")).map((p) => ({ id: p.id }));
 }
 
 const weekday = (date: string, lang: Lang, style: "long" | "short") =>
