@@ -7,6 +7,10 @@ import { GOOGLE_PHOTO } from "@/lib/places-google";
 // 구글 약관상 사진은 저장하지 않고 그때그때 받는다 — 사진 주소(photoUri)만 하루 캐시, 응답은 CDN이 하루 보관.
 // 비용: Text Search(사진 이름) + Place Photo 각 1회가 하루 장소당 많아야 1번 → 22곳이면 월 약 660장 (사진 월 1,000장 무료)
 const API = APIS.find((a) => a.id === "google-places");
+// 사진을 못 받을 때(키 없음·한도·장애) 보내는 어두운 회색 그림. 404로 숨기면 카드 위 흰 글자가 밝은 바탕에 남아 읽기 어렵다(접근성 검사 10/27)
+const FALLBACK = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAQCAIAAACtAwlQAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAAGElEQVQokWNwD80kiBhGFTGMBgEDMUEAAEwOw8EDTVFpAAAAAElFTkSuQmCC", "base64");
+const fallback = (maxAge: number) =>
+  new Response(FALLBACK, { headers: { "Content-Type": "image/png", "Cache-Control": `public, s-maxage=${maxAge}` } });
 
 async function photoUri(id: string): Promise<string | null> {
   const key = process.env.GOOGLE_PLACES_API_KEY;
@@ -39,7 +43,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   if (!GOOGLE_PHOTO.has(id)) return new Response("not found", { status: 404 });
   try {
     const uri = await photoUri(id);
-    if (!uri) return new Response("no photo", { status: 404, headers: { "Cache-Control": "public, s-maxage=3600" } });
+    if (!uri) return fallback(3600);
     const img = await fetch(uri, { signal: AbortSignal.timeout(8000) });
     if (!img.ok || !img.body) throw new Error(`photo ${img.status}`);
     return new Response(img.body, {
@@ -50,6 +54,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     });
   } catch (e) {
     console.warn("[gphoto]", id, e instanceof Error ? e.message : e);
-    return new Response("error", { status: 502, headers: { "Cache-Control": "public, s-maxage=300" } });
+    return fallback(300);
   }
 }
