@@ -17,6 +17,7 @@ import { Glyph } from "@/components/Glyph";
 import { SUBS_OF, SUB_EMOJI, SUB_LABEL, subOf, type SubCategory } from "@/lib/subcategory";
 import { useSpots, type SpotRow } from "./MoreSpots";
 import { EmptyState } from "@/components/EmptyState";
+import { RoundChips } from "@/components/RoundChips";
 
 /** 홈 통합 검색의 다른 탭 항목 (서버에서 만든 명소·축제·서울 지역) */
 export interface SearchItem {
@@ -77,11 +78,23 @@ const CATEGORY_EMOJI: Record<Category, string> = {
   themepark: "🎢",
   waterpark: "🌊",
   ski: "⛷️",
+  indoor: "🕹️",
   beach: "🏖️",
   airport: "✈️",
   event: "🎆",
 };
 const CATEGORIES = Object.keys(CATEGORY_EMOJI) as Category[];
+// 분류 칩의 대표 사진 장소 (없으면 그 분류에서 사진 있는 첫 장소)
+const CATEGORY_FACE: Partial<Record<Category, string>> = {
+  landmark: "gyeongbokgung",
+  street: "hongdae",
+  themepark: "everland",
+  waterpark: "caribbean-bay",
+  ski: "yongpyong",
+  indoor: "smob-hanam",
+  beach: "haeundae",
+  airport: "icn-t1",
+};
 
 /**
  * 홈의 전체 장소: 검색 + 파트 칩 + 한산한/붐비는 순 + 목록(사진 카드)·지도 전환.
@@ -183,10 +196,16 @@ export function HomeList({
     };
   });
 
-  const chips: { id: Filter; label: string; emoji: string }[] = [
+  // 원형 사진 칩 (경수님 레퍼런스 10/27): 분류마다 대표 장소 사진
+  const chips: { id: Filter; label: string; emoji: string; img?: string }[] = [
     { id: "all", label: t("전체"), emoji: "✨" },
     ...(favorites.length ? [{ id: "fav" as const, label: t("찜"), emoji: "❤️" }] : []),
-    ...CATEGORIES.filter((c) => places.some((p) => p.category === c)).map((c) => ({ id: c, label: t(CATEGORY_LABEL[c]), emoji: CATEGORY_EMOJI[c] })),
+    ...CATEGORIES.filter((c) => places.some((p) => p.category === c)).map((c) => ({
+      id: c,
+      label: t(CATEGORY_LABEL[c]),
+      emoji: CATEGORY_EMOJI[c],
+      img: (places.find((p) => p.id === CATEGORY_FACE[c] && p.image) ?? places.find((p) => p.category === c && p.image))?.image,
+    })),
   ];
   const browsing = !q && filter === "all" && view === "list" && tab === "all";
   const subs = filter !== "all" && filter !== "fav" ? (SUBS_OF[filter] ?? []).filter((x) => places.some((p) => p.category === filter && subOf(p.id) === x)) : [];
@@ -315,22 +334,17 @@ export function HomeList({
             ))}
           </div>
         )}
-        {(tab === "live" || !withSearch) && (
-        <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
-          {chips.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => setFilter(c.id)}
-              aria-pressed={filter === c.id}
-              className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold transition-colors ${
-                filter === c.id ? "border-gray-900 bg-gray-900 text-white" : "border-gray-200 bg-white text-gray-700 md:hover:border-gray-400"
-              }`}
-            >
-              <Glyph e={c.emoji} />
-              {c.label}
-            </button>
-          ))}
-        </div>
+        {/* 전체 탭에서도 보여, 분류를 고르면 실시간 장소 탭의 그 분류로 */}
+        {(tab === "live" || tab === "all" || !withSearch) && (
+          <RoundChips
+            className="-mx-1 mt-2"
+            items={chips}
+            value={filter}
+            onChange={(id) => {
+              setFilter(id as Filter);
+              if (tab === "all" && id !== "all" && id !== "fav") setTab("live");
+            }}
+          />
         )}
         {/* 세부 분류 (예: 테마파크 → 놀이공원·아쿠아리움·동물원·민속촌) */}
         {(tab === "live" || !withSearch) && subs.length > 0 && (
@@ -392,7 +406,8 @@ export function HomeList({
       {(tab === "all" || tab === "live") && (
       <section className="mt-8">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="min-w-0 truncate text-lg font-bold md:text-xl">
+          {/* '실내 액티비티'처럼 긴 이름은 두 줄로 (10/27: 휴대폰에서 '실내 …'로 잘렸다) */}
+          <h2 className="line-clamp-2 min-w-0 text-lg leading-tight font-bold break-keep md:text-xl">
             {q
               ? t("검색 결과 {n}곳", { n: list.length })
               : filter === "all"

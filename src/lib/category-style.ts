@@ -9,6 +9,7 @@ export const CATEGORY_TONE: Record<Category, { color: string; icon: string }> = 
   themepark: { color: "#c2410c", icon: "rollercoaster" },
   waterpark: { color: "#0e7490", icon: "waterpark" },
   ski: { color: "#1d4ed8", icon: "ski" },
+  indoor: { color: "#7e22ce", icon: "indoor" },
   beach: { color: "#0f766e", icon: "beach" },
   airport: { color: "#0369a1", icon: "airport" },
   event: { color: "#7e22ce", icon: "festival" },

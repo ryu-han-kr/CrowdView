@@ -2687,4 +2687,13 @@ export default {
   "근처도 지금 붐비는지 보기": ["Is it crowded nearby?", "近くも今混んでいるか見る", "看看附近现在人多吗", "看看附近現在人多嗎"],
   "이 축제 근처 가볼 곳": ["Places to visit near this festival", "この祭りの近くの見どころ", "此庆典附近景点", "此慶典附近景點"],
   "일부는 제휴 링크라, 예약하면 CrowdView가 수수료를 받을 수 있어요 (가격은 같아요)": ["Some are affiliate links — CrowdView may earn a commission if you book (same price for you)", "一部はアフィリエイトリンクで、予約するとCrowdViewが手数料を受け取ることがあります（価格は同じです）", "部分为联盟链接，预订后CrowdView可能获得佣金（价格不变）", "部分為聯盟連結，預訂後CrowdView可能獲得佣金（價格不變）"],
+  // ── 실내 액티비티 (10/27)
+  "실내 액티비티": ["Indoor activities","屋内アクティビティ","室内活动","室內活動"],
+  "클라이밍": ["Climbing","クライミング","攀岩","攀岩"],
+  "실내 스포츠": ["Indoor sports","屋内スポーツ","室内运动","室內運動"],
+  "트램폴린": ["Trampoline","トランポリン","蹦床","彈跳床"],
+  "키즈 체험": ["Kids experience","キッズ体験","儿童体验","兒童體驗"],
+  "아이스링크": ["Ice rink","アイスリンク","溜冰场","溜冰場"],
+  "오락실": ["Arcade","ゲームセンター","电玩城","電玩城"],
+  "볼링": ["Bowling","ボウリング","保龄球","保齡球"],
 };
