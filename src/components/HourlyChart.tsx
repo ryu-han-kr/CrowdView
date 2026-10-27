@@ -62,9 +62,10 @@ function Selected({ hour, score, lines }: { hour: number; score: number; lines: 
   const color = levelOf(score).color;
   return (
     <g pointerEvents="none">
-      <line x1={x} x2={x} y1={0} y2={innerHeight} stroke={color} strokeOpacity="0.5" strokeWidth="2" />
-      <circle cx={x} cy={yScale(score)} r="11" fill={color} fillOpacity="0.18" />
-      <circle cx={x} cy={yScale(score)} r="6" fill={color} stroke="#fff" strokeWidth="2.5" />
+      {/* 커서를 올리면 점이 커지고 고리가 퍼진다 (경수님 QA #6 10/27: 확대 효과). 위치 전환은 0.15초 */}
+      <line x1={x} x2={x} y1={0} y2={innerHeight} stroke={color} strokeOpacity="0.5" strokeWidth="2" style={{ transition: "x1 0.15s, x2 0.15s" }} />
+      <circle cx={x} cy={yScale(score)} r="16" fill={color} fillOpacity="0.14" className="chart-pulse" style={{ transformOrigin: `${x}px ${yScale(score)}px`, transition: "cx 0.15s, cy 0.15s" }} />
+      <circle cx={x} cy={yScale(score)} r="8" fill={color} stroke="#fff" strokeWidth="3" style={{ transition: "cx 0.15s, cy 0.15s" }} />
       <ChartBubble x={x} y={yScale(score)} lines={lines} />
     </g>
   );
