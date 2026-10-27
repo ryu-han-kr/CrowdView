@@ -41,6 +41,8 @@ export interface FestivalCrowd {
   baselineAvg: number;
   /** 비교한 작년 날짜 */
   days: string[];
+  /** 올해 축제 날짜별 예상 (작년 같은 요일 그날 ÷ 그 전 4주 같은 요일 평균). 자료 없는 날은 빠진다 (QA #15 10/27: 축제도 날짜 단위 그래프) */
+  daily?: { date: string; ratio: number; score: number }[];
   signguName: string;
 }
 
@@ -301,12 +303,20 @@ export async function getFestivalCrowd(f: Festival): Promise<FestivalCrowd | und
     if (!fv.length || !bv.length) return undefined;
     const avg = (a: number[]) => a.reduce((s, v) => s + v, 0) / a.length;
     const ratio = avg(fv) / avg(bv);
+    const daily = days.flatMap((_, i) => {
+      const v = fest[i]?.visitors;
+      const b = before.slice(i * 4, i * 4 + 4).flatMap((x) => (x ? [x.visitors] : []));
+      if (v === undefined || !b.length) return [];
+      const r = v / avg(b);
+      return [{ date: addDays(from, i), ratio: r, score: scoreFromValue(r, FESTIVAL_STEPS) }];
+    });
     return {
       ratio,
       score: scoreFromValue(ratio, FESTIVAL_STEPS),
       festivalAvg: Math.round(avg(fv)),
       baselineAvg: Math.round(avg(bv)),
       days,
+      daily,
       signguName: (fest.find(Boolean) ?? before.find(Boolean))!.name,
     };
   } catch (e) {
