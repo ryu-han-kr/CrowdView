@@ -300,21 +300,29 @@ function NaverSpots({
 function MapPreview({ spots, onPainted }: { spots: MapSpot[]; onPainted: () => void }) {
   const { t } = useI18n();
   const img = useRef<HTMLImageElement>(null);
-  // 그림이 받아진 뒤 두 프레임을 기다리면 한 번은 화면에 그려진 것
+  // 브라우저가 이 그림을 '가장 큰 첫 그림(LCP)'으로 기록한 뒤에만 걷을 수 있다. rAF 두 번으로는 부족했다 — Lighthouse 의 Chrome 은
+  // 첫 프레임을 화면에 내보내기 전에도 rAF 를 돌려, 그림이 실제로 보이기 전에 걷혔다(10/27 trace: PaintImage 197ms, 첫 표시 487ms, 후보 없음).
+  // LCP API 가 없는 브라우저(Safari)나 기록이 안 되는 경우는 1.5초 뒤에 푼다
   useEffect(() => {
     const el = img.current;
     if (!el) return;
-    let raf = 0;
-    const done = () => {
-      raf = requestAnimationFrame(() => {
-        raf = requestAnimationFrame(() => onPainted());
-      });
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      onPainted();
     };
-    if (el.complete) done();
-    else el.addEventListener("load", done, { once: true });
+    let po: PerformanceObserver | undefined;
+    try {
+      po = new PerformanceObserver((list) => {
+        if (list.getEntries().some((e) => (e as PerformanceEntry & { element?: Element | null }).element === el)) finish();
+      });
+      po.observe({ type: "largest-contentful-paint", buffered: true });
+    } catch {}
+    const timer = setTimeout(finish, 1500);
     return () => {
-      cancelAnimationFrame(raf);
-      el.removeEventListener("load", done);
+      po?.disconnect();
+      clearTimeout(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
