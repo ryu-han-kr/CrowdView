@@ -5,7 +5,9 @@ import type { PaxDay } from "@/lib/airport";
 import { useI18n } from "@/i18n/client";
 import { fmtPeople, trZone } from "@/i18n/patterns";
 import { formatHour, type T } from "@/i18n/translate";
-import { levelOf, scoreFromValue, type LevelSteps } from "@/lib/levels";
+import { scoreFromValue, type LevelSteps } from "@/lib/levels";
+import { HourlyChart } from "@/components/charts/lazy";
+import type { HourPoint } from "@/lib/types";
 
 const dayLabel = (date: string, today: string, t: T) => {
   const diff = Math.round((Date.parse(date) - Date.parse(today)) / 86_400_000);
@@ -38,11 +40,18 @@ export function AirportPaxChart({
   const div = gate === "전체" ? 1 : Math.max(1, gateNames.length);
   const gateSteps = steps.map((v) => v / div) as LevelSteps;
   const hours = day.hours.filter((h) => h.hour >= 5);
-  const max = Math.max(1, ...hours.map(value));
   const busy = hours.reduce((a, b) => (value(b) > value(a) ? b : a), hours[0]);
   const open = hours.filter((h) => value(h) > 0);
   const calm = open.length ? open.reduce((a, b) => (value(b) < value(a) ? b : a)) : undefined;
   const isToday = date === today;
+  // 공항공사 예고치라 전부 '예측'으로, 인원은 공식 예고(real)로 넘긴다
+  const points: HourPoint[] = hours.map((h) => ({
+    hour: h.hour,
+    score: scoreFromValue(value(h), gateSteps),
+    forecast: true,
+    people: value(h),
+    peopleKind: "real",
+  }));
 
   return (
     <div>
@@ -88,37 +97,18 @@ export function AirportPaxChart({
         </p>
       )}
 
-      <div className="mt-4 flex h-36 items-end gap-[3px]">
-        {hours.map((h) => {
-          const v = value(h);
-          const level = levelOf(scoreFromValue(v, gateSteps));
-          const now = isToday && h.hour === Math.floor(nowHour);
-          return (
-            <div key={h.hour} className="relative flex h-full flex-1 flex-col justify-end">
-              {now && (
-                <span className="absolute -top-1 left-1/2 -translate-x-1/2 rounded bg-gray-900 px-1 text-[9px] font-bold whitespace-nowrap text-white">
-                  {t("지금")}
-                </span>
-              )}
-              <div
-                title={`${formatHour(h.hour, lang)} · ${fmtPeople(v, t, lang)} · ${t(level.label)}`}
-                className={`rounded-t-[4px] ${now ? "ring-2 ring-gray-900 ring-offset-1" : ""}`}
-                style={{ height: `${Math.max(3, (v / max) * 100)}%`, background: level.color }}
-              />
-            </div>
-          );
-        })}
-      </div>
-      <div className="mt-1 flex gap-[3px] text-[10px] text-gray-500">
-        {hours.map((h) => (
-          <span key={h.hour} className="flex-1 text-center">
-            {h.hour % 3 === 0 ? h.hour : ""}
-          </span>
-        ))}
+      {/* 장소·서울 지역과 같은 시간대 그래프 (경수님 QA #15 10/27: 그래프 모양 통일). 높이는 시간당 승객 기준 혼잡 단계 */}
+      <div className="mt-4">
+        <HourlyChart
+          key={`${date}-${gate}`}
+          points={points}
+          highlightHour={isToday ? Math.floor(nowHour) : undefined}
+          forecastLabel="공항공사 예고"
+        />
       </div>
       <p className="mt-2 text-[11px] text-gray-500">
         {day.kind === "recorded" ? t("그날 받아 둔 공항공사 예고치") : t("공항공사 시간대별 출발 승객 예고·예상치")} ·{" "}
-        {t("막대 색은 시간당 승객 수 기준 혼잡도")}
+        {t("그래프 높이·색은 시간당 승객 수 기준 혼잡도")}
       </p>
     </div>
   );

@@ -156,17 +156,20 @@ LevelLines.__isPostOverlay = true;
  * 시간대별 혼잡도 (Bklit UI 영역 차트). 실측은 실선, AI 예측은 점선.
  * 휴대폰: 그래프를 누르거나 옆으로 밀면 그 시간의 단계·인원이 위 칸에 나온다 (세로로 밀면 화면 스크롤)
  * estimated: 지난 시간도 실측이 아니라 예측 모델 값일 때
+ * forecastLabel: 예측 구간 이름 (공항은 AI가 아니라 공항공사 예고치라 '공항공사 예고', QA #15 10/27)
  */
 export function HourlyChart({
   points,
   highlightHour,
   estimated = false,
   unit = "명",
+  forecastLabel = "AI 예측",
 }: {
   points: HourPoint[];
   highlightHour?: number;
   estimated?: boolean;
   unit?: "명" | "분";
+  forecastLabel?: string;
 }) {
   const { t, lang } = useI18n();
   const val = (n: number) => (unit === "분" ? fmtMinutes(n, t) : fmtPeople(n, t, lang));
@@ -212,7 +215,7 @@ export function HourlyChart({
         <div className="min-w-0 flex-1">
           <p className="text-sm text-gray-600">
             <b className="text-gray-900">{formatHour(p.hour, lang)}</b> {sel === nowIdx ? `· ${t("지금")}` : ""} ·{" "}
-            {isMeasured ? t("실측") : t("AI 예측")}
+            {isMeasured ? t("실측") : t(forecastLabel)}
           </p>
           <p className="mt-0.5 text-xl font-extrabold" style={{ color: inkOf(level.color) }}>
             {t(level.label)}
@@ -286,17 +289,20 @@ export function HourlyChart({
       </div>
 
       <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-600">
-        <span className="flex items-center gap-1.5">
-          <svg width="20" height="6" aria-hidden>
-            <line x1="0" x2="20" y1="3" y2="3" stroke="#6b7280" strokeWidth="3" strokeDasharray={estimated ? "5 4" : undefined} />
-          </svg>
-          {estimated ? t("지난 시간 (추정)") : t("실측")}
-        </span>
+        {/* 실측 점이 하나도 없으면(공항 예고치 등) 실측 범례는 뺀다 */}
+        {(estimated || points.some((x) => !x.forecast)) && (
+          <span className="flex items-center gap-1.5">
+            <svg width="20" height="6" aria-hidden>
+              <line x1="0" x2="20" y1="3" y2="3" stroke="#6b7280" strokeWidth="3" strokeDasharray={estimated ? "5 4" : undefined} />
+            </svg>
+            {estimated ? t("지난 시간 (추정)") : t("실측")}
+          </span>
+        )}
         <span className="flex items-center gap-1.5">
           <svg width="20" height="6" aria-hidden>
             <line x1="0" x2="20" y1="3" y2="3" stroke="#6b7280" strokeWidth="3" strokeDasharray="5 4" />
           </svg>
-          {t("AI 예측")}
+          {t(forecastLabel)}
         </span>
         <span className="ml-auto text-gray-500">{t("시간을 눌러 자세히")}</span>
       </div>
