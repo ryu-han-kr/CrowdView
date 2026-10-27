@@ -58,7 +58,7 @@ const isEvent = (h: NewsHit) => EVENT_WORDS.test(h.title) && !NOT_EVENT.test(h.t
 /** 소식을 볼 장소: 사람이 찾아가는 곳 (공항·행사 장소 제외), 스키장은 11~3월만 */
 function newsPlaces(month: number) {
   return PLACES.filter(
-    (p) => ["themepark", "waterpark", "street", "landmark", "beach"].includes(p.category) || (p.category === "ski" && (month >= 11 || month <= 3)),
+    (p) => ["themepark", "waterpark", "street", "landmark", "beach", "indoor"].includes(p.category) || (p.category === "ski" && (month >= 11 || month <= 3)),
   );
 }
 

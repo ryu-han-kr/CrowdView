@@ -1,7 +1,7 @@
 import type { LevelSteps } from "./levels";
 
 // 홈 상단 파트 탭 순서와 같다
-export type Category = "landmark" | "street" | "themepark" | "waterpark" | "ski" | "beach" | "airport" | "event";
+export type Category = "landmark" | "street" | "themepark" | "waterpark" | "ski" | "indoor" | "beach" | "airport" | "event";
 
 export const CATEGORY_LABEL: Record<Category, string> = {
   landmark: "명소",
@@ -9,6 +9,8 @@ export const CATEGORY_LABEL: Record<Category, string> = {
   themepark: "테마파크",
   waterpark: "워터파크",
   ski: "스키장",
+  // 10/27: 클라이밍·스몹·트램폴린·키자니아·아이스링크·오락실·볼링 (실데이터 없음, 예측)
+  indoor: "실내 액티비티",
   beach: "해변",
   airport: "공항",
   event: "축제",

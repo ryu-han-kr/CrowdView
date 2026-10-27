@@ -14,7 +14,14 @@ export type SubCategory =
   | "fireworks"
   | "lights"
   | "indoor-waterpark"
-  | "outdoor-waterpark";
+  | "outdoor-waterpark"
+  | "climbing"
+  | "indoor-sports"
+  | "trampoline"
+  | "kids"
+  | "ice-rink"
+  | "arcade"
+  | "bowling";
 
 export const SUB_LABEL: Record<SubCategory, string> = {
   amusement: "놀이공원",
@@ -29,6 +36,13 @@ export const SUB_LABEL: Record<SubCategory, string> = {
   lights: "빛축제",
   "indoor-waterpark": "실내 워터파크",
   "outdoor-waterpark": "야외 워터파크",
+  climbing: "클라이밍",
+  "indoor-sports": "실내 스포츠",
+  trampoline: "트램폴린",
+  kids: "키즈 체험",
+  "ice-rink": "아이스링크",
+  arcade: "오락실",
+  bowling: "볼링",
 };
 
 export const SUB_EMOJI: Record<SubCategory, string> = {
@@ -44,6 +58,13 @@ export const SUB_EMOJI: Record<SubCategory, string> = {
   lights: "🏮",
   "indoor-waterpark": "🏊",
   "outdoor-waterpark": "🌊",
+  climbing: "🧗",
+  "indoor-sports": "🏀",
+  trampoline: "🤸",
+  kids: "🧒",
+  "ice-rink": "⛸️",
+  arcade: "🕹️",
+  bowling: "🎳",
 };
 
 /** 상위 분류별로 고를 수 있는 세부 분류 (칩 순서) */
@@ -53,6 +74,7 @@ export const SUBS_OF: Partial<Record<Category, SubCategory[]>> = {
   street: ["cafe-street", "youth-street"],
   event: ["fireworks", "lights"],
   waterpark: ["outdoor-waterpark", "indoor-waterpark"],
+  indoor: ["climbing", "indoor-sports", "trampoline", "kids", "ice-rink", "arcade", "bowling"],
 };
 
 const BY_ID: Record<string, SubCategory> = {
@@ -86,6 +108,25 @@ const BY_ID: Record<string, SubCategory> = {
   "california-beach": "outdoor-waterpark",
   "seorak-waterpia": "indoor-waterpark",
   "splas-resom": "indoor-waterpark",
+  // 실내 액티비티 (10/27)
+  "theclimb-hongdae": "climbing",
+  "theclimb-magok": "climbing",
+  "theclimb-yangjae": "climbing",
+  "ayersrock-wirye": "climbing",
+  "smob-hanam": "indoor-sports",
+  "smob-goyang": "indoor-sports",
+  "smob-suwon": "indoor-sports",
+  "smob-daejeon": "indoor-sports",
+  "vaunce-suwon": "trampoline",
+  "vaunce-daegu": "trampoline",
+  "kidzania-seoul": "kids",
+  "kidzania-busan": "kids",
+  "lotteworld-icerink": "ice-rink",
+  "mokdong-icerink": "ice-rink",
+  "centum-icerink": "ice-rink",
+  "zzang-arcade-cheonho": "arcade",
+  "zzang-arcade-inspire": "arcade",
+  "shooting-bowling-goyang": "bowling",
 };
 
 export const subOf = (placeId: string): SubCategory | undefined => BY_ID[placeId];
@@ -104,4 +145,8 @@ export const SUB_ICON: Partial<Record<SubCategory, string>> = {
   lights: "sub-lights",
   "indoor-waterpark": "sub-swim",
   "outdoor-waterpark": "waterpark",
+  climbing: "sub-climbing",
+  "ice-rink": "sub-ice",
+  arcade: "sub-arcade",
+  bowling: "sub-bowling",
 };

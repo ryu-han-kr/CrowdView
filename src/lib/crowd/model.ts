@@ -16,6 +16,7 @@ const SPREAD: Record<Place["category"], number> = {
   themepark: 3.6,
   waterpark: 3.2,
   ski: 3.4,
+  indoor: 3.0,
   beach: 3.4,
   airport: 4.5,
   event: 2.2,
@@ -28,6 +29,7 @@ export const OUTDOOR: Record<Place["category"], number> = {
   themepark: 0.7,
   waterpark: 0.6,
   ski: 1,
+  indoor: 0,
   beach: 1,
   airport: 0,
   event: 1,
@@ -137,7 +139,7 @@ function trendFactor(s: Signals | undefined, date: string): number {
 }
 
 /** 학교 쉬는 날(방학·재량휴업)의 평일: 가족 나들이 장소가 붐빈다 (주말·공휴일은 이미 dayFactor에) */
-const FAMILY: Partial<Record<Place["category"], number>> = { themepark: 0.35, waterpark: 0.35, ski: 0.3, landmark: 0.15 };
+const FAMILY: Partial<Record<Place["category"], number>> = { themepark: 0.35, waterpark: 0.35, ski: 0.3, indoor: 0.3, landmark: 0.15 };
 function schoolFactor(place: Place, t: KstParts, s?: Signals): number {
   const share = s?.schoolOff?.get(t.date);
   const weight = FAMILY[place.category];

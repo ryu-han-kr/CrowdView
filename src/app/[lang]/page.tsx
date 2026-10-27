@@ -109,7 +109,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const photoOf = (id: string, n = 0) => placePhotos(id)[n]?.src ?? places.find((x) => x.id === id)?.image;
   // 지금 한산한 명소 (사진 있는 우리 장소)
   const calmCards: PhotoCardItem[] = places
-    .filter((p) => heroImage(p) && crowd[p.id].open && p.category !== "airport" && p.category !== "event")
+    // 실내 액티비티(클라이밍장·오락실 등)는 '명소'가 아니라 뺀다 (10/27)
+    .filter((p) => heroImage(p) && crowd[p.id].open && p.category !== "airport" && p.category !== "event" && p.category !== "indoor")
     .sort((a, b) => crowd[a.id].score - crowd[b.id].score)
     .slice(0, 10)
     .map((p) => ({

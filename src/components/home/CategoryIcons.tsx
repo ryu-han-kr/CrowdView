@@ -11,10 +11,11 @@ const ITEMS: { href: string; label: string; icon: SolarName; tone: string; badge
   { href: "/?cat=themepark#places", label: "테마파크", icon: "ferris-wheel", tone: "bg-violet-50 text-violet-600" },
   { href: "/?cat=waterpark#places", label: "워터파크", icon: "waterdrops", tone: "bg-cyan-50 text-cyan-600" },
   { href: "/?cat=ski#places", label: "스키장", icon: "snowflake", tone: "bg-blue-50 text-blue-600" },
+  { href: "/?cat=indoor#places", label: "실내 액티비티", icon: "gamepad-minimalistic", tone: "bg-fuchsia-50 text-fuchsia-600", badge: "NEW" },
   { href: "/events", label: "축제", icon: "confetti", tone: "bg-pink-50 text-pink-600" },
   { href: "/seoul", label: "서울 실시간", icon: "buildings-2", tone: "bg-indigo-50 text-indigo-600", badge: "121곳" },
   // 지역 여행 화면 대신 홈 통합 검색의 '명소' 탭 (사용자 10/22)
-  { href: "/?tab=landmark#places", label: "명소", icon: "compass", tone: "bg-amber-50 text-amber-600", badge: "NEW" },
+  { href: "/?tab=landmark#places", label: "명소", icon: "compass", tone: "bg-amber-50 text-amber-600" },
   { href: "/guide", label: "여행 가이드", icon: "book-2", tone: "bg-emerald-50 text-emerald-600" },
   { href: "/route", label: "추천 코스", icon: "route", tone: "bg-orange-50 text-orange-600" },
   { href: "/near?tab=reservation", label: "체험·액티비티", icon: "ticket", tone: "bg-rose-50 text-rose-600" },

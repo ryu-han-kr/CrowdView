@@ -458,7 +458,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           <Suspense fallback={null}>
             <RoadSection lat={place.lat} lng={place.lng} lang={lang} />
           </Suspense>
-          {isOpen && !beforeEvent && <CrowdReport placeId={place.id} askWait={["themepark", "waterpark", "ski"].includes(place.category)} />}
+          {isOpen && !beforeEvent && <CrowdReport placeId={place.id} askWait={["themepark", "waterpark", "ski", "indoor"].includes(place.category)} />}
         </div>
 
         <div className="lg:[&>*:first-child]:mt-0">
