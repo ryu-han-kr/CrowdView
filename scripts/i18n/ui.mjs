@@ -2723,4 +2723,10 @@ export default {
   "제휴 링크로 예약해도 가격은 같아요": ["Booking through our partner links costs the same","提携リンクから予約しても料金は同じです","通过合作链接预订价格相同","透過合作連結預訂價格相同"],
   "‘{name}’ 근처 숙소를 여기서 바로 찾아보세요. 할인된 가격이 있는지 한 번에 비교할 수 있어요.": ["Find stays near ‘{name}’ right here and compare discounted rates at a glance.","「{name}」周辺の宿をここで探せます。割引料金があるか一度に比べられます。","在这里查找“{name}”附近住宿，一次比较是否有优惠价。","在這裡查找「{name}」附近住宿，一次比較是否有優惠價。"],
   "‘{name}’ 입장권·투어를 여기서 예약하면 할인된 가격으로 찾아볼 수 있어요.": ["Book ‘{name}’ tickets and tours here to find discounted prices.","「{name}」のチケット・ツアーはここで予約すると割引価格で探せます。","在这里预订“{name}”门票和行程可找到优惠价。","在這裡預訂「{name}」門票和行程可找到優惠價。"],
+  "추천 예약처": ["Top pick","おすすめ","推荐","推薦"],
+  "광고 · 제휴 링크": ["Ad · affiliate links","広告・提携リンク","广告 · 合作链接","廣告 · 合作連結"],
+  "‘{name}’ 근처 숙소, 특가·할인 상품으로 만나보세요": ["Stays near ‘{name}’ — grab deals and discounted rates","「{name}」周辺の宿、特価・割引プランをチェック","“{name}”附近住宿，特价优惠等你来订","「{name}」附近住宿，特價優惠等你來訂"],
+  "‘{name}’ 입장권·투어, 특가·할인 상품으로 만나보세요": ["‘{name}’ tickets & tours — grab deals and discounts","「{name}」のチケット・ツアー、特価・割引をチェック","“{name}”门票和行程，特价优惠等你来订","「{name}」門票和行程，特價優惠等你來訂"],
+  "보러 가기": ["Go","見る","前往","前往"],
+  "다른 사이트와 비교": ["Compare other sites","他のサイトと比べる","比较其他网站","比較其他網站"],
 };

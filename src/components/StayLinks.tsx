@@ -21,6 +21,10 @@ const EXPEDIA_HOST: Record<Lang, string> = {
 
 type Tile = { id: string; label: string; href: string; icon?: string };
 
+// 커미션 높은 순 (10/28 확인: Trip.com 숙소 5%·쿠폰 써도 유지·쿠키 30일 > 아고다 5.6%(쿠폰 쓰면 2.1%·1일) > 야놀자 2.8%(앱만) > 여기어때(승인 전, 되면 6%로 맨 앞)
+// 투어: 클룩 3.5~10.5% > 마이리얼트립 2~4% > Trip.com 투어 > 쿠팡 약 3% > KKday 2.1% > GetYourGuide). 제휴 없는 곳은 그 뒤 원래 순서
+const RANK = ["trip", "agoda", "yanolja", "yeogi", "klook", "myrealtrip", "trip-tour", "coupang", "kkday", "getyourguide"];
+
 /**
  * 예약 사이트 검색어로 쓸 짧은 이름 (10/26 링크 점검: 'Myeongdong Tourism Special Zone'은 Klook 결과 0건·Trip.com 투어는 상하이가 나왔다).
  * 관광특구 꼬리, 괄호 설명, '·'로 이은 두 번째 이름을 뗀다
@@ -88,43 +92,74 @@ export function tourLinks(ko: string, en: string, lang: Lang): Tile[] {
   return [...global, { id: "getyourguide", label: "GetYourGuide", href: `https://www.getyourguide.com/s/?q=${q}` }];
 }
 
-/** 플랫폼 아이콘 타일 (이름은 마우스를 올리거나 화면 낭독기로). 누르면 이용 집계(data-aff)에 잡힌다 */
+/**
+ * 예약 사이트 칸 (10/28 경수님: 외국인·한국인이 더 잘 쓰게 예쁘게). 맨 위에 추천 업체 큰 버튼 하나, 아래에 이름이 붙은 비교 버튼들.
+ * 아이콘만으로는 아는 사람만 알아서 이름을 다 보이게, 테두리로 강조 (경수님 10/28). 커미션 높은 순(RANK), 맨 앞 하나를 추천으로 크게. 누르면 이용 집계(data-aff)에 잡힌다
+ */
 function LinkTiles({ title, glyph, desc, links, t, className }: { title: string; glyph: string; desc: string; links: Tile[]; t: T; className: string }) {
   // 쿠팡 링크는 주소 자체가 파트너스 링크라 꼬리표 없이도 제휴
   const paid = (id: string) => isAffiliate(id) || id === "coupang";
   const aff = links.some((s) => paid(s.id));
   const coupang = links.some((s) => s.id === "coupang");
+  const rank = (s: Tile) => (paid(s.id) ? (RANK.indexOf(s.id) + 1 || 50) : 100);
+  const sorted = [...links].sort((a, b) => rank(a) - rank(b));
+  const top = sorted.find((s) => paid(s.id));
+  const rest = sorted.filter((s) => s !== top);
+  const attrs = (s: Tile) => ({
+    href: withAffiliate(s.id, s.href),
+    target: "_blank",
+    rel: paid(s.id) ? "sponsored noopener" : "noreferrer nofollow",
+    "data-aff": s.id,
+  });
+  const icon = (s: Tile, size: number, round: string) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={`/brands/${s.icon ?? s.id}.png`} alt="" width={size} height={size} className={`shrink-0 ${round}`} style={{ width: size, height: size }} />
+  );
   return (
-    <section className={`rounded-3xl border border-gray-100 p-4 ${className}`}>
+    <section className={`rounded-3xl border border-gray-100 bg-gradient-to-b from-indigo-50/70 to-white p-4 ${className}`}>
       <p className="flex items-center gap-2 text-base font-extrabold">
-        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-indigo-600 shadow-sm">
           <Glyph e={glyph} className="h-[18px] w-[18px]" />
         </span>
         {title}
       </p>
       <p className="mt-1.5 text-[13px] text-gray-600">{desc}</p>
-      <ul className="mt-3 flex flex-wrap gap-2">
-        {links.map((s) => (
-          <li key={s.id}>
-            <a
-              href={withAffiliate(s.id, s.href)}
-              target="_blank"
-              rel={paid(s.id) ? "sponsored noopener" : "noreferrer nofollow"}
-              title={s.label}
-              aria-label={s.label}
-              data-aff={s.id}
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-gray-100 bg-white shadow-sm transition-transform hover:-translate-y-0.5"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={`/brands/${s.icon ?? s.id}.png`} alt="" width={26} height={26} className="h-[26px] w-[26px] rounded-md" />
-            </a>
-          </li>
-        ))}
-      </ul>
-      {/* 공정위 추천·보증 심사지침: 대가를 받는 링크임을 알린다 */}
-      {aff && <p className="mt-2 text-xs text-gray-500">{t("제휴 링크로 예약해도 가격은 같아요")}</p>}
+      {top && (
+        <a
+          {...attrs(top)}
+          className="group mt-3 flex items-center gap-3 rounded-2xl border-2 border-indigo-500 bg-white p-3 shadow-md transition hover:-translate-y-0.5 hover:shadow-lg"
+        >
+          {icon(top, 40, "rounded-xl")}
+          <span className="min-w-0 flex-1">
+            <span className="block text-xs font-bold text-indigo-700">{t("추천 예약처")}</span>
+            <span className="block truncate text-base font-extrabold text-gray-900">{top.label}</span>
+          </span>
+          <span className="shrink-0 rounded-full bg-indigo-600 px-3.5 py-2 text-sm font-bold text-white transition group-hover:bg-indigo-700">
+            {t("보러 가기")} ›
+          </span>
+        </a>
+      )}
+      {rest.length > 0 && (
+        <>
+          <p className="mt-3 text-xs font-semibold text-gray-600">{t("다른 사이트와 비교")}</p>
+          <ul className="mt-1.5 flex flex-wrap gap-2">
+            {rest.map((s) => (
+              <li key={s.id}>
+                <a
+                  {...attrs(s)}
+                  className={`flex h-10 items-center gap-2 rounded-xl border-2 bg-white pr-3.5 pl-2 text-sm font-bold text-gray-900 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-400 ${paid(s.id) ? "border-indigo-200" : "border-gray-200"}`}
+                >
+                  {icon(s, 24, "rounded-md")}
+                  {s.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      {/* 공정위 추천·보증 심사지침: 대가를 받는 링크임을 알린다. 10/28 경수님이 문구를 빼자 했지만 법·약관상 필수라 짧게 한 줄로만 */}
       {/* 쿠팡 파트너스 약관: 고지 문구를 링크 가까이에 그대로 (한국어 화면에서만 쿠팡 링크가 나온다) */}
-      {coupang && <p className="mt-1 text-xs text-gray-500">{COUPANG_NOTICE}</p>}
+      {aff && <p className="mt-2.5 text-[11px] leading-snug text-gray-500">{coupang ? COUPANG_NOTICE : t("광고 · 제휴 링크")}</p>}
     </section>
   );
 }
@@ -134,7 +169,7 @@ export function StayLinks({ ko, en, lang, t, at, className = "" }: { ko: string;
     <LinkTiles
       title={t("근처 숙소 찾기")}
       glyph="🛏️"
-      desc={t("‘{name}’ 근처 숙소를 여기서 바로 찾아보세요. 할인된 가격이 있는지 한 번에 비교할 수 있어요.", { name: lang === "ko" ? ko : en })}
+      desc={t("‘{name}’ 근처 숙소, 특가·할인 상품으로 만나보세요", { name: lang === "ko" ? ko : en })}
       links={stayLinks(ko, en, lang, at)}
       t={t}
       className={className}
@@ -147,7 +182,7 @@ export function TourLinks({ ko, en, lang, t, className = "" }: { ko: string; en:
     <LinkTiles
       title={t("투어·입장권 찾기")}
       glyph="🎟️"
-      desc={t("‘{name}’ 입장권·투어를 여기서 예약하면 할인된 가격으로 찾아볼 수 있어요.", { name: lang === "ko" ? ko : en })}
+      desc={t("‘{name}’ 입장권·투어, 특가·할인 상품으로 만나보세요", { name: lang === "ko" ? ko : en })}
       links={tourLinks(ko, en, lang)}
       t={t}
       className={className}
