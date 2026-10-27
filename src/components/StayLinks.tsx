@@ -3,6 +3,7 @@ import type { T } from "@/i18n/translate";
 import type { LatLng } from "@/lib/geo";
 import { Glyph } from "@/components/Glyph";
 import { isAffiliate, withAffiliate } from "@/lib/affiliate";
+import { COUPANG_LINKS, COUPANG_NOTICE } from "@/lib/coupang-links";
 
 // 근처 숙소 찾기: 숙소 플랫폼마다 그 장소 이름(아고다는 좌표)으로 검색한 결과를 새 창으로 연다.
 // 우리가 매물을 모으지 않고 각 사이트의 검색 화면으로 보낸다. 제휴 값이 있으면 꼬리표를 붙인다(lib/affiliate). 아이콘은 public/brands (각 사이트 파비콘)
@@ -81,13 +82,18 @@ export function tourLinks(ko: string, en: string, lang: Lang): Tile[] {
     ...(isAffiliate("kkday") ? [{ id: "kkday", label: "KKday", href: `https://www.kkday.com/${KKDAY_LANG[lang]}/product/productlist?keyword=${q}` }] : []),
     { id: "trip-tour", label: "Trip.com", icon: "trip", href: `https://${TRIP_HOST[lang]}/things-to-do/list?keyword=${q}` },
   ];
-  if (lang === "ko") return [{ id: "myrealtrip", label: "마이리얼트립", href: `https://www.myrealtrip.com/search?q=${q}` }, ...global];
+  // 쿠팡 파트너스(10/27): 입장권 할인 상품이 많은 곳만 장소별 링크, 한국어 화면에서만
+  const coupang: Tile[] = COUPANG_LINKS[ko] ? [{ id: "coupang", label: "쿠팡", href: COUPANG_LINKS[ko] }] : [];
+  if (lang === "ko") return [{ id: "myrealtrip", label: "마이리얼트립", href: `https://www.myrealtrip.com/search?q=${q}` }, ...coupang, ...global];
   return [...global, { id: "getyourguide", label: "GetYourGuide", href: `https://www.getyourguide.com/s/?q=${q}` }];
 }
 
 /** 플랫폼 아이콘 타일 (이름은 마우스를 올리거나 화면 낭독기로). 누르면 이용 집계(data-aff)에 잡힌다 */
 function LinkTiles({ title, glyph, desc, links, t, className }: { title: string; glyph: string; desc: string; links: Tile[]; t: T; className: string }) {
-  const aff = links.some((s) => isAffiliate(s.id));
+  // 쿠팡 링크는 주소 자체가 파트너스 링크라 꼬리표 없이도 제휴
+  const paid = (id: string) => isAffiliate(id) || id === "coupang";
+  const aff = links.some((s) => paid(s.id));
+  const coupang = links.some((s) => s.id === "coupang");
   return (
     <section className={`rounded-3xl border border-gray-100 p-4 ${className}`}>
       <p className="flex items-center gap-2 text-base font-extrabold">
@@ -103,7 +109,7 @@ function LinkTiles({ title, glyph, desc, links, t, className }: { title: string;
             <a
               href={withAffiliate(s.id, s.href)}
               target="_blank"
-              rel={isAffiliate(s.id) ? "sponsored noopener" : "noreferrer nofollow"}
+              rel={paid(s.id) ? "sponsored noopener" : "noreferrer nofollow"}
               title={s.label}
               aria-label={s.label}
               data-aff={s.id}
@@ -117,6 +123,8 @@ function LinkTiles({ title, glyph, desc, links, t, className }: { title: string;
       </ul>
       {/* 공정위 추천·보증 심사지침: 대가를 받는 링크임을 알린다 */}
       {aff && <p className="mt-2 text-xs text-gray-500">{t("제휴 링크로 예약해도 가격은 같아요")}</p>}
+      {/* 쿠팡 파트너스 약관: 고지 문구를 링크 가까이에 그대로 (한국어 화면에서만 쿠팡 링크가 나온다) */}
+      {coupang && <p className="mt-1 text-xs text-gray-500">{COUPANG_NOTICE}</p>}
     </section>
   );
 }
