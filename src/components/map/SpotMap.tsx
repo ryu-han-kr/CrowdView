@@ -160,8 +160,12 @@ function NaverSpots({
   const hideOverlay = tiles && (!preview || painted);
   const { lang } = useI18n();
 
-  // 지도는 한 번만 만든다
+  // 지도는 한 번만 만든다. 미리보기가 있는 화면은 미리보기가 그려진 뒤에 SDK 를 받기 시작한다 —
+  // 빠른 망에서 SDK·타일이 첫 그림보다 먼저 끝나면 Lighthouse 가 그것까지 LCP 의존으로 넣어 5초대로 추정했다(10/27 운영 93 vs 75).
+  // 실제 지연은 첫 그림 뒤 한 프레임 정도
+  const start = !preview || painted;
   useEffect(() => {
+    if (!start) return;
     let cancelled = false;
     window.navermap_authFailure = () => onFail();
     loadSdk(KEY_ID!, lang)
@@ -186,7 +190,7 @@ function NaverSpots({
       mapRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [start]);
 
   // 핀 그리기: 40곳이 넘으면 확대 수준에 맞춰 가까운 핀을 숫자 원으로 묶는다 (지도를 움직일 때마다 다시)
   const { t } = useI18n();
@@ -305,7 +309,7 @@ function MapPreview({ spots, hidden, onPainted }: { spots: MapSpot[]; hidden: bo
   const img = useRef<HTMLImageElement>(null);
   // 브라우저가 이 그림을 '가장 큰 첫 그림(LCP)'으로 기록한 뒤에만 걷을 수 있다. rAF 두 번으로는 부족했다 — Lighthouse 의 Chrome 은
   // 첫 프레임을 화면에 내보내기 전에도 rAF 를 돌려, 그림이 실제로 보이기 전에 걷혔다(10/27 trace: PaintImage 197ms, 첫 표시 487ms, 후보 없음).
-  // LCP API 가 없는 브라우저(Safari)나 기록이 안 되는 경우는 1.5초 뒤에 푼다
+  // LCP API 가 없는 브라우저(Safari)나 기록이 안 되는 경우는 0.6초 뒤에 푼다 (그 뒤 SDK 를 받기 시작하므로 너무 길면 안 된다)
   useEffect(() => {
     const el = img.current;
     if (!el) return;
@@ -322,7 +326,7 @@ function MapPreview({ spots, hidden, onPainted }: { spots: MapSpot[]; hidden: bo
       });
       po.observe({ type: "largest-contentful-paint", buffered: true });
     } catch {}
-    const timer = setTimeout(finish, 1500);
+    const timer = setTimeout(finish, 600);
     return () => {
       po?.disconnect();
       clearTimeout(timer);
