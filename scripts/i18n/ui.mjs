@@ -1604,11 +1604,12 @@ export default {
     "机场公社各时段出发旅客预告与预测值",
     "機場公社各時段出發旅客預告與預測值",
   ],
-  "막대 색은 시간당 승객 수 기준 혼잡도": [
-    "bar color = crowd level by passengers per hour",
-    "棒の色は時間あたり旅客数による混雑度",
-    "柱色表示按每小时旅客数的拥挤度",
-    "柱色表示依每小時旅客數的擁擠度",
+  "공항공사 예고": ["Airport operator forecast", "空港公社の予告", "机场公司预告", "機場公司預告"],
+  "그래프 높이·색은 시간당 승객 수 기준 혼잡도": [
+    "graph height & color = crowd level by passengers per hour",
+    "グラフの高さ・色は時間あたり旅客数による混雑度",
+    "图表高度和颜色表示按每小时旅客数的拥挤度",
+    "圖表高度和顏色表示依每小時旅客數的擁擠度",
   ],
   "시간대별 승객 정보를 불러오지 못했어요.": [
     "Couldn't load hourly passenger data.",
