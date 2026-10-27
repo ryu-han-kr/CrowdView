@@ -1,5 +1,6 @@
 import { makeT, type T } from "../i18n/translate";
 import placeKto from "../data/korea/place-kto.json";
+import climbingGyms from "../data/korea/climbing-gyms.json";
 import type { Place } from "./types";
 import { GOOGLE_PHOTO } from "./places-google";
 
@@ -981,6 +982,21 @@ const BASE_PLACES: Place[] = [
       tags: [...tags],
       description,
       ...(ktoId && { ktoContent: { id: ktoId, type: 28 } }),
+    }),
+  ),
+  // 전국 실내 클라이밍장 159곳 (10/27 경수님 "띄엄띄엄 말고 전부"): 카카오 장소 검색 브랜드 16개 × 지역 50곳 → 공원 인공암벽·협회·교육 시설 제외,
+  // 위 목록과 150m 안 겹침 제외. 주소는 도로명까지(건물 번호 없음). 사진은 구글 지도(api/gphoto). 실데이터가 없어 예측만
+  ...climbingGyms.map((g) =>
+    leisure(g.id, g.name, "indoor", g.region, g.address, g.lat, g.lng, {
+      capacity: g.capacity,
+      popularity: g.popularity,
+      peakHour: g.kids ? 15 : 19.5,
+      hours: [10, 23],
+      emoji: "🧗",
+      hue: 285,
+      outdoor: 0,
+      tags: ["클라이밍", "볼더링", ...(g.kids ? ["키즈"] : [])],
+      description: `${g.region.split(" ")[1] ?? g.region}의 실내 클라이밍장. 운영 시간·요금은 방문 전에 지점에 확인하세요.`,
     }),
   ),
 ];
