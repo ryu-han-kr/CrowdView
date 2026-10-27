@@ -260,7 +260,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   // 요즘 뜨는 곳 (사용자 10/22: 붐비는 순위 대신 유명·화제인 곳, 매일 자동 갱신 — lib/trending). 아직 계산 전이면 붐비는 순위
   const trend = await getTrending();
   const trendTr = trend ? await translateNames(trend.items.flatMap((x) => [x.title, x.kind === "event" ? x.reason : undefined, x.region]), lang) : new Map<string, string>();
-  const trendItems: RankItem[] = (trend?.items ?? []).slice(0, 5).map((x) => {
+  // 경수님 QA #22 (10/27): TOP 5 → TOP 10. 자료(검색량·AI 뉴스·축제)는 매일 12곳 넘게 쌓인다
+  const trendItems: RankItem[] = (trend?.items ?? []).slice(0, 10).map((x) => {
     const region = x.region ? (trendTr.get(x.region) ?? trRegion(x.region, t)) : undefined;
     // 뉴스 화제: 제목은 장소 이름, 기사 제목은 둘째 줄 (UI QA 9차: 잘린 기사 제목이 제목 자리에 '…"…'로 보였다)
     const newsPlace = x.id.startsWith("news-") ? places.find((p) => p.id === x.id.slice(5)) : undefined;
@@ -295,7 +296,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     };
   });
   const trendList = trendItems.length ? (
-    <RankList title={t("요즘 뜨는 곳 TOP 5")} subtitle={t("네이버 검색량과 AI 뉴스 검색으로 매일 아침 갱신")} items={trendItems} />
+    <RankList title={t("요즘 뜨는 곳 TOP {n}", { n: trendItems.length })} subtitle={t("네이버 검색량과 AI 뉴스 검색으로 매일 아침 갱신")} items={trendItems} />
   ) : (
     busyList
   );
