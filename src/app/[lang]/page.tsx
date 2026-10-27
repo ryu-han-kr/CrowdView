@@ -330,9 +330,12 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const used = new Set<string>();
   const uniq = (list: (HeroSlide | undefined | false)[]) =>
     list
-      // 같은 곳이 주소만 달리(예: 요즘 뜨는 곳 링크) 두 번 나오지 않게 제목으로도 거른다
-      .filter((s): s is HeroSlide => !!s && !!s.img && !used.has(s.href) && !used.has(s.title))
-      .filter((s) => (used.add(s.href), used.add(s.title), true))
+      // 한 번에 거르며 기록한다 (거르기를 두 번에 나누면 같은 목록 안의 중복은 못 거른다 — 10/27 롯데월드가 두 번 나왔다). 주소·제목 둘 다
+      .filter((s): s is HeroSlide => {
+        if (!s || !s.img || used.has(s.href) || used.has(s.title)) return false;
+        used.add(s.href).add(s.title);
+        return true;
+      })
       .slice(0, 6);
   const calm1 = calmCards[0];
   const busy1 = busyItems[0];
