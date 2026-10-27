@@ -543,7 +543,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         )
       )}
       <CategoryIcons t={t} lang={lang} />
-      <RecentRail />
 
       {ko ? (
         <HomeList places={listPlaces} crowd={listCrowd} withSearch>
@@ -556,6 +555,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {collectionSection}
           {plusPromo}
           {landmarkRail}
+          {/* 최근 본 곳: 아이콘 바로 아래에선 몇 개만 있어 화면이 비어 보였다 → 맨 아래로 (경수님 10/27) */}
+          <RecentRail />
         </HomeList>
       ) : (
         <>
@@ -568,6 +569,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {collectionSection}
           {trendList}
           {plusPromo}
+          <RecentRail />
           <HomeList places={listPlaces} crowd={listCrowd} withSearch />
         </>
       )}
