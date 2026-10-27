@@ -544,3 +544,10 @@ img:is([src*="visitkorea"], [src*="wikimedia"], [src*="%2Fplaces%2F"], [src^="/p
 /* 그래프 고른 점의 바깥 고리: 숨 쉬듯 커졌다 작아진다 (QA #6) */
 @keyframes chart-pulse { 0%, 100% { transform: scale(0.75); opacity: 0.9; } 50% { transform: scale(1.25); opacity: 0.4; } }
 .chart-pulse { animation: chart-pulse 1.6s ease-in-out infinite; }
+
+/* 애드센스가 광고를 채우지 못한 칸(data-ad-status="unfilled")은 '광고' 글자째 숨긴다.
+   10/27 광고 단위를 켠 직후 휴대폰 390×390·PC 1104×280 빈 칸이 그대로 보였다 (애드센스 권장 방식) */
+ins.adsbygoogle[data-ad-status="unfilled"],
+aside:has(> ins.adsbygoogle[data-ad-status="unfilled"]) {
+  display: none !important;
+}
