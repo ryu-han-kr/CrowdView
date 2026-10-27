@@ -262,7 +262,7 @@ export function HomeList({
           </div>
         )}
         <label
-          className={`items-center gap-2 rounded-2xl bg-gray-100 px-4 py-3 ${withSearch ? "hidden md:flex" : "flex"} ${query ? "" : "group-data-[stuck=true]/sticky:hidden"}`}
+          className={`items-center gap-2 rounded-2xl bg-gray-100 px-4 py-3 ${withSearch ? "hidden md:flex" : "flex"}`}
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0 text-gray-500" fill="none" stroke="currentColor" strokeWidth={2}>
             <circle cx="11" cy="11" r="7" />
@@ -283,7 +283,7 @@ export function HomeList({
           )}
         </label>
         {tabs.length > 0 && (
-          <div className={`mt-3 flex items-end border-b border-gray-200 ${query ? "" : "group-data-[stuck=true]/sticky:mt-0"}`}>
+          <div className="mt-3 flex items-end border-b border-gray-200">
           <div role="tablist" className="no-scrollbar -mb-px flex min-w-0 flex-1 gap-1 overflow-x-auto">
             {tabs.map((x) => (
               <button
@@ -334,10 +334,11 @@ export function HomeList({
             ))}
           </div>
         )}
+      </StickyBar>
         {/* 전체 탭에서도 보여, 분류를 고르면 실시간 장소 탭의 그 분류로 */}
         {(tab === "live" || tab === "all" || !withSearch) && (
           <RoundChips
-            className="-mx-1 mt-5 md:mt-6"
+            className="-mx-1 mt-4"
             items={chips}
             value={filter}
             onChange={(id) => {
@@ -364,7 +365,6 @@ export function HomeList({
             ))}
           </div>
         )}
-      </StickyBar>
 
       {browsing && children}
 

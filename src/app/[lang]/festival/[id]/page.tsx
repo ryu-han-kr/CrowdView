@@ -245,9 +245,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
               {/* 실시간 카드가 있으면 거기 토끼가 있으니 여기엔 예측 표정만 작게, 자료가 없으면 기다리는 토끼 */}
               {crowd ? (
                 <CrowdMascot character="rabbit" score={crowd.score} size={live || skt ? 64 : 96} className="-my-2 shrink-0" label={level ? t(level.label) : undefined} />
-              ) : (
-                <Character name="rabbit" pose="wait" size={72} className="-my-2 shrink-0" />
-              )}
+              ) : null}
             </div>
             {crowd && level ? (
               <>

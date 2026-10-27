@@ -1,4 +1,5 @@
 import { MePanel } from "@/components/MePanel";
+import { PageHeader } from "@/components/PageHeader";
 import { MyPicks, MySettings, SavedPlans } from "@/components/MeSections";
 import { AccountCard } from "@/components/AccountCard";
 import { PlusPanel } from "@/components/PlusPanel";
@@ -33,7 +34,7 @@ export default async function MePage({ params }: { params: Promise<{ lang: strin
   return (
     <main className="px-5 pt-6 md:px-0 md:pt-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold md:text-3xl">{t("마이페이지")}</h1>
+        <PageHeader title={t("마이페이지")} name="hamster" />
         <LangSwitcher compact />
       </div>
 
