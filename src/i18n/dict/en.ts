@@ -1288,6 +1288,8 @@ const dict: Dict = {
   "출국 수속(보안검색) 줄·구간별 대기·주차장까지 한눈에": "Departure security lines, waits by zone and parking at a glance",
   "인천국제공항공사 출국 수속(보안검색) 대기시간·인원 (1분 단위)": "Incheon Airport departure security wait times & headcount (1-min)",
   "일대 약 {n}명": "About {n} in the area",
+  "Plus면 고른 날짜가 한산해질 때 알림을 받고, 광고 없이 봐요": "With Plus, get alerts when your chosen date turns quiet and browse ad-free",
+  "Plus 이용 중": "Plus active",
   "한국민속촌": "Korean Folk Village",
   "서울대공원": "Seoul Grand Park",
   "롯데월드 아쿠아리움": "Lotte World Aquarium",

@@ -2702,4 +2702,7 @@ export default {
   "출국 수속(보안검색) 줄·구간별 대기·주차장까지 한눈에": ["Departure security lines, waits by zone and parking at a glance","出国手続きの列・区間別待ち・駐車場まで一目で","出境安检排队、分区等候、停车场一目了然","出境安檢排隊、分區等候、停車場一目了然"],
   "인천국제공항공사 출국 수속(보안검색) 대기시간·인원 (1분 단위)": ["Incheon Airport departure security wait times & headcount (1-min)","仁川国際空港公社 出国手続き（保安検査）待ち時間・人数（1分単位）","仁川国际机场公社 出境安检等候时间·人数（1分钟）","仁川國際機場公社 出境安檢等候時間·人數（1分鐘）"],
   "일대 약 {n}명": ["About {n} in the area", "一帯 約{n}人", "一带约 {n}人", "一帶約 {n}人"],
+  // ── Plus 표시 (QA #2, 10/27)
+  "Plus면 고른 날짜가 한산해질 때 알림을 받고, 광고 없이 봐요": ["With Plus, get alerts when your chosen date turns quiet and browse ad-free","Plusなら選んだ日が空いたときに通知が届き、広告なしで見られます","Plus 会员可在所选日期变清静时收到提醒，并无广告浏览","Plus 會員可在所選日期變清靜時收到提醒，並無廣告瀏覽"],
+  "Plus 이용 중": ["Plus active","Plus利用中","Plus 使用中","Plus 使用中"],
 };

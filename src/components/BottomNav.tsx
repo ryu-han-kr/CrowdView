@@ -6,6 +6,7 @@ import { useI18n } from "@/i18n/client";
 import { stripLang } from "@/i18n/config";
 import { NavAuth } from "./AuthButtons";
 import { LangSwitcher } from "./LangSwitcher";
+import { PlusBadge } from "./PlusBadge";
 import { SolarIcon } from "@/components/icons/SolarIcon";
 import type { SolarName } from "@/components/icons/solar";
 
@@ -73,6 +74,7 @@ export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
         <p className="hidden text-xs whitespace-nowrap text-gray-500 2xl:block">{t("실시간 혼잡도 · AI 예측")}</p>
         {/* 오른쪽 버튼은 줄어들지 않게 (좁은 화면에서 '한국어'·'로그인'이 두 줄로 꺾이던 것) — 모자라면 메뉴 쪽이 옆으로 밀린다 */}
         <div className="flex shrink-0 items-center gap-2 whitespace-nowrap">
+          {authEnabled && <PlusBadge />}
           <LangSwitcher />
           <NavAuth enabled={authEnabled} />
         </div>
