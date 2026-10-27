@@ -8,6 +8,7 @@ import { Character } from "@/components/Character";
 import { useI18n } from "@/i18n/client";
 import { LEVELS, levelOf, deepOf } from "@/lib/levels";
 import { KEY_ID, loadSdk } from "@/lib/naver-map";
+import { MAP_PREVIEW_H, MAP_PREVIEW_W, projectToPreview } from "@/lib/map-preview";
 import { LevelBadge } from "../Level";
 import { MapLegend } from "./MapLegend";
 import { Glyph } from "@/components/Glyph";
@@ -50,19 +51,22 @@ export function ViewToggle({ view, onChange }: { view: "list" | "map"; onChange:
   );
 }
 
-/** max: 한 번에 그릴 최대 핀 (기본 400, 묶음이 있어 더 늘려도 된다) · legend=false면 위 범례를 숨긴다 (부르는 쪽이 따로 그릴 때) */
+/** max: 한 번에 그릴 최대 핀 (기본 400, 묶음이 있어 더 늘려도 된다) · legend=false면 위 범례를 숨긴다 (부르는 쪽이 따로 그릴 때)
+ *  preview=true: 타일이 뜰 때까지 전국 정적 그림 위에 핀을 찍어 둔다 (전국 지도 화면용. 지역 일부만 찍는 목록 지도에는 안 맞는다) */
 export function SpotMap({
   spots,
   className = "",
   max = MAX_PINS,
   legend = true,
   heightClass,
+  preview = false,
 }: {
   spots: MapSpot[];
   className?: string;
   max?: number;
   legend?: boolean;
   heightClass?: string;
+  preview?: boolean;
 }) {
   const shown = useMemo(() => spots.slice(0, max), [spots, max]);
   const [failed, setFailed] = useState(!KEY_ID);
@@ -79,7 +83,7 @@ export function SpotMap({
         {/* 인증 실패 때 지도를 바로 없애면 네이버 SDK 안쪽 오류로 화면 전체가 멈췄다 → 숨겨 두고 그림을 보인다 (자체 QA 10/22) */}
         {KEY_ID && (
           <div className={failed ? "hidden" : undefined} aria-hidden={failed || undefined}>
-            <NaverSpots spots={shown} onSelect={setSelected} onFail={() => setFailed(true)} heightClass={heightClass} />
+            <NaverSpots spots={shown} onSelect={setSelected} onFail={() => setFailed(true)} heightClass={heightClass} preview={preview} />
           </div>
         )}
         {failed && <SketchMap spots={shown} onSelect={setSelected} />}
@@ -136,16 +140,20 @@ function NaverSpots({
   onSelect,
   onFail,
   heightClass = "h-[60dvh] min-h-[380px]",
+  preview = false,
 }: {
   spots: MapSpot[];
   onSelect: (id: string | null) => void;
   onFail: () => void;
   heightClass?: string;
+  preview?: boolean;
 }) {
   const el = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
   const [ready, setReady] = useState(0);
+  // 타일까지 다 그려졌는지 (그 전까지 미리보기·대기 화면을 덮어 둔다). tilesloaded 가 안 오는 경우를 위해 8초 뒤엔 걷는다
+  const [tiles, setTiles] = useState(false);
   const { lang } = useI18n();
 
   // 지도는 한 번만 만든다
@@ -159,6 +167,10 @@ function NaverSpots({
         mapRef.current = new maps.Map(el.current, { center: new maps.LatLng(37.55, 126.98), zoom: 11, scaleControl: false, mapDataControl: false });
         maps.Event.addListener(mapRef.current, "click", () => onSelect(null));
         setReady((n) => n + 1);
+        try {
+          maps.Event.once(mapRef.current, "tilesloaded", () => setTiles(true));
+        } catch {}
+        setTimeout(() => setTiles(true), 8000);
       })
       .catch(() => onFail());
     return () => {
@@ -264,13 +276,36 @@ function NaverSpots({
   return (
     <div className={`relative ${heightClass} w-full`}>
       <div ref={el} className="h-full w-full" />
-      {/* 지도 SDK를 받는 동안: 지도를 펼친 햄스터 */}
-      {!ready && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-gray-50 text-sm text-gray-500">
-          <Character name="hamster" pose="explore" size={120} priority />
-          {t("지도를 불러오는 중…")}
-        </div>
-      )}
+      {/* 타일이 뜨기 전: 전국 지도 화면은 정적 그림 + 핀(첫 그림·LCP, 10/27), 그 외는 지도를 펼친 햄스터 */}
+      {!tiles &&
+        (preview ? (
+          <MapPreview spots={spots} />
+        ) : (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-gray-50 text-sm text-gray-500">
+            <Character name="hamster" pose="explore" size={120} priority />
+            {t("지도를 불러오는 중…")}
+          </div>
+        ))}
+    </div>
+  );
+}
+
+/** 네이버 타일이 뜨기 전 첫 그림: 한반도 남쪽 실루엣(public/map/korea.webp, 16KB) 위에 혼잡 색 점.
+ *  그림과 점은 같은 투영(lib/map-preview)을 쓰고 둘 다 object-contain/meet 으로 맞춰 자리가 일치한다.
+ *  지도 화면 LCP 가 타일(7~8초)이었던 것을 이 그림(HTML 에 바로 있는 img)으로 당긴다. 점 수는 400개까지 (서버 렌더 때는 283곳) */
+function MapPreview({ spots }: { spots: MapSpot[] }) {
+  const { t } = useI18n();
+  return (
+    <div className="pointer-events-none absolute inset-0 bg-[#e9f0fa]" aria-hidden data-testid="map-preview">
+      <span className="absolute top-3 left-3 z-10 rounded-full bg-white/90 px-2.5 py-1 text-[11px] text-gray-600 shadow">{t("지도를 불러오는 중…")}</span>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/map/korea.webp" width={MAP_PREVIEW_W} height={MAP_PREVIEW_H} alt="" fetchPriority="high" decoding="async" className="h-full w-full object-contain" />
+      <svg viewBox={`0 0 ${MAP_PREVIEW_W} ${MAP_PREVIEW_H}`} preserveAspectRatio="xMidYMid meet" className="absolute inset-0 h-full w-full">
+        {spots.slice(0, 400).map((s) => {
+          const [x, y] = projectToPreview(s.lat, s.lng);
+          return <circle key={s.id} cx={x} cy={y} r={7} fill={pinColor(s.score)} stroke="#fff" strokeWidth={2.5} />;
+        })}
+      </svg>
     </div>
   );
 }

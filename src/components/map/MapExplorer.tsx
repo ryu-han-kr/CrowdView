@@ -104,7 +104,7 @@ export function MapExplorer({ spots: base, regions, subtitle }: { spots: Explore
           ))}
       </div>
 
-      <SpotMap className="mt-3 md:mt-4" spots={ordered} max={2500} legend={false} heightClass="h-[calc(100dvh-18rem)] min-h-[420px]" />
+      <SpotMap className="mt-3 md:mt-4" spots={ordered} max={2500} legend={false} heightClass="h-[calc(100dvh-18rem)] min-h-[420px]" preview />
     </div>
   );
 }
