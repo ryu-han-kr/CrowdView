@@ -10,9 +10,9 @@ import { NavProgress } from "@/components/NavProgress";
 import { ErrorReporter } from "@/components/ErrorReporter";
 import { authEnabled } from "@/lib/auth";
 import { SiteFooter } from "@/components/SiteFooter";
-import { I18nProvider } from "@/i18n/client";
+import { LazyI18nProvider } from "@/i18n/lazy-provider";
 import { LANGS, isLang } from "@/i18n/config";
-import { getDict, getT } from "@/i18n/server";
+import { getT } from "@/i18n/server";
 import { SITE, pageMeta } from "@/lib/seo";
 import "../globals.css";
 import { TrafficBeacon } from "@/components/TrafficBeacon";
@@ -91,7 +91,7 @@ export default async function RootLayout({ children, params }: { children: React
       <body className="relative isolate bg-white font-sans antialiased">
         {/* 구글 애드센스 (발행자 ID가 있을 때만). EEA·영국 이용자 동의 화면은 애드센스 콘솔 '개인 정보 보호 및 메시지'에서 켠다 */}
         {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && <AdSenseLoader client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT} />}
-        <I18nProvider lang={lang} dict={getDict(lang)}>
+        <LazyI18nProvider lang={lang}>
           <NavProgress />
           <PageTheme />
           <ErrorReporter />
@@ -112,7 +112,7 @@ export default async function RootLayout({ children, params }: { children: React
           <AdRail side="left" />
           <AdRail side="right" />
           <BottomNav />
-        </I18nProvider>
+        </LazyI18nProvider>
       </body>
     </html>
   );
