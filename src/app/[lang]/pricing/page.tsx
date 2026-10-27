@@ -22,7 +22,9 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 // 무료 / Plus 비교 (✓ 제공, – 미제공, 글자면 그 범위만 제공)
 const ROWS: [label: string, free: boolean | string, plus: boolean | string][] = [
   ["실시간 혼잡도 (공항·놀이공원·관광지·축제·서울 121곳)", true, true],
-  ["시간대별·주간 혼잡 예측", true, true],
+  ["시간대별·주간·한 달 혼잡 예측", true, true],
+  // 경수님 QA #2 2단계 (10/27): 1년 혼잡 달력은 Plus 전용
+  ["1년 혼잡 달력 (1년 중 한산한 날 한눈에)", false, true],
   ["축제 일정, 날씨·미세먼지, 공항 주차·입국 정보", true, true],
   ["찜한 장소 모아 보기", true, true],
   ["지역별 명소·서울 여행 가이드·근처 숙소 찾기", true, true],

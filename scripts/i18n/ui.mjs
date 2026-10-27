@@ -2708,6 +2708,11 @@ export default {
   "일대 약 {n}명": ["About {n} in the area", "一帯 約{n}人", "一带约 {n}人", "一帶約 {n}人"],
   // ── Plus 표시 (QA #2, 10/27)
   "Plus면 고른 날짜가 한산해질 때 알림을 받고, 광고 없이 봐요": ["With Plus, get alerts when your chosen date turns quiet and browse ad-free","Plusなら選んだ日が空いたときに通知が届き、広告なしで見られます","Plus 会员可在所选日期变清静时收到提醒，并无广告浏览","Plus 會員可在所選日期變清靜時收到提醒，並無廣告瀏覽"],
+  "1년 혼잡 달력은 Plus 전용이에요": ["The 1-year crowd calendar is for Plus members","1年混雑カレンダーはPlus限定です","1年拥挤日历为Plus专享","1年擁擠日曆為Plus專享"],
+  "1년 중 가장 한산한 날을 한눈에 보고 여행 날짜를 고르세요": ["See the quietest days of the year at a glance and pick your travel dates","1年で一番空いている日をひと目で見て旅行日を選びましょう","一眼看出全年最清静的日子，选好出行日期","一眼看出全年最清靜的日子，選好出行日期"],
+  "Plus로 보기": ["View with Plus","Plusで見る","用Plus查看","用Plus查看"],
+  "시간대별·주간·한 달 혼잡 예측": ["Hourly, weekly & monthly crowd forecasts","時間帯別・週間・1か月の混雑予測","分时段、每周、每月拥挤预测","分時段、每週、每月擁擠預測"],
+  "1년 혼잡 달력 (1년 중 한산한 날 한눈에)": ["1-year crowd calendar (quietest days at a glance)","1年混雑カレンダー（空いている日がひと目で）","1年拥挤日历（一眼看出清静日子）","1年擁擠日曆（一眼看出清靜日子）"],
   "Plus 이용 중": ["Plus active","Plus利用中","Plus 使用中","Plus 使用中"],
   // ── QA 묶음 2 (10/27)
   "제휴 링크로 예약해도 가격은 같아요": ["Booking through our partner links costs the same","提携リンクから予約しても料金は同じです","通过合作链接预订价格相同","透過合作連結預訂價格相同"],
