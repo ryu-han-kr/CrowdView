@@ -281,15 +281,16 @@ function NaverSpots({
     <div className={`relative ${heightClass} w-full`}>
       <div ref={el} className="h-full w-full" />
       {/* 타일이 뜨기 전: 전국 지도 화면은 정적 그림 + 핀(첫 그림·LCP, 10/27), 그 외는 지도를 펼친 햄스터 */}
-      {!hideOverlay &&
-        (preview ? (
-          <MapPreview spots={spots} onPainted={() => setPainted(true)} />
-        ) : (
+      {preview ? (
+        <MapPreview spots={spots} hidden={hideOverlay} onPainted={() => setPainted(true)} />
+      ) : (
+        !hideOverlay && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-gray-50 text-sm text-gray-500">
             <Character name="hamster" pose="explore" size={120} priority />
             {t("지도를 불러오는 중…")}
           </div>
-        ))}
+        )
+      )}
     </div>
   );
 }
@@ -297,7 +298,9 @@ function NaverSpots({
 /** 네이버 타일이 뜨기 전 첫 그림: 한반도 남쪽 실루엣(public/map/korea.webp, 16KB) 위에 혼잡 색 점.
  *  그림과 점은 같은 투영(lib/map-preview)을 쓰고 둘 다 object-contain/meet 으로 맞춰 자리가 일치한다.
  *  지도 화면 LCP 가 타일(7~8초)이었던 것을 이 그림(HTML 에 바로 있는 img)으로 당긴다. 점 수는 400개까지 (서버 렌더 때는 283곳) */
-function MapPreview({ spots, onPainted }: { spots: MapSpot[]; onPainted: () => void }) {
+/** hidden: 타일이 뜬 뒤. 그림(img)은 지우지 않고 투명하게만 둔다 — Lighthouse 는 측정 끝에 LCP 요소를 DOM 에서 찾는데, 지워져 있으면
+ *  그림만의 의존 경로 대신 '그때까지 받은 모든 요청(SDK·타일)'으로 LCP 를 추정해 빠른 망에서 5초대가 나왔다(10/27 운영 2.6초 vs 5.2초). 점·안내는 뺀다 */
+function MapPreview({ spots, hidden, onPainted }: { spots: MapSpot[]; hidden: boolean; onPainted: () => void }) {
   const { t } = useI18n();
   const img = useRef<HTMLImageElement>(null);
   // 브라우저가 이 그림을 '가장 큰 첫 그림(LCP)'으로 기록한 뒤에만 걷을 수 있다. rAF 두 번으로는 부족했다 — Lighthouse 의 Chrome 은
@@ -327,16 +330,23 @@ function MapPreview({ spots, onPainted }: { spots: MapSpot[]; onPainted: () => v
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div className="pointer-events-none absolute inset-0 bg-[#e9f0fa]" aria-hidden data-testid="map-preview">
-      <span className="absolute top-3 left-3 z-10 rounded-full bg-white/90 px-2.5 py-1 text-[11px] text-gray-600 shadow">{t("지도를 불러오는 중…")}</span>
+    <div
+      className={`pointer-events-none absolute inset-0 bg-[#e9f0fa] transition-opacity duration-300 ${hidden ? "opacity-0" : ""}`}
+      aria-hidden
+      data-testid="map-preview"
+      data-hidden={hidden || undefined}
+    >
+      {!hidden && <span className="absolute top-3 left-3 z-10 rounded-full bg-white/90 px-2.5 py-1 text-[11px] text-gray-600 shadow">{t("지도를 불러오는 중…")}</span>}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img ref={img} src="/map/korea.webp" width={MAP_PREVIEW_W} height={MAP_PREVIEW_H} alt="" fetchPriority="high" decoding="async" className="h-full w-full object-contain" />
-      <svg viewBox={`0 0 ${MAP_PREVIEW_W} ${MAP_PREVIEW_H}`} preserveAspectRatio="xMidYMid meet" className="absolute inset-0 h-full w-full">
-        {spots.slice(0, 400).map((s) => {
-          const [x, y] = projectToPreview(s.lat, s.lng);
-          return <circle key={s.id} cx={x} cy={y} r={7} fill={pinColor(s.score)} stroke="#fff" strokeWidth={2.5} />;
-        })}
-      </svg>
+      {!hidden && (
+        <svg viewBox={`0 0 ${MAP_PREVIEW_W} ${MAP_PREVIEW_H}`} preserveAspectRatio="xMidYMid meet" className="absolute inset-0 h-full w-full">
+          {spots.slice(0, 400).map((s) => {
+            const [x, y] = projectToPreview(s.lat, s.lng);
+            return <circle key={s.id} cx={x} cy={y} r={7} fill={pinColor(s.score)} stroke="#fff" strokeWidth={2.5} />;
+          })}
+        </svg>
+      )}
     </div>
   );
 }
