@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { StayLinks } from "@/components/StayLinks";
+import { HourlyChart } from "@/components/charts/lazy";
+import type { HourPoint } from "@/lib/types";
 import { CrowdMascot } from "@/components/place/CrowdMascot";
 import { AlertButtons } from "@/components/AlertButtons";
 import { CalmAlternatives } from "@/components/CalmAlternatives";
@@ -283,6 +285,24 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
                 {t("지난 날짜 실제 기록 보기")} ›
               </Link>
             </p>
+            {/* 장소 상세와 같은 시간대 그래프 (QA #15: 서울 지역만 표뿐이라 통일성이 없었다). 지금 1점 + 서울시 예측 12점, 자정을 넘으면 24+ 로 이어 그린다 */}
+            {(() => {
+              const h0 = Number(live.time.slice(11, 13));
+              let prev = h0;
+              const pts: HourPoint[] = [{ hour: h0, score: live.score, people: Math.round((live.min + live.max) / 2), peopleKind: "real", forecast: false }];
+              for (const f of live.forecast) {
+                let h = Number(f.time.slice(11, 13));
+                while (h <= prev - 12) h += 24;
+                if (h < prev) h += 24;
+                prev = h;
+                pts.push({ hour: h, score: f.score, people: Math.round((f.min + f.max) / 2), peopleKind: "real", forecast: true });
+              }
+              return pts.length >= 2 ? (
+                <div className="mt-3">
+                  <HourlyChart points={pts} highlightHour={h0} unit="명" />
+                </div>
+              ) : null;
+            })()}
             <ul className="mt-3 divide-y divide-gray-100 rounded-2xl border border-gray-100">
               {live.forecast.map((f) => (
                 <li key={f.time} className="flex items-center gap-3 px-4 py-2.5 text-sm">
