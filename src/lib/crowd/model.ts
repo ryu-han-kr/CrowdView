@@ -277,6 +277,8 @@ export function modelSnapshot(place: Place, at: Date = new Date(), s?: Signals):
   const before = expectedScore(place, { ...now, hour: now.hour - 0.5 }, s);
   const delta = score - before;
   return {
+    // 부산 생활인구 기준 장소(해운대 등)는 인원이 행정동 일대 값 (QA #11)
+    ...(place.busanDongs?.length && { peopleScope: "area" as const }),
     placeId: place.id,
     score,
     open: now.hour >= place.hours[0] && now.hour < place.hours[1] && !place.info?.closedToday && inSeason(place, now.date),

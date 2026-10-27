@@ -302,7 +302,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
 
   return (
     <main>
-      <TrackRecent id={place.id} href={placeHref(place)} title={t(place.name)} img={place.image} sub={t(place.region)} />
+      <TrackRecent id={place.id} href={placeHref(place)} title={place.name} img={heroImage(place)} sub={place.region} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

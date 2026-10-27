@@ -148,6 +148,8 @@ export interface CrowdSnapshot {
    * 이때 headcount는 그 인원을 장소 크기로 줄인 '명소 기준' 추정이고, 지역 실측은 여기에 따로 둔다
    */
   area?: { name: string; range: [number, number] };
+  /** 인원이 장소가 아니라 주변 행정동 일대(부산 생활인구 등)의 값일 때 (화면에 '일대 약 n명', QA #11 10/27) */
+  peopleScope?: "area";
   /** 주변 지역 인구가 평소 이 요일·시간보다 몇 배인지 (lib/crowd/baseline, 2주 넘게 쌓인 뒤부터) */
   vsUsual?: number;
   /** 원천의 관측 시각 (서울시 'YYYY-MM-DD HH:mm', KST). 화면의 '○시 기준'은 이 값 */

@@ -57,10 +57,33 @@ export const inRegion = (region: string, regionId: string) => !!REGIONS.find((r)
 /**
  * 랜드마크를 누르면 갈 곳과 혼잡도 출처: 우리 장소(1.5km 안) → 서울 실시간 지역(0.8km 안) → 명소 상세(/spot/{id})
  */
+/** 이름 비교용: 띄어쓰기·괄호·기호와 '해수욕장·공원·역·타워·관광특구' 같은 일반 꼬리를 뗀다 */
+const nameKey = (name: string) => name.replace(/\(.*?\)/g, "").replace(/[\s·()\-]/g, "").replace(/(서울)?(해수욕장|해변|공원|역|타워|관광특구|일대)$/g, "");
+/** 두 이름이 같은 곳을 가리키는지: 2 = 같음, 1 = 한쪽이 다른 쪽을 품음(2글자 이상), 0 = 다름. 괄호 안 이름(DDP(동대문디자인플라자))도 본다 */
+const sameName = (a: string, b: string): 0 | 1 | 2 => {
+  const parts = (n: string) => [n, ...(n.match(/\((.*?)\)/g) ?? []).map((p) => p.slice(1, -1))].map(nameKey).filter((k) => k.length >= 2);
+  let best: 0 | 1 | 2 = 0;
+  for (const x of parts(a)) for (const y of parts(b)) best = Math.max(best, x === y ? 2 : x.includes(y) || y.includes(x) ? 1 : 0) as 0 | 1 | 2;
+  return best;
+};
+/** 이름이 가장 잘 맞는 것 (같음 > 품음) */
+function bestNamed<T>(items: T[], name: (x: T) => string[], target: string): T | undefined {
+  let best: { item: T; score: 0 | 1 | 2 } | undefined;
+  for (const item of items) {
+    const score = Math.max(0, ...name(item).map((n) => sameName(n, target))) as 0 | 1 | 2;
+    if (score && (!best || score > best.score)) best = { item, score };
+  }
+  return best?.item;
+}
+
+/**
+ * 명소 → 우리 화면. 같은 이름의 실시간 장소(경복궁 → /place/gyeongbokgung) → 같은 이름의 서울 실시간 지역(창덕궁 → 창덕궁·종묘) → 명소 자체 화면(/spot).
+ * 10/27 경수님 QA #10: 거리만으로 1.5km 안 장소에 붙이던 것(해운대해수욕장 → 씨라이프 아쿠아리움, 인사동 → 경복궁 등 14곳)을 이름이 맞을 때만으로
+ */
 export function landmarkLink(l: Landmark, lang: Lang): { href: string; external: boolean; placeId?: string; seoulCode?: string } {
-  const place = PLACES.find((p) => p.category !== "airport" && distanceKm(p, l) < 1.5);
+  const place = bestNamed(PLACES.filter((p) => p.category !== "airport" && distanceKm(p, l) < 3), (p) => [p.name], l.n.ko);
   if (place) return { href: placeHref(place), external: false, placeId: place.id };
-  const area = l.region === "서울" ? SEOUL_AREAS.find((a) => distanceKm(a, l) < 0.8) : undefined;
+  const area = l.region === "서울" ? bestNamed(SEOUL_AREAS.filter((a) => distanceKm(a, l) < 3), (a) => a.name.split("·"), l.n.ko) : undefined;
   if (area) return { href: `/seoul/${area.code}`, external: false, seoulCode: area.code };
   return { href: `/spot/${l.id}`, external: false };
 }

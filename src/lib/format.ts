@@ -42,7 +42,9 @@ export function headcountInfo(
         : t("약 {n}명", { n: n(c.headcount) }),
     };
   }
-  if (c.source === "incheon-airport") return { text: t("출국 대기 {n}명", { n: c.headcount.toLocaleString() }) };
+  if (c.source === "incheon-airport") return { text: t("출국 수속 줄 {n}명", { n: c.headcount.toLocaleString() }) };
   if (c.source === "kac-airport" && c.paxHour) return { text: t("이번 시간 출발 {n}명", { n: c.headcount.toLocaleString() }) };
+  // 부산 생활인구처럼 행정동 일대 값이면 '일대'를 붙인다 (해운대 해수욕장 1.6만 명 ≠ 백사장 인원, QA #11)
+  if (c.peopleScope === "area") return { text: t("일대 약 {n}명", { n: n(c.headcount) }), kind: "추정" };
   return SHOW_DATA_LABELS ? { text: t("약 {n}명", { n: n(c.headcount) }), kind: "추정" } : null;
 }
