@@ -30,7 +30,7 @@ export function HomeGreeting({ scores, hour, live, t }: { scores: number[]; hour
       {/* 캐릭터는 장소 상세·대기 화면에서만 (QA #5) → 여기선 서울 전체 단계를 큰 색 원으로 */}
       <span
         className="ml-2 flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-center text-[13px] leading-tight font-extrabold break-keep"
-        style={{ background: `${lv.color}33`, color: inkOf(lv.color), boxShadow: `inset 0 0 0 3px ${lv.color}` }}
+        style={{ background: "#fff", color: inkOf(lv.color), boxShadow: `inset 0 0 0 3px ${lv.color}` }}
       >
         {night ? "zz" : t(lv.label)}
       </span>
