@@ -14,7 +14,7 @@ import { headcountInfo } from "@/lib/format";
 import { placeTag } from "@/lib/category-style";
 import { heroImage, placePhotos } from "@/lib/place-photos";
 import { FeatureGrid } from "@/components/home/FeatureLayouts";
-import { ShortCardRail, ThemeTiles, type ShortCard, type ThemeTile } from "@/components/home/HomeCollections";
+import { CollectionCarousel, ShortCardRail, ThemeTiles, type Collection, type ShortCard, type ThemeTile } from "@/components/home/HomeCollections";
 import { levelOf } from "@/lib/levels";
 import { CATEGORY_LABEL } from "@/lib/types";
 import { subOf } from "@/lib/subcategory";
@@ -377,7 +377,48 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       sub: t("강남역·성수·한강공원, 지금 몇 명?"),
     },
   ];
-  // '지역별 한산한 곳 모음' 구역은 10/27 홈 2차(구역 축소)에서 뺐다 — 전체 목록의 지역 검색과 겹쳤다
+  // '지역별 한산한 곳 모음'·'지역별 대표 명소': 10/27 홈 2차에서 뺐다가 경수님 요청으로 되살림 (같은 날 저녁). PC는 모음 2개 나란히(QA #13)
+  // 3) 모음 배너: 지금 한산한 3곳 + 큰 배경 사진 (배경은 그 묶음에서 가장 유명한 곳의 두 번째 사진)
+  const makeCollection = (id: string, title: string, badge: string, href: string, pool: typeof places): Collection => {
+    // 실내 액티비티(클라이밍장·오락실)는 명소 모음에서 뺀다 — 서울 모음이 클라이밍장 3곳으로만 찼다 (10/27)
+    const inR = pool.filter((p) => crowd[p.id] && heroImage(p) && p.category !== "airport" && p.category !== "indoor");
+    const top = [...inR].sort((a, b) => b.popularity - a.popularity)[0];
+    const items = [...inR]
+      .sort((a, b) => Number(crowd[b.id].open) - Number(crowd[a.id].open) || crowd[a.id].score - crowd[b.id].score)
+      .slice(0, 3)
+      .map((p) => {
+        const c = crowd[p.id];
+        const lv = levelOf(c.score);
+        return {
+          id: p.id,
+          href: placeHref(p),
+          img: heroImage(p),
+          title: t(p.name),
+          value: c.open ? [t(lv.label), headcountInfo(c, { t, lang })?.text].filter(Boolean).join(" · ") : t("운영 종료"),
+          color: c.open ? lv.color : "#6b7280",
+        };
+      });
+    return {
+      id,
+      title,
+      badge,
+      sub: t("지금 덜 붐비는 순 {n}곳", { n: items.length }),
+      href,
+      img: top ? (placePhotos(top.id)[1]?.src ?? heroImage(top)) : undefined,
+      items,
+    };
+  };
+  const REGION_SETS = ["서울", "경기", "부산", "제주", "강원"];
+  const collections: Collection[] = REGION_SETS.map((r) =>
+    makeCollection(
+      t(r),
+      t("{region} 지금 한산한 곳 모음", { region: t(r) }),
+      t("지역 모음"),
+      "/?q=" + encodeURIComponent(t(r)) + "#places",
+      places.filter((p) => p.region.startsWith(r)),
+    ),
+  ).filter((c) => c.items.length >= 3);
+  const collectionSection = <CollectionCarousel title={t("지역별 한산한 곳 모음")} sub={t("지역을 고르면 지금 덜 붐비는 곳 3곳")} collections={collections} />;
   const shortRail = (
     <ShortCardRail title={t("테마파크·워터파크 지금")} sub={t("실시간 대기와 예상 혼잡을 한눈에")} moreHref="/map" items={shortCards} />
   );
@@ -458,7 +499,9 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {themeSection}
           <InlineAd className="mt-8" />
           {festivalRail}
+          {collectionSection}
           {plusPromo}
+          {landmarkRail}
         </HomeList>
       ) : (
         <>
@@ -468,6 +511,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {festivalRail}
           {calmRail}
           {shortRail}
+          {collectionSection}
           {trendList}
           {plusPromo}
           <HomeList places={listPlaces} crowd={listCrowd} withSearch />
