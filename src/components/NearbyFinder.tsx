@@ -1,5 +1,6 @@
 "use client";
 
+import { trPoiName } from "@/i18n/patterns";
 import Link from "@/i18n/link";
 import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/i18n/client";
@@ -202,7 +203,7 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
             const body = (
               <>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold">{x.name}</span>
+                  <span className="block truncate text-sm font-semibold">{tab === "toilet" || tab === "wifi" ? trPoiName(x.name, lang) : x.name}</span>
                   {x.sub && <span className="block truncate text-xs text-gray-500">{x.sub}</span>}
                   {x.badges && x.badges.length > 0 && (
                     <span className="mt-1 flex flex-wrap gap-1">
@@ -234,7 +235,11 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
                   <span className="flex min-w-0 flex-1 items-center gap-3">{body}</span>
                 )}
                 <a
-                  href={`https://map.kakao.com/link/to/${encodeURIComponent(x.name.replace(/^\S+\s/, ""))},${x.lat},${x.lng}`}
+                  href={
+                    lang === "ko"
+                      ? `https://map.kakao.com/link/to/${encodeURIComponent(x.name.replace(/^S+s/, ""))},${x.lat},${x.lng}`
+                      : `https://www.google.com/maps/dir/?api=1&destination=${x.lat},${x.lng}`
+                  }
                   target="_blank"
                   rel="noreferrer"
                   className="shrink-0 rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-semibold text-gray-700"

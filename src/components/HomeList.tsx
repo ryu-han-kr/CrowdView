@@ -337,7 +337,7 @@ export function HomeList({
         {/* 전체 탭에서도 보여, 분류를 고르면 실시간 장소 탭의 그 분류로 */}
         {(tab === "live" || tab === "all" || !withSearch) && (
           <RoundChips
-            className="-mx-1 mt-2"
+            className="-mx-1 mt-5 md:mt-6"
             items={chips}
             value={filter}
             onChange={(id) => {

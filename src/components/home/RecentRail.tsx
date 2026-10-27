@@ -33,8 +33,9 @@ export function RecentRail() {
                   </div>
                 )}
               </div>
-              <p className="mt-1.5 line-clamp-1 text-xs font-semibold text-gray-900">{r.title}</p>
-              {r.sub && <p className="truncate text-[11px] text-gray-500">{r.sub}</p>}
+              {/* 저장은 한국어 이름, 보일 때 그 언어로 (10/27 QA #23: 한국어로 본 뒤 영어로 보면 두 언어가 섞여 보였다) */}
+              <p className="mt-1.5 line-clamp-1 text-xs font-semibold text-gray-900">{t(r.title)}</p>
+              {r.sub && <p className="truncate text-[11px] text-gray-500">{t(r.sub)}</p>}
             </Link>
           </li>
         ))}

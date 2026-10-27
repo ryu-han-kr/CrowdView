@@ -11,7 +11,7 @@ import type { CrowdResult, Place } from "@/lib/types";
 
 const LIVE: Partial<Record<CrowdResult["source"], string>> = {
   "seoul-citydata": "서울시 실시간 도시데이터 (통신 기반 인구, 5분 단위)",
-  "incheon-airport": "인천국제공항공사 출국장 대기시간·인원 (1분 단위)",
+  "incheon-airport": "인천국제공항공사 출국 수속(보안검색) 대기시간·인원 (1분 단위)",
   "kac-airport": "한국공항공사 구간별 혼잡도 (체크인~탑승)",
   "themeparks-wiki": "놀이기구 대기시간 평균 (ThemeParks.wiki, 5분 단위)",
   "queue-times": "놀이기구 대기시간 평균 (Queue-Times, 5분 단위)",

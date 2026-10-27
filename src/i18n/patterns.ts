@@ -63,3 +63,37 @@ export function fmtAge(minutes: number, t: T): string {
   if (minutes < 60) return t("{n}분 전", { n: minutes });
   return t("{n}시간 전", { n: Math.floor(minutes / 60) });
 }
+
+// 공공시설 이름 조각 (서울시 화장실·와이파이 자료 수천 건은 통째 번역 대신 흔한 조각만 바꾼다, QA #17 10/27). 긴 것부터
+const POI_TOKENS: [ko: string, en: string, ja: string, zh: string, tw: string][] = [
+  ["공중화장실", "Public toilet", "公衆トイレ", "公共厕所", "公共廁所"],
+  ["개방화장실", "Open toilet", "開放トイレ", "开放厕所", "開放廁所"],
+  ["화장실", "Toilet", "トイレ", "厕所", "廁所"],
+  ["지하철역", "Subway station", "地下鉄駅", "地铁站", "地鐵站"],
+  ["주민센터", "Community center", "住民センター", "居民中心", "居民中心"],
+  ["공영주차장", "Public parking", "公営駐車場", "公共停车场", "公共停車場"],
+  ["주차장", "Parking", "駐車場", "停车场", "停車場"],
+  ["어린이공원", "Children's park", "子ども公園", "儿童公园", "兒童公園"],
+  ["근린공원", "Park", "近隣公園", "社区公园", "社區公園"],
+  ["한강공원", "Hangang Park", "漢江公園", "汉江公园", "漢江公園"],
+  ["공원", "Park", "公園", "公园", "公園"],
+  ["시장", "Market", "市場", "市场", "市場"],
+  ["도서관", "Library", "図書館", "图书馆", "圖書館"],
+  ["문화센터", "Culture center", "文化センター", "文化中心", "文化中心"],
+  ["체육관", "Gym", "体育館", "体育馆", "體育館"],
+  ["운동장", "Stadium", "運動場", "运动场", "運動場"],
+  ["버스정류장", "Bus stop", "バス停", "公交站", "公車站"],
+  ["지하상가", "Underground mall", "地下商店街", "地下商街", "地下商街"],
+  ["빌딩", "Building", "ビル", "大厦", "大廈"],
+  ["광장", "Plaza", "広場", "广场", "廣場"],
+  ["역", "Station", "駅", "站", "站"],
+];
+const POI_IDX: Record<string, number> = { en: 1, ja: 2, "zh-CN": 3, "zh-TW": 4 };
+/** 공공시설 이름의 흔한 조각을 그 언어로 (예: 신촌역 공중화장실 → 신촌 Station Public toilet). 한국어면 그대로 */
+export function trPoiName(name: string, lang: Lang): string {
+  const i = POI_IDX[lang];
+  if (!i) return name;
+  let out = name;
+  for (const row of POI_TOKENS) out = out.split(row[0]).join(` ${row[i]} `);
+  return out.replace(/s+/g, " ").trim();
+}

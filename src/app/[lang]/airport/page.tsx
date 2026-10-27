@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return pageMeta({
     lang,
     path: "/airport",
-    title: t("공항 혼잡도 · 출국장 대기시간"),
+    title: t("공항 혼잡도 · 출국 수속(보안검색) 대기시간"),
     description: t("인천공항 제1·2터미널, 김포·제주·김해공항의 실시간 출국장 혼잡도와 대기시간, 주차장 빈자리"),
   });
 }
@@ -37,7 +37,7 @@ export default async function AirportListPage({ params }: { params: Promise<{ la
   return (
     <main className="px-5 pt-6 md:px-0 md:pt-10">
       <h1 className="text-2xl font-bold md:text-3xl">{t("공항 혼잡도")}</h1>
-      <p className="mt-1 text-sm text-gray-500">{t("출국장 대기·보안검색 구간·주차장까지 한눈에")}</p>
+      <p className="mt-1 text-sm text-gray-500">{t("출국 수속(보안검색) 줄·구간별 대기·주차장까지 한눈에")}</p>
 
       <ul className="mt-5 space-y-3 md:grid md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] md:gap-4 md:space-y-0">
         {AIRPORTS.map((place, i) => {
