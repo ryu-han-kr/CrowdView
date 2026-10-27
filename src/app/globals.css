@@ -480,3 +480,7 @@ img:is([src*="visitkorea"], [src*="wikimedia"], [src*="%2Fplaces%2F"], [src^="/p
 :where(p, li, h1, h2, h3, figcaption, summary) {
   text-wrap-style: pretty;
 }
+
+/* 그래프 고른 점의 바깥 고리: 숨 쉬듯 커졌다 작아진다 (QA #6) */
+@keyframes chart-pulse { 0%, 100% { transform: scale(0.75); opacity: 0.9; } 50% { transform: scale(1.25); opacity: 0.4; } }
+.chart-pulse { animation: chart-pulse 1.6s ease-in-out infinite; }
