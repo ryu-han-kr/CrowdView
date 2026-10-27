@@ -5,8 +5,8 @@ import { opsAlert } from "@/lib/ops";
 import { rateLimit } from "@/lib/ratelimit";
 import { kst } from "@/lib/time";
 
-// 우리 코드가 아닌 잡음 (확장 프로그램, 브라우저 내부 경고)
-const NOISE = /ResizeObserver loop|Script error\.?$|chrome-extension:|moz-extension:|safari-extension:|Non-Error promise rejection|Load failed|NetworkError|Failed to fetch/i;
+// 우리 코드가 아닌 잡음 (확장 프로그램, 브라우저 내부 경고, 애드센스 내부 경고 — 10/27 광고 단위를 켜자 'No slot size'가 디스코드에 쏟아졌다)
+const NOISE = /ResizeObserver loop|Script error\.?$|chrome-extension:|moz-extension:|safari-extension:|Non-Error promise rejection|Load failed|NetworkError|Failed to fetch|adsbygoogle|TagError/i;
 
 export async function POST(req: Request) {
   const limited = await rateLimit(req, "log");
