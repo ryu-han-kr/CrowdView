@@ -20,9 +20,16 @@ const PARAMS: Record<string, string | undefined> = {
 // NOL(야놀자, 10/27 승인): 앱 예약만 실적(웹 X), 클릭 후 24시간. 링크는 앱스플라이어(onelink)로 넘어가 앱 홈이 열린다(검색어는 안 넘어감)
 const LINKPRICE_ID = process.env.NEXT_PUBLIC_LINKPRICE_ID?.trim();
 /** 우리 링크 id → 링크프라이스 머천트 id (승인 완료된 것만) */
-export const LINKPRICE_MERCHANTS: Record<string, string> = { kkday: "kkday", yanolja: "yanolja" };
-const linkprice = (merchant: string, href: string) =>
-  `https://newtip.net/click.php?m=${merchant}&a=${LINKPRICE_ID}&l=9999&l_cd1=3&l_cd2=0&tu=${encodeURIComponent(href)}`;
+export const LINKPRICE_MERCHANTS: Record<string, string> = { kkday: "kkday", yanolja: "yanolja", agoda: "agoda", klook: "klook" };
+// 링크프라이스 사이트가 둘이라 머천트마다 승인받은 사이트 아이디가 다르다 (10/27 확인: KKday는 A100709266, 나머지는 A100709267). 없으면 NEXT_PUBLIC_LINKPRICE_ID
+const LINKPRICE_SITE: Record<string, string> = { yanolja: "A100709267", agoda: "A100709267", klook: "A100709267" };
+// 직접 제휴보다 링크프라이스가 나은 곳 (10/27 경수님: 수수료 높은 쪽으로). 직접 제휴 값이 있어도 링크프라이스로 보낸다
+// - 클룩: 링크프라이스 3.5~10.5%·쿠키 30일, 직접 제휴는 정산 정보가 없어 지급 불가
+// - 아고다: 링크프라이스 4.9~5.6%, 직접 제휴는 사이트 승인 대기. 단 링크프라이스는 호텔 id(hid) 없는 주소를 아고다 첫 화면으로 보낸다
+// Trip.com(직접 최대 7%·쿠키 30일 > 링크프라이스 4.9%·1일)·마이리얼트립(쿠키 같은 7일, 직접 요율 미확인)은 직접 제휴 유지
+const LINKPRICE_FIRST = new Set(["agoda", "klook"]);
+const linkprice = (merchant: string, href: string, site = LINKPRICE_ID) =>
+  `https://newtip.net/click.php?m=${merchant}&a=${site}&l=9999&l_cd1=3&l_cd2=0&tu=${encodeURIComponent(href)}`;
 
 /** 원래 주소를 업체 중계 주소로 감싸야 집계되는 곳 (10/26 마이리얼트립: 광고 링크가 bridge 주소로 감싼 형태) */
 const WRAP: Record<string, (href: string) => string> = {
@@ -34,8 +41,8 @@ export const isAffiliate = (id: string) => !!PARAMS[id]?.trim() || (!!LINKPRICE_
 /** 제휴 값이 있으면 주소 뒤에 붙이고, 중계 주소가 필요한 업체는 그걸로 감싼다 */
 export function withAffiliate(id: string, href: string): string {
   const p = PARAMS[id]?.trim().replace(/^[?&]/, "");
-  // 직접 제휴 값이 없고 링크프라이스 머천트면 딥링크로
-  if (!p && LINKPRICE_ID && LINKPRICE_MERCHANTS[id]) return linkprice(LINKPRICE_MERCHANTS[id], href);
+  // 링크프라이스 우선 업체이거나, 직접 제휴 값이 없는 링크프라이스 머천트면 딥링크로
+  if (LINKPRICE_ID && LINKPRICE_MERCHANTS[id] && (!p || LINKPRICE_FIRST.has(id))) return linkprice(LINKPRICE_MERCHANTS[id], href, LINKPRICE_SITE[id]);
   if (!p) return href;
   const tagged = `${href}${href.includes("?") ? "&" : "?"}${p}`;
   return WRAP[id] ? WRAP[id](tagged) : tagged;
