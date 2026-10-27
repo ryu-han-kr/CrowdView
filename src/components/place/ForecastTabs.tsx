@@ -3,6 +3,9 @@
 import { useState, type ReactNode } from "react";
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
 import { useI18n } from "@/i18n/client";
+import Link from "@/i18n/link";
+import { usePlus } from "@/lib/plus-client";
+import { PLUS } from "@/lib/business";
 
 export interface ForecastTab {
   id: string;
@@ -22,6 +25,9 @@ export function ForecastTabs({ title, tabs }: { title: string; tabs: ForecastTab
   const [sel, setSel] = useState(0);
   const [big, setBig] = useState(false);
   const cur = tabs[sel];
+  // 한 달·1년 탭에서 Plus 안내 한 줄 (QA #2: 유료가 안 보인다 — 잠그진 않고 날짜 알림 혜택만 짚는다)
+  const plus = usePlus();
+  const upsell = !plus && (cur?.id === "month" || cur?.id === "year");
 
   return (
     <section className="mt-8">
@@ -67,6 +73,13 @@ export function ForecastTabs({ title, tabs }: { title: string; tabs: ForecastTab
           {tab.body}
         </div>
       ))}
+      {upsell && (
+        <Link href="/pricing" className="mt-3 flex items-center gap-2 rounded-xl bg-indigo-50 px-3 py-2 text-xs font-semibold text-indigo-800">
+          <span aria-hidden>✨</span>
+          <span className="min-w-0 flex-1">{t("Plus면 고른 날짜가 한산해질 때 알림을 받고, 광고 없이 봐요")}</span>
+          <span className="shrink-0 text-indigo-600">{t("1개월 {n}원", { n: PLUS.priceKrw.toLocaleString() })} ›</span>
+        </Link>
+      )}
 
       <Sheet open={big} onOpenChange={setBig}>
         <SheetContent className="max-h-[92vh] overflow-y-auto md:max-w-4xl">

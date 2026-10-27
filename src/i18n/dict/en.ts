@@ -1288,6 +1288,8 @@ const dict: Dict = {
   "출국 수속(보안검색) 줄·구간별 대기·주차장까지 한눈에": "Departure security lines, waits by zone and parking at a glance",
   "인천국제공항공사 출국 수속(보안검색) 대기시간·인원 (1분 단위)": "Incheon Airport departure security wait times & headcount (1-min)",
   "일대 약 {n}명": "About {n} in the area",
+  "Plus면 고른 날짜가 한산해질 때 알림을 받고, 광고 없이 봐요": "With Plus, get alerts when your chosen date turns quiet and browse ad-free",
+  "Plus 이용 중": "Plus active",
   "제휴 링크로 예약해도 가격은 같아요": "Booking through our partner links costs the same",
   "‘{name}’ 근처 숙소를 여기서 바로 찾아보세요. 할인된 가격이 있는지 한 번에 비교할 수 있어요.": "Find stays near ‘{name}’ right here and compare discounted rates at a glance.",
   "‘{name}’ 입장권·투어를 여기서 예약하면 할인된 가격으로 찾아볼 수 있어요.": "Book ‘{name}’ tickets and tours here to find discounted prices.",
