@@ -487,6 +487,8 @@ const dict: Dict = {
   "장소·지역 검색": "Search places & regions",
   "장소·지역 검색 (예: 홍대, 공항)": "Search places or areas (e.g. Hongdae, airport)",
   "검색어 지우기": "Clear search",
+  "지난 시간": "Past hours",
+  "칸을 눌러 자세히": "Tap a cell for details",
   "'{q}' 검색 결과": "Results for '{q}'",
   "검색 결과 {n}곳": "{n} results",
   "‘{q}’에 맞는 장소가 없어요.": "No places match ‘{q}’.",
