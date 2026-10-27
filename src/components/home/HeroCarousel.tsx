@@ -25,7 +25,7 @@ const RESUME_MS = 8000; // 직접 넘긴 뒤 이만큼 지나면 다시 자동
 const SLIDE_MS = 450; // 한 장 넘어가는 시간
 
 /**
- * 큰 포토 배너: 가운데 한 장 + 양옆 배너가 살짝 보인다. 자동으로 넘어가고, 화살표·점·밀어서 넘기기.
+ * 큰 포토 배너: 휴대폰은 가운데 한 장 + 양옆 배너가 살짝, PC는 두 장 나란히 (QA #8 PC 레퍼런스 10/27). 자동으로 넘어가고, 화살표·점·밀어서 넘기기.
  * 목록을 3벌 이어 붙여 가운데 벌을 보여 주고, 끝을 넘어가면 애니메이션 없이 가운데 벌의 같은 배너로 되돌린다 (끝없이 이어지게)
  */
 export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
@@ -82,8 +82,8 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
 
   return (
     <section
-      // 배너 폭 --w: 휴대폰 84%, PC 82%. 양옆 남는 자리에 이전·다음 배너가 보인다
-      className="relative -mx-5 overflow-hidden [--gap:8px] [--w:84cqw] [container-type:inline-size] md:mx-0 md:[--gap:16px] md:[--w:82cqw]"
+      // 배너 폭 --w: 휴대폰 84%(양옆에 이전·다음 배너가 살짝), PC는 절반씩 두 장. --off: 현재 배너의 왼쪽 위치
+      className="relative -mx-5 overflow-hidden [--gap:8px] [--off:calc((100cqw-var(--w))/2)] [--w:84cqw] [container-type:inline-size] md:mx-0 md:[--gap:16px] md:[--off:0px] md:[--w:calc((100cqw-var(--gap))/2)]"
       aria-roledescription="carousel"
       onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
       onTouchEnd={(e) => {
@@ -96,13 +96,15 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
       <div
         className="flex gap-[var(--gap)] ease-out"
         style={{
-          transform: `translateX(calc((100cqw - var(--w)) / 2 - ${pos} * (var(--w) + var(--gap))))`,
+          transform: `translateX(calc(var(--off) - ${pos} * (var(--w) + var(--gap))))`,
           transitionProperty: "transform",
           transitionDuration: animate ? `${SLIDE_MS}ms` : "0ms",
         }}
       >
         {items.map((s, k) => {
           const current = k === pos;
+          // PC에서 오른쪽에 함께 보이는 두 번째 배너 (휴대폰에선 옆에 흐리게 보이는 배너)
+          const second = loop && k === pos + 1;
           // 처음 화면에 가운데 보이는 배너 (가장 큰 그림 → 먼저 받기). 무한 넘김용 복제본도 같은 그림이라 같이 (LCP 경고: 복제본이 lazy였다)
           const main = s.id === items[loop ? n : 0].id;
           const near = Math.abs(k - pos) <= 1;
@@ -112,15 +114,15 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
               href={s.href}
               aria-hidden={!current}
               tabIndex={current ? 0 : -1}
-              className={`relative block aspect-[16/10] w-[var(--w)] shrink-0 overflow-hidden rounded-[28px] bg-gray-200 transition-opacity duration-300 md:aspect-[21/9] md:rounded-3xl ${
-                current ? "" : "opacity-60"
+              className={`relative block aspect-[16/10] w-[var(--w)] shrink-0 overflow-hidden rounded-[28px] bg-gray-200 transition-opacity duration-300 md:aspect-[16/9] md:rounded-3xl ${
+                current ? "" : second ? "opacity-60 md:opacity-100" : "opacity-60"
               }`}
             >
               <Image
                 src={s.img}
                 alt=""
                 fill
-                sizes="(min-width: 768px) 900px, 84vw"
+                sizes="(min-width: 768px) 560px, 84vw"
                 // 현재 장만 즉시 (10/26 성능: 양옆 2장까지 즉시 받던 것을 넘길 때로)
                 loading={main ? "eager" : "lazy"}
                 fetchPriority={main ? "high" : "auto"}
@@ -128,19 +130,24 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
                 className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 to-transparent" />
-              <div className="absolute inset-y-0 left-0 flex max-w-[85%] flex-col justify-end p-5 pb-9 text-white md:max-w-[60%] md:justify-center md:px-16 md:py-10">
+              <div className="absolute inset-y-0 left-0 flex max-w-[85%] flex-col justify-end p-5 pb-9 text-white md:max-w-[80%] md:justify-end md:px-8 md:pb-12">
                 {(s.tag || s.live) && (
                   <span className="mb-2 flex w-fit items-stretch overflow-hidden rounded-md text-[11px] font-bold md:text-xs">
                     {/* 옆에 흐리게 보이는 배너(opacity 60%)에서는 빨간 바탕 글자 대비가 모자라 가운데 배너에만 */}
                     {s.live && current && <LiveBadge shape="flat" />}
+                    {s.live && second && (
+                      <span className="hidden md:flex">
+                        <LiveBadge shape="flat" />
+                      </span>
+                    )}
                     {/* 영어에선 '실시간' 꼬리표도 'LIVE'라 두 번 나왔다 → 같으면 생략 */}
                     {s.tag && !(s.live && s.tag.toUpperCase() === "LIVE") && (
                       <span className={`px-2 py-0.5 ${s.live ? "bg-black/60 text-white" : "bg-white text-gray-900"}`}>{s.tag}</span>
                     )}
                   </span>
                 )}
-                <p className="text-xl leading-snug font-extrabold break-keep [text-wrap:balance] md:text-4xl">{s.title}</p>
-                {s.sub && <p className="mt-1.5 line-clamp-2 text-xs text-white/85 md:mt-3 md:text-base">{s.sub}</p>}
+                <p className="text-xl leading-snug font-extrabold break-keep [text-wrap:balance] md:text-2xl lg:text-3xl">{s.title}</p>
+                {s.sub && <p className="mt-1.5 line-clamp-2 text-xs text-white/85 md:mt-2 md:text-sm lg:text-base">{s.sub}</p>}
               </div>
             </Link>
           );
@@ -151,14 +158,35 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
         <>
           {/* 아래 점 (왼쪽) + 일시정지·번호 알약 (오른쪽, NOL 레퍼런스) */}
           {/* 점은 작게 보이되 누르는 칸은 24px (Lighthouse target-size: 6px 버튼은 누르기 어렵다) */}
-          <div className="absolute bottom-0.5 left-[calc((100cqw-var(--w))/2+10px)] flex items-center md:bottom-1.5 md:left-[calc((100cqw-var(--w))/2+18px)]">
+          <div className="absolute bottom-0.5 left-[calc(var(--off)+10px)] flex items-center md:bottom-1.5 md:left-[calc(var(--off)+18px)]">
             {slides.map((s, i) => (
               <button key={s.id} onClick={() => goTo(i)} aria-label={`${i + 1} / ${n}`} className="flex h-6 min-w-6 items-center justify-center">
                 <span className={`block h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-white" : "w-1.5 bg-white/55"}`} />
               </button>
             ))}
           </div>
-          <div className="absolute right-[calc((100cqw-var(--w))/2+12px)] bottom-2.5 flex items-center gap-1 md:right-[calc((100cqw-var(--w))/2+16px)] md:bottom-3">
+          <div className="absolute right-[calc(var(--off)+12px)] bottom-2.5 flex items-center gap-1 md:right-4 md:bottom-3">
+            {/* PC 넘기기 화살표: 배너 가운데에 두면 제목 글자를 가려서 번호 알약 옆으로 (QA #8, 10/27) */}
+            {(["prev", "next"] as const).map((d) => (
+              <button
+                key={d}
+                onClick={() => step(d === "next" ? 1 : -1)}
+                aria-label={t(d === "next" ? "다음" : "이전")}
+                className="hidden h-7 w-7 items-center justify-center rounded-full bg-black/45 text-white md:flex"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2.4}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d={d === "next" ? "m9 6 6 6-6 6" : "m15 6-6 6 6 6"} />
+                </svg>
+              </button>
+            ))}
             <button
               onClick={() => setPaused((p) => !p)}
               aria-label={t(paused ? "자동 넘김 재생" : "자동 넘김 멈춤")}
@@ -173,28 +201,6 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
               {index + 1} / {n}
             </span>
           </div>
-          {(["prev", "next"] as const).map((d) => (
-            <button
-              key={d}
-              onClick={() => step(d === "next" ? 1 : -1)}
-              aria-label={t(d === "next" ? "다음" : "이전")}
-              className={`absolute top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-gray-900 shadow-md md:flex ${
-                d === "prev" ? "left-[calc((100cqw-var(--w))/2-22px)]" : "right-[calc((100cqw-var(--w))/2-22px)]"
-              }`}
-            >
-              <svg
-                viewBox="0 0 24 24"
-                className="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2.4}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d={d === "next" ? "m9 6 6 6-6 6" : "m15 6-6 6 6 6"} />
-              </svg>
-            </button>
-          ))}
         </>
       )}
     </section>
