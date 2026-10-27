@@ -324,21 +324,81 @@ body[data-page="home"] .page-glow {
   --glow-b: #c7d2fe;
   --glow-c: rgba(232, 235, 255, 0.7);
 }
-/* 지도·서울 실시간은 하늘·민트 쪽, 가이드·코스·마이는 인디고 쪽 */
-body[data-page="map"] .page-glow,
-body[data-page="seoul"] .page-glow {
+/* 화면마다 다른 색 (경수님 10/27 QA #4: 홈 인디고·지도 하늘 두 색은 그대로 두고 나머지는 전부 다르게 — 어느 화면인지 색으로 구별).
+   --page-accent 는 제목 막대·강조에 쓴다 */
+body { --page-accent: #4f46e5; }
+body[data-page="home"] { --page-accent: #4f46e5; }
+body[data-page="map"] .page-glow {
   --glow-a: #bae6fd;
   --glow-b: #99f6e4;
   --glow-c: rgba(226, 244, 255, 0.6);
 }
-body[data-page="explore"] .page-glow,
-body[data-page="guide"] .page-glow,
-body[data-page="route"] .page-glow,
-body[data-page="me"] .page-glow {
-  --glow-a: #c7d2fe;
-  --glow-b: #a5b4fc;
-  --glow-c: rgba(229, 239, 255, 0.6);
+body[data-page="map"] { --page-accent: #0284c7; }
+body[data-page="seoul"] .page-glow {
+  --glow-a: #99f6e4;
+  --glow-b: #a7f3d0;
+  --glow-c: rgba(224, 250, 244, 0.6);
 }
+body[data-page="seoul"] { --page-accent: #0d9488; }
+body[data-page="guide"] .page-glow {
+  --glow-a: #bbf7d0;
+  --glow-b: #d9f99d;
+  --glow-c: rgba(236, 253, 229, 0.6);
+}
+body[data-page="guide"] { --page-accent: #059669; }
+body[data-page="route"] .page-glow {
+  --glow-a: #fed7aa;
+  --glow-b: #fde68a;
+  --glow-c: rgba(255, 243, 224, 0.6);
+}
+body[data-page="route"] { --page-accent: #ea580c; }
+body[data-page="explore"] .page-glow {
+  --glow-a: #ddd6fe;
+  --glow-b: #c4b5fd;
+  --glow-c: rgba(240, 235, 255, 0.6);
+}
+body[data-page="explore"] { --page-accent: #7c3aed; }
+body[data-page="me"] .page-glow {
+  --glow-a: #fecdd3;
+  --glow-b: #fbcfe8;
+  --glow-c: rgba(255, 236, 242, 0.6);
+}
+body[data-page="me"] { --page-accent: #e11d48; }
+
+/* 화면 머리 (PageHeader): 막대 + 제목. 제목은 Wanted Sans(main h1), 크기·간격은 모든 탭 화면이 같다 */
+.page-head { display: flex; flex-direction: column; gap: 0.35rem; }
+.page-head-bar { display: block; width: 2.75rem; height: 0.375rem; border-radius: 9999px; background: var(--page-accent); }
+.page-title {
+  font-size: 1.625rem;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  word-break: keep-all;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+@media (min-width: 768px) {
+  .page-title { font-size: 2rem; }
+}
+
+/* 애플처럼 부드러운 모서리 (경수님 QA #12: 칼로 자른 듯한 둥근 모서리). 지원하는 브라우저(Chrome 139+)만, 나머지는 그대로 둥근 모서리 */
+[class~="rounded-2xl"],
+[class~="rounded-3xl"],
+[class~="rounded-[28px]"],
+[class~="rounded-xl"] {
+  corner-shape: squircle;
+}
+
+/* 대기 화면: 자는 캐릭터 위로 zzz 가 떠오르고(QA #5), 바깥 고리가 돌아 '불러오는 중'임을 보인다 */
+@keyframes zzz-rise {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translate(14px, -34px) scale(1.15); }
+}
+.zzz { position: absolute; font-weight: 800; color: #6366f1; pointer-events: none; animation: zzz-rise 1.8s ease-out infinite; }
+.zzz:nth-child(2) { animation-delay: 0.6s; font-size: 0.85em; }
+.zzz:nth-child(3) { animation-delay: 1.2s; font-size: 0.7em; }
+@keyframes ring-spin { to { transform: rotate(360deg); } }
+.wait-ring { animation: ring-spin 1.4s linear infinite; }
 
 /* 제목 서체: Wanted Sans (원티드랩, OFL, public/fonts/wanted-sans — 글자 범위별 조각, 레이아웃이 비동기로 불러온다).
    사용자 10/26: 제목과 본문을 다른 서체로. 본문은 Pretendard 유지(가독성 1순위) */

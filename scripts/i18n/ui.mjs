@@ -2702,4 +2702,8 @@ export default {
   "출국 수속(보안검색) 줄·구간별 대기·주차장까지 한눈에": ["Departure security lines, waits by zone and parking at a glance","出国手続きの列・区間別待ち・駐車場まで一目で","出境安检排队、分区等候、停车场一目了然","出境安檢排隊、分區等候、停車場一目了然"],
   "인천국제공항공사 출국 수속(보안검색) 대기시간·인원 (1분 단위)": ["Incheon Airport departure security wait times & headcount (1-min)","仁川国際空港公社 出国手続き（保安検査）待ち時間・人数（1分単位）","仁川国际机场公社 出境安检等候时间·人数（1分钟）","仁川國際機場公社 出境安檢等候時間·人數（1分鐘）"],
   "일대 약 {n}명": ["About {n} in the area", "一帯 約{n}人", "一带约 {n}人", "一帶約 {n}人"],
+  // ── QA 묶음 2 (10/27)
+  "제휴 링크로 예약해도 가격은 같아요": ["Booking through our partner links costs the same","提携リンクから予約しても料金は同じです","通过合作链接预订价格相同","透過合作連結預訂價格相同"],
+  "‘{name}’ 근처 숙소를 여기서 바로 찾아보세요. 할인된 가격이 있는지 한 번에 비교할 수 있어요.": ["Find stays near ‘{name}’ right here and compare discounted rates at a glance.","「{name}」周辺の宿をここで探せます。割引料金があるか一度に比べられます。","在这里查找“{name}”附近住宿，一次比较是否有优惠价。","在這裡查找「{name}」附近住宿，一次比較是否有優惠價。"],
+  "‘{name}’ 입장권·투어를 여기서 예약하면 할인된 가격으로 찾아볼 수 있어요.": ["Book ‘{name}’ tickets and tours here to find discounted prices.","「{name}」のチケット・ツアーはここで予約すると割引価格で探せます。","在这里预订“{name}”门票和行程可找到优惠价。","在這裡預訂「{name}」門票和行程可找到優惠價。"],
 };

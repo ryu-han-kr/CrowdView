@@ -1,6 +1,9 @@
 // 서울 여행 가이드 데이터 (scripts/seoul-data/sync.mjs 가 만든 src/data/seoul/*.json, 주 1회 갱신).
 // 정적 데이터라 API 호출·Redis를 쓰지 않는다. 혼잡도는 가까운 서울시 실시간 지역(lib/seoul-live)에서 붙인다
 import type { Lang } from "@/i18n/config";
+import { PLACES, placeHref } from "./places";
+import { heroImage } from "./place-photos";
+import type { Place } from "./types";
 import culture from "@/data/seoul/culture.json";
 import guide from "@/data/seoul/guide.json";
 import tour from "@/data/seoul/tour.json";
@@ -13,12 +16,14 @@ import { SEOUL_AREAS, type SeoulArea } from "./seoul-areas";
 import areaPhotos from "@/data/seoul/area-photos.json";
 import guidePhotos from "@/data/seoul/guide-photos.json";
 
-export type GuideKind = "attraction" | "food" | "shopping" | "nature";
+export type GuideKind = "attraction" | "food" | "shopping" | "nature" | "fun";
 export const GUIDE_KINDS: { id: GuideKind; label: string; emoji: string }[] = [
   { id: "attraction", label: "명소", emoji: "🏛️" },
   { id: "food", label: "맛집", emoji: "🍽️" },
   { id: "shopping", label: "쇼핑", emoji: "🛍️" },
   { id: "nature", label: "자연", emoji: "🌳" },
+  // 10/27 QA #16: 놀이공원·아쿠아리움·키즈·실내 액티비티 (우리 실시간 장소 + 관광공사 자료)
+  { id: "fun", label: "놀이·체험", emoji: "🎢" },
 ];
 
 export interface GuideText {
@@ -203,7 +208,26 @@ function fame(p: GuidePlace): number {
   return p.img ? 3 : 4;
 }
 
-export const GUIDE: GuidePlace[] = dedupeGuide([...cleaned, ...extra]).sort((a, b) => fame(a) - fame(b));
+// 놀이·체험: 서울의 우리 실시간 장소(테마파크·워터파크·실내 액티비티) → 가이드 항목으로. 사진·주소·좌표는 장소 자료, 누르면 장소 상세
+const FUN_NAMES: Partial<Record<Lang, (p: Place) => string>> = {};
+const fun: GuidePlace[] = PLACES.filter((p) => p.region.startsWith("서울") && ["themepark", "waterpark", "indoor"].includes(p.category)).map((p) => ({
+  id: `place-${p.id}`,
+  kind: "fun" as const,
+  gu: p.address.match(/서울(?:특별시)?\s+(\S+구)/)?.[1],
+  lat: p.lat,
+  lng: p.lng,
+  exact: true,
+  t: { ko: { n: p.name, a: p.address, url: placeHref(p), sub: p.description } },
+  img: heroImage(p),
+  imgL: heroImage(p),
+}));
+void FUN_NAMES;
+// 관광공사 서울 자료 중 놀이·체험 성격(아쿠아리움·전망대·키즈)은 명소 대신 놀이·체험으로
+const FUN_RE = /아쿠아리움|키자니아|놀이공원|놀이동산|테마파크|VR|트램폴린|키즈카페/;
+export const GUIDE: GuidePlace[] = dedupeGuide([...cleaned, ...extra])
+  .map((p) => (p.kind === "attraction" && FUN_RE.test(p.t.ko?.n ?? "") ? { ...p, kind: "fun" as const } : p))
+  .concat(fun)
+  .sort((a, b) => fame(a) - fame(b));
 /**
  * 사진이 없는 곳(서울 실시간 지역 등)에 가이드 명소·자연·쇼핑의 관광공사 사진을 빌려 쓴다.
  * 이름이 겹치는 곳(1.5km 안, 예: 경복궁 지역 → 경복궁)이 먼저, 없으면 가장 가까운 곳(기본 600m 안). large면 큰 사진

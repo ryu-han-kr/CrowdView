@@ -90,10 +90,13 @@ function LinkTiles({ title, glyph, desc, links, t, className }: { title: string;
   const aff = links.some((s) => isAffiliate(s.id));
   return (
     <section className={`rounded-3xl border border-gray-100 p-4 ${className}`}>
-      <p className="flex items-center gap-1.5 text-sm font-bold">
-        <Glyph e={glyph} className="h-4 w-4 text-indigo-500" /> {title}
+      <p className="flex items-center gap-2 text-base font-extrabold">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
+          <Glyph e={glyph} className="h-[18px] w-[18px]" />
+        </span>
+        {title}
       </p>
-      <p className="mt-0.5 text-xs text-gray-500">{desc}</p>
+      <p className="mt-1.5 text-[13px] text-gray-600">{desc}</p>
       <ul className="mt-3 flex flex-wrap gap-2">
         {links.map((s) => (
           <li key={s.id}>
@@ -113,7 +116,7 @@ function LinkTiles({ title, glyph, desc, links, t, className }: { title: string;
         ))}
       </ul>
       {/* 공정위 추천·보증 심사지침: 대가를 받는 링크임을 알린다 */}
-      {aff && <p className="mt-2 text-xs text-gray-500">{t("일부는 제휴 링크라, 예약하면 CrowdView가 수수료를 받을 수 있어요 (가격은 같아요)")}</p>}
+      {aff && <p className="mt-2 text-xs text-gray-500">{t("제휴 링크로 예약해도 가격은 같아요")}</p>}
     </section>
   );
 }
@@ -123,7 +126,7 @@ export function StayLinks({ ko, en, lang, t, at, className = "" }: { ko: string;
     <LinkTiles
       title={t("근처 숙소 찾기")}
       glyph="🛏️"
-      desc={t("‘{name}’ 근처 숙소를 각 예약 사이트에서 바로 검색해요. 가격·예약은 그 사이트에서 확인하세요.", { name: lang === "ko" ? ko : en })}
+      desc={t("‘{name}’ 근처 숙소를 여기서 바로 찾아보세요. 할인된 가격이 있는지 한 번에 비교할 수 있어요.", { name: lang === "ko" ? ko : en })}
       links={stayLinks(ko, en, lang, at)}
       t={t}
       className={className}
@@ -136,7 +139,7 @@ export function TourLinks({ ko, en, lang, t, className = "" }: { ko: string; en:
     <LinkTiles
       title={t("투어·입장권 찾기")}
       glyph="🎟️"
-      desc={t("‘{name}’ 입장권·투어를 각 예약 사이트에서 바로 검색해요. 할인가가 있는지 비교해 보세요.", { name: lang === "ko" ? ko : en })}
+      desc={t("‘{name}’ 입장권·투어를 여기서 예약하면 할인된 가격으로 찾아볼 수 있어요.", { name: lang === "ko" ? ko : en })}
       links={tourLinks(ko, en, lang)}
       t={t}
       className={className}

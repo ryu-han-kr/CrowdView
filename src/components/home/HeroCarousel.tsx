@@ -112,7 +112,7 @@ export function HeroCarousel({ slides: all }: { slides: HeroSlide[] }) {
               href={s.href}
               aria-hidden={!current}
               tabIndex={current ? 0 : -1}
-              className={`relative block aspect-[16/10] w-[var(--w)] shrink-0 overflow-hidden rounded-2xl bg-gray-200 transition-opacity duration-300 md:aspect-[21/9] md:rounded-3xl ${
+              className={`relative block aspect-[16/10] w-[var(--w)] shrink-0 overflow-hidden rounded-[28px] bg-gray-200 transition-opacity duration-300 md:aspect-[21/9] md:rounded-3xl ${
                 current ? "" : "opacity-60"
               }`}
             >

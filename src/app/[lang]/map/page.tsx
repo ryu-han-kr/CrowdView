@@ -118,8 +118,8 @@ export default async function MapPage({ params }: { params: Promise<{ lang: stri
   });
 
   return (
-    <main className="pt-5 md:pt-8">
-      <PageHeader title={t("혼잡도 지도")} name="hamster" pose="explore" size={68} className="px-5 md:px-0" />
+    <main className="pt-6 pb-10 md:pt-10">
+      <PageHeader title={t("혼잡도 지도")} name="hamster" className="px-5 md:px-0" />
       <div className="mt-1">
         <MapExplorer
           spots={spots}

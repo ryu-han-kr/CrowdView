@@ -289,8 +289,8 @@ function NaverSpots({
         <MapPreview spots={spots} hidden={hideOverlay} onPainted={() => setPainted(true)} />
       ) : (
         !hideOverlay && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-gray-50 text-sm text-gray-500">
-            <Character name="hamster" pose="explore" size={120} priority />
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gray-50 text-sm text-gray-500">
+            <span className="wait-ring h-8 w-8 rounded-full border-[3px] border-indigo-200 border-t-indigo-600" aria-hidden />
             {t("지도를 불러오는 중…")}
           </div>
         )

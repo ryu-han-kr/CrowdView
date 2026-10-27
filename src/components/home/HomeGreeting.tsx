@@ -1,9 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "@/i18n/link";
 import type { T } from "@/i18n/translate";
-import { crowdPose, poseMotionClass } from "@/lib/characters";
-import { levelOf } from "@/lib/levels";
-import { Character } from "@/components/Character";
+import { inkOf, levelOf } from "@/lib/levels";
 
 const LINE: Record<number, string> = {
   1: "지금 서울은 한산해요",
@@ -26,10 +24,16 @@ export function HomeGreeting({ scores, hour, live, t }: { scores: number[]; hour
   return (
     <Link
       href="/seoul"
-      className="mt-3 flex items-center gap-3 overflow-hidden rounded-3xl py-2 pr-4 pl-2 md:mt-4"
+      className="mt-3 flex items-center gap-3 overflow-hidden rounded-3xl py-3 pr-4 pl-3 md:mt-4"
       style={{ background: `color-mix(in oklab, ${lv.color} 13%, var(--surface, #fff))` }}
     >
-      <Character name="hamster" pose={night ? "wait" : crowdPose(mid)} size={96} priority className={`${night ? "mascot-bob" : poseMotionClass(crowdPose(mid))} -my-1 shrink-0`} />
+      {/* 캐릭터는 장소 상세·대기 화면에서만 (QA #5) → 여기선 서울 전체 단계를 큰 색 원으로 */}
+      <span
+        className="ml-2 flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-center text-[13px] leading-tight font-extrabold break-keep"
+        style={{ background: `${lv.color}33`, color: inkOf(lv.color), boxShadow: `inset 0 0 0 3px ${lv.color}` }}
+      >
+        {night ? "zz" : t(lv.label)}
+      </span>
       <span className="min-w-0 flex-1">
         <span className="block text-[17px] leading-snug font-extrabold">{night ? t("늦은 밤, 서울은 조용히 쉬는 중") : t(LINE[lv.key])}</span>
         <span className="mt-0.5 block text-sm text-gray-700">

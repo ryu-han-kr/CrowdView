@@ -64,7 +64,15 @@ export function NavProgress() {
       </div>
       {slow && (
         <div className="pointer-events-none fixed inset-0 z-[90] flex animate-[fade-in_0.2s_ease-out] flex-col items-center justify-center gap-2 bg-white/85 text-center backdrop-blur-sm dark:bg-gray-950/80">
-          <Character name={pathCharacter(target)} pose="wait" size={150} priority className="mascot-bob" />
+          <span className="relative inline-block">
+            <span aria-hidden className="wait-ring absolute -inset-3 rounded-full border-[3px] border-indigo-100 border-t-indigo-500" />
+            <Character name={pathCharacter(target)} pose="wait" size={150} priority className="mascot-bob" />
+            <span aria-hidden className="absolute top-3 right-2 text-xl">
+              <span className="zzz">z</span>
+              <span className="zzz">z</span>
+              <span className="zzz">z</span>
+            </span>
+          </span>
           <p className="text-sm font-semibold text-gray-600">
             {t("잠시만요, 불러오는 중이에요")}
             <span className="loading-dots" aria-hidden="true" />
