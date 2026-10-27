@@ -15,16 +15,26 @@ const PARAMS: Record<string, string | undefined> = {
   getyourguide: process.env.NEXT_PUBLIC_AFF_GETYOURGUIDE,
 };
 
+// 링크프라이스(10/27 가입, 어필리에이트 ID는 NEXT_PUBLIC_LINKPRICE_ID): 직접 제휴가 없는 곳은 링크프라이스 딥링크로 감싼다.
+// 승인 완료(10/27): KKday·호텔스컴바인·제주패스·NOL(야놀자는 앱 실적만 인정이라 웹 링크엔 안 씀). 익스피디아·호텔스닷컴은 승인 대기
+const LINKPRICE_ID = process.env.NEXT_PUBLIC_LINKPRICE_ID?.trim();
+/** 우리 링크 id → 링크프라이스 머천트 id (승인 완료된 것만) */
+export const LINKPRICE_MERCHANTS: Record<string, string> = { kkday: "kkday" };
+const linkprice = (merchant: string, href: string) =>
+  `https://newtip.net/click.php?m=${merchant}&a=${LINKPRICE_ID}&l=9999&l_cd1=3&l_cd2=0&tu=${encodeURIComponent(href)}`;
+
 /** 원래 주소를 업체 중계 주소로 감싸야 집계되는 곳 (10/26 마이리얼트립: 광고 링크가 bridge 주소로 감싼 형태) */
 const WRAP: Record<string, (href: string) => string> = {
   myrealtrip: (href) => `https://www.myrealtrip.com/main/bridge/marketing?return_url=${encodeURIComponent(href)}`,
 };
 
-export const isAffiliate = (id: string) => !!PARAMS[id]?.trim();
+export const isAffiliate = (id: string) => !!PARAMS[id]?.trim() || (!!LINKPRICE_ID && !!LINKPRICE_MERCHANTS[id]);
 
 /** 제휴 값이 있으면 주소 뒤에 붙이고, 중계 주소가 필요한 업체는 그걸로 감싼다 */
 export function withAffiliate(id: string, href: string): string {
   const p = PARAMS[id]?.trim().replace(/^[?&]/, "");
+  // 직접 제휴 값이 없고 링크프라이스 머천트면 딥링크로
+  if (!p && LINKPRICE_ID && LINKPRICE_MERCHANTS[id]) return linkprice(LINKPRICE_MERCHANTS[id], href);
   if (!p) return href;
   const tagged = `${href}${href.includes("?") ? "&" : "?"}${p}`;
   return WRAP[id] ? WRAP[id](tagged) : tagged;
