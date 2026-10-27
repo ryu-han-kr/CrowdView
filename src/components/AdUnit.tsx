@@ -46,6 +46,8 @@ export function AdUnit({
   useEffect(() => {
     const el = ref.current;
     if (!ready || !el || el.dataset.adsbygoogleStatus) return;
+    // 화면에 안 보이는 칸(PC 옆 레일은 1536px 미만에서 숨김)에 광고를 요청하면 애드센스가 'No slot size for availableWidth=0' 오류를 낸다 → 폭이 0이면 요청하지 않는다
+    if (!el.offsetWidth) return;
     // 광고가 실제로 채워지면(data-ad-status="filled") 한 번 센다 — 애드센스 수익은 채워진 노출 기준
     const seen = new MutationObserver(() => {
       if (el.dataset.adStatus === "filled") {
