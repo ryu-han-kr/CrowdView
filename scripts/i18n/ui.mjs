@@ -1733,6 +1733,9 @@ export default {
     "去年同星期区间 ({range}) {area}外地及外国访客日均",
     "去年同星期區間 ({range}) {area}外地及外國訪客日均",
   ],
+  "날짜별 예상 붐빔": ["Expected crowds by date", "日付別の混雑予想", "按日期预计拥挤度", "依日期預計擁擠度"],
+  "평소 {pct}": ["{pct} vs usual", "普段比 {pct}", "比平时 {pct}", "比平時 {pct}"],
+  "작년 같은 요일 그날의 지역 방문객을 평소와 비교했어요": ["Compares local visitors on the same weekday last year with usual levels", "昨年の同じ曜日の地域訪問者数を普段と比べました", "将去年同一星期几的地区访客与平时比较", "將去年同一星期幾的地區訪客與平時比較"],
   "평소 (그 전 4주 같은 요일) 하루 평균": [
     "Usual (same weekdays in the 4 weeks before) daily average",
     "普段 (その前4週の同じ曜日) の1日平均",

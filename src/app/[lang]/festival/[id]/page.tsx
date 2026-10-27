@@ -273,6 +273,31 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
             )}
           </section>
 
+          {/* 날짜별 예상: 장소의 한 달 달력처럼 하루 단위 칸 (경수님 QA #15 10/27: 그래프 있는 곳/없는 곳 통일. 축제는 시간대 자료가 없어 날짜 단위) */}
+          {crowd?.daily && crowd.daily.length > 1 && (
+            <section className="mt-4 rounded-2xl border border-gray-100 p-4">
+              <h2 className="text-sm font-bold">{t("날짜별 예상 붐빔")}</h2>
+              <div className="mt-3 grid gap-2" style={{ gridTemplateColumns: `repeat(${crowd.daily.length}, minmax(0, 1fr))` }}>
+                {crowd.daily.map((d) => {
+                  const lv = levelOf(d.score);
+                  const wd = new Intl.DateTimeFormat(lang, { weekday: "short", timeZone: "UTC" }).format(new Date(`${d.date}T00:00:00Z`));
+                  return (
+                    <div key={d.date} className="flex flex-col items-center rounded-xl px-1 py-2.5 text-center" style={{ background: `${lv.color}1f` }}>
+                      <span className="text-xs text-gray-600">
+                        {d.date.slice(5).replace("-", "/")} ({wd})
+                      </span>
+                      <span className="mt-1 text-sm font-extrabold" style={{ color: inkOf(lv.color) }}>
+                        {t(lv.label)}
+                      </span>
+                      <span className="mt-0.5 text-xs text-gray-600">{t("평소 {pct}", { pct: pct(d.ratio) })}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="mt-2 text-xs text-gray-500">{t("작년 같은 요일 그날의 지역 방문객을 평소와 비교했어요")}</p>
+            </section>
+          )}
+
           {crowd && (
             <section className="mt-4 rounded-2xl border border-gray-100 p-4 text-sm">
               <h2 className="font-bold">{t("이렇게 예측했어요")}</h2>
