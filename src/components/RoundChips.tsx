@@ -47,14 +47,12 @@ export function RoundChips({
   const circle = size === "lg" ? "h-16 w-16 md:h-[72px] md:w-[72px]" : "h-14 w-14 md:h-16 md:w-16";
   return (
     <div className={`relative ${className}`}>
-      <div ref={scroller} role="tablist" className="no-scrollbar flex gap-1 overflow-x-auto px-1 pt-1 pb-1 md:gap-2">
+      <div ref={scroller} className="no-scrollbar flex gap-1 overflow-x-auto px-1 pt-1 pb-1 md:gap-2">
         {items.map((c) => {
           const on = c.id === value;
           return (
             <button
               key={c.id}
-              role="tab"
-              aria-selected={on}
               aria-pressed={on}
               onClick={() => onChange(c.id)}
               className="group flex w-[72px] shrink-0 flex-col items-center gap-1.5 md:w-[84px]"
