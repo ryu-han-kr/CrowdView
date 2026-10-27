@@ -553,12 +553,6 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             </section>
           )}
 
-          {/* 입장권·숙소 칸은 '지금 혼잡도' 바로 아래 — 결정 직후가 예약 전환이 가장 높다 (경수님 QA #24, 10/27) */}
-          {["themepark", "waterpark", "ski", "landmark"].includes(place.category) && (
-            <TourLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} className="mt-6" />
-          )}
-          <StayLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} at={place} className="mt-4" />
-
           {/* 혼잡 예측: 오늘·이번 주·석 달 달력·판단 기준을 탭 하나로 + 크게 보기 (사용자 QA 10/22) */}
           <ForecastTabs
             title={t("언제 가면 한산할까")}
@@ -603,6 +597,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                       <HourlyChart
                         points={hourly}
                         highlightHour={Math.floor(now.hour)}
+                        aspect="3 / 1"
                         estimated={isEstimated(crowd)}
                         unit={place.criteria?.unit === "분" ? "분" : "명"}
                       />
@@ -677,6 +672,12 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           <Link href={`/history/place/${place.id}`} className="mt-2 inline-block text-sm font-semibold text-indigo-600">
             {t("지난 날짜 실제 기록 보기")} ›
           </Link>
+
+          {/* 입장권·숙소 칸: 혼잡 그래프 바로 아래 (10/28 경수님: 사이트 취지인 그래프가 위, 예약은 그 다음에 잘 보이게) */}
+          {["themepark", "waterpark", "ski", "landmark"].includes(place.category) && (
+            <TourLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} className="mt-8" />
+          )}
+          <StayLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} at={place} className="mt-4" />
 
           {signals.localPop && <VisitorProfile pop={signals.localPop} lang={lang} />}
           {/* 서울 장소: 주변 지역의 지금 성별·연령 (서울시 실시간) */}

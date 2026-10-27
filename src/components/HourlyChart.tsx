@@ -164,12 +164,15 @@ export function HourlyChart({
   estimated = false,
   unit = "명",
   forecastLabel = "AI 예측",
+  aspect = "2 / 1",
 }: {
   points: HourPoint[];
   highlightHour?: number;
   estimated?: boolean;
   unit?: "명" | "분";
   forecastLabel?: string;
+  /** 그래프 가로:세로 (장소 페이지는 낮게, 경수님 10/28) */
+  aspect?: string;
 }) {
   const { t, lang } = useI18n();
   const val = (n: number) => (unit === "분" ? fmtMinutes(n, t) : fmtPeople(n, t, lang));
@@ -246,7 +249,7 @@ export function HourlyChart({
       </div>
 
       <div role="img" aria-label={t("시간대별 혼잡도 그래프")} className="relative select-none">
-        <AreaChart data={data} yMax={100} margin={margin} aspectRatio="2 / 1" animationDuration={700}>
+        <AreaChart data={data} yMax={100} margin={margin} aspectRatio={aspect} animationDuration={700}>
           <LevelGradients id={gid} />
           <LevelLines labels={levelLabels} />
           <Area
