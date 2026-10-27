@@ -16,10 +16,11 @@ const PARAMS: Record<string, string | undefined> = {
 };
 
 // 링크프라이스(10/27 가입, 어필리에이트 ID는 NEXT_PUBLIC_LINKPRICE_ID): 직접 제휴가 없는 곳은 링크프라이스 딥링크로 감싼다.
-// 승인 완료(10/27): KKday·호텔스컴바인·제주패스·NOL(야놀자는 앱 실적만 인정이라 웹 링크엔 안 씀). 익스피디아·호텔스닷컴은 승인 대기
+// 승인 완료(10/27): KKday·호텔스컴바인·제주패스. 익스피디아·호텔스닷컴은 승인 대기
+// NOL(야놀자, 10/27 승인): 앱 예약만 실적(웹 X), 클릭 후 24시간. 링크는 앱스플라이어(onelink)로 넘어가 앱 홈이 열린다(검색어는 안 넘어감)
 const LINKPRICE_ID = process.env.NEXT_PUBLIC_LINKPRICE_ID?.trim();
 /** 우리 링크 id → 링크프라이스 머천트 id (승인 완료된 것만) */
-export const LINKPRICE_MERCHANTS: Record<string, string> = { kkday: "kkday" };
+export const LINKPRICE_MERCHANTS: Record<string, string> = { kkday: "kkday", yanolja: "yanolja" };
 const linkprice = (merchant: string, href: string) =>
   `https://newtip.net/click.php?m=${merchant}&a=${LINKPRICE_ID}&l=9999&l_cd1=3&l_cd2=0&tu=${encodeURIComponent(href)}`;
 
