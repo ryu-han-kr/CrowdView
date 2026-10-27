@@ -38,3 +38,11 @@ test("집계 응답(한 줄에 전체·주차 수)도 읽는다, 목록을 못 �
   assert.equal(parseParking({ ok: true }), undefined);
   assert.equal(parseParking({ items: [{ a: 1 }] }), undefined);
 });
+
+test("강원랜드 실제 응답: data의 합계(totalParkingSpace·totalOccupancy)를 쓴다", () => {
+  const json = {
+    resultCode: 0,
+    data: { lotAreaNo: 17925, totalParkingSpace: 2134, totalOccupancy: 1346, areaNos: [{ areaNo: 90, sections: [{ parkingSpace: 99, occupancy: 43 }] }] },
+  };
+  assert.deepEqual(parseParking(json, undefined, 1700), { occupied: 1346, total: 2134 });
+});

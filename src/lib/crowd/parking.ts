@@ -29,7 +29,7 @@ export interface ParkingLot {
 
 /** 장소 → 주차장 (지금은 하이원만) */
 export const PARKING_LOTS: Record<string, ParkingLot> = {
-  high1: { id: "HIGH1", label: "강원랜드 광장주차장", total: 1700 },
+  high1: { id: "HIGH1", label: "강원랜드 광장주차장", total: 2134 },
 };
 
 const STATUS_KEY = /status|stts|state|상태|yn$/i;
@@ -37,6 +37,9 @@ const OCCUPIED = /^(1|y|yes|true|in|입차|주차중|occupied|full|사용)$/i;
 
 /** 순수 계산: 응답 JSON에서 주차면 목록을 찾아 주차 중인 수를 센다. fields: "경로;상태필드;주차중값" */
 export function parseParking(json: unknown, fields?: string, fallbackTotal?: number): { occupied: number; total: number } | undefined {
+  // 강원랜드(B552525 ParkingCurrentStatus, 10/27 운영 승인): data 한 객체에 전체 면 수·주차 수 합계가 있다
+  const sum = findTotals(json);
+  if (sum && !fields) return sum;
   const [path, statusField, occupiedValue] = (fields ?? "").split(";").map((s) => s.trim());
   let rows: unknown = json;
   if (path) for (const k of path.split(".")) rows = (rows as Record<string, unknown> | undefined)?.[k];
@@ -57,6 +60,20 @@ export function parseParking(json: unknown, fields?: string, fallbackTotal?: num
   }
   const occupied = items.filter((r) => isOccupied(r[key])).length;
   return { occupied, total: fallbackTotal ?? items.length };
+}
+
+/** 응답 어딘가에 totalParkingSpace·totalOccupancy 같은 합계 숫자 쌍이 있으면 그걸 쓴다 */
+function findTotals(v: unknown, depth = 0): { occupied: number; total: number } | undefined {
+  if (depth > 4 || !v || typeof v !== "object" || Array.isArray(v)) return undefined;
+  const o = v as Record<string, unknown>;
+  const total = Number(o.totalParkingSpace ?? o.totalSpace);
+  const occupied = Number(o.totalOccupancy ?? o.totalOccupied);
+  if (total > 0 && Number.isFinite(occupied)) return { occupied, total };
+  for (const x of Object.values(o)) {
+    const r = findTotals(x, depth + 1);
+    if (r) return r;
+  }
+  return undefined;
 }
 
 function largestArray(v: unknown, depth = 0): unknown[] | undefined {
