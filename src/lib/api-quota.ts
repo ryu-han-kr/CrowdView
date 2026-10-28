@@ -57,7 +57,7 @@ export const APIS: ApiInfo[] = [
   // 한국도로공사: 전국 콘존 속도를 10분마다 9번(1,000줄씩) + 영업소 좌표 하루 1번 → 하루 많아야 약 1,300회
   { id: "ex-traffic", name: "한국도로공사 실시간 교통량·영업소 위치", limit: 10000, limitGuess: true },
   // 유료(종량제 건당 33원, Basic 요금제 하루 100건까지). 비용 상한용으로 하루 30건(90%면 27건 ≈ 하루 900원)에서 멈춘다.
-  // 더 쓰려면 SK_DAILY_LIMIT 환경변수로 올린다
+  // 더 쓰려면 SK_DAILY_LIMIT 환경변수로 올린다. 실제 한도는 여기에 Plus 회원 수 × SK_PER_MEMBER(10)를 더한다 (lib/skt)
   { id: "skt-congestion", name: "SK 장소 혼잡도·TMAP 장소 검색", limit: Number(process.env.SK_DAILY_LIMIT) || 30 },
   // 글자 수로 센다. NCP 콘솔 Application 하루 한도(3만 자)와 맞추고, 90%(2.7만 자)에서 앱이 먼저 멈춘다.
   // 월 상한(기본 30만 자, PAPAGO_MONTHLY_LIMIT)도 둔다 — 10/21 NCP가 429를 내는데 우리 일일 집계는 17%였다 (한 달 누적이 문제)
