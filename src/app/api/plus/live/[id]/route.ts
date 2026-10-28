@@ -5,12 +5,15 @@ import { getPlace } from "@/lib/places";
 import { getPlus, markPlusUsed } from "@/lib/plus";
 import { errorJson, requireUser, unauthorized } from "@/lib/plus-http";
 import { liveCount, liveLeft } from "@/lib/live-count";
+import { isAdminEmail } from "@/lib/admin";
 
 const noStore = { headers: { "cache-control": "no-store" } };
 
 async function member(req: Request) {
   const user = await requireUser(req);
   if (!user) return { res: unauthorized() };
+  // 운영자(ADMIN_EMAILS)는 결제 없이 Pro처럼 시험할 수 있다 (경수님 10/28 '버튼 잘 작동하나 확인')
+  if (isAdminEmail(user.email)) return { user, plan: "pro" as const };
   const plus = await getPlus(user.id);
   if (!plus.active) return { res: NextResponse.json({ error: "Plus·Pro 회원 전용이에요" }, { status: 403 }) };
   return { user, plan: plus.plan ?? "plus" };
