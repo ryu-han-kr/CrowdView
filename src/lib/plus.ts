@@ -2,7 +2,7 @@
 // 1개월 이용권(status 'pass'): 토스 일반 결제창 → 서버 승인 → 한 달 이용, 자동 갱신 없음 (자동결제 계약 전에도 팔 수 있다)
 // 돈이 오가는 판단(결제 성공 여부, 금액)은 항상 토스가 돌려준 값(또는 다시 조회한 값)으로만 한다.
 import { pushToUser } from "./alerts";
-import { PLUS, planOf, type PlanId } from "./business";
+import { PLUS, asPlan, planOf, type PlanId } from "./business";
 import { pool, sql } from "./db";
 import { isDeliverable, mailEnabled, sendMail } from "./mail";
 import { opsAlert } from "./ops";
@@ -52,6 +52,9 @@ function planColumns(): Promise<void> {
   schemaReady ??= (async () => {
     await sql("alter table plus_subscription add column if not exists plan text not null default 'plus'");
     await sql("alter table payment add column if not exists plan text");
+    // Max 단계(10/28 저녁): 010의 단계 제한(plus·pro)을 세 단계로 넓힌다 (011과 같음)
+    await sql("alter table plus_subscription drop constraint if exists plus_subscription_plan_check");
+    await sql("alter table plus_subscription add constraint plus_subscription_plan_check check (plan in ('plus', 'pro', 'max'))");
   })().catch((e) => {
     schemaReady = undefined;
     throw e;
@@ -88,7 +91,7 @@ export async function getPlus(userId: string): Promise<PlusState> {
   );
   // 토스로 결제한 것만 여기서 환불 (이용 코드는 돈이 없고, Paddle 패스는 Paddle에서 환불)
   const refundable = active && !!last?.payment_key && !last.first_used_at && Date.now() - last.paid_at.getTime() < 7 * 86_400_000;
-  return { status: s.status, active, periodEnd: s.current_period_end.toISOString(), refundable, plan: s.plan ?? "plus" };
+  return { status: s.status, active, periodEnd: s.current_period_end.toISOString(), refundable, plan: asPlan(s.plan) };
 }
 
 export const isPlus = async (userId: string) => (await getPlus(userId)).active;
@@ -180,7 +183,7 @@ export async function startPass(userId: string, plan: PlanId = "plus"): Promise<
 export async function confirmPass(userId: string, paymentKey: string, orderId: string, amount: number): Promise<PlusState> {
   const [owner, planRaw] = String((await kv.get(`passorder:${orderId}`).catch(() => null)) ?? "").split("|");
   if (owner !== userId) throw new Error("주문 정보가 이 계정과 맞지 않아요. 다시 시도해 주세요.");
-  const plan: PlanId = planRaw === "pro" ? "pro" : "plus";
+  const plan = asPlan(planRaw);
   if (amount !== planOf(plan).priceKrw) throw new Error("결제 금액이 맞지 않아요");
   await planColumns();
   let p: TossPayment | undefined;
@@ -302,17 +305,17 @@ export async function refundWithin7Days(userId: string): Promise<PlusState> {
 }
 
 /**
- * 해외 여행 패스 (Paddle, 10/28): 결제 완료 알림 한 건 → days일 이용 (Pro 기능). 이용 중이면 남은 기간 뒤로 이어 붙인다.
+ * 해외 여행 패스 (Paddle, 10/28): 결제 완료 알림 한 건 → 고른 단계(plus·pro·max)로 days일 이용. 이용 중이면 남은 기간 뒤로 이어 붙인다.
  * 같은 거래(transaction id)는 한 번만 — 결제 기록을 먼저 넣은 요청만 기간을 늘린다 (Paddle은 알림을 여러 번 보낼 수 있다).
  * amount는 그 통화의 가장 작은 단위(센트 등), 통화·원본은 raw에
  */
-export async function grantTravelPass(userId: string, txId: string, days: number, amountMinor: number, raw: unknown): Promise<PlusState> {
-  return grantDays(userId, txId, days, "pro", amountMinor, raw);
+export async function grantTravelPass(userId: string, txId: string, plan: PlanId, days: number, amountMinor: number, raw: unknown): Promise<PlusState> {
+  return grantDays(userId, txId, days, plan, amountMinor, raw);
 }
 
 /**
  * 결제 없이·다른 결제사로 받은 기간을 붙인다 (Paddle 여행 패스, 이용 코드). id가 같은 기록은 한 번만 반영.
- * 이용 중이면 남은 기간 뒤로 이어 붙이고, 더 높은 단계(pro)로만 바꾼다
+ * 이용 중이면 남은 기간 뒤로 이어 붙이고, 더 높은 단계로만 바꾼다 (plus < pro < max, 끝난 회원은 새 단계 그대로)
  */
 export async function grantDays(userId: string, id: string, days: number, plan: PlanId, amount: number, raw: unknown): Promise<PlusState> {
   await planColumns();
@@ -333,7 +336,9 @@ export async function grantDays(userId: string, id: string, days: number, plan: 
      on conflict (user_id) do update set
        status = case when plus_subscription.status = 'active' then 'active' else 'pass' end,
        current_period_end = $2,
-       plan = case when $3 = 'pro' or plus_subscription.status = 'expired' then $3 else plus_subscription.plan end,
+       plan = case when plus_subscription.status = 'expired' or plus_subscription.current_period_end < now()
+                     or array_position(array['plus','pro','max'], $3::text) > coalesce(array_position(array['plus','pro','max'], plus_subscription.plan), 0)
+                   then $3 else plus_subscription.plan end,
        canceled_at = null, updated_at = now()`,
     [userId, end, plan],
   );

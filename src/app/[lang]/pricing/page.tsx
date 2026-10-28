@@ -6,7 +6,7 @@ import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import type { T } from "@/i18n/translate";
 import { pageMeta } from "@/lib/seo";
-import { PLANS, PLUS } from "@/lib/business";
+import { PLANS, PLUS, planOf } from "@/lib/business";
 import { Glyph } from "@/components/Glyph";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
@@ -21,31 +21,33 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   });
 }
 
-// 무료 / Plus / Pro 비교 (✓ 제공, – 미제공, 글자면 그 범위만 제공)
-const ROWS: [label: string, free: boolean | string, plus: boolean | string, pro: boolean | string][] = [
-  ["실시간 혼잡도 (공항·놀이공원·관광지·축제·서울 121곳)", true, true, true],
-  ["시간대별·주간·한 달 혼잡 예측", true, true, true],
+type V = boolean | string;
+// 무료 / Plus / Pro / Max 비교 (✓ 제공, – 미제공, 글자면 그 범위만 제공)
+const ROWS: [label: string, free: V, plus: V, pro: V, max: V][] = [
+  ["실시간 혼잡도 (공항·놀이공원·관광지·축제·서울 121곳)", true, true, true, true],
+  ["시간대별·주간·한 달 혼잡 예측", true, true, true, true],
   // 경수님 10/28: SK텔레콤 실측 '지금 실제 인원 보기' — 단계마다 횟수 (lib/business PLANS)
-  ["지금 실제 인원 보기 (SK텔레콤 실측)", false, "하루 {d}회 · 월 {m}회:plus", "하루 {d}회 · 월 {m}회:pro"],
-  ["방금 다른 회원이 본 곳은 횟수가 줄지 않아요 (10분 안)", false, true, true],
+  ["지금 실제 인원 보기 (SK텔레콤 실측)", false, "하루 {d}회 · 월 {m}회:plus", "하루 {d}회 · 월 {m}회:pro", "하루 {d}회 · 월 {m}회:max"],
+  ["방금 다른 회원이 본 곳은 횟수가 줄지 않아요 (10분 안)", false, true, true, true],
   // 경수님 QA #2 2단계 (10/27): 1년 혼잡 달력은 Plus 전용
-  ["1년 혼잡 달력 (1년 중 한산한 날 한눈에)", false, true, true],
-  ["한산한 코스 추천 전체 일정 (무료는 앞 2곳 미리보기)", false, true, true],
-  ["광고 없이 보기", false, true, true],
+  ["1년 혼잡 달력 (1년 중 한산한 날 한눈에)", false, true, true, true],
+  ["한산한 코스 추천 전체 일정 (무료는 앞 2곳 미리보기)", false, true, true, true],
+  ["광고 없이 보기", false, true, true, true],
   // 무료 회원도 알림 1개 (외부 점검 P2-1, 사용자 결정 10/21)
-  ["찜한 장소가 한산해지면 알림 (웹 푸시)", "1개", "{n}개:plus", "{n}개:pro"],
-  ["혼잡해지기 전에 미리 알림", "1개", "{n}개:plus", "{n}개:pro"],
-  ["숙소 가성비 비교 (가격·평점·후기 AI 분석)", false, false, "곧 출시"],
-  ["새 기능 먼저 써 보기", false, false, true],
-  ["축제 일정, 날씨·미세먼지, 공항 주차·입국 정보", true, true, true],
-  ["찜한 장소 · 여행 가이드 · 근처 숙소 찾기", true, true, true],
+  ["찜한 장소가 한산해지면 알림 (웹 푸시)", "1개", "{n}개:plus", "{n}개:pro", "{n}개:max"],
+  ["혼잡해지기 전에 미리 알림", "1개", "{n}개:plus", "{n}개:pro", "{n}개:max"],
+  ["숙소 가성비 비교 (가격·평점·후기 AI 분석)", false, false, "곧 출시", "곧 출시"],
+  ["새 기능 먼저 써 보기", false, false, true, true],
+  ["문의 먼저 답해 드려요", false, false, false, true],
+  ["축제 일정, 날씨·미세먼지, 공항 주차·입국 정보", true, true, true, true],
+  ["찜한 장소 · 여행 가이드 · 근처 숙소 찾기", true, true, true, true],
 ];
 
-/** 표 칸: ✓ / – / 글자. 글자 끝 ':plus'·':pro'는 그 단계 숫자({d}·{m}·{n})로 채운다 */
-function Cell({ v, color, t }: { v: boolean | string; color: string; t: T }) {
+/** 표 칸: ✓ / – / 글자. 글자 끝 ':plus'·':pro'·':max'는 그 단계 숫자({d}·{m}·{n})로 채운다 */
+function Cell({ v, color, t }: { v: V; color: string; t: T }) {
   if (typeof v !== "string") return v ? <Glyph e="✓" className={`mx-auto h-4 w-4 ${color}`} label="O" /> : <span className="text-gray-300">–</span>;
   const [text, plan] = v.split(":");
-  const P = plan === "pro" ? PLANS.pro : plan === "plus" ? PLANS.plus : undefined;
+  const P = plan ? planOf(plan) : undefined;
   return <span className={`text-xs font-bold ${color}`}>{P ? t(text, { d: P.liveDaily, m: P.liveMonthly, n: P.alerts }) : t(text)}</span>;
 }
 
@@ -59,13 +61,13 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
     <main className="px-5 pt-6 pb-12 md:px-0 md:pt-10">
       <div className="mx-auto max-w-5xl">
         <h1 className="text-2xl font-bold md:text-3xl">{t("요금 안내")}</h1>
-        <p className="mt-1 text-sm text-gray-500">{t("혼잡도와 예측은 모두 무료예요. 지금 실제 인원까지 보고 싶다면 Plus·Pro를 골라 보세요.")}</p>
+        <p className="mt-1 text-sm text-gray-500">{t("혼잡도와 예측은 모두 무료예요. 지금 실제 인원까지 보고 싶다면 Plus·Pro·Max 중에 골라 보세요.")}</p>
 
         {/* 외국어 화면: 해외 카드로 결제하는 여행 패스(Paddle)를 먼저 (경수님 10/28 '해외는 패스로') */}
         {lang !== "ko" && <TravelPass />}
 
-        {/* 세 단계 카드: 무료(흰) · Plus(보라) · Pro(검정·금색) — 경수님 10/28 '단계를 까리하게, 색다르게' */}
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
+        {/* 네 칸: 무료(흰) · Plus(보라) · Pro(검정·금색) · Max(무지갯빛) — 경수님 10/28 '단계를 까리하게, 색다르게', 저녁 '등급 3개' */}
+        <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <section className="flex flex-col rounded-3xl border border-gray-200 p-5">
             <p className="text-sm font-semibold text-gray-500">{t("무료")}</p>
             <p className="mt-1 text-3xl font-extrabold">{t("{n}원", { n: "0" })}</p>
@@ -95,7 +97,7 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
             {/* 금빛 테두리 빛: 카드 위쪽에 은은한 광 */}
             <div aria-hidden className="pointer-events-none absolute -top-16 -right-10 h-40 w-40 rounded-full bg-amber-300/25 blur-3xl" />
             <span className="absolute top-4 right-4 rounded-full bg-gradient-to-r from-amber-300 to-yellow-200 px-2.5 py-0.5 text-[11px] font-extrabold text-gray-900">
-              {t("가장 넉넉하게")}
+              {t("추천")}
             </span>
             <p className="w-fit bg-gradient-to-r from-amber-200 to-yellow-100 bg-clip-text text-sm font-bold text-transparent">{PLANS.pro.name}</p>
             <p className="mt-1 text-3xl font-extrabold">{t("월 {n}원", { n: won(PLANS.pro.priceKrw) })}</p>
@@ -108,6 +110,26 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
               <li>· {t("숙소 가성비 AI 비교 (곧 출시) · 새 기능 먼저")}</li>
             </ul>
             <PlusCheckoutButton className="mt-5 w-full" plan="pro" tone="gold" />
+          </section>
+
+          <section className="relative flex flex-col overflow-hidden rounded-3xl bg-gradient-to-br from-gray-950 via-violet-950 to-fuchsia-950 p-5 text-white shadow-xl ring-1 ring-fuchsia-300/60">
+            {/* 무지갯빛 광: 위 오른쪽 분홍, 아래 왼쪽 하늘 */}
+            <div aria-hidden className="pointer-events-none absolute -top-16 -right-10 h-40 w-40 rounded-full bg-fuchsia-400/25 blur-3xl" />
+            <div aria-hidden className="pointer-events-none absolute -bottom-16 -left-10 h-40 w-40 rounded-full bg-cyan-300/15 blur-3xl" />
+            <span className="absolute top-4 right-4 rounded-full bg-gradient-to-r from-fuchsia-300 via-violet-200 to-cyan-200 px-2.5 py-0.5 text-[11px] font-extrabold text-gray-900">
+              {t("가장 넉넉하게")}
+            </span>
+            <p className="w-fit bg-gradient-to-r from-fuchsia-200 via-violet-200 to-cyan-200 bg-clip-text text-sm font-bold text-transparent">{PLANS.max.name}</p>
+            <p className="mt-1 text-3xl font-extrabold">{t("월 {n}원", { n: won(PLANS.max.priceKrw) })}</p>
+            <p className="mt-1 text-xs text-white/70">{t("부가세 포함 · 매달 자동결제 또는 1개월 이용권")}</p>
+            <ul className="mt-4 flex-1 space-y-1.5 text-sm text-white/90">
+              <li>
+                · <b className="text-fuchsia-200">{t("지금 실제 인원 보기 하루 {d}회 (월 {m}회)", { d: PLANS.max.liveDaily, m: PLANS.max.liveMonthly })}</b>
+              </li>
+              <li>· {t("Pro 기능 전부 + 알림 {n}개", { n: PLANS.max.alerts })}</li>
+              <li>· {t("문의 먼저 답해 드려요")}</li>
+            </ul>
+            <PlusCheckoutButton className="mt-5 w-full" plan="max" tone="holo" />
           </section>
         </div>
 
@@ -132,18 +154,19 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
         </section>
 
         {/* 휴대폰에선 옆으로 밀어 보는 표: 키보드로도 넘기게 (axe scrollable-region-focusable) */}
-        <div className="mt-8 overflow-x-auto" tabIndex={0} role="region" aria-label={t("무료·Plus·Pro 기능 비교")}>
-          <table className="w-full min-w-[520px] text-sm">
+        <div className="mt-8 overflow-x-auto" tabIndex={0} role="region" aria-label={t("무료·Plus·Pro·Max 기능 비교")}>
+          <table className="w-full min-w-[620px] text-sm">
             <thead>
               <tr className="border-b border-gray-200 text-left text-xs text-gray-500">
                 <th className="py-2 font-medium">{t("기능")}</th>
                 <th className="w-20 py-2 text-center font-medium">{t("무료")}</th>
                 <th className="w-28 py-2 text-center font-bold text-indigo-600">Plus</th>
                 <th className="w-28 bg-amber-50/60 py-2 text-center font-bold text-amber-700">Pro</th>
+                <th className="w-28 bg-fuchsia-50/60 py-2 text-center font-bold text-fuchsia-700">Max</th>
               </tr>
             </thead>
             <tbody>
-              {ROWS.map(([label, free, plus, pro]) => (
+              {ROWS.map(([label, free, plus, pro, max]) => (
                 <tr key={label} className="border-b border-gray-100">
                   <td className="py-3 pr-2">{t(label)}</td>
                   <td className="text-center">
@@ -155,6 +178,9 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
                   <td className="bg-amber-50/60 text-center">
                     <Cell v={pro} color="text-amber-700" t={t} />
                   </td>
+                  <td className="bg-fuchsia-50/60 text-center">
+                    <Cell v={max} color="text-fuchsia-700" t={t} />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -164,7 +190,13 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
         <section className="mt-8 rounded-2xl bg-gray-50 p-4 text-xs leading-relaxed text-gray-600">
           <p className="font-bold text-gray-800">{t("결제 전에 꼭 확인하세요")}</p>
           <ul className="mt-2 list-disc space-y-1 pl-4">
-            <li>{t("Plus는 월 {plus}원, Pro는 월 {pro}원이에요 (부가세 포함).", { plus: won(PLANS.plus.priceKrw), pro: won(PLANS.pro.priceKrw) })}</li>
+            <li>
+              {t("Plus는 월 {plus}원, Pro는 월 {pro}원, Max는 월 {max}원이에요 (부가세 포함).", {
+                plus: won(PLANS.plus.priceKrw),
+                pro: won(PLANS.pro.priceKrw),
+                max: won(PLANS.max.priceKrw),
+              })}
+            </li>
             <li>{t("1개월 이용권은 한 번만 결제하고, 자동으로 다시 결제되지 않아요.")}</li>
             {billing ? (
               <>

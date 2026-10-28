@@ -4,9 +4,10 @@ import { test } from "node:test";
 import { parseCodes } from "@/lib/redeem";
 
 test("코드:단계:일수:최대사용수, 짧은 코드는 버린다", () => {
-  assert.deepEqual(parseCodes("cv-pro-abcd12:pro:365:1, CV-PLUS-XY99ZZ:plus:30:20, ab:pro:1:1"), [
+  assert.deepEqual(parseCodes("cv-pro-abcd12:pro:365:1, CV-PLUS-XY99ZZ:plus:30:20, CV-MAX-QQ77RR:max:7:3, ab:pro:1:1"), [
     { code: "CV-PRO-ABCD12", plan: "pro", days: 365, maxUses: 1 },
     { code: "CV-PLUS-XY99ZZ", plan: "plus", days: 30, maxUses: 20 },
+    { code: "CV-MAX-QQ77RR", plan: "max", days: 7, maxUses: 3 },
   ]);
   assert.deepEqual(parseCodes(""), []);
 });

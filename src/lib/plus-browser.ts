@@ -1,6 +1,7 @@
 "use client";
 
 // 브라우저 쪽 Plus 도우미: 토스페이먼츠 카드 등록(자동결제) → 서버 구독, 1개월 이용권 결제창 → 서버 승인, 웹 푸시 구독
+import type { PlanId } from "./business";
 import type { PlusState } from "./plus";
 
 /** 토스페이먼츠 'API 개별 연동 키'의 클라이언트 키 (test_ck_… / live_ck_…) */
@@ -26,7 +27,7 @@ export const confirmPassPayment = (paymentKey: string, orderId: string, amount: 
  * 1개월 이용권 결제창 (토스 일반 결제, 한 번만 결제). 결제가 끝나면 completeUrl로 이동하고(?paymentKey=…&orderId=…&amount=…),
  * 거기서 서버가 승인해야 결제가 끝난다. 실패·취소면 ?code=…&message=…
  */
-export async function startPassPayment(user: { name: string; email?: string }, completeUrl: string, plan: "plus" | "pro" = "plus"): Promise<void> {
+export async function startPassPayment(user: { name: string; email?: string }, completeUrl: string, plan: PlanId = "plus"): Promise<void> {
   const res = await fetch(`/api/plus/pass?plan=${plan}`, { cache: "no-store" });
   const json = (await res.json().catch(() => ({}))) as { orderId?: string; orderName?: string; amount?: number; customerKey?: string; error?: string };
   if (!res.ok || !json.orderId || !json.customerKey || !json.amount) throw new Error(json.error ?? `HTTP ${res.status}`);

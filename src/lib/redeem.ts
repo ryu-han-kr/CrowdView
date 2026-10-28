@@ -1,8 +1,8 @@
-// 이용 코드 (경수님 10/28: 결제 없이 Plus·Pro를 쓰게 하는 코드 — 운영자 본인·테스터·이벤트용).
+// 이용 코드 (경수님 10/28: 결제 없이 Plus·Pro·Max를 쓰게 하는 코드 — 운영자 본인·테스터·이벤트용).
 // 코드 목록은 환경변수 REDEEM_CODES: "코드:단계:일수:최대사용수" 를 쉼표로 (예: CV-PRO-XXXX:pro:365:1,CV-PLUS-YYYY:plus:30:20)
 // 사용 기록은 결제 기록(payment)에 금액 0으로 남긴다 (id = redeem:코드:회원) → 한 회원은 같은 코드를 한 번만
 import { sql } from "./db";
-import type { PlanId } from "./business";
+import { asPlan, type PlanId } from "./business";
 import { grantDays, type PlusState } from "./plus";
 
 export interface RedeemCode {
@@ -19,7 +19,7 @@ export function parseCodes(env = process.env.REDEEM_CODES ?? ""): RedeemCode[] {
     .filter(Boolean)
     .map((x) => {
       const [code, plan, days, max] = x.split(":");
-      return { code: code.toUpperCase(), plan: plan === "pro" ? "pro" : "plus", days: Number(days) || 30, maxUses: Number(max) || 1 } as RedeemCode;
+      return { code: code.toUpperCase(), plan: asPlan(plan), days: Number(days) || 30, maxUses: Number(max) || 1 } as RedeemCode;
     })
     .filter((c) => c.code.length >= 6);
 }

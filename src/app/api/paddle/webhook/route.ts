@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   }
   try {
     const amount = Number(tx.details?.totals?.grand_total ?? 0);
-    await grantTravelPass(pass.userId, tx.id, pass.days, Number.isFinite(amount) ? amount : 0, tx);
+    await grantTravelPass(pass.userId, tx.id, pass.plan, pass.days, Number.isFinite(amount) ? amount : 0, tx);
     return NextResponse.json({ ok: true });
   } catch (e) {
     // 500이면 Paddle이 나중에 다시 보낸다 (같은 거래는 한 번만 반영)

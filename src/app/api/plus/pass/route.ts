@@ -1,5 +1,6 @@
 // Plus 1개월 이용권 (한 번 결제, 자동 갱신 없음). GET: 결제창에 넘길 주문 정보, POST { paymentKey, orderId, amount }: 결제창에서 돌아온 값 승인
 import { NextResponse } from "next/server";
+import { asPlan } from "@/lib/business";
 import { dailyLimit, rateLimit } from "@/lib/ratelimit";
 import { opsAlert } from "@/lib/ops";
 import { confirmPass, startPass } from "@/lib/plus";
@@ -14,7 +15,7 @@ export async function GET(req: Request) {
   const user = await requireUser(req);
   if (!user) return unauthorized();
   try {
-    const plan = new URL(req.url).searchParams.get("plan") === "pro" ? "pro" : "plus";
+    const plan = asPlan(new URL(req.url).searchParams.get("plan"));
     return NextResponse.json(await startPass(user.id, plan), { headers: { "cache-control": "no-store" } });
   } catch (e) {
     return errorJson(e);

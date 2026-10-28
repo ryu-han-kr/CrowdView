@@ -6,12 +6,13 @@ import { useI18n } from "@/i18n/client";
 import { levelOf, inkOf } from "@/lib/levels";
 import { usePlus } from "@/lib/plus-client";
 import { useSession } from "@/lib/auth-client";
+import type { PlanId } from "@/lib/business";
 
 interface Res {
   data?: { level: number; score: number; time: string; poiName: string };
   shared?: boolean;
   left?: { day: number; month: number };
-  plan?: "plus" | "pro";
+  plan?: PlanId;
   error?: string;
 }
 
@@ -50,7 +51,7 @@ export function LiveCountButton({ placeId }: { placeId: string }) {
         <span aria-hidden className="text-lg">🔒</span>
         <span className="min-w-0 flex-1">
           <span className="block text-[15px] font-bold">{t("지금 실제 인원 보기")}</span>
-          <span className="block text-xs text-white/70">{t("SK텔레콤 실측 · Plus·Pro 회원 전용")}</span>
+          <span className="block text-xs text-white/70">{t("SK텔레콤 실측 · 유료 회원 전용")}</span>
         </span>
         <span className="rounded-full bg-gradient-to-r from-amber-300 to-yellow-200 px-2.5 py-1 text-xs font-extrabold text-gray-900">{t("열어 보기")}</span>
       </Link>

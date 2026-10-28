@@ -1,5 +1,6 @@
 // Plus 구독: GET은 카드 등록창에 쓸 토스 고객 키, POST는 카드 등록창에서 돌아온 authKey로 빌링키 발급 → 첫 달 결제
 import { NextResponse } from "next/server";
+import { asPlan } from "@/lib/business";
 import { dailyLimit, rateLimit } from "@/lib/ratelimit";
 import { opsAlert } from "@/lib/ops";
 import { checkoutCustomerKey, subscribe } from "@/lib/plus";
@@ -26,7 +27,7 @@ export async function POST(req: Request) {
   const { authKey, customerKey, plan } = (await req.json().catch(() => ({}))) as { authKey?: string; customerKey?: string; plan?: string };
   if (!authKey || typeof authKey !== "string" || !customerKey || typeof customerKey !== "string") return errorJson("카드 등록 정보가 없어요");
   try {
-    const plus = await subscribe(user.id, authKey, customerKey, plan === "pro" ? "pro" : "plus");
+    const plus = await subscribe(user.id, authKey, customerKey, asPlan(plan));
     return withPlusCookie(NextResponse.json({ plus }), plus);
   } catch (e) {
     console.error("[plus] subscribe", user.id, e);
