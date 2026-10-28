@@ -20,6 +20,7 @@ export function PhotoGallery({
   counterClassName = "top-3 right-3",
   bottomClassName = "bottom-3",
   onSelect,
+  kenBurns = false,
 }: {
   photos: string[];
   alt: string;
@@ -33,6 +34,8 @@ export function PhotoGallery({
   bottomClassName?: string;
   /** 사진을 누르면 (전체 보기 열기) */
   onSelect?: (i: number) => void;
+  /** 사진이 천천히 확대·이동 (장소 상단 사진) */
+  kenBurns?: boolean;
 }) {
   const { t } = useI18n();
   const track = useRef<HTMLDivElement>(null);
@@ -66,18 +69,20 @@ export function PhotoGallery({
             aria-label={`${i + 1} / ${photos.length}`}
             onClick={onSelect ? () => onSelect(i) : undefined}
           >
-            <Image
-              src={src}
-              alt={photos.length > 1 ? `${alt} ${t("사진")} ${i + 1}/${photos.length}` : alt}
-              fill
-              // 첫 장은 priority: <head>에 preload가 들어가 HTML을 읽자마자 받기 시작한다 (10/26 Lighthouse: 요청 시작이 3.7초 늦었다)
-              priority={i === 0}
-              loading={i === 0 ? "eager" : "lazy"}
-              sizes={sizes}
-              unoptimized={!canOptimize(src)}
-              className="object-cover"
-              style={i === 0 ? imageStyle : undefined}
-            />
+            <div className={kenBurns ? `kenburns ${i % 2 ? "kb-alt" : ""}` : "absolute inset-0"}>
+              <Image
+                src={src}
+                alt={photos.length > 1 ? `${alt} ${t("사진")} ${i + 1}/${photos.length}` : alt}
+                fill
+                // 첫 장은 priority: <head>에 preload가 들어가 HTML을 읽자마자 받기 시작한다 (10/26 Lighthouse: 요청 시작이 3.7초 늦었다)
+                priority={i === 0}
+                loading={i === 0 ? "eager" : "lazy"}
+                sizes={sizes}
+                unoptimized={!canOptimize(src)}
+                className="object-cover"
+                style={i === 0 ? imageStyle : undefined}
+              />
+            </div>
           </div>
         ))}
       </div>

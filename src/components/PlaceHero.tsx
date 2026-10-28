@@ -135,6 +135,7 @@ export function PlaceHero({
               counterClassName="top-16 right-4"
               bottomClassName="bottom-3"
               onSelect={(i) => setViewer(i)}
+              kenBurns
             />
             <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/35 to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/45 to-transparent" />
@@ -164,16 +165,18 @@ export function PlaceHero({
           >
             {photos.slice(0, photos.length >= 5 ? 5 : photos.length >= 3 ? 3 : 1).map((p, i, shown) => (
               <div key={p.src} className={`group relative overflow-hidden bg-gray-100 ${i === 0 && shown.length > 1 ? "col-span-2 row-span-2" : ""}`}>
-                <Image
-                  src={p.src}
-                  alt={p.alt ?? name}
-                  fill
-                  sizes={i === 0 ? "(min-width: 1280px) 640px, 50vw" : "320px"}
-                  loading={i === 0 ? "eager" : "lazy"}
-                  fetchPriority={i === 0 ? "high" : "auto"}
-                  unoptimized={!canOptimize(p.src)}
-                  className="object-cover transition duration-300 group-hover:scale-[1.03]"
-                />
+                <div className={`kenburns ${i % 2 ? "kb-alt" : ""}`} style={i ? { animationDelay: `${i * 0.7}s` } : undefined}>
+                  <Image
+                    src={p.src}
+                    alt={p.alt ?? name}
+                    fill
+                    sizes={i === 0 ? "(min-width: 1280px) 640px, 50vw" : "320px"}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    fetchPriority={i === 0 ? "high" : "auto"}
+                    unoptimized={!canOptimize(p.src)}
+                    className="object-cover transition duration-300 group-hover:scale-[1.03]"
+                  />
+                </div>
                 <button
                   onClick={() => (i === shown.length - 1 && photos.length > shown.length ? setGrid(true) : setViewer(i))}
                   className="absolute inset-0 cursor-zoom-in"
