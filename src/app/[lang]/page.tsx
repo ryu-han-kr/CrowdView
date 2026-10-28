@@ -7,7 +7,8 @@ import { HomeList, type HomePlace } from "@/components/HomeList";
 import { CategoryIcons } from "@/components/home/CategoryIcons";
 import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
 import { SeasonBackdrop, SproutStrip } from "@/components/home/SeasonBackdrop";
-import { pickSeasonFx } from "@/lib/season-fx";
+import { SeasonScene } from "@/components/home/SeasonScene";
+import { pickSeasonFx, sceneOf } from "@/lib/season-fx";
 import { HolidayRibbon } from "@/components/home/HolidayRibbon";
 import { krDayOn } from "@/lib/kr-days";
 import { seasonOf, seasonSort, seasonWeight } from "@/lib/season-order";
@@ -509,6 +510,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
 
   return (
     <main className="relative isolate px-5 pt-5 pb-4 md:px-0 md:pt-10">
+      <SeasonScene scene={sceneOf(seasonFx, Number(today.slice(5, 7)))} />
       <SeasonBackdrop fx={seasonFx} />
       <script
         type="application/ld+json"

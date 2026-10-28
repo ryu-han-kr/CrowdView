@@ -15,3 +15,14 @@ export function pickSeasonFx(month: number, w?: Weather): SeasonFx {
   if (month <= 8) return (w?.pop ?? 0) >= 60 ? "rain" : "sun";
   return "leaves";
 }
+
+/** 홈 배경 풍경 (components/home/SeasonScene) */
+export type Scene = "autumn" | "winter" | "summer" | "spring";
+
+/** 효과 → 풍경. 눈 오는 날은 겨울 마을, 비 오는 날은 그 달의 계절 풍경, 기념일 효과(꽃가루·달)도 계절 풍경 위에 */
+export function sceneOf(fx: string, month: number): Scene {
+  if (fx === "snow" || month === 12 || month <= 2) return "winter";
+  if (fx === "sun" || (month >= 6 && month <= 8)) return "summer";
+  if (fx === "sprout" || (month >= 3 && month <= 5)) return "spring";
+  return "autumn";
+}
