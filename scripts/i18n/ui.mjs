@@ -2834,4 +2834,7 @@ export default {
   "자동으로 다시 결제되지 않아요. 고른 등급의 기능을 패스 기간 동안 써요.": ["No automatic renewal. Use your chosen tier's features for the pass period.","自動更新なし。パス期間中は選んだプランの機能を使えます。","不会自动续费。通行证期间可使用所选等级的功能。","不會自動續費。通行證期間可使用所選等級的功能。"],
   "Pro 기능 전부 + 알림 {n}개 · 문의 먼저": ["Everything in Pro + {n} alerts · Priority support","Pro機能すべて＋通知{n}件・優先対応","Pro全部功能 + {n}个提醒 · 优先回复","Pro全部功能 + {n}個提醒 · 優先回覆"],
   "결제 후 7일 안에 유료 기능을 쓰지 않았으면 전액 환불돼요": ["Full refund if you don't use paid features within 7 days of payment","決済後7日以内に有料機能を使っていなければ全額返金","付款后7天内未使用付费功能可全额退款","付款後7天內未使用付費功能可全額退款"],
+  // ── 투어·입장권 (10/28 외국어 화면 강화)
+  "오늘은 붐빌 것으로 보여요. 입장권을 미리 사 두면 매표소 줄을 줄일 수 있어요.": ["Looks busy today. Buy tickets in advance to skip the ticket-office line.","今日は混雑しそうです。チケットを事前に買えば窓口の行列を避けられます。","今天预计会很拥挤。提前买好门票可以少排售票处的队。","今天預計會很擁擠。提前買好門票可以少排售票處的隊。"],
+  "도착하면 바로 필요한 것": ["Essentials when you land","到着したらすぐ必要なもの","落地后马上需要的","落地後馬上需要的"],
 };

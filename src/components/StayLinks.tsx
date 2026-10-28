@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Lang } from "@/i18n/config";
 import type { T } from "@/i18n/translate";
 import type { LatLng } from "@/lib/geo";
@@ -93,10 +94,37 @@ export function tourLinks(ko: string, en: string, lang: Lang): Tile[] {
 }
 
 /**
+ * 외국인이 공항에서 바로 찾는 것 (경수님 10/28 '투어는 외국인이 많이 쓸 테니 외국어 버전에 잘'). Klook 검색으로 보낸다 (10/28 결과 확인: eSIM 19건·AREX 2건)
+ */
+export const AIRPORT_PICKS: { label: string; q: string }[] = [
+  { label: "Korea eSIM · SIM", q: "Korea eSIM" },
+  { label: "AREX Airport Railroad", q: "AREX" },
+  { label: "Airport limousine bus", q: "Incheon Airport Limousine Bus" },
+  { label: "Discover Seoul Pass", q: "Discover Seoul Pass" },
+];
+const klookSearch = (q: string, lang: Lang) => withAffiliate("klook", `https://www.klook.com/${KLOOK_LANG[lang]}/search/result/?query=${encodeURIComponent(q)}`);
+
+/**
  * 예약 사이트 칸 (10/28 경수님: 외국인·한국인이 더 잘 쓰게 예쁘게). 맨 위에 추천 업체 큰 버튼 하나, 아래에 이름이 붙은 비교 버튼들.
  * 아이콘만으로는 아는 사람만 알아서 이름을 다 보이게, 테두리로 강조 (경수님 10/28). 커미션 높은 순(RANK), 맨 앞 하나를 추천으로 크게. 누르면 이용 집계(data-aff)에 잡힌다
  */
-function LinkTiles({ title, glyph, desc, links, t, className }: { title: string; glyph: string; desc: string; links: Tile[]; t: T; className: string }) {
+function LinkTiles({
+  title,
+  glyph,
+  desc,
+  links,
+  t,
+  className,
+  extra,
+}: {
+  title: string;
+  glyph: string;
+  desc: string;
+  links: Tile[];
+  t: T;
+  className: string;
+  extra?: ReactNode;
+}) {
   // 쿠팡 링크는 주소 자체가 파트너스 링크라 꼬리표 없이도 제휴
   const paid = (id: string) => isAffiliate(id) || id === "coupang";
   const aff = links.some((s) => paid(s.id));
@@ -124,6 +152,7 @@ function LinkTiles({ title, glyph, desc, links, t, className }: { title: string;
         {title}
       </p>
       <p className="mt-1.5 text-[13px] text-gray-600">{desc}</p>
+      {extra}
       {top && (
         <a
           {...attrs(top)}
@@ -177,7 +206,59 @@ export function StayLinks({ ko, en, lang, t, at, className = "" }: { ko: string;
   );
 }
 
-export function TourLinks({ ko, en, lang, t, className = "" }: { ko: string; en: string; lang: Lang; t: T; className?: string }) {
+/**
+ * 투어·입장권 칸. busy: 오늘 붐빌 것으로 예측되면 '미리 사 두면 줄을 줄여요'를 맨 위에 (혼잡 예측 → 예약으로 잇기, 10/28).
+ * picks: 외국어 화면의 공항처럼 바로 찾는 상품을 칩으로 (Klook 검색)
+ */
+export function TourLinks({
+  ko,
+  en,
+  lang,
+  t,
+  className = "",
+  busy = false,
+  picks,
+}: {
+  ko: string;
+  en: string;
+  lang: Lang;
+  t: T;
+  className?: string;
+  busy?: boolean;
+  picks?: { label: string; q: string }[];
+}) {
+  const extra = (
+    <>
+      {busy && (
+        <p className="mt-3 flex items-start gap-2 rounded-2xl bg-amber-50 px-3 py-2.5 text-[13px] font-semibold text-amber-900 ring-1 ring-amber-200">
+          <span aria-hidden>⏱️</span>
+          <span>{t("오늘은 붐빌 것으로 보여요. 입장권을 미리 사 두면 매표소 줄을 줄일 수 있어요.")}</span>
+        </p>
+      )}
+      {picks && picks.length > 0 && (
+        <>
+          <p className="mt-3 text-xs font-semibold text-gray-600">{t("도착하면 바로 필요한 것")}</p>
+          <ul className="mt-1.5 flex flex-wrap gap-2">
+            {picks.map((p) => (
+              <li key={p.q}>
+                <a
+                  href={klookSearch(p.q, lang)}
+                  target="_blank"
+                  rel={isAffiliate("klook") ? "sponsored noopener" : "noreferrer nofollow"}
+                  data-aff="klook"
+                  className="flex h-9 items-center gap-1.5 rounded-full border-2 border-orange-200 bg-white px-3 text-[13px] font-bold text-gray-900 shadow-sm transition hover:-translate-y-0.5 hover:border-orange-400"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/brands/klook.png" alt="" width={16} height={16} className="h-4 w-4 rounded" />
+                  {p.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </>
+  );
   return (
     <LinkTiles
       title={t("투어·입장권 찾기")}
@@ -186,6 +267,7 @@ export function TourLinks({ ko, en, lang, t, className = "" }: { ko: string; en:
       links={tourLinks(ko, en, lang)}
       t={t}
       className={className}
+      extra={busy || picks?.length ? extra : undefined}
     />
   );
 }

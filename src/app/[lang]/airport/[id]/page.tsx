@@ -30,6 +30,7 @@ import { getT } from "@/i18n/server";
 import { headcountInfo } from "@/lib/format";
 import { translateNames } from "@/lib/name-translate";
 import { KstNote } from "@/components/LocalTime";
+import { AIRPORT_PICKS, TourLinks } from "@/components/StayLinks";
 
 // ISR: CDN이 5분 동안 같은 HTML을 돌려주고, 만료 후 첫 요청에 백그라운드로 다시 렌더링한다
 // (60초였을 때 ISR 쓰기 5일에 13만 건. 데이터는 10분마다 갱신되니 5분이면 충분)
@@ -370,6 +371,8 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
           </div>
 
           <JudgementCard place={place} crowd={crowd} signals={signals} lang={lang} />
+          {/* 외국인 도착 필수품(eSIM·공항철도·리무진·패스)과 공항 투어·교통 상품 (경수님 10/28 '외국어 버전에 잘') */}
+          {lang !== "ko" && <TourLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} className="mt-6" picks={AIRPORT_PICKS} />}
           <InlineAd className="mt-6" />
           {zones.length > 0 && avgWait !== null && (
             <FaqBlock
