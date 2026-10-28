@@ -2748,4 +2748,7 @@ export default {
   "국립한글박물관·세종대왕 동상도 둘러보세요": ["Visit the National Hangeul Museum or the King Sejong statue","国立ハングル博物館・世宗大王像もどうぞ","也去看看国立韩文博物馆、世宗大王像","也去看看國立韓文博物館、世宗大王像"],
   "메리 크리스마스!": ["Merry Christmas!","メリークリスマス！","圣诞快乐！","聖誕快樂！"],
   "트리·조명 명소, 붐비기 전에 다녀오세요": ["Visit tree & light spots before the crowds","ツリー・イルミネーションの名所は混む前に","圣诞树、灯光名所趁人少去","聖誕樹、燈光名所趁人少去"],
+  // ── 계절 배너 (10/28)
+  "여름엔 워터파크": ["Water parks for summer","夏はウォーターパーク","夏天去水上乐园","夏天去水上樂園"],
+  "물놀이 가기 전 혼잡 미리 보기": ["Check crowds before you splash","水遊びの前に混雑をチェック","戏水前先看拥挤度","戲水前先看擁擠度"],
 };

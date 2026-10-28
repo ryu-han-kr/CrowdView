@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { seasonSort, type Season } from "@/lib/season-order";
 import { useI18n } from "@/i18n/client";
 import { headcountInfo } from "@/lib/format";
 import { placeHref } from "@/lib/place-href";
@@ -107,10 +108,13 @@ export function HomeList({
   places,
   crowd,
   withSearch = false,
+  season,
   children,
 }: {
   places: HomePlace[];
   crowd: Record<string, CrowdResult>;
+  /** 계절에 맞춰 분류 칩 순서를 바꾼다 (겨울 스키장·여름 워터파크 앞으로) */
+  season?: Season;
   /** 명소·축제·서울 지역 탭 (자료는 탭을 고르거나 검색할 때 /api/home-search/{lang} 에서 받는다) */
   withSearch?: boolean;
   children?: React.ReactNode;
@@ -200,7 +204,7 @@ export function HomeList({
   const chips: { id: Filter; label: string; emoji: string; img?: string }[] = [
     { id: "all", label: t("전체"), emoji: "✨" },
     ...(favorites.length ? [{ id: "fav" as const, label: t("찜"), emoji: "❤️" }] : []),
-    ...CATEGORIES.filter((c) => places.some((p) => p.category === c)).map((c) => ({
+    ...(season ? seasonSort(CATEGORIES, (c) => c, season) : CATEGORIES).filter((c) => places.some((p) => p.category === c)).map((c) => ({
       id: c,
       label: t(CATEGORY_LABEL[c]),
       emoji: CATEGORY_EMOJI[c],

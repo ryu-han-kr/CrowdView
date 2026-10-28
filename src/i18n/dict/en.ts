@@ -1330,6 +1330,8 @@ const dict: Dict = {
   "국립한글박물관·세종대왕 동상도 둘러보세요": "Visit the National Hangeul Museum or the King Sejong statue",
   "메리 크리스마스!": "Merry Christmas!",
   "트리·조명 명소, 붐비기 전에 다녀오세요": "Visit tree & light spots before the crowds",
+  "여름엔 워터파크": "Water parks for summer",
+  "물놀이 가기 전 혼잡 미리 보기": "Check crowds before you splash",
   "한국민속촌": "Korean Folk Village",
   "서울대공원": "Seoul Grand Park",
   "롯데월드 아쿠아리움": "Lotte World Aquarium",
