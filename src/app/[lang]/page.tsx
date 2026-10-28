@@ -6,6 +6,9 @@ import { jsonLd, SITE } from "@/lib/seo";
 import { HomeList, type HomePlace } from "@/components/HomeList";
 import { CategoryIcons } from "@/components/home/CategoryIcons";
 import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
+import { SeasonBackdrop, SproutStrip } from "@/components/home/SeasonBackdrop";
+import { pickSeasonFx } from "@/lib/season-fx";
+import { getNowWeather } from "@/lib/crowd/signals";
 import { PhotoRail, type PhotoCardItem } from "@/components/home/PhotoRail";
 import { PlusPromo } from "@/components/home/PlusPromo";
 import { RecentRail } from "@/components/home/RecentRail";
@@ -64,7 +67,15 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const lang = (await params).lang as Lang;
   const t = getT(lang);
   const today = kst().date;
-  const [crowd, livePlaces, seoul, allFestivals] = await Promise.all([getAllCrowd(), getLivePlaces(), getAllSeoulLive(), getFestivals(30)]);
+  const [crowd, livePlaces, seoul, allFestivals, nowWeather] = await Promise.all([
+    getAllCrowd(),
+    getLivePlaces(),
+    getAllSeoulLive(),
+    getFestivals(30),
+    // 홈 배경 날씨 효과: 서울시청 격자의 이번 시각 예보 (경수님 10/28)
+    getNowWeather({ lat: 37.5665, lng: 126.978 }),
+  ]);
+  const seasonFx = pickSeasonFx(Number(today.slice(5, 7)), nowWeather);
   // 끝난 행사 장소는 홈에서 뺀다 (자체 QA 10/22: 10/10에 끝난 서울세계불꽃축제가 여의도 실시간 값으로 '원활'로 나와 한산한 곳 맨 앞에)
   const places = livePlaces.filter((p) => p.category !== "event" || isUpcomingEvent(p, today));
   const live = Object.values(crowd).filter((c) => c.source !== "model");
@@ -470,7 +481,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const seoulScores = Object.values(seoul).map((s) => s.score);
 
   return (
-    <main className="px-5 pt-5 pb-4 md:px-0 md:pt-10">
+    <main className="relative px-5 pt-5 pb-4 md:px-0 md:pt-10">
+      <SeasonBackdrop fx={seasonFx} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -500,6 +512,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           </p>
         </PageHeader>
       </header>
+      <SproutStrip fx={seasonFx} />
 
       <div className="md:hidden">
         <HeroCarousel slides={mobileSlides} />
