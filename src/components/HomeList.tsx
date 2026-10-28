@@ -254,6 +254,9 @@ export function HomeList({
 
   return (
     <>
+      {/* 아이콘 바로 아래는 포토카드 모음, 탭·동그란 칩·전체 목록은 그 아래로 (경수님 10/28: 아이콘 줄과 칩 줄이 같은 기능처럼 두 번 나와 보였다).
+          검색하거나 분류를 고르면 모음은 숨고 탭·결과가 아이콘 바로 아래로 온다 */}
+      {browsing && children}
       <StickyBar id="places" className="-mx-5 mt-8 scroll-mt-16 px-5 pt-3 pb-3 md:mx-0 md:mt-10 md:px-0">
         {/* 위에 붙어 따라올 땐 검색창을 접고 탭 줄만 (UI QA 9차: 붙은 줄이 화면 1/3을 가렸다). 검색어가 있으면 그대로 */}
         {/* 휴대폰은 홈 머리의 검색창(HomeSearchInput) 하나만 (10/27 홈 2차) → 여기선 검색어 표시줄, 검색창은 PC */}
@@ -369,8 +372,6 @@ export function HomeList({
             ))}
           </div>
         )}
-
-      {browsing && children}
 
       {tab !== "all" && tab !== "live" && (
         <ResultList
