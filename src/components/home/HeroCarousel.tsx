@@ -32,15 +32,12 @@ export function HeroCarousel({
   slides: all,
   layout = "peek",
   eager = true,
-  startDelay = 0,
 }: {
   slides: HeroSlide[];
   /** peek: 휴대폰 가운데 한 장 + 양옆 살짝, PC 두 장 나란히 / single: 칸 폭 그대로 한 장씩 (PC 홈 배너 두 개, 경수님 10/27) */
   layout?: "peek" | "single";
   /** 첫 배너 사진을 바로 받을지. 화면에 숨겨진(display:none) 배너는 false로 두어 받지 않게 한다 */
   eager?: boolean;
-  /** 자동 넘김 시작을 늦춘다 (나란히 놓인 두 배너가 동시에 넘어가지 않게) */
-  startDelay?: number;
 }) {
   const { t } = useI18n();
   // Plus 회원에게는 Plus 홍보 배너를 빼고 보여 준다
@@ -57,21 +54,27 @@ export function HeroCarousel({
   const index = loop ? (((pos - n) % n) + n) % n : 0;
 
   // 자동 넘김 (직접 넘긴 직후 잠깐 쉬고, 탭이 안 보일 때는 브라우저가 알아서 늦춘다)
+  // 시계의 AUTO_MS 눈금에 맞춰 시작해, 나란히 놓인 PC 배너 두 개가 같은 순간에 넘어가게 한다 (경수님 10/28)
   useEffect(() => {
     if (!loop || paused) return;
     let id: ReturnType<typeof setInterval> | undefined;
+    const tick = () => {
+      if (Date.now() < holdUntil.current) return;
+      setAnimate(true);
+      setPos((p) => p + 1);
+    };
+    // 다음 눈금이 너무 가까우면(첫 화면 직후) 한 눈금 더 기다린다
+    let wait = AUTO_MS - (Date.now() % AUTO_MS);
+    if (wait < AUTO_MS / 2) wait += AUTO_MS;
     const start = setTimeout(() => {
-      id = setInterval(() => {
-        if (Date.now() < holdUntil.current) return;
-        setAnimate(true);
-        setPos((p) => p + 1);
-      }, AUTO_MS);
-    }, startDelay);
+      tick();
+      id = setInterval(tick, AUTO_MS);
+    }, wait);
     return () => {
       clearTimeout(start);
       clearInterval(id);
     };
-  }, [loop, paused, startDelay]);
+  }, [loop, paused]);
 
   // 가운데 벌을 벗어나면 넘김이 끝난 뒤 같은 배너 자리로 순간 이동
   useEffect(() => {

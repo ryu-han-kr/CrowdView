@@ -6,9 +6,6 @@ import { jsonLd, SITE } from "@/lib/seo";
 import { HomeList, type HomePlace } from "@/components/HomeList";
 import { CategoryIcons } from "@/components/home/CategoryIcons";
 import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
-
-// 나란히 놓인 두 배너가 동시에 넘어가지 않게 오른쪽은 반 박자 늦게
-const AUTO_HALF = 1750;
 import { PhotoRail, type PhotoCardItem } from "@/components/home/PhotoRail";
 import { PlusPromo } from "@/components/home/PlusPromo";
 import { RecentRail } from "@/components/home/RecentRail";
@@ -510,7 +507,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       {/* PC: 배너 두 개를 나란히, 서로 다른 내용 (휴대폰용 배너가 첫 사진을 받으므로 여기는 lazy) */}
       <div className="hidden gap-4 md:grid md:grid-cols-2">
         <HeroCarousel slides={firstBanner} layout="single" eager={false} />
-        <HeroCarousel slides={secondBanner} layout="single" eager={false} startDelay={AUTO_HALF} />
+        <HeroCarousel slides={secondBanner} layout="single" eager={false} />
       </div>
       {seoulScores.length ? (
         <HomeGreeting
