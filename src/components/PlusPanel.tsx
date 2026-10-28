@@ -4,7 +4,7 @@ import Link from "@/i18n/link";
 import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import type { PlusState } from "@/lib/plus";
-import { PLUS } from "@/lib/business";
+import { PLUS, planOf } from "@/lib/business";
 import { cancelPlus, redeemCode, refundPlus } from "@/lib/plus-browser";
 import { ConfirmSheet } from "./ConfirmSheet";
 
@@ -48,7 +48,7 @@ export function PlusPanel() {
       {plus.active ? (
         <>
           <p className="font-bold text-indigo-800">
-            {plus.plan === "pro" ? "CrowdView Pro" : "CrowdView Plus"} ·{" "}
+            {planOf(plus.plan).name} ·{" "}
             {plus.status === "pass"
               ? t("{date}까지 이용", { date: end })
               : plus.status === "canceled"
@@ -78,7 +78,7 @@ export function PlusPanel() {
           {t("Plus 알아보기")} ›
         </Link>
       )}
-      {/* 이용 코드: 결제 없이 Plus·Pro 기간을 받는 코드 (이벤트·테스터·운영자) */}
+      {/* 이용 코드: 결제 없이 Plus·Pro·Max 기간을 받는 코드 (이벤트·테스터·운영자) */}
       {codeOpen ? (
         <form
           className="mt-3 flex gap-2"

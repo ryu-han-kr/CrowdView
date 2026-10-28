@@ -1,5 +1,5 @@
 // 유료 '지금 실제 인원 보기' (경수님 10/28): 누르면 그때만 SK 장소 혼잡도를 불러온다.
-// - 단계(plus·pro)마다 하루·월 횟수 (lib/business PLANS)
+// - 단계(plus·pro·max)마다 하루·월 횟수 (lib/business PLANS)
 // - 같은 장소를 10분 안에 누가 이미 봤으면 SK를 다시 부르지 않고, 횟수도 줄이지 않는다 (공유 캐시)
 // - SK 전체 하루 한도는 lib/skt (기본 + 회원 수 × 10)
 import { kv } from "./cache";

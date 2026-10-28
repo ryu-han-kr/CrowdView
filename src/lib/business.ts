@@ -37,12 +37,18 @@ export const PRIVACY_EFFECTIVE_DATE = "2026-11-02";
  * SK 장소 혼잡도 Basic은 건당 33원(일 한도 100건) → 한 사람이 한 달 내내 다 써도 매출의 약 1/4을 넘지 않게 월 횟수로도 묶는다.
  * 누군가 10분 안에 본 곳은 SK를 다시 부르지 않으니 횟수에서 빼지 않는다 (lib/live-count)
  */
-export type PlanId = "plus" | "pro";
+// 10/28 저녁: Max(월 9,900원) 추가 — 세 단계. Max도 한 달 100회를 다 써야 SK 비용 3,300원(매출의 1/3)
+export type PlanId = "plus" | "pro" | "max";
 export const PLANS = {
   plus: { id: "plus", name: "CrowdView Plus", priceKrw: 3900, periodMonths: 1, liveDaily: 3, liveMonthly: 30, alerts: 30 },
   pro: { id: "pro", name: "CrowdView Pro", priceKrw: 6900, periodMonths: 1, liveDaily: 5, liveMonthly: 60, alerts: 100 },
+  max: { id: "max", name: "CrowdView Max", priceKrw: 9900, periodMonths: 1, liveDaily: 10, liveMonthly: 100, alerts: 300 },
 } as const;
-export const planOf = (id: unknown): (typeof PLANS)[PlanId] => (id === "pro" ? PLANS.pro : PLANS.plus);
+/** 주소·DB·요청에서 온 값을 단계로 (모르는 값은 plus) */
+export const asPlan = (id: unknown): PlanId => (id === "pro" || id === "max" ? id : "plus");
+export const planOf = (id: unknown): (typeof PLANS)[PlanId] => PLANS[asPlan(id)];
+/** 단계 높낮이 (plus 0 < pro 1 < max 2) — 기간을 붙일 때 더 높은 단계로만 바꾼다 */
+export const planRank = (id: unknown): number => ["plus", "pro", "max"].indexOf(asPlan(id));
 
 /** 기본 유료 단계 (예전 코드·문구가 쓰는 이름) */
 export const PLUS = PLANS.plus;

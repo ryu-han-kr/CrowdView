@@ -15,13 +15,18 @@ import { ConfirmSheet } from "./ConfirmSheet";
 const billingEnabled = process.env.NEXT_PUBLIC_PLUS_BILLING !== "off";
 
 /**
- * 유료 시작 버튼: 매달 자동결제(주 버튼) · 1개월 이용권(한 번 결제). plan으로 Plus·Pro를 고른다.
+ * 유료 시작 버튼: 매달 자동결제(주 버튼) · 1개월 이용권(한 번 결제). plan으로 Plus·Pro·Max를 고른다.
  * 로그인 → 토스 카드 등록창(자동결제) 또는 결제창(이용권) → /plus/complete 에서 서버가 첫 달 결제·승인.
  * 자동결제 계약 전(NEXT_PUBLIC_PLUS_BILLING=off)에도 자동결제 안내는 보이고 버튼만 '곧 열려요'로 (토스 자동결제 심사 화면, 경수님 10/28)
  */
-export function PlusCheckoutButton({ className = "", plan = "plus", tone = "light" }: { className?: string; plan?: PlanId; tone?: "light" | "gold" }) {
+export function PlusCheckoutButton({ className = "", plan = "plus", tone = "light" }: { className?: string; plan?: PlanId; tone?: "light" | "gold" | "holo" }) {
   const { t } = useI18n();
-  const solid = tone === "gold" ? "bg-gradient-to-r from-amber-300 to-yellow-200 text-gray-900" : "bg-white text-indigo-700";
+  const solid =
+    tone === "gold"
+      ? "bg-gradient-to-r from-amber-300 to-yellow-200 text-gray-900"
+      : tone === "holo"
+        ? "bg-gradient-to-r from-fuchsia-300 via-violet-200 to-cyan-200 text-gray-900"
+        : "bg-white text-indigo-700";
   if (!checkoutEnabled)
     return (
       <button disabled className={`rounded-2xl py-3 text-sm font-bold ${solid} ${className}`}>
@@ -114,7 +119,7 @@ function Checkout({ className, plan, solid }: { className: string; plan: PlanId;
             t("{price}원 (부가세 포함), 한 번만 결제돼요", { price }),
             t("이용 기간: 결제한 날부터 1개월"),
             t("자동으로 다시 결제되지 않아요. 끝날 때 마이페이지에서 1개월 더 이어서 결제할 수 있어요"),
-            t("결제 후 7일 안에 Plus 기능을 쓰지 않았으면 전액 환불돼요"),
+            t("결제 후 7일 안에 유료 기능을 쓰지 않았으면 전액 환불돼요"),
           ]}
           agree={t("위 내용을 확인했고, 결제에 동의해요")}
           confirmLabel={t("결제하기")}
@@ -131,7 +136,7 @@ function Checkout({ className, plan, solid }: { className: string; plan: PlanId;
             t("오늘 첫 달이 결제되고, 매달 오늘과 같은 날짜에 같은 카드로 자동 결제돼요"),
             t("자동 결제 7일 전에 미리 알려 드려요"),
             t("언제든 마이페이지에서 해지할 수 있고, 해지해도 낸 기간까지는 이용해요"),
-            t("결제 후 7일 안에 Plus 기능을 쓰지 않았으면 전액 환불돼요"),
+            t("결제 후 7일 안에 유료 기능을 쓰지 않았으면 전액 환불돼요"),
           ]}
           agree={t("위 내용을 확인했고, 매달 자동 결제에 동의해요")}
           confirmLabel={t("카드 등록하고 결제하기")}

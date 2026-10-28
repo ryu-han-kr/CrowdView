@@ -1,4 +1,4 @@
-// 이용 코드 입력 (마이페이지). POST { code } → Plus·Pro 기간 반영
+// 이용 코드 입력 (마이페이지). POST { code } → Plus·Pro·Max 기간 반영
 import { NextResponse } from "next/server";
 import { dailyLimit, rateLimit } from "@/lib/ratelimit";
 import { errorJson, requireUser, unauthorized, withPlusCookie } from "@/lib/plus-http";

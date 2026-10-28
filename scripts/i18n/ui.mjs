@@ -2822,4 +2822,16 @@ export default {
   "이미 쓴 코드예요": ["You've already used this code","すでに使ったコードです","您已使用过此码","您已使用過此碼"],
   "사용 횟수가 끝난 코드예요": ["This code has been fully used","利用回数が終了したコードです","此码使用次数已满","此碼使用次數已滿"],
   "코드를 입력해 주세요": ["Please enter a code","コードを入力してください","请输入使用码","請輸入使用碼"],
+  // ── Max 단계·여행 패스 세 등급 (10/28 저녁)
+  "혼잡도와 예측은 모두 무료예요. 지금 실제 인원까지 보고 싶다면 Plus·Pro·Max 중에 골라 보세요.": ["Crowd levels and forecasts are all free. Want live headcounts too? Pick Plus, Pro or Max.","混雑度と予測はすべて無料。いまの実際の人出まで見たいならPlus・Pro・Maxから選んでください。","拥挤度和预测全部免费。想看实时真实人数，请在Plus、Pro、Max中选择。","擁擠度和預測全部免費。想看即時真實人數，請在Plus、Pro、Max中選擇。"],
+  "추천": ["Recommended","おすすめ","推荐","推薦"],
+  "Pro 기능 전부 + 알림 {n}개": ["Everything in Pro + {n} alerts","Pro機能すべて＋通知{n}件","Pro全部功能 + {n}个提醒","Pro全部功能 + {n}個提醒"],
+  "문의 먼저 답해 드려요": ["Priority support","お問い合わせに優先対応","优先回复咨询","優先回覆諮詢"],
+  "무료·Plus·Pro·Max 기능 비교": ["Free · Plus · Pro · Max feature comparison","無料・Plus・Pro・Max 機能比較","免费·Plus·Pro·Max 功能比较","免費·Plus·Pro·Max 功能比較"],
+  "Plus는 월 {plus}원, Pro는 월 {pro}원, Max는 월 {max}원이에요 (부가세 포함).": ["Plus is KRW {plus}/month, Pro is KRW {pro}/month and Max is KRW {max}/month (VAT incl.).","Plusは月{plus}ウォン、Proは月{pro}ウォン、Maxは月{max}ウォンです（税込）。","Plus每月{plus}韩元，Pro每月{pro}韩元，Max每月{max}韩元（含税）。","Plus每月{plus}韓元，Pro每月{pro}韓元，Max每月{max}韓元（含稅）。"],
+  "SK텔레콤 실측 · 유료 회원 전용": ["SK Telecom measured · Members only","SKテレコム実測・有料会員限定","SK电讯实测 · 仅限付费会员","SK電訊實測 · 僅限付費會員"],
+  "유료 회원 전용이에요": ["For paid members only","有料会員限定です","仅限付费会员","僅限付費會員"],
+  "자동으로 다시 결제되지 않아요. 고른 등급의 기능을 패스 기간 동안 써요.": ["No automatic renewal. Use your chosen tier's features for the pass period.","自動更新なし。パス期間中は選んだプランの機能を使えます。","不会自动续费。通行证期间可使用所选等级的功能。","不會自動續費。通行證期間可使用所選等級的功能。"],
+  "Pro 기능 전부 + 알림 {n}개 · 문의 먼저": ["Everything in Pro + {n} alerts · Priority support","Pro機能すべて＋通知{n}件・優先対応","Pro全部功能 + {n}个提醒 · 优先回复","Pro全部功能 + {n}個提醒 · 優先回覆"],
+  "결제 후 7일 안에 유료 기능을 쓰지 않았으면 전액 환불돼요": ["Full refund if you don't use paid features within 7 days of payment","決済後7日以内に有料機能を使っていなければ全額返金","付款后7天内未使用付费功能可全额退款","付款後7天內未使用付費功能可全額退款"],
 };

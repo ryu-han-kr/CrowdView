@@ -2,7 +2,7 @@
 // 사업자 정보는 lib/business.ts 에서 가져온다. 법률 검토 전 초안이므로 출시 전에 한 번 검토받는다.
 import { BUSINESS, LEGAL_EFFECTIVE_DATE, PLANS, PLUS, PRIVACY_EFFECTIVE_DATE, PRIVACY_NOTICE_DATE } from "./business";
 
-/** 10/28 개정: Pro 단계·해외 여행 패스(Paddle)·이용 코드 (7일 전 공지, 이용자에게 불리하지 않은 추가) */
+/** 10/28 개정: Pro·Max 단계·해외 여행 패스(Paddle)·이용 코드 (7일 전 공지, 이용자에게 불리하지 않은 추가) */
 export const PLANS_NOTICE_DATE = "2026-10-28";
 export const PLANS_EFFECTIVE_DATE = "2026-11-04";
 
@@ -32,8 +32,8 @@ export const TERMS: LegalDoc = {
   revision: {
     noticeDate: PLANS_NOTICE_DATE,
     changes: [
-      `제2조·제6조: 유료서비스에 ${PLANS.pro.name}(월 ${PLANS.pro.priceKrw.toLocaleString()}원) 추가, 단계별 '지금 실제 인원 보기' 횟수`,
-      "제6조의2 신설: 해외 결제 여행 패스(7일·30일, Paddle이 판매자로 판매·결제·세금·환불 처리)",
+      `제2조·제6조: 유료서비스에 ${PLANS.pro.name}(월 ${PLANS.pro.priceKrw.toLocaleString()}원)·${PLANS.max.name}(월 ${PLANS.max.priceKrw.toLocaleString()}원) 추가, 단계별 '지금 실제 인원 보기' 횟수`,
+      "제6조의2 신설: 해외 결제 여행 패스(Plus·Pro·Max 단계별 7일·30일, Paddle이 판매자로 판매·결제·세금·환불 처리)",
       "제6조의3 신설: 이용 코드(결제 없이 정해진 기간 동안 유료서비스 이용)",
     ],
   },
@@ -49,7 +49,7 @@ export const TERMS: LegalDoc = {
       body: [
         `- "이용자"는 이 약관에 따라 서비스를 이용하는 회원과 비회원을 말합니다.`,
         `- "회원"은 카카오·네이버·구글 계정으로 로그인해 계정을 만든 이용자를 말합니다.`,
-        `- "유료서비스"는 회원이 돈을 내고 이용하는 ${PLANS.plus.name}·${PLANS.pro.name}과 여행 패스를 말합니다.`,
+        `- "유료서비스"는 회원이 돈을 내고 이용하는 ${PLANS.plus.name}·${PLANS.pro.name}·${PLANS.max.name}과 여행 패스를 말합니다.`,
         `- "혼잡도 정보"는 공공데이터·통신사 데이터·예측 모델로 만든 장소별 혼잡 단계, 추정 인구, 예측값을 말합니다.`,
       ],
     },
@@ -82,8 +82,8 @@ export const TERMS: LegalDoc = {
     {
       title: "제6조 (유료서비스와 결제)",
       body: [
-        `${PLUS.name}의 이용 요금은 1개월 ${price}, ${PLANS.pro.name}은 월 ${PLANS.pro.priceKrw.toLocaleString()}원(부가세 포함)이며, 회원은 다음 중 하나를 고를 수 있습니다.`,
-        `- 단계별 '지금 실제 인원 보기'(SK텔레콤 장소 혼잡도) 횟수: Plus 하루 ${PLANS.plus.liveDaily}회·월 ${PLANS.plus.liveMonthly}회, Pro 하루 ${PLANS.pro.liveDaily}회·월 ${PLANS.pro.liveMonthly}회. 다른 회원이 10분 안에 조회한 장소는 횟수에서 빼지 않습니다.`,
+        `${PLUS.name}의 이용 요금은 1개월 ${price}, ${PLANS.pro.name}은 월 ${PLANS.pro.priceKrw.toLocaleString()}원, ${PLANS.max.name}은 월 ${PLANS.max.priceKrw.toLocaleString()}원(부가세 포함)이며, 회원은 다음 중 하나를 고를 수 있습니다.`,
+        `- 단계별 '지금 실제 인원 보기'(SK텔레콤 장소 혼잡도) 횟수: Plus 하루 ${PLANS.plus.liveDaily}회·월 ${PLANS.plus.liveMonthly}회, Pro 하루 ${PLANS.pro.liveDaily}회·월 ${PLANS.pro.liveMonthly}회, Max 하루 ${PLANS.max.liveDaily}회·월 ${PLANS.max.liveMonthly}회. 다른 회원이 10분 안에 조회한 장소는 횟수에서 빼지 않습니다.`,
         "- 1개월 이용권: 한 번 결제하고 결제한 날부터 1개월 동안 이용하며, 자동으로 다시 결제되지 않습니다. 이용 중에 다시 결제하면 남은 기간 뒤로 1개월이 더해집니다.",
         "- 매달 자동결제(회사가 제공하는 경우): 결제한 날부터 1개월 단위로 매달 같은 날 등록한 카드로 자동 결제됩니다.",
         "결제는 회사가 지정한 결제대행사(토스페이먼츠)를 통해 신용카드·체크카드 등으로 합니다. 회사는 카드번호를 저장하지 않습니다.",
@@ -95,7 +95,7 @@ export const TERMS: LegalDoc = {
     {
       title: "제6조의2 (해외 결제 여행 패스)",
       body: [
-        "해외 결제를 원하는 회원은 여행 패스(7일 USD 3.99, 30일 USD 6.99, 한 번 결제, 자동 갱신 없음)를 살 수 있으며, 패스 기간 동안 Pro 기능을 이용합니다.",
+        "해외 결제를 원하는 회원은 여행 패스(한 번 결제, 자동 갱신 없음)를 살 수 있으며, 패스 기간 동안 고른 단계의 기능을 이용합니다: Plus 7일 USD 2.99·30일 USD 5.99, Pro 7일 USD 3.99·30일 USD 7.99, Max 7일 USD 5.99·30일 USD 11.99 (나라에 따라 현지 통화로 표시될 수 있음).",
         "여행 패스의 판매·결제·세금·환불은 Paddle.com Market Limited(이하 \"Paddle\")가 판매자(Merchant of Record)로서 처리하며, 결제에는 Paddle의 구매 약관이 함께 적용됩니다.",
       ],
     },
@@ -141,7 +141,7 @@ export const TERMS: LegalDoc = {
       title: "제11조 (분쟁 해결)",
       body: ["이 약관은 대한민국 법을 따르며, 서비스와 관련한 분쟁은 민사소송법에 따른 관할 법원에서 해결합니다.", `문의: ${B.email} / ${B.phone}`],
     },
-    { title: "부칙", body: [`이 약관은 ${PLANS_EFFECTIVE_DATE}부터 시행합니다.`, `- ${LEGAL_EFFECTIVE_DATE} 제정`, `- ${PLANS_EFFECTIVE_DATE} 개정 (${PLANS_NOTICE_DATE} 공지): Pro·여행 패스·이용 코드`] },
+    { title: "부칙", body: [`이 약관은 ${PLANS_EFFECTIVE_DATE}부터 시행합니다.`, `- ${LEGAL_EFFECTIVE_DATE} 제정`, `- ${PLANS_EFFECTIVE_DATE} 개정 (${PLANS_NOTICE_DATE} 공지): Pro·Max·여행 패스·이용 코드`] },
   ],
 };
 
@@ -150,13 +150,13 @@ export const REFUND: LegalDoc = {
   effectiveDate: PLANS_EFFECTIVE_DATE,
   revision: {
     noticeDate: PLANS_NOTICE_DATE,
-    changes: ["6. 여행 패스(Paddle 결제)·이용 코드의 환불 신설", "1·2: Pro(월 6,900원)도 같은 기준으로 환불"],
+    changes: ["6. 여행 패스(Paddle 결제)·이용 코드의 환불 신설", "1·2: Pro(월 6,900원)·Max(월 9,900원)도 같은 기준으로 환불"],
   },
   sections: [
     {
       title: "1. 결제 후 7일 이내 (청약철회)",
       body: [
-        `${PLUS.name}·${PLANS.pro.name}을 결제한 날부터 7일 이내에 유료 기능(혼잡 알림 받기 등)을 한 번도 쓰지 않았다면 전액 환불해 드립니다.`,
+        `${PLUS.name}·${PLANS.pro.name}·${PLANS.max.name}을 결제한 날부터 7일 이내에 유료 기능(혼잡 알림 받기 등)을 한 번도 쓰지 않았다면 전액 환불해 드립니다.`,
         "7일 이내라도 유료 기능을 이미 쓴 경우에는 아래 2번처럼 이용한 날만큼 빼고 환불합니다.",
       ],
     },
@@ -192,7 +192,7 @@ export const REFUND: LegalDoc = {
         "이용 코드로 받은 기간은 돈을 내지 않았으므로 환불 대상이 아닙니다.",
       ],
     },
-    { title: "부칙", body: [`이 환불정책은 ${PLANS_EFFECTIVE_DATE}부터 시행합니다.`, `- ${LEGAL_EFFECTIVE_DATE} 제정`, `- ${PLANS_EFFECTIVE_DATE} 개정 (${PLANS_NOTICE_DATE} 공지): Pro·여행 패스·이용 코드`] },
+    { title: "부칙", body: [`이 환불정책은 ${PLANS_EFFECTIVE_DATE}부터 시행합니다.`, `- ${LEGAL_EFFECTIVE_DATE} 제정`, `- ${PLANS_EFFECTIVE_DATE} 개정 (${PLANS_NOTICE_DATE} 공지): Pro·Max·여행 패스·이용 코드`] },
   ],
 };
 

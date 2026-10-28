@@ -1,13 +1,9 @@
-// 해외 결제 (Paddle, 대신 파는 결제사 MoR): 외국인 '여행 패스' 7일·30일 한 번 결제 (경수님 10/28).
+// 해외 결제 (Paddle, 대신 파는 결제사 MoR): 외국인 '여행 패스' Plus·Pro·Max × 7일·30일 한 번 결제 (경수님 10/28).
 // 결제창은 브라우저의 Paddle.js(클라이언트 토큰), 결제 완료는 Paddle 웹훅(transaction.completed)으로만 판단한다.
 // 웹훅은 Paddle-Signature(ts·h1 = HMAC-SHA256(ts:본문, PADDLE_WEBHOOK_SECRET))로 진짜인지 확인
 import crypto from "node:crypto";
-
-/** 가격 id → 패스 일수 (Paddle 카탈로그 'CrowdView Travel Pass', 10/28 생성) */
-export const PASS_PRICES: Record<string, { days: number; label: string }> = {
-  [process.env.NEXT_PUBLIC_PADDLE_PRICE_7D ?? "pri_01m608766sry3nhj5y6eck3q3b"]: { days: 7, label: "7-day Travel Pass" },
-  [process.env.NEXT_PUBLIC_PADDLE_PRICE_30D ?? "pri_01m60881fypvhg2pryp2rm2j8q"]: { days: 30, label: "30-day Travel Pass" },
-};
+import type { PlanId } from "./business";
+import { passByPrice } from "./passes";
 
 export const paddleWebhookEnabled = !!process.env.PADDLE_WEBHOOK_SECRET;
 
@@ -32,11 +28,11 @@ export interface PaddleTransaction {
   currency_code?: string;
 }
 
-/** 결제 완료 알림에서 회원·패스 일수 꺼내기 (모르는 가격·회원 없음이면 undefined) */
-export function passOf(tx: PaddleTransaction): { userId: string; days: number; priceId: string } | undefined {
+/** 결제 완료 알림에서 회원·단계·패스 일수 꺼내기 (모르는 가격·회원 없음이면 undefined) */
+export function passOf(tx: PaddleTransaction): { userId: string; plan: PlanId; days: number; priceId: string } | undefined {
   const userId = tx.custom_data?.userId;
   const priceId = tx.items?.[0]?.price?.id ?? tx.items?.[0]?.price_id;
-  const pass = priceId ? PASS_PRICES[priceId] : undefined;
+  const pass = priceId ? passByPrice(priceId) : undefined;
   if (!userId || !priceId || !pass) return undefined;
-  return { userId, days: pass.days, priceId };
+  return { userId, plan: pass.plan, days: pass.days, priceId };
 }

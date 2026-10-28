@@ -22,7 +22,7 @@ export const TERMS_EN: LegalDoc = {
       body: [
         `- "Users" means members and non-members who use the Service.`,
         `- "Members" means users who sign in with a Kakao, Naver or Google account.`,
-        `- "Paid Services" means ${PLANS.plus.name}, ${PLANS.pro.name} and the Travel Pass.`,
+        `- "Paid Services" means ${PLANS.plus.name}, ${PLANS.pro.name}, ${PLANS.max.name} and the Travel Pass.`,
         `- "Crowd information" means crowd levels, estimated headcounts and forecasts for places, produced from public data, telecom data and our forecasting models.`,
       ],
     },
@@ -50,17 +50,17 @@ export const TERMS_EN: LegalDoc = {
       ],
     },
     {
-      title: "6. Paid Services in Korea (Plus · Pro)",
+      title: "6. Paid Services in Korea (Plus · Pro · Max)",
       body: [
-        `${PLANS.plus.name}: ${krw(PLANS.plus.priceKrw)} per month; ${PLANS.pro.name}: ${krw(PLANS.pro.priceKrw)} per month (VAT included). You can choose a one-time 1-month pass or monthly auto-renewal.`,
-        `Live crowd count checks: Plus ${PLANS.plus.liveDaily}/day and ${PLANS.plus.liveMonthly}/month, Pro ${PLANS.pro.liveDaily}/day and ${PLANS.pro.liveMonthly}/month. A place another member checked within the last 10 minutes does not count.`,
+        `${PLANS.plus.name}: ${krw(PLANS.plus.priceKrw)} per month; ${PLANS.pro.name}: ${krw(PLANS.pro.priceKrw)} per month; ${PLANS.max.name}: ${krw(PLANS.max.priceKrw)} per month (VAT included). You can choose a one-time 1-month pass or monthly auto-renewal.`,
+        `Live crowd count checks: Plus ${PLANS.plus.liveDaily}/day and ${PLANS.plus.liveMonthly}/month, Pro ${PLANS.pro.liveDaily}/day and ${PLANS.pro.liveMonthly}/month, Max ${PLANS.max.liveDaily}/day and ${PLANS.max.liveMonthly}/month. A place another member checked within the last 10 minutes does not count.`,
         "Korean card payments are processed by Toss Payments. We never store card numbers. Monthly auto-renewal can be cancelled at any time in My page and stays active until the end of the paid period.",
       ],
     },
     {
       title: "7. Travel Pass (international payments)",
       body: [
-        "International visitors can buy a Travel Pass: 7-day pass USD 3.99 or 30-day pass USD 6.99 (prices may be shown in your local currency). It is a one-time payment with no automatic renewal and unlocks Pro features for the pass period.",
+        "International visitors can buy a Travel Pass in three tiers: Plus (7 days USD 2.99, 30 days USD 5.99), Pro (7 days USD 3.99, 30 days USD 7.99) or Max (7 days USD 5.99, 30 days USD 11.99). Prices may be shown in your local currency. It is a one-time payment with no automatic renewal and unlocks the chosen tier's features for the pass period.",
         "Our order process is conducted by our online reseller Paddle.com. Paddle.com is the Merchant of Record for all our Travel Pass orders. Paddle provides all customer service inquiries and handles returns. Paddle's Buyer Terms apply to your purchase.",
       ],
     },
@@ -110,7 +110,7 @@ export const REFUND_EN: LegalDoc = {
       body: ["If you have not used any paid feature within 7 days of payment, you get a full refund. If you have already used paid features, we refund the unused days as described below."],
     },
     {
-      title: "2. Cancelling during use (Plus · Pro)",
+      title: "2. Cancelling during use (Plus · Pro · Max)",
       body: [
         "Monthly auto-renewal can be cancelled at any time in My page; you keep access until the end of the paid period.",
         "For a refund of the remaining period, contact us. We refund the amount paid minus the days used (amount ÷ 30 × days used) and a 10% cancellation fee.",
