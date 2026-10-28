@@ -2812,4 +2812,14 @@ export default {
   "{n}일 패스": ["{n}-day pass","{n}日パス","{n}天通行证","{n}天通行證"],
   "곧 열려요": ["Coming soon","まもなく","即将开放","即將開放"],
   "결제는 Paddle이 판매자로 처리해요(카드·PayPal 등, 나라별 통화와 세금 포함). 결제 후 7일 안에 쓰지 않았다면 전액 환불돼요.": ["Payments are processed by Paddle as merchant of record (cards, PayPal and more, local currency and taxes included). Full refund if unused within 7 days.","決済はPaddleが販売者として処理します（カード・PayPalなど、各国通貨・税込）。7日以内に未使用なら全額返金。","付款由Paddle作为销售方处理（银行卡·PayPal等，含当地货币与税费）。7天内未使用可全额退款。","付款由Paddle作為銷售方處理（信用卡·PayPal等，含當地貨幣與稅費）。7天內未使用可全額退款。"],
+  // ── 이용 코드 (10/28)
+  "{date}까지 이용": ["Active until {date}","{date}まで利用","使用至 {date}","使用至 {date}"],
+  "이용 코드 입력": ["Enter access code","利用コードを入力","输入使用码","輸入使用碼"],
+  "적용": ["Apply","適用","应用","套用"],
+  "이용 코드가 있어요": ["I have an access code","利用コードがあります","我有使用码","我有使用碼"],
+  "코드가 적용됐어요": ["Code applied","コードを適用しました","使用码已应用","使用碼已套用"],
+  "없는 코드예요. 다시 확인해 주세요": ["Invalid code. Please check again","無効なコードです。もう一度ご確認ください","无效的使用码，请再确认","無效的使用碼，請再確認"],
+  "이미 쓴 코드예요": ["You've already used this code","すでに使ったコードです","您已使用过此码","您已使用過此碼"],
+  "사용 횟수가 끝난 코드예요": ["This code has been fully used","利用回数が終了したコードです","此码使用次数已满","此碼使用次數已滿"],
+  "코드를 입력해 주세요": ["Please enter a code","コードを入力してください","请输入使用码","請輸入使用碼"],
 };

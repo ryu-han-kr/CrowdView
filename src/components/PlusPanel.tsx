@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import type { PlusState } from "@/lib/plus";
 import { PLUS } from "@/lib/business";
-import { cancelPlus, refundPlus } from "@/lib/plus-browser";
+import { cancelPlus, redeemCode, refundPlus } from "@/lib/plus-browser";
 import { ConfirmSheet } from "./ConfirmSheet";
 
 /** 마이페이지 계정 칸 안의 Plus 상태·해지·환불 */
@@ -16,6 +16,10 @@ export function PlusPanel() {
   const [error, setError] = useState<string | null>(null);
   // 해지·환불 전 확인 창
   const [asking, setAsking] = useState<null | "cancel" | "refund">(null);
+  // 이용 코드 입력 (경수님 10/28)
+  const [codeOpen, setCodeOpen] = useState(false);
+  const [code, setCode] = useState("");
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
     fetch("/api/me")
@@ -44,9 +48,9 @@ export function PlusPanel() {
       {plus.active ? (
         <>
           <p className="font-bold text-indigo-800">
-            CrowdView Plus ·{" "}
+            {plus.plan === "pro" ? "CrowdView Pro" : "CrowdView Plus"} ·{" "}
             {plus.status === "pass"
-              ? t("1개월 이용권 ({date}까지)", { date: end })
+              ? t("{date}까지 이용", { date: end })
               : plus.status === "canceled"
                 ? t("해지됨 ({date}까지 이용)", { date: end })
                 : t("다음 결제일 {date}", { date: end })}
@@ -74,6 +78,34 @@ export function PlusPanel() {
           {t("Plus 알아보기")} ›
         </Link>
       )}
+      {/* 이용 코드: 결제 없이 Plus·Pro 기간을 받는 코드 (이벤트·테스터·운영자) */}
+      {codeOpen ? (
+        <form
+          className="mt-3 flex gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (code.trim()) run(() => redeemCode(code)).then(() => setDone(true));
+          }}
+        >
+          <input
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder={t("이용 코드 입력")}
+            aria-label={t("이용 코드 입력")}
+            autoCapitalize="characters"
+            autoComplete="off"
+            className="min-w-0 flex-1 rounded-xl border border-indigo-200 bg-white px-3 py-2 text-sm uppercase outline-none focus:border-indigo-500"
+          />
+          <button disabled={busy || !code.trim()} className="shrink-0 rounded-xl bg-indigo-600 px-3.5 py-2 text-sm font-bold text-white disabled:opacity-60">
+            {t("적용")}
+          </button>
+        </form>
+      ) : (
+        <button type="button" onClick={() => setCodeOpen(true)} className="mt-2 block text-xs font-semibold text-indigo-700 underline">
+          {t("이용 코드가 있어요")}
+        </button>
+      )}
+      {done && !error && <p className="mt-2 text-xs font-semibold text-emerald-700">{t("코드가 적용됐어요")}</p>}
       {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
       {asking === "cancel" && (
         <ConfirmSheet

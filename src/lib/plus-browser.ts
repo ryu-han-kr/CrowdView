@@ -17,6 +17,7 @@ async function post<T>(url: string, body?: unknown): Promise<T> {
 export const subscribePlus = (authKey: string, customerKey: string, plan?: string) =>
   post<{ plus: PlusState }>("/api/plus/subscribe", { authKey, customerKey, plan });
 export const cancelPlus = () => post<{ plus: PlusState }>("/api/plus/cancel");
+export const redeemCode = (code: string) => post<{ plus: PlusState }>("/api/plus/redeem", { code });
 export const refundPlus = () => post<{ plus: PlusState }>("/api/plus/refund");
 export const confirmPassPayment = (paymentKey: string, orderId: string, amount: number) =>
   post<{ plus: PlusState }>("/api/plus/pass", { paymentKey, orderId, amount });

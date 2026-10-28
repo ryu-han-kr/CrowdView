@@ -82,11 +82,12 @@ export async function getPlus(userId: string): Promise<PlusState> {
   const s = await sub(userId);
   if (!s) return { status: "none", active: false, refundable: false };
   const active = s.status !== "expired" && s.current_period_end > new Date();
-  const [last] = await sql<{ paid_at: Date; first_used_at: Date | null }>(
-    "select paid_at, first_used_at from payment where user_id = $1 and status = 'paid' order by paid_at desc limit 1",
+  const [last] = await sql<{ paid_at: Date; first_used_at: Date | null; payment_key: string | null }>(
+    "select paid_at, first_used_at, payment_key from payment where user_id = $1 and status = 'paid' order by paid_at desc limit 1",
     [userId],
   );
-  const refundable = active && !!last && !last.first_used_at && Date.now() - last.paid_at.getTime() < 7 * 86_400_000;
+  // 토스로 결제한 것만 여기서 환불 (이용 코드는 돈이 없고, Paddle 패스는 Paddle에서 환불)
+  const refundable = active && !!last?.payment_key && !last.first_used_at && Date.now() - last.paid_at.getTime() < 7 * 86_400_000;
   return { status: s.status, active, periodEnd: s.current_period_end.toISOString(), refundable, plan: s.plan ?? "plus" };
 }
 
@@ -306,6 +307,14 @@ export async function refundWithin7Days(userId: string): Promise<PlusState> {
  * amount는 그 통화의 가장 작은 단위(센트 등), 통화·원본은 raw에
  */
 export async function grantTravelPass(userId: string, txId: string, days: number, amountMinor: number, raw: unknown): Promise<PlusState> {
+  return grantDays(userId, txId, days, "pro", amountMinor, raw);
+}
+
+/**
+ * 결제 없이·다른 결제사로 받은 기간을 붙인다 (Paddle 여행 패스, 이용 코드). id가 같은 기록은 한 번만 반영.
+ * 이용 중이면 남은 기간 뒤로 이어 붙이고, 더 높은 단계(pro)로만 바꾼다
+ */
+export async function grantDays(userId: string, id: string, days: number, plan: PlanId, amount: number, raw: unknown): Promise<PlusState> {
   await planColumns();
   const cur = await getPlus(userId);
   const start = new Date();
@@ -313,18 +322,20 @@ export async function grantTravelPass(userId: string, txId: string, days: number
   const end = new Date(base.getTime() + days * 86_400_000);
   const claimed = await sql(
     `insert into payment (id, user_id, amount, status, paid_at, period_start, period_end, raw, plan)
-     values ($1, $2, $3, 'paid', now(), $4, $5, $6, 'pro')
+     values ($1, $2, $3, 'paid', now(), $4, $5, $6, $7)
      on conflict (id) do nothing returning id`,
-    [txId, userId, amountMinor, base, end, JSON.stringify(raw)],
+    [id, userId, amount, base, end, JSON.stringify(raw), plan],
   );
   if (!claimed.length) return getPlus(userId);
   // 자동결제로 이용 중이면 그 기간은 그대로 두고 결제 기록만 (두 번 내지 않게 화면에서 막지만, 혹시 겹치면 기간만 늘린다)
   await sql(
-    `insert into plus_subscription (user_id, status, current_period_end, plan) values ($1, 'pass', $2, 'pro')
+    `insert into plus_subscription (user_id, status, current_period_end, plan) values ($1, 'pass', $2, $3)
      on conflict (user_id) do update set
        status = case when plus_subscription.status = 'active' then 'active' else 'pass' end,
-       current_period_end = $2, plan = 'pro', canceled_at = null, updated_at = now()`,
-    [userId, end],
+       current_period_end = $2,
+       plan = case when $3 = 'pro' or plus_subscription.status = 'expired' then $3 else plus_subscription.plan end,
+       canceled_at = null, updated_at = now()`,
+    [userId, end, plan],
   );
   return getPlus(userId);
 }
