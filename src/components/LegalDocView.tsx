@@ -11,7 +11,7 @@ export function LegalDocView({ doc, lang }: { doc: LegalDoc; lang: Lang }) {
       <article className="mx-auto max-w-3xl">
         <h1 className="text-2xl font-bold md:text-3xl">{t(doc.title)}</h1>
         <p className="mt-1 text-xs text-gray-500">{t("시행일 {date}", { date: doc.effectiveDate ?? LEGAL_EFFECTIVE_DATE })}</p>
-        {doc.revision && (
+        {doc.revision && doc.lang !== "en" && (
           <section lang="ko" className="mt-4 rounded-2xl bg-blue-50 px-4 py-3 text-sm text-blue-900">
             <h2 className="font-bold">
               개정 안내 · {doc.revision.noticeDate} 공지, {doc.effectiveDate} 시행
@@ -26,11 +26,11 @@ export function LegalDocView({ doc, lang }: { doc: LegalDoc; lang: Lang }) {
         )}
         {lang !== "ko" && (
           <p className="mt-3 rounded-2xl bg-amber-50 px-4 py-3 text-xs text-amber-800">
-            {t("이 문서는 한국어 원문이 기준이에요. 번역은 제공하지 않아요.")}
+            {doc.lang === "en" ? "This is an English translation for reference. The Korean original prevails." : t("이 문서는 한국어 원문이 기준이에요. 번역은 제공하지 않아요.")}
           </p>
         )}
         {doc.sections.map((s) => (
-          <section key={s.title} lang="ko" className="mt-7">
+          <section key={s.title} lang={doc.lang ?? "ko"} className="mt-7">
             <h2 className="text-base font-bold">{s.title}</h2>
             <div className="mt-2 space-y-1.5 text-sm leading-relaxed text-gray-700">
               {s.body.map((p, i) =>

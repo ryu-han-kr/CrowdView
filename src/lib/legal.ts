@@ -1,6 +1,10 @@
 // 이용약관·개인정보처리방침·환불정책 본문 (한국어 원문이 기준).
 // 사업자 정보는 lib/business.ts 에서 가져온다. 법률 검토 전 초안이므로 출시 전에 한 번 검토받는다.
-import { BUSINESS, LEGAL_EFFECTIVE_DATE, PLUS, PRIVACY_EFFECTIVE_DATE, PRIVACY_NOTICE_DATE } from "./business";
+import { BUSINESS, LEGAL_EFFECTIVE_DATE, PLANS, PLUS, PRIVACY_EFFECTIVE_DATE, PRIVACY_NOTICE_DATE } from "./business";
+
+/** 10/28 개정: Pro 단계·해외 여행 패스(Paddle)·이용 코드 (7일 전 공지, 이용자에게 불리하지 않은 추가) */
+export const PLANS_NOTICE_DATE = "2026-10-28";
+export const PLANS_EFFECTIVE_DATE = "2026-11-04";
 
 export interface LegalSection {
   title: string;
@@ -14,6 +18,8 @@ export interface LegalDoc {
   effectiveDate?: string;
   /** 개정 안내 (공지일·바뀌는 내용). 시행 뒤에도 개정 이력으로 남긴다 */
   revision?: { noticeDate: string; changes: string[] };
+  /** 본문 언어 (없으면 한국어 원문). 번역본이면 '원문이 기준' 안내를 붙인다 */
+  lang?: "ko" | "en";
   sections: LegalSection[];
 }
 
@@ -22,6 +28,15 @@ const B = BUSINESS;
 
 export const TERMS: LegalDoc = {
   title: "이용약관",
+  effectiveDate: PLANS_EFFECTIVE_DATE,
+  revision: {
+    noticeDate: PLANS_NOTICE_DATE,
+    changes: [
+      `제2조·제6조: 유료서비스에 ${PLANS.pro.name}(월 ${PLANS.pro.priceKrw.toLocaleString()}원) 추가, 단계별 '지금 실제 인원 보기' 횟수`,
+      "제6조의2 신설: 해외 결제 여행 패스(7일·30일, Paddle이 판매자로 판매·결제·세금·환불 처리)",
+      "제6조의3 신설: 이용 코드(결제 없이 정해진 기간 동안 유료서비스 이용)",
+    ],
+  },
   sections: [
     {
       title: "제1조 (목적)",
@@ -34,7 +49,7 @@ export const TERMS: LegalDoc = {
       body: [
         `- "이용자"는 이 약관에 따라 서비스를 이용하는 회원과 비회원을 말합니다.`,
         `- "회원"은 카카오·네이버·구글 계정으로 로그인해 계정을 만든 이용자를 말합니다.`,
-        `- "유료서비스"는 회원이 돈을 내고 이용하는 ${PLUS.name}을 말합니다.`,
+        `- "유료서비스"는 회원이 돈을 내고 이용하는 ${PLANS.plus.name}·${PLANS.pro.name}과 여행 패스를 말합니다.`,
         `- "혼잡도 정보"는 공공데이터·통신사 데이터·예측 모델로 만든 장소별 혼잡 단계, 추정 인구, 예측값을 말합니다.`,
       ],
     },
@@ -67,13 +82,28 @@ export const TERMS: LegalDoc = {
     {
       title: "제6조 (유료서비스와 결제)",
       body: [
-        `${PLUS.name}의 이용 요금은 1개월 ${price}이며, 회원은 다음 중 하나를 고를 수 있습니다.`,
+        `${PLUS.name}의 이용 요금은 1개월 ${price}, ${PLANS.pro.name}은 월 ${PLANS.pro.priceKrw.toLocaleString()}원(부가세 포함)이며, 회원은 다음 중 하나를 고를 수 있습니다.`,
+        `- 단계별 '지금 실제 인원 보기'(SK텔레콤 장소 혼잡도) 횟수: Plus 하루 ${PLANS.plus.liveDaily}회·월 ${PLANS.plus.liveMonthly}회, Pro 하루 ${PLANS.pro.liveDaily}회·월 ${PLANS.pro.liveMonthly}회. 다른 회원이 10분 안에 조회한 장소는 횟수에서 빼지 않습니다.`,
         "- 1개월 이용권: 한 번 결제하고 결제한 날부터 1개월 동안 이용하며, 자동으로 다시 결제되지 않습니다. 이용 중에 다시 결제하면 남은 기간 뒤로 1개월이 더해집니다.",
         "- 매달 자동결제(회사가 제공하는 경우): 결제한 날부터 1개월 단위로 매달 같은 날 등록한 카드로 자동 결제됩니다.",
         "결제는 회사가 지정한 결제대행사(토스페이먼츠)를 통해 신용카드·체크카드 등으로 합니다. 회사는 카드번호를 저장하지 않습니다.",
         "자동결제 회원은 언제든지 마이페이지에서 정기결제를 해지할 수 있으며, 해지하면 다음 결제일부터 결제되지 않고 이미 결제한 기간이 끝날 때까지 이용할 수 있습니다.",
         "요금을 바꿀 때는 30일 전에 알리며, 바뀐 요금은 그 이후 결제분부터 적용합니다.",
         "청약철회와 환불은 환불정책을 따릅니다.",
+      ],
+    },
+    {
+      title: "제6조의2 (해외 결제 여행 패스)",
+      body: [
+        "해외 결제를 원하는 회원은 여행 패스(7일 USD 3.99, 30일 USD 6.99, 한 번 결제, 자동 갱신 없음)를 살 수 있으며, 패스 기간 동안 Pro 기능을 이용합니다.",
+        "여행 패스의 판매·결제·세금·환불은 Paddle.com Market Limited(이하 \"Paddle\")가 판매자(Merchant of Record)로서 처리하며, 결제에는 Paddle의 구매 약관이 함께 적용됩니다.",
+      ],
+    },
+    {
+      title: "제6조의3 (이용 코드)",
+      body: [
+        "회사는 행사·체험·제휴 등의 목적으로 이용 코드를 발급할 수 있습니다. 회원은 마이페이지에 코드를 입력하면 코드에 정해진 단계와 기간 동안 유료서비스를 이용합니다.",
+        "이용 코드는 돈으로 바꾸거나 환불할 수 없고, 한 회원은 같은 코드를 한 번만 쓸 수 있습니다.",
       ],
     },
     {
@@ -111,17 +141,22 @@ export const TERMS: LegalDoc = {
       title: "제11조 (분쟁 해결)",
       body: ["이 약관은 대한민국 법을 따르며, 서비스와 관련한 분쟁은 민사소송법에 따른 관할 법원에서 해결합니다.", `문의: ${B.email} / ${B.phone}`],
     },
-    { title: "부칙", body: [`이 약관은 ${LEGAL_EFFECTIVE_DATE}부터 시행합니다.`] },
+    { title: "부칙", body: [`이 약관은 ${PLANS_EFFECTIVE_DATE}부터 시행합니다.`, `- ${LEGAL_EFFECTIVE_DATE} 제정`, `- ${PLANS_EFFECTIVE_DATE} 개정 (${PLANS_NOTICE_DATE} 공지): Pro·여행 패스·이용 코드`] },
   ],
 };
 
 export const REFUND: LegalDoc = {
   title: "환불정책",
+  effectiveDate: PLANS_EFFECTIVE_DATE,
+  revision: {
+    noticeDate: PLANS_NOTICE_DATE,
+    changes: ["6. 여행 패스(Paddle 결제)·이용 코드의 환불 신설", "1·2: Pro(월 6,900원)도 같은 기준으로 환불"],
+  },
   sections: [
     {
       title: "1. 결제 후 7일 이내 (청약철회)",
       body: [
-        `${PLUS.name}을 결제한 날부터 7일 이내에 유료 기능(혼잡 알림 받기 등)을 한 번도 쓰지 않았다면 전액 환불해 드립니다.`,
+        `${PLUS.name}·${PLANS.pro.name}을 결제한 날부터 7일 이내에 유료 기능(혼잡 알림 받기 등)을 한 번도 쓰지 않았다면 전액 환불해 드립니다.`,
         "7일 이내라도 유료 기능을 이미 쓴 경우에는 아래 2번처럼 이용한 날만큼 빼고 환불합니다.",
       ],
     },
@@ -130,7 +165,7 @@ export const REFUND: LegalDoc = {
       body: [
         "정기결제는 언제든지 마이페이지에서 해지할 수 있으며, 해지하면 다음 결제일부터 결제되지 않고 남은 기간은 계속 이용할 수 있습니다.",
         "1개월 이용권은 자동으로 다시 결제되지 않으므로 해지할 필요가 없으며, 이용 기간이 끝나면 자동으로 끝납니다.",
-        `남은 기간을 환불받고 싶으면 고객센터로 요청해 주세요. 결제 금액에서 이용한 날만큼(${PLUS.priceKrw.toLocaleString()}원 ÷ 30 × 이용일)과 결제 금액의 10%(위약금)를 뺀 금액을 환불합니다.`,
+        `남은 기간을 환불받고 싶으면 고객센터로 요청해 주세요. 결제 금액에서 이용한 날만큼(결제 금액 ÷ 30 × 이용일, 예: Plus ${PLUS.priceKrw.toLocaleString()}원 ÷ 30 × 이용일)과 결제 금액의 10%(위약금)를 뺀 금액을 환불합니다.`,
       ],
     },
     {
@@ -150,7 +185,14 @@ export const REFUND: LegalDoc = {
       title: "5. 환불 요청",
       body: [`이메일 ${B.email} 또는 전화 ${B.phone}로 가입한 계정(카카오·네이버·구글)과 결제일을 알려 주세요.`],
     },
-    { title: "부칙", body: [`이 환불정책은 ${LEGAL_EFFECTIVE_DATE}부터 시행합니다.`] },
+    {
+      title: "6. 여행 패스(해외 결제)와 이용 코드",
+      body: [
+        "여행 패스는 Paddle이 판매자로서 환불을 처리합니다. 결제 후 7일 이내에 패스 기능을 쓰지 않았다면 전액 환불되며, Paddle 영수증 메일의 안내 또는 위 연락처로 요청하면 회사가 Paddle에 환불을 요청합니다.",
+        "이용 코드로 받은 기간은 돈을 내지 않았으므로 환불 대상이 아닙니다.",
+      ],
+    },
+    { title: "부칙", body: [`이 환불정책은 ${PLANS_EFFECTIVE_DATE}부터 시행합니다.`, `- ${LEGAL_EFFECTIVE_DATE} 제정`, `- ${PLANS_EFFECTIVE_DATE} 개정 (${PLANS_NOTICE_DATE} 공지): Pro·여행 패스·이용 코드`] },
   ],
 };
 
@@ -161,6 +203,7 @@ export const PRIVACY: LegalDoc = {
     noticeDate: PRIVACY_NOTICE_DATE,
     changes: [
       "4. 쿠키와 기기 저장소에 '이용 통계' 항목 추가: 방문 수를 세는 무작위 번호(누구인지 알 수 없음)와 날짜별 횟수만 남긴다는 내용",
+      "3. 처리 위탁과 국외 이전에 Paddle(해외 결제 여행 패스) 추가 — 10/28 공지, 11/4 시행",
     ],
   },
   sections: [
@@ -189,6 +232,7 @@ export const PRIVACY: LegalDoc = {
       body: [
         "회사는 서비스 운영을 위해 다음 업체에 개인정보 처리를 맡깁니다.",
         "- 토스페이먼츠(주): 결제 처리 (국내)",
+        "- Paddle.com Market Limited: 해외 결제 여행 패스의 판매·결제·세금·환불 (영국, 결제할 때 이메일·국가·결제 정보와 회원 식별자를 네트워크로 전송, 법령이 정한 기간 보관) — 여행 패스를 사는 경우에만",
         "- Vercel Inc.: 웹 서비스 호스팅·접속 기록 (미국, 서비스 이용 시 네트워크로 전송, 회원 탈퇴 또는 위탁 계약 종료 시까지)",
         "- 데이터베이스·캐시 업체(Neon, Upstash): 회원·결제·알림 정보 저장 (리전은 운영 환경에 따름, 위탁 계약 종료 시까지)",
         "- 카카오, 네이버, Google: 소셜 로그인 인증",
