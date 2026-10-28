@@ -151,3 +151,11 @@ export function subwayTrip(a: LatLng, b: LatLng): SubwayTrip | null {
     to: data.s[nodeStation[best.node]][0],
   };
 }
+
+/** 가장 가까운 지하철역 (1.2km 안). 역 이름·지나는 노선·걷는 시간 — AI 여행 요약(lib/trip-brief)이 쓴다 */
+export function nearestStation(p: LatLng): { name: string; lines: string[]; walkMin: number } | null {
+  const [near] = nearStations(p);
+  if (!near) return null;
+  const lines = [...new Set(stationNodes[near.s].map((n) => data.l[nodeLine[n]]))];
+  return { name: data.s[near.s][0], lines, walkMin: Math.max(1, Math.round(walkMin(near.km))) };
+}

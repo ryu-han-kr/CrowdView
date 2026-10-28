@@ -1,5 +1,7 @@
 import { DroneVideos } from "@/components/DroneVideos";
 import { LiveCountButton } from "@/components/place/LiveCountButton";
+import { TripBrief } from "@/components/place/TripBrief";
+import { tripBriefAi } from "@/lib/trip-brief";
 import { HolidayRibbon } from "@/components/home/HolidayRibbon";
 import { krDayOn } from "@/lib/kr-days";
 import { videosFor } from "@/lib/kto-videos";
@@ -461,6 +463,17 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           </section>
           {/* 유료: SK텔레콤 실측 '지금 실제 인원' — 누를 때만 불러온다 (경수님 10/28) */}
           <LiveCountButton placeId={place.id} />
+          {/* 유료: AI 여행 요약 (입장권·교통·볼거리·추천 + 이번 주 한산한 날, 경수님 10/28). AI 키(ANTHROPIC_API_KEY)가 들어오면 보인다 */}
+          {tripBriefAi() && (
+            <TripBrief
+              placeId={place.id}
+              calmLine={
+                calmest.peakScore >= 60
+                  ? t("이번 주는 {day}이 그나마 덜 붐벼요", { day: dayName(calmest.date, t, lang) })
+                  : t("이번 주는 {day}이 가장 한산해요", { day: dayName(calmest.date, t, lang) })
+              }
+            />
+          )}
           <Suspense fallback={null}>
             <NearbyChips lat={place.lat} lng={place.lng} lang={lang} exclude={[placeHref(place)]} className="mt-3" />
           </Suspense>
