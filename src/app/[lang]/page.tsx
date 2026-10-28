@@ -10,6 +10,7 @@ import { SeasonBackdrop, SproutStrip } from "@/components/home/SeasonBackdrop";
 import { pickSeasonFx } from "@/lib/season-fx";
 import { HolidayRibbon } from "@/components/home/HolidayRibbon";
 import { krDayOn } from "@/lib/kr-days";
+import { seasonOf, seasonSort, seasonWeight } from "@/lib/season-order";
 import { getNowWeather } from "@/lib/crowd/signals";
 import { PhotoRail, type PhotoCardItem } from "@/components/home/PhotoRail";
 import { PlusPromo } from "@/components/home/PlusPromo";
@@ -79,6 +80,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   ]);
   // 기념일이면 그날 효과(크리스마스 눈·명절 꽃가루·한가위 달)가 계절·날씨 효과보다 먼저
   const krDay = krDayOn(today);
+  // 계절 순서 (경수님 10/28): 아이콘·칩·테마 타일·놀이 카드·배너
+  const season = seasonOf(today);
   const seasonFx = krDay?.fx ?? pickSeasonFx(Number(today.slice(5, 7)), nowWeather);
   // 끝난 행사 장소는 홈에서 뺀다 (자체 QA 10/22: 10/10에 끝난 서울세계불꽃축제가 여의도 실시간 값으로 '원활'로 나와 한산한 곳 맨 앞에)
   const places = livePlaces.filter((p) => p.category !== "event" || isUpcomingEvent(p, today));
@@ -317,7 +320,12 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   // 1) 테마파크·워터파크·스키장 세로 카드: 실측 먼저, 그다음 한산한 순
   const leisure = places
     .filter((p) => ["themepark", "waterpark", "ski"].includes(p.category) && crowd[p.id]?.open && heroImage(p))
-    .sort((a, b) => Number(crowd[b.id].source !== "model") - Number(crowd[a.id].source !== "model") || crowd[a.id].score - crowd[b.id].score)
+    .sort(
+      (a, b) =>
+        seasonWeight(season, a.category) - seasonWeight(season, b.category) ||
+        Number(crowd[b.id].source !== "model") - Number(crowd[a.id].source !== "model") ||
+        crowd[a.id].score - crowd[b.id].score,
+    )
     .slice(0, 10);
   const shortCards: ShortCard[] = leisure.map((p) => {
     const c = crowd[p.id];
@@ -361,8 +369,17 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     trend1 && { id: "trend", href: trend1.href, img: trend1.img!, tag: t("요즘 뜨는 곳 1위"), title: trend1.title, sub: trend1.sub },
   ]);
   const nextFestival = topFestivals.find((f) => f !== hotFestival && f.image);
+  // 계절 배너: 스키 시즌엔 스키장, 여름엔 워터파크를 여행 배너 두 번째에 (경수님 10/28)
+  const seasonSlide: HeroSlide | undefined =
+    season === "ski"
+      ? { id: "season-ski", href: localePath(lang, "/?cat=ski#places"), img: photoOf("phoenix") ?? "", tag: t("시즌"), title: t("올겨울 스키장"), sub: t("개장 전에 미리 보는 혼잡 예측") }
+      : season === "summer"
+        ? { id: "season-water", href: localePath(lang, "/?cat=waterpark#places"), img: photoOf("caribbean-bay") ?? "", tag: t("시즌"), title: t("여름엔 워터파크"), sub: t("물놀이 가기 전 혼잡 미리 보기") }
+        : undefined;
   const travelBanner = uniq([
-    ...travelSlides,
+    travelSlides[0],
+    seasonSlide,
+    ...travelSlides.slice(1),
     nextFestival && {
       id: "festival2",
       href: festivalHref(nextFestival),
@@ -478,7 +495,13 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const shortRail = (
     <ShortCardRail title={t("테마파크·워터파크 지금")} sub={t("실시간 대기와 예상 혼잡을 한눈에")} moreHref="/map" items={shortCards} />
   );
-  const themeSection = <ThemeTiles title={t("오늘은 이런 곳 어때요?")} sub={t("주제를 고르면 바로 그 목록으로")} tiles={themeTiles} />;
+  const themeSection = (
+    <ThemeTiles
+      title={t("오늘은 이런 곳 어때요?")}
+      sub={t("주제를 고르면 바로 그 목록으로")}
+      tiles={seasonSort(themeTiles, (x) => (x.id === "palace" ? "landmark" : x.id), season)}
+    />
+  );
 
   // 상태 알약: 실시간 자료 기준 시각 (NOL '공지' 줄 자리)
   const seoulTime = Object.values(seoul)[0]?.time?.slice(11, 16);
@@ -557,10 +580,10 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           </Link>
         )
       )}
-      <CategoryIcons t={t} lang={lang} />
+      <CategoryIcons t={t} lang={lang} season={season} />
 
       {ko ? (
-        <HomeList places={listPlaces} crowd={listCrowd} withSearch>
+        <HomeList places={listPlaces} crowd={listCrowd} withSearch season={season}>
           {calmRail}
           {shortRail}
           {trendList}
@@ -585,7 +608,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           {trendList}
           {plusPromo}
           <RecentRail />
-          <HomeList places={listPlaces} crowd={listCrowd} withSearch />
+          <HomeList places={listPlaces} crowd={listCrowd} withSearch season={season} />
         </>
       )}
     </main>
