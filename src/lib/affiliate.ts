@@ -25,9 +25,10 @@ export const LINKPRICE_MERCHANTS: Record<string, string> = { kkday: "kkday", yan
 const LINKPRICE_SITE: Record<string, string> = { yanolja: "A100709267", agoda: "A100709267", klook: "A100709267" };
 // 직접 제휴보다 링크프라이스가 나은 곳 (10/27 경수님: 수수료 높은 쪽으로). 직접 제휴 값이 있어도 링크프라이스로 보낸다
 // - 클룩: 링크프라이스 3.5~10.5%·쿠키 30일, 직접 제휴는 정산 정보가 없어 지급 불가
-// - 아고다: 링크프라이스 4.9~5.6%, 직접 제휴는 사이트 승인 대기. 단 링크프라이스는 호텔 id(hid) 없는 주소를 아고다 첫 화면으로 보낸다
+// - 아고다는 뺐다 (10/28): 링크프라이스는 넘긴 주소를 버리고 늘 아고다 첫 화면으로 보낸다(검색·좌표·도시·호텔·partnersearch 모두 시험).
+//   경수님 '원한 위치 근처 숙소로 반드시' → 직접 제휴(cid, 주소 그대로 들어감)로. 직접 제휴가 없으면 링크프라이스로 간다
 // Trip.com(직접 최대 7%·쿠키 30일 > 링크프라이스 4.9%·1일)·마이리얼트립(쿠키 같은 7일, 직접 요율 미확인)은 직접 제휴 유지
-const LINKPRICE_FIRST = new Set(["agoda", "klook"]);
+const LINKPRICE_FIRST = new Set(["klook"]);
 const linkprice = (merchant: string, href: string, site = LINKPRICE_ID) =>
   `https://newtip.net/click.php?m=${merchant}&a=${site}&l=9999&l_cd1=3&l_cd2=0&tu=${encodeURIComponent(href)}`;
 
