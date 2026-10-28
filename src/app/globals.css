@@ -569,3 +569,11 @@ aside:has(> ins.adsbygoogle[data-ad-status="unfilled"]) {
 @media (prefers-reduced-motion: reduce) {
   .kenburns { animation: none; }
 }
+
+/* 봄 새싹 줄 (SproutStrip): 땅에서 자라 올라온 뒤 살랑인다 */
+@keyframes sprout-grow { from { transform: scaleY(0); opacity: 0; } to { transform: scaleY(1); opacity: 1; } }
+@keyframes sprout-sway { 0%, 100% { rotate: -6deg; } 50% { rotate: 6deg; } }
+.sprout { position: absolute; bottom: 0; transform-origin: 50% 100%; animation: sprout-grow 1.6s ease-out both, sprout-sway 3s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .sprout { animation: none; }
+}

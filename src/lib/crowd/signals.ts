@@ -123,6 +123,14 @@ async function getWeather(place: Place): Promise<Map<string, Weather>> {
   return map;
 }
 
+/** 지금 시각의 단기예보 한 칸 (홈 배경 날씨 효과). 못 받으면 undefined */
+export async function getNowWeather(place: Pick<Place, "lat" | "lng">): Promise<Weather | undefined> {
+  const map = await getWeather(place as Place).catch(() => undefined);
+  if (!map) return undefined;
+  const t = new Date(Date.now() + 9 * HOUR * 1000).toISOString();
+  return map.get(`${t.slice(0, 10)} ${t.slice(11, 13)}`);
+}
+
 export async function getConcentration(kto: NonNullable<Place["kto"]>): Promise<Map<string, number>> {
   const items = await dataGoKr(
     "/B551011/TatsCnctrRateService/tatsCnctrRatedList",
