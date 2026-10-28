@@ -89,7 +89,7 @@ export default async function RootLayout({ children, params }: { children: React
           }}
         />
       </head>
-      <body className="relative isolate bg-white font-sans antialiased">
+      <body className="relative isolate overflow-x-clip bg-white font-sans antialiased">
         {/* 구글 애드센스 (발행자 ID가 있을 때만). EEA·영국 이용자 동의 화면은 애드센스 콘솔 '개인 정보 보호 및 메시지'에서 켠다 */}
         {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && <AdSenseLoader client={process.env.NEXT_PUBLIC_ADSENSE_CLIENT} />}
         {process.env.NEXT_PUBLIC_CLARITY_ID && <ClarityLoader id={process.env.NEXT_PUBLIC_CLARITY_ID} />}

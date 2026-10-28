@@ -60,14 +60,21 @@ export function SeasonBackdrop({ fx: given }: { fx: Fx }) {
       if (fx === "sprout") return { ...base, r: rnd(6, 9), vy: rnd(0.4, 0.8), c: Math.random() < 0.7 ? "#fbcfe8" : "#f9a8d4" };
       return { ...base, y: rnd(0, h), r: rnd(1.5, 3.5), vy: -rnd(0.1, 0.3), c: "" }; // 햇살·달빛 알갱이는 천천히 떠오른다
     };
+    // 휴대폰은 맨 위로 올릴 때 주소창이 나타나며 resize가 와서, 그때마다 알갱이를 새로 뿌려 처음부터 다시 시작했다 (경수님 10/28).
+    // 크기만 맞추고 알갱이는 그대로 두며, 폭이 바뀐 만큼만 늘리거나 줄인다
     const resize = () => {
-      w = cv.clientWidth;
-      h = cv.clientHeight;
+      const nw = cv.clientWidth;
+      const nh = cv.clientHeight;
+      if (nw === w && nh === h) return;
+      if (w) for (const p of ps) p.x *= nw / w;
+      w = nw;
+      h = nh;
       cv.width = Math.round(w * dpr);
       cv.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       const n = Math.max(6, Math.round((w / 1000) * DENSITY[fx] * (w < 768 ? 1.3 : 1)));
-      ps = Array.from({ length: n }, () => make(false));
+      while (ps.length < n) ps.push(make(false));
+      ps.length = n;
     };
     resize();
 
@@ -183,8 +190,9 @@ export function SeasonBackdrop({ fx: given }: { fx: Fx }) {
       ref={ref}
       aria-hidden
       data-fx={fx}
-      // 홈 위쪽 한 화면 높이만, 아래로 갈수록 흐려지게
-      className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-[min(100vh,900px)] w-full [mask-image:linear-gradient(to_bottom,black_55%,transparent)]"
+      // 홈 위쪽 한 화면 높이만, 아래로 갈수록 흐려지게. 사진·카드 뒤 배경에서 떨어지게 -z (main이 isolate라 main 바탕 위·내용 아래, 경수님 10/28).
+      // 높이는 lvh: 주소창이 들어가고 나와도 바뀌지 않게. 폭은 화면 전체: PC는 본문 폭에만 깔면 배너 뒤에 가려 거의 안 보였다 (경수님 10/28)
+      className="pointer-events-none absolute top-0 left-1/2 -z-10 h-[min(100lvh,900px)] w-screen -translate-x-1/2 [mask-image:linear-gradient(to_bottom,black_55%,transparent)]"
     />
   );
 }
