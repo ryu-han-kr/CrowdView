@@ -72,6 +72,13 @@ export async function getPlus(userId: string): Promise<PlusState> {
 
 export const isPlus = async (userId: string) => (await getPlus(userId)).active;
 
+/** 지금 이용 중인 Plus 회원 수 (구독·이용권, 기간 안). SK 실측 하루 한도를 회원 수만큼 늘리는 데 쓴다 */
+export async function activePlusCount(): Promise<number> {
+  if (!pool) return 0;
+  const [{ n }] = await sql<{ n: number }>("select count(*)::int as n from plus_subscription where status <> 'expired' and current_period_end > now()");
+  return n;
+}
+
 /** 결제 결과 확인 (상태·금액) */
 function confirmPaid(p: TossPayment): TossPayment {
   if (p.status !== "DONE") throw new Error(`결제 상태 ${p.status}`);

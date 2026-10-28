@@ -6,6 +6,7 @@
 // 응답 형식은 SK 문서 기준으로 맞췄지만 키를 받은 뒤 실제 응답으로 다시 확인해야 한다 (필드가 없으면 undefined)
 import { APIS, beforeCall } from "./api-quota";
 import { cached } from "./cached";
+import { activePlusCount } from "./plus";
 
 const BASE = "https://apis.openapi.sk.com";
 const appKey = () => process.env.SK_OPENAPI_APP_KEY;
@@ -24,7 +25,11 @@ export interface SktCongestion {
 const LEVEL_SCORE = { 1: 25, 2: 48, 3: 68, 4: 88 } as const;
 
 async function call(path: string, params: Record<string, string> = {}): Promise<unknown> {
-  await beforeCall(APIS.find((a) => a.id === "skt-congestion"));
+  // 하루 한도 = 기본(SK_DAILY_LIMIT, 30) + Plus 회원 수 × 회원당(SK_PER_MEMBER, 10) (경수님 10/28: 회원이 늘면 조금씩 같이 늘게).
+  // 회원 수는 10분 캐시. DB가 안 되면 기본 한도만
+  const api = APIS.find((a) => a.id === "skt-congestion");
+  const members = await cached("plus:active-count", 600, activePlusCount).catch(() => 0);
+  await beforeCall(api && { ...api, limit: (api.limit ?? 30) + members * (Number(process.env.SK_PER_MEMBER) || 10) });
   const res = await fetch(`${BASE}${path}?${new URLSearchParams(params)}`, {
     headers: { appKey: appKey()!, accept: "application/json" },
     signal: AbortSignal.timeout(6000),
