@@ -63,20 +63,21 @@ export function NavProgress() {
         <div className="nav-progress h-full bg-indigo-500 shadow-[0_0_8px_rgb(99_102_241/0.7)]" />
       </div>
       {slow && (
-        <div className="pointer-events-none fixed inset-0 z-[90] flex animate-[fade-in_0.2s_ease-out] flex-col items-center justify-center gap-2 bg-white/85 text-center backdrop-blur-sm dark:bg-gray-950/80">
+        // 캐릭터를 화면 정중앙에, 돌아가는 고리는 캐릭터와 겹치지 않게 아래 문구 옆에 작게 (경수님 10/28)
+        <div className="pointer-events-none fixed inset-0 z-[90] grid animate-[fade-in_0.2s_ease-out] place-items-center bg-white/85 text-center backdrop-blur-sm dark:bg-gray-950/80">
           <span className="relative inline-block">
-            <span aria-hidden className="wait-ring absolute -inset-3 rounded-full border-[3px] border-indigo-100 border-t-indigo-500" />
             <Character name={pathCharacter(target)} pose="wait" size={150} priority className="mascot-bob" />
-            <span aria-hidden className="absolute top-3 right-2 text-xl">
+            <span aria-hidden className="zzz-wrap">
               <span className="zzz">z</span>
               <span className="zzz">z</span>
               <span className="zzz">z</span>
             </span>
+            <p className="absolute top-full left-1/2 mt-4 flex -translate-x-1/2 items-center gap-2 text-sm font-semibold whitespace-nowrap text-gray-600">
+              <span aria-hidden className="wait-ring inline-block h-4 w-4 rounded-full border-2 border-indigo-100 border-t-indigo-500" />
+              {t("잠시만요, 불러오는 중이에요")}
+              <span className="loading-dots" aria-hidden="true" />
+            </p>
           </span>
-          <p className="text-sm font-semibold text-gray-600">
-            {t("잠시만요, 불러오는 중이에요")}
-            <span className="loading-dots" aria-hidden="true" />
-          </p>
         </div>
       )}
     </>
