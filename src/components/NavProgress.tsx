@@ -66,7 +66,7 @@ export function NavProgress() {
         // 캐릭터를 화면 정중앙에, 돌아가는 고리는 캐릭터와 겹치지 않게 아래 문구 옆에 작게 (경수님 10/28)
         <div className="pointer-events-none fixed inset-0 z-[90] grid animate-[fade-in_0.2s_ease-out] place-items-center bg-white/85 text-center backdrop-blur-sm dark:bg-gray-950/80">
           <span className="relative inline-block">
-            <Character name={pathCharacter(target)} pose="wait" size={150} priority className="mascot-bob" />
+            <Character name={pathCharacter(target)} pose="sleep" size={160} priority className="mascot-bob h-40 w-40" />
             <span aria-hidden className="zzz-wrap">
               <span className="zzz">z</span>
               <span className="zzz">z</span>

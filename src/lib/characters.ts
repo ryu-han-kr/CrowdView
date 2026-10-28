@@ -7,7 +7,7 @@ import type { Category } from "@/lib/types";
  * 여우 = 여행 가이드, 토끼 = 축제, 너구리 = 공항·길찾기
  */
 export type CharacterName = "hamster" | "otter" | "fox" | "rabbit" | "raccoon";
-export type Pose = "base" | "calm" | "normal" | "busy" | "packed" | "explore" | "pick" | "wait" | "alert" | "done";
+export type Pose = "base" | "calm" | "normal" | "busy" | "packed" | "explore" | "pick" | "wait" | "alert" | "done" | "sleep";
 
 /**
  * 혼잡도 단계 → 포즈 (1 쾌적 = 기지개, 2 원활 = 지도 들고 나들이, 3 보통 = 손 모으고 두리번, 4 혼잡 = 땀, 5 매우 혼잡 = 깔림, 운영 시간 아님 = 조는 모습)
