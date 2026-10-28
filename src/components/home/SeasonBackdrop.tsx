@@ -24,7 +24,7 @@ interface P {
 
 /**
  * 홈 위쪽 배경 날씨·계절 효과 (눈·비·낙엽·벚꽃잎·햇살). 화면을 누르는 데 방해되지 않게 pointer-events 없음,
- * 움직임 줄이기 설정이면 안 그린다. 첫 그림이 끝난 뒤(브라우저가 한가할 때) 시작하고, 탭이 안 보이거나 화면 밖이면 멈춘다
+ * 움직임 줄이기 설정이면 멈춘 한 장만 그린다. 첫 그림이 끝난 뒤(브라우저가 한가할 때) 시작하고, 탭이 안 보이거나 화면 밖이면 멈춘다
  */
 export function SeasonBackdrop({ fx: given }: { fx: Fx }) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -32,7 +32,6 @@ export function SeasonBackdrop({ fx: given }: { fx: Fx }) {
   const [fx, setFx] = useState(given);
 
   useEffect(() => {
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     // 미리 보기: 주소 뒤 ?fx=snow 처럼 붙이면 그 효과로 (전후 사진·확인용)
     const forced = new URLSearchParams(location.search).get("fx");
     if (forced && forced in DENSITY) setFx(forced as Fx);
@@ -46,6 +45,9 @@ export function SeasonBackdrop({ fx: given }: { fx: Fx }) {
     if (!on || !cv) return;
     const ctx = cv.getContext("2d");
     if (!ctx) return;
+    // 움직임 줄이기(윈도우 '애니메이션 효과' 끔 등)면 움직이지 않는 한 장만 그린다 — 계절감은 보이고 움직임은 없게
+    // (경수님 10/28: 그 설정인 PC에서 낙엽이 아예 안 보였다)
+    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const dpr = Math.min(2, devicePixelRatio || 1);
     let w = 0;
     let h = 0;
@@ -156,7 +158,7 @@ export function SeasonBackdrop({ fx: given }: { fx: Fx }) {
         }
         ctx.restore();
       }
-      raf = requestAnimationFrame(draw);
+      if (!still) raf = requestAnimationFrame(draw);
     };
 
     let raf = 0;
@@ -174,13 +176,17 @@ export function SeasonBackdrop({ fx: given }: { fx: Fx }) {
     });
     io.observe(cv);
     document.addEventListener("visibilitychange", run);
-    window.addEventListener("resize", resize);
+    const onResize = () => {
+      resize();
+      if (still) run();
+    };
+    window.addEventListener("resize", onResize);
     run();
     return () => {
       cancelAnimationFrame(raf);
       io.disconnect();
       document.removeEventListener("visibilitychange", run);
-      window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", onResize);
     };
   }, [on, fx]);
 
