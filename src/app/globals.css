@@ -577,3 +577,13 @@ aside:has(> ins.adsbygoogle[data-ad-status="unfilled"]) {
 @media (prefers-reduced-motion: reduce) {
   .sprout { animation: none; }
 }
+
+/* 기념일 띠: 큰 그림은 살짝 흔들리고, 캐릭터 머리 위 꾸밈은 통통 */
+@keyframes holiday-wiggle { 0%, 100% { rotate: -8deg; } 50% { rotate: 8deg; } }
+@keyframes holiday-hop { 0%, 100% { translate: 0 0; } 50% { translate: 0 -4px; } }
+.holiday-emoji { display: inline-block; animation: holiday-wiggle 2.4s ease-in-out infinite; }
+.holiday-deco { animation: holiday-hop 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .holiday-emoji,
+  .holiday-deco { animation: none; }
+}
