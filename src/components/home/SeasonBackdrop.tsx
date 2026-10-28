@@ -24,7 +24,7 @@ interface P {
 
 /**
  * 홈 위쪽 배경 날씨·계절 효과 (눈·비·낙엽·벚꽃잎·햇살). 화면을 누르는 데 방해되지 않게 pointer-events 없음,
- * 움직임 줄이기 설정이면 멈춘 한 장만 그린다. 첫 그림이 끝난 뒤(브라우저가 한가할 때) 시작하고, 탭이 안 보이거나 화면 밖이면 멈춘다
+ * 움직임 줄이기 설정이면 천천히·적게. 첫 그림이 끝난 뒤(브라우저가 한가할 때) 시작하고, 탭이 안 보이거나 화면 밖이면 멈춘다
  */
 export function SeasonBackdrop({ fx: given }: { fx: Fx }) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -45,9 +45,9 @@ export function SeasonBackdrop({ fx: given }: { fx: Fx }) {
     if (!on || !cv) return;
     const ctx = cv.getContext("2d");
     if (!ctx) return;
-    // 움직임 줄이기(윈도우 '애니메이션 효과' 끔 등)면 움직이지 않는 한 장만 그린다 — 계절감은 보이고 움직임은 없게
-    // (경수님 10/28: 그 설정인 PC에서 낙엽이 아예 안 보였다)
-    const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // 움직임 줄이기(윈도우 '애니메이션 효과' 끔 등): 처음엔 멈춘 한 장으로 했더니 경수님 '안 움직여'(10/28) →
+    // 천천히(40% 속도)·알갱이 절반으로 살랑이게. 이 설정이 기본으로 꺼져 있는 PC가 많다
+    const gentle = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const dpr = Math.min(2, devicePixelRatio || 1);
     let w = 0;
     let h = 0;
@@ -74,7 +74,7 @@ export function SeasonBackdrop({ fx: given }: { fx: Fx }) {
       cv.width = Math.round(w * dpr);
       cv.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const n = Math.max(6, Math.round((w / 1000) * DENSITY[fx] * (w < 768 ? 1.3 : 1)));
+      const n = Math.max(6, Math.round((w / 1000) * DENSITY[fx] * (w < 768 ? 1.3 : 1) * (gentle ? 0.5 : 1)));
       while (ps.length < n) ps.push(make(false));
       ps.length = n;
     };
@@ -83,7 +83,7 @@ export function SeasonBackdrop({ fx: given }: { fx: Fx }) {
     let t0 = performance.now();
     const draw = (now: number) => {
       // 탭을 오래 비웠다 돌아와도 한 번에 튀지 않게 1/60초 단위로 최대 3칸
-      const k = Math.min(3, (now - t0) / 16.7);
+      const k = Math.min(3, (now - t0) / 16.7) * (gentle ? 0.4 : 1);
       t0 = now;
       ctx.clearRect(0, 0, w, h);
       if (fx === "moon") {
@@ -158,7 +158,7 @@ export function SeasonBackdrop({ fx: given }: { fx: Fx }) {
         }
         ctx.restore();
       }
-      if (!still) raf = requestAnimationFrame(draw);
+      raf = requestAnimationFrame(draw);
     };
 
     let raf = 0;
@@ -176,17 +176,13 @@ export function SeasonBackdrop({ fx: given }: { fx: Fx }) {
     });
     io.observe(cv);
     document.addEventListener("visibilitychange", run);
-    const onResize = () => {
-      resize();
-      if (still) run();
-    };
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", resize);
     run();
     return () => {
       cancelAnimationFrame(raf);
       io.disconnect();
       document.removeEventListener("visibilitychange", run);
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener("resize", resize);
     };
   }, [on, fx]);
 
