@@ -2,9 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { SeasonFx } from "@/lib/season-fx";
+import type { DayFx } from "@/lib/kr-days";
+
+type Fx = SeasonFx | DayFx;
 
 /** 화면 폭 1000px당 알갱이 수 (가볍게, 경수님 10/28 '성능 점수 유지') */
-const DENSITY: Record<SeasonFx, number> = { snow: 46, rain: 60, leaves: 20, sprout: 18, sun: 18 };
+const DENSITY: Record<Fx, number> = { snow: 46, rain: 60, leaves: 20, sprout: 18, sun: 18, confetti: 34, moon: 16 };
+const CONFETTI = ["#f43f5e", "#f59e0b", "#10b981", "#6366f1", "#ec4899", "#0ea5e9"];
 const LEAF = ["#f97316", "#ea580c", "#dc2626", "#f59e0b", "#b45309"];
 
 interface P {
@@ -22,7 +26,7 @@ interface P {
  * 홈 위쪽 배경 날씨·계절 효과 (눈·비·낙엽·벚꽃잎·햇살). 화면을 누르는 데 방해되지 않게 pointer-events 없음,
  * 움직임 줄이기 설정이면 안 그린다. 첫 그림이 끝난 뒤(브라우저가 한가할 때) 시작하고, 탭이 안 보이거나 화면 밖이면 멈춘다
  */
-export function SeasonBackdrop({ fx: given }: { fx: SeasonFx }) {
+export function SeasonBackdrop({ fx: given }: { fx: Fx }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const [on, setOn] = useState(false);
   const [fx, setFx] = useState(given);
@@ -31,7 +35,7 @@ export function SeasonBackdrop({ fx: given }: { fx: SeasonFx }) {
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     // 미리 보기: 주소 뒤 ?fx=snow 처럼 붙이면 그 효과로 (전후 사진·확인용)
     const forced = new URLSearchParams(location.search).get("fx");
-    if (forced && forced in DENSITY) setFx(forced as SeasonFx);
+    if (forced && forced in DENSITY) setFx(forced as Fx);
     const idle = window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 1200));
     const id = idle(() => setOn(true));
     return () => (window.cancelIdleCallback ? window.cancelIdleCallback(id as number) : clearTimeout(id as number));
@@ -52,8 +56,9 @@ export function SeasonBackdrop({ fx: given }: { fx: SeasonFx }) {
       if (fx === "snow") return { ...base, r: rnd(1.4, 3.6), vy: rnd(0.35, 0.9), c: "" };
       if (fx === "rain") return { ...base, r: rnd(9, 16), vy: rnd(7, 10), vx: -1.4 };
       if (fx === "leaves") return { ...base, r: rnd(8, 13), vy: rnd(0.5, 1.1), va: rnd(0.01, 0.025), c: LEAF[Math.floor(rnd(0, LEAF.length))] };
+      if (fx === "confetti") return { ...base, r: rnd(4, 7), vy: rnd(0.8, 1.6), va: rnd(0.04, 0.09), c: CONFETTI[Math.floor(rnd(0, CONFETTI.length))] };
       if (fx === "sprout") return { ...base, r: rnd(6, 9), vy: rnd(0.4, 0.8), c: Math.random() < 0.7 ? "#fbcfe8" : "#f9a8d4" };
-      return { ...base, y: rnd(0, h), r: rnd(1.5, 3.5), vy: -rnd(0.1, 0.3), c: "" };
+      return { ...base, y: rnd(0, h), r: rnd(1.5, 3.5), vy: -rnd(0.1, 0.3), c: "" }; // 햇살·달빛 알갱이는 천천히 떠오른다
     };
     const resize = () => {
       w = cv.clientWidth;
@@ -72,6 +77,21 @@ export function SeasonBackdrop({ fx: given }: { fx: SeasonFx }) {
       const k = Math.min(3, (now - t0) / 16.7);
       t0 = now;
       ctx.clearRect(0, 0, w, h);
+      if (fx === "moon") {
+        // 한가위 보름달: 오른쪽 위 둥근 달과 은은한 달무리
+        // 휴대폰은 제목 글자를 가리지 않게 오른쪽 맨 위 모서리로
+        const mx = w < 768 ? w - 36 : w * 0.86;
+        const my = w < 768 ? 10 : 90;
+        const halo = ctx.createRadialGradient(mx, my, 20, mx, my, 150 + 10 * Math.sin(now / 2000));
+        halo.addColorStop(0, "rgba(253, 230, 138, 0.45)");
+        halo.addColorStop(1, "rgba(253, 230, 138, 0)");
+        ctx.fillStyle = halo;
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = "rgba(254, 240, 138, 0.6)";
+        ctx.beginPath();
+        ctx.arc(mx, my, 34, 0, Math.PI * 2);
+        ctx.fill();
+      }
       if (fx === "sun") {
         // 오른쪽 위 햇살: 천천히 숨 쉬는 빛 번짐
         const pulse = 0.85 + 0.15 * Math.sin(now / 1800);
@@ -86,7 +106,8 @@ export function SeasonBackdrop({ fx: given }: { fx: SeasonFx }) {
         p.a += p.va * k;
         p.y += p.vy * k;
         p.x += (p.vx + (fx === "rain" ? 0 : Math.sin(p.a) * (fx === "snow" ? 0.35 : 0.8))) * k;
-        if (p.y > h + 20 || p.y < -30 || p.x < -30 || p.x > w + 30) Object.assign(p, make(fx !== "sun"), fx === "sun" ? { y: h + 10 } : {});
+        const rising = fx === "sun" || fx === "moon";
+        if (p.y > h + 20 || p.y < -30 || p.x < -30 || p.x > w + 30) Object.assign(p, make(!rising), rising ? { y: h + 10 } : {});
         ctx.save();
         if (fx === "snow") {
           ctx.fillStyle = "rgba(165, 180, 252, 0.55)";
@@ -100,7 +121,15 @@ export function SeasonBackdrop({ fx: given }: { fx: SeasonFx }) {
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(p.x + p.vx * 2, p.y + p.r);
           ctx.stroke();
-        } else if (fx === "sun") {
+        } else if (fx === "confetti") {
+          // 꽃가루: 납작한 종이 조각이 뒤집히며 떨어진다
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.a * 3);
+          ctx.scale(Math.cos(p.a * 4), 1);
+          ctx.globalAlpha = 0.75;
+          ctx.fillStyle = p.c;
+          ctx.fillRect(-p.r / 2, -p.r / 4, p.r, p.r / 2);
+        } else if (fx === "sun" || fx === "moon") {
           ctx.fillStyle = `rgba(251, 191, 36, ${0.25 + 0.2 * Math.sin(p.a)})`;
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
@@ -161,7 +190,7 @@ export function SeasonBackdrop({ fx: given }: { fx: SeasonFx }) {
 }
 
 /** 봄: 머리 아래 줄에 새싹이 자라 올라와 살랑인다 (CSS만). ?fx=sprout 미리 보기에서도 */
-export function SproutStrip({ fx }: { fx: SeasonFx }) {
+export function SproutStrip({ fx }: { fx: Fx }) {
   const [show, setShow] = useState(fx === "sprout");
   useEffect(() => {
     if (new URLSearchParams(location.search).get("fx") === "sprout") setShow(true);

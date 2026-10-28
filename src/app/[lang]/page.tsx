@@ -8,6 +8,8 @@ import { CategoryIcons } from "@/components/home/CategoryIcons";
 import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
 import { SeasonBackdrop, SproutStrip } from "@/components/home/SeasonBackdrop";
 import { pickSeasonFx } from "@/lib/season-fx";
+import { HolidayRibbon } from "@/components/home/HolidayRibbon";
+import { krDayOn } from "@/lib/kr-days";
 import { getNowWeather } from "@/lib/crowd/signals";
 import { PhotoRail, type PhotoCardItem } from "@/components/home/PhotoRail";
 import { PlusPromo } from "@/components/home/PlusPromo";
@@ -75,7 +77,9 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     // 홈 배경 날씨 효과: 서울시청 격자의 이번 시각 예보 (경수님 10/28)
     getNowWeather({ lat: 37.5665, lng: 126.978 }),
   ]);
-  const seasonFx = pickSeasonFx(Number(today.slice(5, 7)), nowWeather);
+  // 기념일이면 그날 효과(크리스마스 눈·명절 꽃가루·한가위 달)가 계절·날씨 효과보다 먼저
+  const krDay = krDayOn(today);
+  const seasonFx = krDay?.fx ?? pickSeasonFx(Number(today.slice(5, 7)), nowWeather);
   // 끝난 행사 장소는 홈에서 뺀다 (자체 QA 10/22: 10/10에 끝난 서울세계불꽃축제가 여의도 실시간 값으로 '원활'로 나와 한산한 곳 맨 앞에)
   const places = livePlaces.filter((p) => p.category !== "event" || isUpcomingEvent(p, today));
   const live = Object.values(crowd).filter((c) => c.source !== "model");
@@ -513,6 +517,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         </PageHeader>
       </header>
       <SproutStrip fx={seasonFx} />
+      <HolidayRibbon day={krDay} />
 
       <div className="md:hidden">
         <HeroCarousel slides={mobileSlides} />
