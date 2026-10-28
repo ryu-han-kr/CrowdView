@@ -1,4 +1,5 @@
 import { DroneVideos } from "@/components/DroneVideos";
+import { LiveCountButton } from "@/components/place/LiveCountButton";
 import { HolidayRibbon } from "@/components/home/HolidayRibbon";
 import { krDayOn } from "@/lib/kr-days";
 import { videosFor } from "@/lib/kto-videos";
@@ -458,6 +459,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 character={categoryCharacter(place.category)}
               />
           </section>
+          {/* 유료: SK텔레콤 실측 '지금 실제 인원' — 누를 때만 불러온다 (경수님 10/28) */}
+          <LiveCountButton placeId={place.id} />
           <Suspense fallback={null}>
             <NearbyChips lat={place.lat} lng={place.lng} lang={lang} exclude={[placeHref(place)]} className="mt-3" />
           </Suspense>

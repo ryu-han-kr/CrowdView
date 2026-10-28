@@ -14,7 +14,8 @@ async function post<T>(url: string, body?: unknown): Promise<T> {
   return json as T;
 }
 
-export const subscribePlus = (authKey: string, customerKey: string) => post<{ plus: PlusState }>("/api/plus/subscribe", { authKey, customerKey });
+export const subscribePlus = (authKey: string, customerKey: string, plan?: string) =>
+  post<{ plus: PlusState }>("/api/plus/subscribe", { authKey, customerKey, plan });
 export const cancelPlus = () => post<{ plus: PlusState }>("/api/plus/cancel");
 export const refundPlus = () => post<{ plus: PlusState }>("/api/plus/refund");
 export const confirmPassPayment = (paymentKey: string, orderId: string, amount: number) =>
@@ -24,8 +25,8 @@ export const confirmPassPayment = (paymentKey: string, orderId: string, amount: 
  * 1개월 이용권 결제창 (토스 일반 결제, 한 번만 결제). 결제가 끝나면 completeUrl로 이동하고(?paymentKey=…&orderId=…&amount=…),
  * 거기서 서버가 승인해야 결제가 끝난다. 실패·취소면 ?code=…&message=…
  */
-export async function startPassPayment(user: { name: string; email?: string }, completeUrl: string): Promise<void> {
-  const res = await fetch("/api/plus/pass", { cache: "no-store" });
+export async function startPassPayment(user: { name: string; email?: string }, completeUrl: string, plan: "plus" | "pro" = "plus"): Promise<void> {
+  const res = await fetch(`/api/plus/pass?plan=${plan}`, { cache: "no-store" });
   const json = (await res.json().catch(() => ({}))) as { orderId?: string; orderName?: string; amount?: number; customerKey?: string; error?: string };
   if (!res.ok || !json.orderId || !json.customerKey || !json.amount) throw new Error(json.error ?? `HTTP ${res.status}`);
   const { loadTossPayments } = await import("@tosspayments/tosspayments-sdk");

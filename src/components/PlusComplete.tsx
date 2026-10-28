@@ -42,7 +42,8 @@ export function PlusComplete() {
     }
     // 새로고침해도 같은 authKey로 두 번 보내지 않게 주소에서 지운다
     history.replaceState(null, "", location.pathname);
-    subscribePlus(authKey, customerKey)
+    // 카드 등록창을 열 때 돌아올 주소에 붙여 둔 단계 (?plan=pro)
+    subscribePlus(authKey, customerKey, q.get("plan") ?? undefined)
       .then(() => setState("done"))
       .catch((e) => {
         setMessage(e instanceof Error ? e.message : String(e));

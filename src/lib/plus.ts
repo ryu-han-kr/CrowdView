@@ -2,7 +2,7 @@
 // 1개월 이용권(status 'pass'): 토스 일반 결제창 → 서버 승인 → 한 달 이용, 자동 갱신 없음 (자동결제 계약 전에도 팔 수 있다)
 // 돈이 오가는 판단(결제 성공 여부, 금액)은 항상 토스가 돌려준 값(또는 다시 조회한 값)으로만 한다.
 import { pushToUser } from "./alerts";
-import { PLUS } from "./business";
+import { PLUS, planOf, type PlanId } from "./business";
 import { pool, sql } from "./db";
 import { isDeliverable, mailEnabled, sendMail } from "./mail";
 import { opsAlert } from "./ops";
@@ -16,6 +16,8 @@ export interface PlusState {
   periodEnd?: string;
   /** 결제 후 7일 이내이고 유료 기능을 쓰지 않아 전액 환불 가능 */
   refundable: boolean;
+  /** 유료 단계 (plus·pro) */
+  plan?: PlanId;
 }
 
 interface SubRow {
@@ -27,10 +29,11 @@ interface SubRow {
   next_charge_at: Date | null;
   /** 지금 결제 중인 주문 번호 (결과를 모를 때 같은 번호로 다시 보내 두 번 결제되지 않게) */
   next_payment_id: string | null;
+  plan: PlanId;
 }
 
-const ORDER_NAME = `${PLUS.name} 월 이용권`;
-const PASS_ORDER_NAME = `${PLUS.name} 1개월 이용권`;
+const orderName = (plan: PlanId) => `${planOf(plan).name} 월 이용권`;
+const passOrderName = (plan: PlanId) => `${planOf(plan).name} 1개월 이용권`;
 /** 이용권 결제창을 연 뒤 승인까지 기다리는 시간 (주문 번호의 주인을 이 동안 기억) */
 const PASS_ORDER_TTL = 60 * 60;
 /** 결제 실패 후 다시 시도하는 간격과 횟수 */
@@ -38,6 +41,22 @@ const RETRY_HOURS = 24;
 const MAX_RETRIES = 3;
 /** 수집기가 결제를 맡으면 이 시간 동안 다른 수집기가 같은 회원을 건드리지 않는다 */
 const CLAIM_MINUTES = 30;
+
+/**
+ * 단계(plan) 열: db/migrations/010_plan_tier.sql 을 아직 운영 DB에 돌리지 않았어도 결제가 깨지지 않게,
+ * 결제 기록을 쓰기 전에 처음 한 번 열을 만든다 (add column if not exists — 여러 번 불러도 같다)
+ */
+let schemaReady: Promise<void> | undefined;
+function planColumns(): Promise<void> {
+  schemaReady ??= (async () => {
+    await sql("alter table plus_subscription add column if not exists plan text not null default 'plus'");
+    await sql("alter table payment add column if not exists plan text");
+  })().catch((e) => {
+    schemaReady = undefined;
+    throw e;
+  });
+  return schemaReady;
+}
 
 /** 같은 날짜의 다음 달 (1/31 → 2/28) */
 export function addMonth(d: Date): Date {
@@ -67,7 +86,7 @@ export async function getPlus(userId: string): Promise<PlusState> {
     [userId],
   );
   const refundable = active && !!last && !last.first_used_at && Date.now() - last.paid_at.getTime() < 7 * 86_400_000;
-  return { status: s.status, active, periodEnd: s.current_period_end.toISOString(), refundable };
+  return { status: s.status, active, periodEnd: s.current_period_end.toISOString(), refundable, plan: s.plan ?? "plus" };
 }
 
 export const isPlus = async (userId: string) => (await getPlus(userId)).active;
@@ -79,10 +98,10 @@ export async function activePlusCount(): Promise<number> {
   return n;
 }
 
-/** 결제 결과 확인 (상태·금액) */
-function confirmPaid(p: TossPayment): TossPayment {
+/** 결제 결과 확인 (상태·금액은 그 단계 가격과 같아야) */
+function confirmPaid(p: TossPayment, plan: PlanId): TossPayment {
   if (p.status !== "DONE") throw new Error(`결제 상태 ${p.status}`);
-  if (p.totalAmount !== PLUS.priceKrw) throw new Error(`결제 금액 불일치 ${p.totalAmount}`);
+  if (p.totalAmount !== planOf(plan).priceKrw) throw new Error(`결제 금액 불일치 ${p.totalAmount}`);
   return p;
 }
 
@@ -90,24 +109,25 @@ function confirmPaid(p: TossPayment): TossPayment {
  * 빌링키로 결제. 토스가 거절하면 TossError. 시간 초과처럼 결과를 모르면 주문 번호로 다시 조회해
  * 결제됐으면 그 결제를, 아니면 undefined(나중에 같은 번호로 다시)를 돌려준다
  */
-async function charge(userId: string, billingKey: string, customerKey: string, orderId: string): Promise<TossPayment | undefined> {
+async function charge(userId: string, billingKey: string, customerKey: string, orderId: string, plan: PlanId): Promise<TossPayment | undefined> {
   try {
-    return confirmPaid(await chargeBillingKey(billingKey, { customerKey, orderId, orderName: ORDER_NAME, amount: PLUS.priceKrw }));
+    return confirmPaid(await chargeBillingKey(billingKey, { customerKey, orderId, orderName: orderName(plan), amount: planOf(plan).priceKrw }), plan);
   } catch (e) {
     if (e instanceof TossError) throw e;
     const p = await getPaymentByOrder(orderId).catch(() => undefined);
-    if (p?.status === "DONE") return confirmPaid(p);
+    if (p?.status === "DONE") return confirmPaid(p, plan);
     console.warn("[plus] charge unknown", userId, orderId, e);
     return undefined;
   }
 }
 
-async function recordPaid(userId: string, p: TossPayment, start: Date, end: Date) {
+async function recordPaid(userId: string, p: TossPayment, start: Date, end: Date, plan: PlanId) {
+  await planColumns();
   await sql(
-    `insert into payment (id, user_id, amount, status, paid_at, period_start, period_end, payment_key, raw)
-     values ($1, $2, $3, 'paid', $4, $5, $6, $7, $8)
-     on conflict (id) do update set status = 'paid', paid_at = $4, period_start = $5, period_end = $6, payment_key = $7, raw = $8`,
-    [p.orderId, userId, p.totalAmount, new Date(p.approvedAt ?? Date.now()), start, end, p.paymentKey, JSON.stringify(p)],
+    `insert into payment (id, user_id, amount, status, paid_at, period_start, period_end, payment_key, raw, plan)
+     values ($1, $2, $3, 'paid', $4, $5, $6, $7, $8, $9)
+     on conflict (id) do update set status = 'paid', paid_at = $4, period_start = $5, period_end = $6, payment_key = $7, raw = $8, plan = $9`,
+    [p.orderId, userId, p.totalAmount, new Date(p.approvedAt ?? Date.now()), start, end, p.paymentKey, JSON.stringify(p), plan],
   );
 }
 
@@ -115,24 +135,25 @@ async function recordPaid(userId: string, p: TossPayment, start: Date, end: Date
 export const checkoutCustomerKey = (userId: string) => customerKeyOf(userId);
 
 /** 처음 구독: 카드 등록창에서 돌아온 authKey로 빌링키 발급 → 첫 달 결제 → 구독 시작 (다음 결제일은 한 달 뒤) */
-export async function subscribe(userId: string, authKey: string, customerKey: string): Promise<PlusState> {
+export async function subscribe(userId: string, authKey: string, customerKey: string, plan: PlanId = "plus"): Promise<PlusState> {
+  await planColumns();
   if (customerKey !== customerKeyOf(userId)) throw new Error("카드 등록 정보가 이 계정과 맞지 않아요. 다시 시도해 주세요.");
   const cur = await getPlus(userId);
   if (cur.active && cur.status === "active") throw new Error("이미 Plus를 이용 중이에요");
   const { billingKey } = await issueBillingKey(authKey, customerKey);
-  const p = await charge(userId, billingKey, customerKey, newPaymentId(userId));
+  const p = await charge(userId, billingKey, customerKey, newPaymentId(userId), plan);
   if (!p) throw new Error("결제 결과를 확인하지 못했어요. 잠시 뒤 마이페이지에서 확인해 주세요.");
   const start = new Date(p.approvedAt ?? Date.now());
   // 해지 후 기간이 남은 상태에서 다시 구독하면 남은 기간 뒤로 이어 붙인다
   const base = cur.active && cur.periodEnd ? new Date(cur.periodEnd) : start;
   const end = addMonth(base);
-  await recordPaid(userId, p, base, end);
+  await recordPaid(userId, p, base, end, plan);
   await sql(
-    `insert into plus_subscription (user_id, status, billing_key, customer_key, current_period_end, next_charge_at)
-     values ($1, 'active', $2, $3, $4, $4)
+    `insert into plus_subscription (user_id, status, billing_key, customer_key, current_period_end, next_charge_at, plan)
+     values ($1, 'active', $2, $3, $4, $4, $5)
      on conflict (user_id) do update set status = 'active', billing_key = $2, customer_key = $3, current_period_end = $4,
-       next_charge_at = $4, next_payment_id = null, canceled_at = null, updated_at = now()`,
-    [userId, billingKey, customerKey, end],
+       next_charge_at = $4, next_payment_id = null, canceled_at = null, plan = $5, updated_at = now()`,
+    [userId, billingKey, customerKey, end, plan],
   );
   return getPlus(userId);
 }
@@ -141,12 +162,13 @@ export async function subscribe(userId: string, authKey: string, customerKey: st
  * 1개월 이용권 결제창 열기 전: 주문 번호를 만들고 누구 주문인지 Redis에 1시간 기억한다 (승인 때 남의 주문을 쓰지 못하게).
  * 자동결제로 이용 중이면 막는다 (두 번 내지 않게)
  */
-export async function startPass(userId: string): Promise<{ orderId: string; orderName: string; amount: number; customerKey: string }> {
+export async function startPass(userId: string, plan: PlanId = "plus"): Promise<{ orderId: string; orderName: string; amount: number; customerKey: string }> {
   const cur = await getPlus(userId);
   if (cur.active && cur.status === "active") throw new Error("이미 매달 자동결제로 Plus를 이용 중이에요");
   const orderId = newPaymentId(userId).replace(/^plus_/, "pass_");
-  await kv.set(`passorder:${orderId}`, userId, PASS_ORDER_TTL);
-  return { orderId, orderName: PASS_ORDER_NAME, amount: PLUS.priceKrw, customerKey: customerKeyOf(userId) };
+  // 주문 주인과 단계를 같이 기억한다 (승인 때 금액을 그 단계 가격으로만 받는다)
+  await kv.set(`passorder:${orderId}`, `${userId}|${plan}`, PASS_ORDER_TTL);
+  return { orderId, orderName: passOrderName(plan), amount: planOf(plan).priceKrw, customerKey: customerKeyOf(userId) };
 }
 
 /**
@@ -154,16 +176,19 @@ export async function startPass(userId: string): Promise<{ orderId: string; orde
  * 결과를 모르는 오류(시간 초과 등)면 주문 번호로 다시 조회해 결제됐는지 확인한다
  */
 export async function confirmPass(userId: string, paymentKey: string, orderId: string, amount: number): Promise<PlusState> {
-  if ((await kv.get(`passorder:${orderId}`).catch(() => null)) !== userId) throw new Error("주문 정보가 이 계정과 맞지 않아요. 다시 시도해 주세요.");
-  if (amount !== PLUS.priceKrw) throw new Error("결제 금액이 맞지 않아요");
+  await planColumns();
+  const [owner, planRaw] = String((await kv.get(`passorder:${orderId}`).catch(() => null)) ?? "").split("|");
+  if (owner !== userId) throw new Error("주문 정보가 이 계정과 맞지 않아요. 다시 시도해 주세요.");
+  const plan: PlanId = planRaw === "pro" ? "pro" : "plus";
+  if (amount !== planOf(plan).priceKrw) throw new Error("결제 금액이 맞지 않아요");
   let p: TossPayment | undefined;
   try {
-    p = confirmPaid(await confirmPayment(paymentKey, orderId, amount));
+    p = confirmPaid(await confirmPayment(paymentKey, orderId, amount), plan);
   } catch (e) {
     if (e instanceof TossError) throw e;
     const found = await getPaymentByOrder(orderId).catch(() => undefined);
     if (found?.status !== "DONE") throw new Error("결제 결과를 확인하지 못했어요. 잠시 뒤 마이페이지에서 확인해 주세요.");
-    p = confirmPaid(found);
+    p = confirmPaid(found, plan);
   }
   const cur = await getPlus(userId);
   const start = new Date(p.approvedAt ?? Date.now());
@@ -172,17 +197,17 @@ export async function confirmPass(userId: string, paymentKey: string, orderId: s
   // 같은 주문을 두 번 승인 처리하지 않는다 (QA 10/21 PLUS-04: 두 번 눌림·재시도·시간 초과 뒤 조회가 겹치면 한 달이 두 번 붙을 수 있었다).
   // 결제 기록(주문 번호가 키)을 먼저 넣은 요청만 기간을 늘리고, 이미 있으면 지금 상태만 돌려준다
   const claimed = await sql(
-    `insert into payment (id, user_id, amount, status, paid_at, period_start, period_end, payment_key, raw)
-     values ($1, $2, $3, 'paid', $4, $5, $6, $7, $8)
+    `insert into payment (id, user_id, amount, status, paid_at, period_start, period_end, payment_key, raw, plan)
+     values ($1, $2, $3, 'paid', $4, $5, $6, $7, $8, $9)
      on conflict (id) do nothing returning id`,
-    [p.orderId, userId, p.totalAmount, new Date(p.approvedAt ?? Date.now()), base, end, p.paymentKey, JSON.stringify(p)],
+    [p.orderId, userId, p.totalAmount, new Date(p.approvedAt ?? Date.now()), base, end, p.paymentKey, JSON.stringify(p), plan],
   );
   if (!claimed.length) return getPlus(userId);
   await sql(
-    `insert into plus_subscription (user_id, status, current_period_end) values ($1, 'pass', $2)
+    `insert into plus_subscription (user_id, status, current_period_end, plan) values ($1, 'pass', $2, $3)
      on conflict (user_id) do update set status = 'pass', billing_key = null, current_period_end = $2,
-       next_charge_at = null, next_payment_id = null, canceled_at = null, updated_at = now()`,
-    [userId, end],
+       next_charge_at = null, next_payment_id = null, canceled_at = null, plan = $3, updated_at = now()`,
+    [userId, end, plan],
   );
   await kv.set(`passorder:${orderId}`, "", 1).catch(() => {});
   return getPlus(userId);
@@ -192,7 +217,7 @@ export async function confirmPass(userId: string, paymentKey: string, orderId: s
 async function onPaid(s: SubRow, p: TossPayment): Promise<void> {
   const start = s.current_period_end > new Date() ? s.current_period_end : new Date();
   const end = addMonth(start);
-  await recordPaid(s.user_id, p, start, end);
+  await recordPaid(s.user_id, p, start, end, s.plan ?? "plus");
   await sql(
     "update plus_subscription set status = 'active', current_period_end = $2, next_charge_at = $2, next_payment_id = null, updated_at = now() where user_id = $1",
     [s.user_id, end],
@@ -203,7 +228,7 @@ async function onPaid(s: SubRow, p: TossPayment): Promise<void> {
 async function onFailed(s: SubRow, orderId: string, reason: string): Promise<void> {
   await sql(
     `insert into payment (id, user_id, amount, status, raw) values ($1, $2, $3, 'failed', $4) on conflict (id) do update set status = 'failed'`,
-    [orderId, s.user_id, PLUS.priceKrw, JSON.stringify({ reason })],
+    [orderId, s.user_id, planOf(s.plan).priceKrw, JSON.stringify({ reason })],
   );
   const [{ n }] = await sql<{ n: number }>("select count(*)::int as n from payment where user_id = $1 and status = 'failed' and created_at > $2", [
     s.user_id,
@@ -234,7 +259,7 @@ export async function chargeDue(): Promise<number> {
     const orderId = s.next_payment_id ?? newPaymentId(s.user_id);
     await sql("update plus_subscription set next_payment_id = $2 where user_id = $1", [s.user_id, orderId]);
     try {
-      const p = await charge(s.user_id, s.billing_key!, s.customer_key ?? customerKeyOf(s.user_id), orderId);
+      const p = await charge(s.user_id, s.billing_key!, s.customer_key ?? customerKeyOf(s.user_id), orderId, s.plan ?? "plus");
       if (p) {
         await onPaid(s, p);
         paid++;
