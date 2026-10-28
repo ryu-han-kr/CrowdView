@@ -36,7 +36,7 @@ const DAYS: Record<string, Omit<KrDay, "id">> = {
   seollal: {
     msg: "설 연휴, 가족과 따뜻하게 보내세요",
     sub: "고궁·민속촌 설 행사와 귀성길 혼잡을 확인하세요",
-    emoji: "🧧",
+    emoji: "🎎",
     deco: "🪁",
     character: "fox",
     bg: ["#fee2e2", "#fecaca"],
