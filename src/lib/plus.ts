@@ -300,6 +300,35 @@ export async function refundWithin7Days(userId: string): Promise<PlusState> {
   return getPlus(userId);
 }
 
+/**
+ * 해외 여행 패스 (Paddle, 10/28): 결제 완료 알림 한 건 → days일 이용 (Pro 기능). 이용 중이면 남은 기간 뒤로 이어 붙인다.
+ * 같은 거래(transaction id)는 한 번만 — 결제 기록을 먼저 넣은 요청만 기간을 늘린다 (Paddle은 알림을 여러 번 보낼 수 있다).
+ * amount는 그 통화의 가장 작은 단위(센트 등), 통화·원본은 raw에
+ */
+export async function grantTravelPass(userId: string, txId: string, days: number, amountMinor: number, raw: unknown): Promise<PlusState> {
+  await planColumns();
+  const cur = await getPlus(userId);
+  const start = new Date();
+  const base = cur.active && cur.periodEnd ? new Date(cur.periodEnd) : start;
+  const end = new Date(base.getTime() + days * 86_400_000);
+  const claimed = await sql(
+    `insert into payment (id, user_id, amount, status, paid_at, period_start, period_end, raw, plan)
+     values ($1, $2, $3, 'paid', now(), $4, $5, $6, 'pro')
+     on conflict (id) do nothing returning id`,
+    [txId, userId, amountMinor, base, end, JSON.stringify(raw)],
+  );
+  if (!claimed.length) return getPlus(userId);
+  // 자동결제로 이용 중이면 그 기간은 그대로 두고 결제 기록만 (두 번 내지 않게 화면에서 막지만, 혹시 겹치면 기간만 늘린다)
+  await sql(
+    `insert into plus_subscription (user_id, status, current_period_end, plan) values ($1, 'pass', $2, 'pro')
+     on conflict (user_id) do update set
+       status = case when plus_subscription.status = 'active' then 'active' else 'pass' end,
+       current_period_end = $2, plan = 'pro', canceled_at = null, updated_at = now()`,
+    [userId, end],
+  );
+  return getPlus(userId);
+}
+
 /** 유료 기능을 처음 쓴 시각 기록 (혼잡 알림 등록 등) */
 export async function markPlusUsed(userId: string): Promise<void> {
   await sql(

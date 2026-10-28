@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "@/i18n/link";
 import { PlusCheckoutButton } from "@/components/PlusCheckoutButton";
+import { TravelPass } from "@/components/TravelPass";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import type { T } from "@/i18n/translate";
@@ -59,6 +60,9 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
       <div className="mx-auto max-w-5xl">
         <h1 className="text-2xl font-bold md:text-3xl">{t("요금 안내")}</h1>
         <p className="mt-1 text-sm text-gray-500">{t("혼잡도와 예측은 모두 무료예요. 지금 실제 인원까지 보고 싶다면 Plus·Pro를 골라 보세요.")}</p>
+
+        {/* 외국어 화면: 해외 카드로 결제하는 여행 패스(Paddle)를 먼저 (경수님 10/28 '해외는 패스로') */}
+        {lang !== "ko" && <TravelPass />}
 
         {/* 세 단계 카드: 무료(흰) · Plus(보라) · Pro(검정·금색) — 경수님 10/28 '단계를 까리하게, 색다르게' */}
         <div className="mt-6 grid gap-4 md:grid-cols-3">
