@@ -100,7 +100,9 @@ export function HeroCarousel({
   const goTo = (i: number) => step(i - index);
 
   if (!n) return null;
-  const items = loop ? [...slides, ...slides, ...slides] : slides;
+  // single(PC 홈 배너 두 개): 옆으로 밀면 오른쪽 배너 그림이 왼쪽으로 넘어가는 한 줄처럼 보여서(경수님 10/28) 제자리에서 겹쳐 바뀐다
+  const fade = layout === "single";
+  const items = loop && !fade ? [...slides, ...slides, ...slides] : slides;
 
   return (
     <section
@@ -120,41 +122,52 @@ export function HeroCarousel({
       }}
     >
       <div
-        className="flex gap-[var(--gap)] ease-out"
-        style={{
-          transform: `translateX(calc(var(--off) - ${pos} * (var(--w) + var(--gap))))`,
-          transitionProperty: "transform",
-          transitionDuration: animate ? `${SLIDE_MS}ms` : "0ms",
-        }}
+        className={fade ? "grid" : "flex gap-[var(--gap)] ease-out"}
+        style={
+          fade
+            ? undefined
+            : {
+                transform: `translateX(calc(var(--off) - ${pos} * (var(--w) + var(--gap))))`,
+                transitionProperty: "transform",
+                transitionDuration: animate ? `${SLIDE_MS}ms` : "0ms",
+              }
+        }
       >
         {items.map((s, k) => {
-          const current = k === pos;
+          const current = fade ? k === index : k === pos;
           // PC에서 오른쪽에 함께 보이는 두 번째 배너 (휴대폰에선 옆에 흐리게 보이는 배너)
           const second = layout === "peek" && loop && k === pos + 1;
           // 처음 화면에 가운데 보이는 배너 (가장 큰 그림 → 먼저 받기). 무한 넘김용 복제본도 같은 그림이라 같이 (LCP 경고: 복제본이 lazy였다)
           const main = s.id === items[loop ? n : 0].id;
-          const near = Math.abs(k - pos) <= 1;
+          // 겹쳐 바뀌는 배너는 지금·다음·이전 장만 그림을 받는다 (6장이 한 자리에 겹쳐 있어 모두 화면 안으로 잡힌다)
+          const near = fade ? current || k === (index + 1) % n || k === (index + n - 1) % n : Math.abs(k - pos) <= 1;
           return (
             <Link
               key={`${s.id}-${k}`}
               href={s.href}
               aria-hidden={!current}
               tabIndex={current ? 0 : -1}
-              className={`relative block aspect-[16/10] w-[var(--w)] shrink-0 overflow-hidden rounded-[28px] bg-gray-200 transition-opacity duration-300 md:aspect-[16/9] md:rounded-3xl ${
-                current ? "" : second ? "opacity-60 md:opacity-100" : "opacity-60"
-              }`}
+              className={
+                fade
+                  ? `relative block aspect-[16/10] w-full overflow-hidden rounded-[28px] bg-gray-200 transition-opacity duration-700 [grid-area:1/1] md:aspect-[16/9] md:rounded-3xl ${current ? "z-[1] opacity-100" : "pointer-events-none opacity-0"}`
+                  : `relative block aspect-[16/10] w-[var(--w)] shrink-0 overflow-hidden rounded-[28px] bg-gray-200 transition-opacity duration-300 md:aspect-[16/9] md:rounded-3xl ${
+                      current ? "" : second ? "opacity-60 md:opacity-100" : "opacity-60"
+                    }`
+              }
             >
-              <Image
-                src={s.img}
-                alt=""
-                fill
-                sizes="(min-width: 768px) 560px, 84vw"
-                // 현재 장만 즉시 (10/26 성능: 양옆 2장까지 즉시 받던 것을 넘길 때로)
-                loading={main && eager ? "eager" : "lazy"}
-                fetchPriority={main && eager ? "high" : "auto"}
-                unoptimized={!canOptimize(s.img)}
-                className="object-cover"
-              />
+              {(!fade || near) && (
+                <Image
+                  src={s.img}
+                  alt=""
+                  fill
+                  sizes="(min-width: 768px) 560px, 84vw"
+                  // 현재 장만 즉시 (10/26 성능: 양옆 2장까지 즉시 받던 것을 넘길 때로)
+                  loading={main && eager ? "eager" : "lazy"}
+                  fetchPriority={main && eager ? "high" : "auto"}
+                  unoptimized={!canOptimize(s.img)}
+                  className="object-cover"
+                />
+              )}
               <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 to-transparent" />
               <div className="absolute inset-y-0 left-0 flex max-w-[85%] flex-col justify-end p-5 pb-9 text-white md:max-w-[80%] md:justify-end md:px-8 md:pb-12">
                 {(s.tag || s.live) && (

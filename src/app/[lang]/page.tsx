@@ -508,7 +508,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   const seoulScores = Object.values(seoul).map((s) => s.score);
 
   return (
-    <main className="relative px-5 pt-5 pb-4 md:px-0 md:pt-10">
+    <main className="relative isolate px-5 pt-5 pb-4 md:px-0 md:pt-10">
       <SeasonBackdrop fx={seasonFx} />
       <script
         type="application/ld+json"
