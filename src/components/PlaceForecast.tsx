@@ -32,7 +32,6 @@ export function UpcomingHours({ hours, bestHour }: { hours: { hour: number; labe
                 type="button"
                 onClick={() => setPicked(on ? undefined : h.hour)}
                 aria-pressed={on}
-                aria-label={`${h.label} ${t(l.label)}`}
                 className={`flex flex-col items-center rounded-xl px-3 py-2 transition active:scale-95 ${on ? "ring-2 ring-indigo-500" : best ? "ring-2 ring-emerald-500" : "hover:ring-1 hover:ring-gray-300"}`}
                 style={{ background: `${l.color}1f` }}
               >
