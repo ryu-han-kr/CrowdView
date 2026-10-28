@@ -138,7 +138,7 @@ export function HeroCarousel({
           // PC에서 오른쪽에 함께 보이는 두 번째 배너 (휴대폰에선 옆에 흐리게 보이는 배너)
           const second = layout === "peek" && loop && k === pos + 1;
           // 처음 화면에 가운데 보이는 배너 (가장 큰 그림 → 먼저 받기). 무한 넘김용 복제본도 같은 그림이라 같이 (LCP 경고: 복제본이 lazy였다)
-          const main = s.id === items[loop ? n : 0].id;
+          const main = s.id === items[loop && !fade ? n : 0].id;
           // 겹쳐 바뀌는 배너는 지금·다음·이전 장만 그림을 받는다 (6장이 한 자리에 겹쳐 있어 모두 화면 안으로 잡힌다)
           const near = fade ? current || k === (index + 1) % n || k === (index + n - 1) % n : Math.abs(k - pos) <= 1;
           return (
