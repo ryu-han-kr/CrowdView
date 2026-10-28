@@ -1409,6 +1409,8 @@ const dict: Dict = {
   "자동으로 다시 결제되지 않아요. 고른 등급의 기능을 패스 기간 동안 써요.": "No automatic renewal. Use your chosen tier's features for the pass period.",
   "Pro 기능 전부 + 알림 {n}개 · 문의 먼저": "Everything in Pro + {n} alerts · Priority support",
   "결제 후 7일 안에 유료 기능을 쓰지 않았으면 전액 환불돼요": "Full refund if you don't use paid features within 7 days of payment",
+  "오늘은 붐빌 것으로 보여요. 입장권을 미리 사 두면 매표소 줄을 줄일 수 있어요.": "Looks busy today. Buy tickets in advance to skip the ticket-office line.",
+  "도착하면 바로 필요한 것": "Essentials when you land",
   "한국민속촌": "Korean Folk Village",
   "서울대공원": "Seoul Grand Park",
   "롯데월드 아쿠아리움": "Lotte World Aquarium",

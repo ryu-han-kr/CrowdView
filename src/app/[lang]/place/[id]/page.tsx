@@ -684,9 +684,17 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             {t("지난 날짜 실제 기록 보기")} ›
           </Link>
 
-          {/* 입장권·숙소 칸: 혼잡 그래프 바로 아래 (10/28 경수님: 사이트 취지인 그래프가 위, 예약은 그 다음에 잘 보이게) */}
-          {["themepark", "waterpark", "ski", "landmark"].includes(place.category) && (
-            <TourLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} className="mt-8" />
+          {/* 입장권·숙소 칸: 혼잡 그래프 바로 아래 (10/28 경수님: 사이트 취지인 그래프가 위, 예약은 그 다음에 잘 보이게).
+              외국어 화면은 모든 장소에 (외국인은 여행 먼저, 공항은 airport 화면에서 도착 필수품 칩), 오늘 혼잡 예측이면 '미리 사면 줄이 줄어요' */}
+          {(lang !== "ko" || ["themepark", "waterpark", "ski", "landmark"].includes(place.category)) && (
+            <TourLinks
+              ko={place.name}
+              en={getT("en")(place.name)}
+              lang={lang}
+              t={t}
+              className="mt-8"
+              busy={todayPeak.peakScore >= 60}
+            />
           )}
           <StayLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} at={place} className="mt-4" />
 
