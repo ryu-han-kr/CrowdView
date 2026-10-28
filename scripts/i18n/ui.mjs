@@ -2804,4 +2804,12 @@ export default {
   "Plus·Pro 회원 전용이에요": ["For Plus/Pro members only", "Plus・Pro会員限定です", "仅限Plus/Pro会员", "僅限Plus/Pro會員"],
   "실제 인원 연결을 준비하고 있어요": ["We're getting live headcounts ready", "実際の人出の連携を準備中です", "正在准备实时人数连接", "正在準備即時人數連接"],
   "무료·Plus·Pro 기능 비교": ["Free · Plus · Pro feature comparison","無料・Plus・Pro 機能比較","免费·Plus·Pro 功能比较","免費·Plus·Pro 功能比較"],
+  // ── 해외 여행 패스 (10/28)
+  "짧은 여행에 딱": ["Perfect for a short trip","短い旅行にぴったり","适合短途旅行","適合短途旅行"],
+  "한 달 머무는 여행": ["For a month-long stay","1か月の滞在に","适合一个月的旅行","適合一個月的旅行"],
+  "여행하는 동안만, 한 번 결제": ["Pay once, just for your trip","旅行中だけ、1回払い","只在旅行期间，一次付款","只在旅行期間，一次付款"],
+  "자동으로 다시 결제되지 않아요. Pro 기능(지금 실제 인원 보기·광고 없이·알림)을 패스 기간 동안 써요.": ["No automatic renewal. Get all Pro features (live headcounts, ad-free, alerts) for the pass period.","自動更新なし。パス期間中はPro機能（実際の人出・広告なし・通知）を使えます。","不会自动续费。通行证期间可使用Pro全部功能（实时人数·无广告·提醒）。","不會自動續費。通行證期間可使用Pro全部功能（即時人數·無廣告·提醒）。"],
+  "{n}일 패스": ["{n}-day pass","{n}日パス","{n}天通行证","{n}天通行證"],
+  "곧 열려요": ["Coming soon","まもなく","即将开放","即將開放"],
+  "결제는 Paddle이 판매자로 처리해요(카드·PayPal 등, 나라별 통화와 세금 포함). 결제 후 7일 안에 쓰지 않았다면 전액 환불돼요.": ["Payments are processed by Paddle as merchant of record (cards, PayPal and more, local currency and taxes included). Full refund if unused within 7 days.","決済はPaddleが販売者として処理します（カード・PayPalなど、各国通貨・税込）。7日以内に未使用なら全額返金。","付款由Paddle作为销售方处理（银行卡·PayPal等，含当地货币与税费）。7天内未使用可全额退款。","付款由Paddle作為銷售方處理（信用卡·PayPal等，含當地貨幣與稅費）。7天內未使用可全額退款。"],
 };
