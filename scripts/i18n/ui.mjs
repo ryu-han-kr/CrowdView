@@ -2803,4 +2803,5 @@ export default {
   "지금은 실제 인원을 불러올 수 없어요": ["Live headcount isn't available right now", "いまは実際の人出を取得できません", "暂时无法获取实时人数", "暫時無法取得即時人數"],
   "Plus·Pro 회원 전용이에요": ["For Plus/Pro members only", "Plus・Pro会員限定です", "仅限Plus/Pro会员", "僅限Plus/Pro會員"],
   "실제 인원 연결을 준비하고 있어요": ["We're getting live headcounts ready", "実際の人出の連携を準備中です", "正在准备实时人数连接", "正在準備即時人數連接"],
+  "무료·Plus·Pro 기능 비교": ["Free · Plus · Pro feature comparison","無料・Plus・Pro 機能比較","免费·Plus·Pro 功能比较","免費·Plus·Pro 功能比較"],
 };

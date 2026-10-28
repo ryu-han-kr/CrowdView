@@ -1382,6 +1382,7 @@ const dict: Dict = {
   "지금은 실제 인원을 불러올 수 없어요": "Live headcount isn't available right now",
   "Plus·Pro 회원 전용이에요": "For Plus/Pro members only",
   "실제 인원 연결을 준비하고 있어요": "We're getting live headcounts ready",
+  "무료·Plus·Pro 기능 비교": "Free · Plus · Pro feature comparison",
   "한국민속촌": "Korean Folk Village",
   "서울대공원": "Seoul Grand Park",
   "롯데월드 아쿠아리움": "Lotte World Aquarium",

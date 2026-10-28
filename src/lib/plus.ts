@@ -48,6 +48,7 @@ const CLAIM_MINUTES = 30;
  */
 let schemaReady: Promise<void> | undefined;
 function planColumns(): Promise<void> {
+  if (!pool) return Promise.resolve();
   schemaReady ??= (async () => {
     await sql("alter table plus_subscription add column if not exists plan text not null default 'plus'");
     await sql("alter table payment add column if not exists plan text");
@@ -176,11 +177,11 @@ export async function startPass(userId: string, plan: PlanId = "plus"): Promise<
  * 결과를 모르는 오류(시간 초과 등)면 주문 번호로 다시 조회해 결제됐는지 확인한다
  */
 export async function confirmPass(userId: string, paymentKey: string, orderId: string, amount: number): Promise<PlusState> {
-  await planColumns();
   const [owner, planRaw] = String((await kv.get(`passorder:${orderId}`).catch(() => null)) ?? "").split("|");
   if (owner !== userId) throw new Error("주문 정보가 이 계정과 맞지 않아요. 다시 시도해 주세요.");
   const plan: PlanId = planRaw === "pro" ? "pro" : "plus";
   if (amount !== planOf(plan).priceKrw) throw new Error("결제 금액이 맞지 않아요");
+  await planColumns();
   let p: TossPayment | undefined;
   try {
     p = confirmPaid(await confirmPayment(paymentKey, orderId, amount), plan);

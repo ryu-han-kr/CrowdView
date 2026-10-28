@@ -127,7 +127,8 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
           </div>
         </section>
 
-        <div className="mt-8 overflow-x-auto">
+        {/* 휴대폰에선 옆으로 밀어 보는 표: 키보드로도 넘기게 (axe scrollable-region-focusable) */}
+        <div className="mt-8 overflow-x-auto" tabIndex={0} role="region" aria-label={t("무료·Plus·Pro 기능 비교")}>
           <table className="w-full min-w-[520px] text-sm">
             <thead>
               <tr className="border-b border-gray-200 text-left text-xs text-gray-500">
