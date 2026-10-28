@@ -56,6 +56,15 @@ def cut(cell: Image.Image, grow: int = GROW, label: bool = True):
         y -= 1
     if y > 6: rgba[y - 1:] = 0
     else: print("  이름표 못 찾음")
+    # 10/28 경수님 '엉덩이가 잘려 있어': 발밑 그림자를 배경으로 지워 아래가 일자로 잘려 보였다 →
+    # 몸 맨 아래 줄 위아래의 옅은 그림자를 배경과의 차이만큼 반투명으로 살린다 (이름표 줄 위까지만)
+    body = np.where((rgba[..., 3] > 40).sum(axis=1) > 2)[0]
+    if len(body):
+        yb = int(body.max())
+        lo, hi = max(0, yb - 40), min(y - 1 if y > 6 else h, yb + 45)
+        zone = np.zeros(d.shape, bool); zone[lo:hi] = True
+        shade = zone & (rgba[..., 3] < 255)
+        rgba[..., 3][shade] = np.maximum(rgba[..., 3][shade], (np.clip((d[shade] - 3) / 30, 0, 1) * 230).astype(np.uint8))
     return Image.fromarray(rgba)
 
 def drop_side_bits(pic: Image.Image, reach: int = 60) -> Image.Image:
