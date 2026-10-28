@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "@/i18n/link";
 import { useI18n } from "@/i18n/client";
 import { levelOf, inkOf } from "@/lib/levels";
 import { usePlus } from "@/lib/plus-client";
+import { useSession } from "@/lib/auth-client";
 
 interface Res {
   data?: { level: number; score: number; time: string; poiName: string };
@@ -20,9 +21,25 @@ interface Res {
  */
 export function LiveCountButton({ placeId }: { placeId: string }) {
   const { t } = useI18n();
-  const plus = usePlus();
+  const plusCookie = usePlus();
+  const { data } = useSession();
   const [busy, setBusy] = useState(false);
   const [res, setRes] = useState<Res | null>(null);
+  // Plus 표시 쿠키가 없어도 로그인했으면 서버에 한 번 물어본다 (운영자 시험·다른 기기에서 결제한 회원)
+  const [allowed, setAllowed] = useState(false);
+  useEffect(() => {
+    if (plusCookie || !data?.user) return;
+    fetch(`/api/plus/live/${placeId}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j: Res | null) => {
+        if (j?.left) {
+          setAllowed(true);
+          setRes({ left: j.left, plan: j.plan });
+        }
+      })
+      .catch(() => {});
+  }, [plusCookie, data?.user, placeId]);
+  const plus = plusCookie || allowed;
 
   if (!plus)
     return (
