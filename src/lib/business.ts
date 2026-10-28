@@ -32,10 +32,17 @@ export const LEGAL_EFFECTIVE_DATE = "2026-10-22";
 export const PRIVACY_NOTICE_DATE = "2026-10-26";
 export const PRIVACY_EFFECTIVE_DATE = "2026-11-02";
 
-/** 유료 플랜 */
-export const PLUS = {
-  name: "CrowdView Plus",
-  priceKrw: 3900,
-  /** 결제 주기 (개월) */
-  periodMonths: 1,
+/**
+ * 유료 단계 (경수님 10/28: Plus·Pro 두 단계, SK '지금 실제 인원' 횟수를 다르게).
+ * SK 장소 혼잡도 Basic은 건당 33원(일 한도 100건) → 한 사람이 한 달 내내 다 써도 매출의 약 1/4을 넘지 않게 월 횟수로도 묶는다.
+ * 누군가 10분 안에 본 곳은 SK를 다시 부르지 않으니 횟수에서 빼지 않는다 (lib/live-count)
+ */
+export type PlanId = "plus" | "pro";
+export const PLANS = {
+  plus: { id: "plus", name: "CrowdView Plus", priceKrw: 3900, periodMonths: 1, liveDaily: 3, liveMonthly: 30, alerts: 30 },
+  pro: { id: "pro", name: "CrowdView Pro", priceKrw: 6900, periodMonths: 1, liveDaily: 5, liveMonthly: 60, alerts: 100 },
 } as const;
+export const planOf = (id: unknown): (typeof PLANS)[PlanId] => (id === "pro" ? PLANS.pro : PLANS.plus);
+
+/** 기본 유료 단계 (예전 코드·문구가 쓰는 이름) */
+export const PLUS = PLANS.plus;

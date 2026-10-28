@@ -14,7 +14,8 @@ export async function GET(req: Request) {
   const user = await requireUser(req);
   if (!user) return unauthorized();
   try {
-    return NextResponse.json(await startPass(user.id), { headers: { "cache-control": "no-store" } });
+    const plan = new URL(req.url).searchParams.get("plan") === "pro" ? "pro" : "plus";
+    return NextResponse.json(await startPass(user.id, plan), { headers: { "cache-control": "no-store" } });
   } catch (e) {
     return errorJson(e);
   }

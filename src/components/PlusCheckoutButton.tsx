@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { useSession } from "@/lib/auth-client";
 import { checkoutEnabled, startCardRegistration, startPassPayment } from "@/lib/plus-browser";
-import { PLUS, SALES_OPEN } from "@/lib/business";
+import { planOf, SALES_OPEN, type PlanId } from "@/lib/business";
 import { usePlus } from "@/lib/plus-client";
 import { ConfirmSheet } from "./ConfirmSheet";
 
@@ -15,14 +15,16 @@ import { ConfirmSheet } from "./ConfirmSheet";
 const billingEnabled = process.env.NEXT_PUBLIC_PLUS_BILLING !== "off";
 
 /**
- * Plus 시작 버튼 두 가지: 1개월 이용권(한 번 결제, 자동 갱신 없음) · 매달 자동결제.
- * 로그인 → 토스 결제창(이용권) 또는 카드 등록창(자동결제) → /plus/complete 에서 서버가 승인·첫 달 결제
+ * 유료 시작 버튼: 매달 자동결제(주 버튼) · 1개월 이용권(한 번 결제). plan으로 Plus·Pro를 고른다.
+ * 로그인 → 토스 카드 등록창(자동결제) 또는 결제창(이용권) → /plus/complete 에서 서버가 첫 달 결제·승인.
+ * 자동결제 계약 전(NEXT_PUBLIC_PLUS_BILLING=off)에도 자동결제 안내는 보이고 버튼만 '곧 열려요'로 (토스 자동결제 심사 화면, 경수님 10/28)
  */
-export function PlusCheckoutButton({ className = "" }: { className?: string }) {
+export function PlusCheckoutButton({ className = "", plan = "plus", tone = "light" }: { className?: string; plan?: PlanId; tone?: "light" | "gold" }) {
   const { t } = useI18n();
+  const solid = tone === "gold" ? "bg-gradient-to-r from-amber-300 to-yellow-200 text-gray-900" : "bg-white text-indigo-700";
   if (!checkoutEnabled)
     return (
-      <button disabled className={`rounded-2xl bg-white py-3 text-sm font-bold text-indigo-700 ${className}`}>
+      <button disabled className={`rounded-2xl py-3 text-sm font-bold ${solid} ${className}`}>
         {t("결제 연동 준비 중")}
       </button>
     );
@@ -30,16 +32,16 @@ export function PlusCheckoutButton({ className = "" }: { className?: string }) {
   if (!SALES_OPEN)
     return (
       <div className={className}>
-        <button disabled className="w-full rounded-2xl bg-white/90 py-3 text-sm font-bold text-indigo-700">
+        <button disabled className={`w-full rounded-2xl py-3 text-sm font-bold opacity-90 ${solid}`}>
           {t("결제 준비 중")}
         </button>
         <p className="mt-2 text-center text-xs font-semibold text-white/90">{t("판매 준비를 마치는 대로 곧 열려요")}</p>
       </div>
     );
-  return <Checkout className={className} />;
+  return <Checkout className={className} plan={plan} solid={solid} />;
 }
 
-function Checkout({ className }: { className: string }) {
+function Checkout({ className, plan, solid }: { className: string; plan: PlanId; solid: string }) {
   const { t, lp } = useI18n();
   const { data, isPending } = useSession();
   const plus = usePlus();
@@ -47,8 +49,9 @@ function Checkout({ className }: { className: string }) {
   const [error, setError] = useState<string | null>(null);
   // 결제 전 확인 창 (금액·갱신 여부·환불 안내 + 동의 체크)
   const [asking, setAsking] = useState<null | "pass" | "billing">(null);
-  const cls = `rounded-2xl bg-white py-3 text-sm font-bold text-indigo-700 ${className}`;
-  const price = PLUS.priceKrw.toLocaleString();
+  const P = planOf(plan);
+  const cls = `rounded-2xl py-3 text-sm font-bold ${solid} ${className}`;
+  const price = P.priceKrw.toLocaleString();
   // 이용권으로 이용 중인 회원이 마이페이지 '1개월 더 이어서 결제'로 오면(?extend=1) 이용권 버튼을 보여 준다 (남은 기간 뒤로 이어 붙음)
   const [extend, setExtend] = useState(false);
   useEffect(() => setExtend(new URLSearchParams(location.search).get("extend") === "1"), []);
@@ -56,7 +59,7 @@ function Checkout({ className }: { className: string }) {
   if (plus && !extend)
     return (
       <a href={lp("/me")} className={`block text-center ${cls}`}>
-        {t("Plus 이용 중 · 관리하기")}
+        {t("이용 중 · 관리하기")}
       </a>
     );
   if (!isPending && !data?.user)
@@ -71,9 +74,9 @@ function Checkout({ className }: { className: string }) {
     setBusy(true);
     setError(null);
     try {
-      // 결제가 끝나면 토스가 /plus/complete로 보내고, 거기서 서버가 승인(이용권)하거나 첫 달을 결제(자동결제)한다
-      const url = `${location.origin}${lp("/plus/complete")}`;
-      if (kind === "pass") await startPassPayment(data.user, url);
+      // 결제가 끝나면 토스가 /plus/complete로 보내고, 거기서 서버가 승인(이용권)하거나 첫 달을 결제(자동결제)한다. 단계는 주소에 실어 보낸다
+      const url = `${location.origin}${lp("/plus/complete")}?plan=${plan}`;
+      if (kind === "pass") await startPassPayment(data.user, url, plan);
       else await startCardRegistration(data.user, url);
     } catch (e) {
       const code = (e as { code?: string })?.code;
@@ -85,21 +88,28 @@ function Checkout({ className }: { className: string }) {
 
   return (
     <div>
-      <button disabled={busy || isPending} onClick={() => data?.user && setAsking("pass")} className={cls}>
-        {busy && asking === "pass" ? t("결제 진행 중…") : t("1개월 이용권 결제 ({price}원)", { price })}
+      {/* 주 버튼: 매달 자동결제. 계약 전이면 안내만 보이고 눌리지 않는다 */}
+      <button
+        disabled={!billingEnabled || busy || isPending || !!plus}
+        onClick={() => data?.user && setAsking("billing")}
+        className={`${cls} disabled:cursor-not-allowed ${billingEnabled ? "" : "opacity-80"}`}
+      >
+        {!billingEnabled
+          ? t("매달 자동결제 · 곧 열려요")
+          : busy && asking === "billing"
+            ? t("결제 진행 중…")
+            : t("매달 자동결제로 시작 (월 {price}원)", { price })}
       </button>
-      {billingEnabled && !plus && (
-        <button
-          disabled={busy || isPending}
-          onClick={() => data?.user && setAsking("billing")}
-          className={`mt-2 rounded-2xl border border-white/60 py-2.5 text-sm font-semibold text-white ${className}`}
-        >
-          {busy && asking === "billing" ? t("결제 진행 중…") : t("매달 자동결제로 시작")}
-        </button>
-      )}
+      <button
+        disabled={busy || isPending}
+        onClick={() => data?.user && setAsking("pass")}
+        className={`mt-2 rounded-2xl border border-white/50 py-2.5 text-sm font-semibold text-white ${className}`}
+      >
+        {busy && asking === "pass" ? t("결제 진행 중…") : t("1개월 이용권으로 먼저 써 보기 ({price}원)", { price })}
+      </button>
       {asking === "pass" && (
         <ConfirmSheet
-          title={t("{name} 1개월 이용권", { name: PLUS.name })}
+          title={t("{name} 1개월 이용권", { name: P.name })}
           lines={[
             t("{price}원 (부가세 포함), 한 번만 결제돼요", { price }),
             t("이용 기간: 결제한 날부터 1개월"),
@@ -115,7 +125,7 @@ function Checkout({ className }: { className: string }) {
       )}
       {asking === "billing" && (
         <ConfirmSheet
-          title={t("{name} 결제", { name: PLUS.name })}
+          title={t("{name} 결제", { name: P.name })}
           lines={[
             t("월 {price}원 (부가세 포함)", { price }),
             t("오늘 첫 달이 결제되고, 매달 오늘과 같은 날짜에 같은 카드로 자동 결제돼요"),

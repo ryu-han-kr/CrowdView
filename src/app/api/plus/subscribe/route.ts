@@ -23,10 +23,10 @@ export async function POST(req: Request) {
   if (!user) return unauthorized();
   const daily = await dailyLimit("subscribe", user.id, 5);
   if (daily) return daily;
-  const { authKey, customerKey } = (await req.json().catch(() => ({}))) as { authKey?: string; customerKey?: string };
+  const { authKey, customerKey, plan } = (await req.json().catch(() => ({}))) as { authKey?: string; customerKey?: string; plan?: string };
   if (!authKey || typeof authKey !== "string" || !customerKey || typeof customerKey !== "string") return errorJson("카드 등록 정보가 없어요");
   try {
-    const plus = await subscribe(user.id, authKey, customerKey);
+    const plus = await subscribe(user.id, authKey, customerKey, plan === "pro" ? "pro" : "plus");
     return withPlusCookie(NextResponse.json({ plus }), plus);
   } catch (e) {
     console.error("[plus] subscribe", user.id, e);
