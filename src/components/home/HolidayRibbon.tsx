@@ -7,7 +7,8 @@ import { krDayById, type KrDay } from "@/lib/kr-days";
 
 /**
  * 기념일 날 홈 머리 아래 인사 띠 (경수님 10/28: 설·추석·삼일절·어린이날·광복절·한글날·크리스마스·새해).
- * 날짜는 서버가 고르고(lib/kr-days), 미리 보기는 주소 뒤 ?day=christmas 처럼
+ * 날짜는 서버가 고르고(lib/kr-days), 미리 보기는 주소 뒤 ?day=christmas 처럼.
+ * 장소·관광지 상세에는 떨어지는 효과 없이 기념일 날 이 띠만 (경수님 10/28)
  */
 /** 태극기 (윈도우 크롬은 국기 이모지를 'KR' 글자로 보여 줘서 직접 그린다) */
 function Taegeukgi({ className = "" }: { className?: string }) {
@@ -42,7 +43,7 @@ function Taegeukgi({ className = "" }: { className?: string }) {
 
 const pic = (e: string, cls: string) => (e === "🇰🇷" ? <Taegeukgi className={cls} /> : e);
 
-export function HolidayRibbon({ day: given }: { day?: KrDay }) {
+export function HolidayRibbon({ day: given, className = "mb-4 md:mb-6" }: { day?: KrDay; className?: string }) {
   const { t } = useI18n();
   const [day, setDay] = useState(given);
   useEffect(() => {
@@ -52,7 +53,7 @@ export function HolidayRibbon({ day: given }: { day?: KrDay }) {
   if (!day) return null;
   return (
     <section
-      className="relative mb-4 flex items-center gap-3 overflow-hidden rounded-3xl px-4 py-3 md:mb-6 md:px-6"
+      className={`relative flex items-center gap-3 overflow-hidden rounded-3xl px-4 py-3 md:px-6 ${className}`}
       style={{ background: `linear-gradient(110deg, ${day.bg[0]}, ${day.bg[1]})` }}
       data-day={day.id}
     >

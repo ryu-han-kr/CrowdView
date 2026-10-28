@@ -1,4 +1,6 @@
 import { DroneVideos } from "@/components/DroneVideos";
+import { HolidayRibbon } from "@/components/home/HolidayRibbon";
+import { krDayOn } from "@/lib/kr-days";
 import { videosFor } from "@/lib/kto-videos";
 import type { Metadata } from "next";
 import { Suspense } from "react";
@@ -178,6 +180,12 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
       />
 
       {/* 장소 상세와 같은 틀: 모바일은 한 줄, PC는 왼쪽(지금·날씨) 고정 + 오른쪽(그래프·소개) */}
+      {/* 기념일 날만 인사 띠 (상세에는 떨어지는 효과 없음, 경수님 10/28) */}
+      {krDayOn(kst().date) && (
+        <div className="mt-4 px-5 md:mt-6 md:px-0">
+          <HolidayRibbon day={krDayOn(kst().date)} className="" />
+        </div>
+      )}
       <div className="relative mt-5 px-5 pb-10 md:mt-8 md:px-0 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)] lg:gap-10">
         <div className="lg:sticky lg:top-24 lg:self-start">
           {/* 분류·지역 칩은 사진 위로, 한 문장 요약은 혼잡도 카드와 겹쳐 뺐다 (사용자 QA 10/22 — 장소 상세와 같게) */}
