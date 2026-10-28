@@ -551,3 +551,13 @@ ins.adsbygoogle[data-ad-status="unfilled"],
 aside:has(> ins.adsbygoogle[data-ad-status="unfilled"]) {
   display: none !important;
 }
+
+/* 장소 상단 사진이 천천히 확대·이동 (Ken Burns, 경수님 10/28 '살짝씩 움직이게'). 사진마다 방향을 달리하고,
+   첫 사진(LCP)은 그려진 뒤에 움직이도록 늦게 시작. 움직임 줄이기 설정이면 끈다 */
+@keyframes kb-a { from { transform: scale(1) translate(0, 0); } to { transform: scale(1.09) translate(-2%, -1.5%); } }
+@keyframes kb-b { from { transform: scale(1.08) translate(1.5%, 1%); } to { transform: scale(1) translate(-1%, 0); } }
+.kenburns { position: absolute; inset: 0; animation: kb-a 16s ease-in-out 1.2s infinite alternate both; will-change: transform; }
+.kenburns.kb-alt { animation-name: kb-b; animation-duration: 19s; animation-delay: 0.4s; }
+@media (prefers-reduced-motion: reduce) {
+  .kenburns { animation: none; }
+}
