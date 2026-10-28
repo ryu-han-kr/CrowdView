@@ -7,6 +7,7 @@ import { getT } from "@/i18n/server";
 import type { T } from "@/i18n/translate";
 import { pageMeta } from "@/lib/seo";
 import { PLANS, PLUS, planOf } from "@/lib/business";
+import { tripBriefAi } from "@/lib/trip-brief";
 import { Glyph } from "@/components/Glyph";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
@@ -29,6 +30,8 @@ const ROWS: [label: string, free: V, plus: V, pro: V, max: V][] = [
   // 경수님 10/28: SK텔레콤 실측 '지금 실제 인원 보기' — 단계마다 횟수 (lib/business PLANS)
   ["지금 실제 인원 보기 (SK텔레콤 실측)", false, "하루 {d}회 · 월 {m}회:plus", "하루 {d}회 · 월 {m}회:pro", "하루 {d}회 · 월 {m}회:max"],
   ["방금 다른 회원이 본 곳은 횟수가 줄지 않아요 (10분 안)", false, true, true, true],
+  // 경수님 10/28: 입장권·요금·가는 길·볼거리·추천 동선을 AI가 웹 검색으로 정리
+  ["AI 여행 요약 (입장권·요금·가는 길·볼거리·추천 동선)", false, true, true, true],
   // 경수님 QA #2 2단계 (10/27): 1년 혼잡 달력은 Plus 전용
   ["1년 혼잡 달력 (1년 중 한산한 날 한눈에)", false, true, true, true],
   ["한산한 코스 추천 전체 일정 (무료는 앞 2곳 미리보기)", false, true, true, true],
@@ -166,7 +169,7 @@ export default async function PricingPage({ params }: { params: Promise<{ lang: 
               </tr>
             </thead>
             <tbody>
-              {ROWS.map(([label, free, plus, pro, max]) => (
+              {ROWS.filter(([label]) => tripBriefAi() || !label.startsWith("AI 여행 요약")).map(([label, free, plus, pro, max]) => (
                 <tr key={label} className="border-b border-gray-100">
                   <td className="py-3 pr-2">{t(label)}</td>
                   <td className="text-center">
