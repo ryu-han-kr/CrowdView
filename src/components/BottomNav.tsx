@@ -60,12 +60,14 @@ export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
                 key={tab.href}
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
-                className={`flex shrink-0 items-center gap-1.5 rounded-full px-2 py-2 text-[13px] font-semibold lg:px-3 lg:text-sm whitespace-nowrap transition-colors ${
+                title={t(tab.label)}
+                className={`flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-2 text-[13px] font-semibold lg:px-3 lg:text-sm whitespace-nowrap transition-colors ${
                   active ? "bg-indigo-50 text-indigo-600" : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                 }`}
               >
-                <SolarIcon name={tab.icon} className="hidden h-5 w-5 xl:block" />
-                {t(tab.label)}
+                {/* 좁은 PC·태블릿(lg 아래)은 아이콘만: 메뉴가 옆으로 밀려 '마이'가 잘리던 것 (경수님 10/29) */}
+                <SolarIcon name={tab.icon} className="h-5 w-5 lg:hidden xl:block" />
+                <span className="sr-only lg:not-sr-only">{t(tab.label)}</span>
               </Link>
             );
           })}

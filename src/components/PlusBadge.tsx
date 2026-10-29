@@ -18,7 +18,8 @@ export function PlusBadge({ className = "" }: { className?: string }) {
       href="/pricing"
       className={`rounded-full bg-gradient-to-r from-indigo-600 to-violet-500 px-3 py-1.5 text-xs font-extrabold text-white shadow-sm transition hover:-translate-y-px ${className}`}
     >
-      Plus · {t("1개월 {n}원", { n: PLUS.priceKrw.toLocaleString() })}
+      {/* 좁은 화면은 'Plus'만 (상단 메뉴 자리를 비워 둔다) */}
+      Plus<span className="hidden xl:inline"> · {t("1개월 {n}원", { n: PLUS.priceKrw.toLocaleString() })}</span>
     </Link>
   );
 }
