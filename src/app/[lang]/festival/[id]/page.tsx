@@ -2,7 +2,6 @@ import Link from "@/i18n/link";
 import { StayLinks } from "@/components/StayLinks";
 import type { Metadata } from "next";
 import { jsonLd, pageMeta, SITE } from "@/lib/seo";
-import { getSktCongestion } from "@/lib/skt";
 import { notFound } from "next/navigation";
 import { DataTag } from "@/components/DataTag";
 import { LevelBadge } from "@/components/Level";
@@ -55,12 +54,6 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
   if (!f) notFound();
   const [crowd, live] = await Promise.all([getFestivalCrowd(f), getFestivalLive(f)]);
   const area = seoulAreaOf(f);
-  // 서울시 데이터가 없는 진행 중 축제는 SK 장소 혼잡도 (키가 있을 때만)
-  const today0 = kst().date;
-  const skt =
-    !live && !area && f.lat && f.lng && f.start <= today0 && f.end >= today0
-      ? await getSktCongestion(f.title.replace(/\[[^\]]*\]|\d{4}년?|제?\d+회/g, "").trim(), f.lat, f.lng)
-      : undefined;
   // 축제 이름·장소·지역명 번역 (Papago, Redis 캐시). 못 하면 원문
   const names = await translateNames([f.title, f.place, f.region, crowd?.signguName, live?.area, area?.name], lang);
   const tr = (ko: string) => names.get(ko) ?? ko;
@@ -205,25 +198,6 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
               </p>
             </section>
           )}
-          {skt && (
-            <section className="mb-4 rounded-3xl p-5" style={{ background: `${levelOf(skt.score).color}14` }}>
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="text-xs font-medium text-gray-500">
-                    <span className="mr-1 rounded bg-emerald-700 px-1 py-px text-[10px] font-bold text-white">{t("실시간")}</span>
-                    {t("지금 {area} 일대", { area: skt.poiName })}
-                  </p>
-                  <p className="mt-1 text-2xl font-extrabold" style={{ color: inkOf(levelOf(skt.score).color) }}>
-                    {t(levelOf(skt.score).label)}
-                  </p>
-                </div>
-                <CrowdMascot character="rabbit" score={skt.score} size={88} className="-my-2 shrink-0" label={t(levelOf(skt.score).label)} />
-              </div>
-              <p className="mt-2 text-[11px] text-gray-500">
-                {t("SK텔레콤 장소 혼잡도")} {skt.time && `· ${t("{time} 기준", { time: skt.time.slice(11) })}`}
-              </p>
-            </section>
-          )}
           {!live && area && (
             <p className="mb-4 rounded-2xl bg-emerald-50 px-4 py-3 text-xs text-emerald-800">
               {t("이 축제는 서울시 실시간 지역 ‘{area}’ 안에서 열려요. 축제가 시작되면 실시간 인구를 보여드려요.", { area: tr(area.name) })}
@@ -244,7 +218,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
               </div>
               {/* 실시간 카드가 있으면 거기 토끼가 있으니 여기엔 예측 표정만 작게, 자료가 없으면 기다리는 토끼 */}
               {crowd ? (
-                <CrowdMascot character="rabbit" score={crowd.score} size={live || skt ? 64 : 96} className="-my-2 shrink-0" label={level ? t(level.label) : undefined} />
+                <CrowdMascot character="rabbit" score={crowd.score} size={live ? 64 : 96} className="-my-2 shrink-0" label={level ? t(level.label) : undefined} />
               ) : null}
             </div>
             {crowd && level ? (
