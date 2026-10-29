@@ -193,77 +193,17 @@
   ]
  },
  "everland": {
-  "model": "claude-sonnet-5-5",
+  "model": "claude-haiku-5-5",
   "date": "2026-10-29",
   "photos": [
    {
-    "src": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Panda_-_Aibao.jpg",
-    "w": 1280,
-    "h": 1707,
-    "credit": "CHENG SHIYI / Wikimedia Commons",
-    "license": "CC0",
-    "page": "https://commons.wikimedia.org/wiki/File:Panda_-_Aibao.jpg",
-    "alt": "대나무를 먹는 판다 클로즈업",
-    "score": 10,
-    "label": "판다월드",
-    "reason": "대나무를 먹는 판다를 가까이서 선명하게 담아 가장 귀엽고 시선을 사로잡습니다."
-   },
-   {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/59/3486459_image2_1.jpg",
-    "w": 940,
-    "h": 624,
+    "src": "https://tong.visitkorea.or.kr/cms/resource/17/2943217_image2_1.jpg",
     "credit": "한국관광공사",
     "license": "공공누리 제1유형",
-    "alt": "어안렌즈로 담은 나무 롤러코스터 레일",
-    "score": 7,
-    "label": "티 익스프레스",
-    "reason": "어안렌즈로 나무 레일의 곡선과 속도감을 역동적으로 표현했습니다."
-   },
-   {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/20240115_%EC%95%84%EC%9D%B4%EB%B0%94%EC%98%A4%2C_%EC%8C%8D%EB%91%A5%EB%B0%94%EC%98%A4.jpg/1920px-20240115_%EC%95%84%EC%9D%B4%EB%B0%94%EC%98%A4%2C_%EC%8C%8D%EB%91%A5%EB%B0%94%EC%98%A4.jpg",
-    "w": 3520,
-    "h": 1980,
-    "credit": "YellowTurtle9 / Wikimedia Commons",
-    "license": "CC BY 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:20240115_%EC%95%84%EC%9D%B4%EB%B0%94%EC%98%A4,_%EC%8C%8D%EB%91%A5%EB%B0%94%EC%98%A4.jpg",
-    "alt": "대나무 숲에서 노는 판다 세 마리",
-    "score": 9,
-    "label": "판다월드",
-    "reason": "대나무 숲 속 판다 세 마리가 한 프레임에 있어 판다월드가 한눈에 설명됩니다."
-   },
-   {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Everland_rose_%28%EC%97%90%EB%B2%84%EB%9E%9C%EB%93%9C_%EC%9E%A5%EB%AF%B8%EC%9B%90%29_%281%29.JPG/1920px-Everland_rose_%28%EC%97%90%EB%B2%84%EB%9E%9C%EB%93%9C_%EC%9E%A5%EB%AF%B8%EC%9B%90%29_%281%29.JPG",
-    "w": 3072,
-    "h": 2304,
-    "credit": "콩가루 / Wikimedia Commons",
-    "license": "CC BY-SA 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Everland_rose_(%EC%97%90%EB%B2%84%EB%9E%9C%EB%93%9C_%EC%9E%A5%EB%AF%B8%EC%9B%90)_(1).JPG",
-    "alt": "활짝 핀 분홍 장미가 있는 장미원",
-    "score": 8,
-    "label": "장미원",
-    "reason": "활짝 핀 분홍 장미와 정원 풍경이 화사해 봄 분위기를 잘 전합니다."
-   },
-   {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/240115_Everland_etc_07.jpg/1920px-240115_Everland_etc_07.jpg",
-    "w": 1600,
-    "h": 1200,
-    "credit": "*Youngjin / Wikimedia Commons",
-    "license": "CC BY-SA 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:240115_Everland_etc_07.jpg",
-    "alt": "해 질 녘 시계탑과 크리스마스 트리",
-    "score": 7,
-    "label": "겨울 크리스마스",
-    "reason": "해 질 녘 시계탑과 노란 가로등, 크리스마스 트리가 어우러진 분위기 있는 장면입니다."
-   },
-   {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/17/2943217_image2_1.jpg",
     "w": 940,
     "h": 626,
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "노을 속 유럽풍 거리와 꽃밭, 롤러코스터",
-    "score": 9,
-    "reason": "해 질 녘 가로등과 유럽풍 건물, 꽃밭, 뒤편 롤러코스터가 함께 담겨 에버랜드의 분위기가 한눈에 전해집니다."
+    "alt": "에버랜드 유럽풍 거리와 롤러코스터 저녁 전경",
+    "score": 9
    },
    {
     "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/240115_Everland_etc_02.jpg/1920px-240115_Everland_etc_02.jpg",
@@ -272,69 +212,9 @@
     "credit": "*Youngjin / Wikimedia Commons",
     "license": "CC BY-SA 4.0",
     "page": "https://commons.wikimedia.org/wiki/File:240115_Everland_etc_02.jpg",
-    "alt": "푸른 하늘 아래 거대한 판다 조형물",
-    "score": 8,
-    "label": "판다월드",
-    "reason": "파란 하늘 아래 거대한 판다 조형물이 시선을 끄는 포토 스폿 사진입니다."
+    "alt": "에버랜드 거대한 판다 조형물과 유럽풍 광장 전경",
+    "score": 8
    },
-   {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/28/3095328_image2_1.jpg",
-    "w": 940,
-    "h": 627,
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "맑은 날 광장과 붉은 벽돌 탑",
-    "score": 8,
-    "reason": "맑은 하늘과 붉은 벽돌 탑, 이국적인 건물이 선명한 색감으로 담겼습니다."
-   },
-   {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/88/3096488_image2_1.jpg",
-    "w": 940,
-    "h": 627,
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "푸른 하늘 아래 동화풍 건물이 있는 광장",
-    "score": 8,
-    "reason": "푸른 하늘과 동화 같은 건물들이 어우러져 테마파크의 느낌이 잘 드러납니다."
-   },
-   {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c9/Fu_bao_20240115.jpg/1920px-Fu_bao_20240115.jpg",
-    "w": 4032,
-    "h": 2268,
-    "credit": "Youngjin / Wikimedia Commons",
-    "license": "CC BY-SA 3.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Fu_bao_20240115.jpg",
-    "alt": "눈 쌓인 마당을 걷는 판다",
-    "score": 8,
-    "label": "판다월드",
-    "reason": "선명하게 걷는 판다를 크게 담아 귀엽고 생생합니다."
-   },
-   {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5e/20241009_%EC%9A%A9%EC%9D%B8%EC%97%90%EB%B2%84%EB%9E%9C%EB%93%9C_%ED%8C%AC%EB%8D%94.jpg/1920px-20241009_%EC%9A%A9%EC%9D%B8%EC%97%90%EB%B2%84%EB%9E%9C%EB%93%9C_%ED%8C%AC%EB%8D%94.jpg",
-    "w": 4000,
-    "h": 2250,
-    "credit": "Striker9498 / Wikimedia Commons",
-    "license": "CC0",
-    "page": "https://commons.wikimedia.org/wiki/File:20241009_%EC%9A%A9%EC%9D%B8%EC%97%90%EB%B2%84%EB%9E%9C%EB%93%9C_%ED%8C%AC%EB%8D%94.jpg",
-    "alt": "나무 위에서 쉬는 판다들",
-    "score": 7,
-    "label": "판다월드",
-    "reason": "나무 놀이대 위에서 쉬는 판다들이 자연스럽지만 피사체가 다소 작습니다."
-   },
-   {
-    "src": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Pandas_at_Everland%2C_South_Korea.jpg",
-    "w": 1706,
-    "h": 1280,
-    "credit": "Babaibiaobin / Wikimedia Commons",
-    "license": "CC0",
-    "page": "https://commons.wikimedia.org/wiki/File:Pandas_at_Everland,_South_Korea.jpg",
-    "alt": "바위 옆에서 쉬는 판다",
-    "score": 7,
-    "label": "판다월드",
-    "reason": "얼음덩이 옆에 늘어진 판다의 모습이 귀엽고 편안한 분위기입니다."
-   }
-  ],
-  "pending": [
    {
     "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/T_Express_Everland_Resort.jpg/1920px-T_Express_Everland_Resort.jpg",
     "w": 1600,
@@ -342,10 +222,18 @@
     "credit": "Roller Coaster Philosophy, Jeremy Thompson / Wikimedia Commons",
     "license": "Public domain",
     "page": "https://commons.wikimedia.org/wiki/File:T_Express_Everland_Resort.jpg",
-    "alt": "꽃밭 뒤로 보이는 티 익스프레스",
-    "score": 6,
-    "label": "티 익스프레스",
-    "reason": "꽃밭 너머로 티 익스프레스가 보이지만 날씨가 흐리고 색감이 바랬습니다."
+    "alt": "에버랜드 T익스프레스 목재 롤러코스터와 유럽풍 거리",
+    "score": 8
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/240115_Everland_etc_07.jpg/1920px-240115_Everland_etc_07.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "*Youngjin / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:240115_Everland_etc_07.jpg",
+    "alt": "에버랜드 시계탑과 조명이 켜진 저녁 광장",
+    "score": 7
    },
    {
     "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Everland_Magic_tree.jpg/1920px-Everland_Magic_tree.jpg",
@@ -354,45 +242,119 @@
     "credit": "Wikiwater2020 / Wikimedia Commons",
     "license": "CC BY-SA 3.0",
     "page": "https://commons.wikimedia.org/wiki/File:Everland_Magic_tree.jpg",
-    "alt": "알록달록 장식된 큰 나무 조형물",
-    "score": 6,
-    "reason": "화려하게 꾸민 대형 장식 나무가 눈에 띄지만 사람과 모자이크가 구도를 흐트러뜨립니다."
+    "alt": "에버랜드 대형 장식 나무와 방문객",
+    "score": 7
    },
    {
-    "src": "https://upload.wikimedia.org/wikipedia/commons/3/3e/T_Express_%28Everland%29.jpg",
-    "w": 1572,
-    "h": 1748,
-    "credit": "milst1 (Martin Lewison) / Wikimedia Commons",
-    "license": "Public domain",
-    "page": "https://commons.wikimedia.org/wiki/File:T_Express_(Everland).jpg",
-    "alt": "붉은 파라솔 뒤의 티 익스프레스",
-    "score": 6,
-    "label": "티 익스프레스",
-    "reason": "붉은 파라솔과 티 익스프레스가 대비를 이루지만 하늘이 뿌옇습니다."
+    "src": "https://tong.visitkorea.or.kr/cms/resource/28/3095328_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "에버랜드 이국적 건물과 탑이 있는 광장",
+    "score": 7
    },
    {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/T_Express_downhill.jpg/1920px-T_Express_downhill.jpg",
-    "w": 2112,
-    "h": 2816,
-    "credit": "Roller Coaster Philosophy, Jeremy Thompson / Wikimedia Commons",
-    "license": "Public domain",
-    "page": "https://commons.wikimedia.org/wiki/File:T_Express_downhill.jpg",
-    "alt": "정상으로 오르는 티 익스프레스",
-    "score": 5,
-    "label": "티 익스프레스",
-    "reason": "탑승객이 오르는 모습은 생생하지만 흐린 하늘 때문에 칙칙합니다."
+    "src": "https://tong.visitkorea.or.kr/cms/resource/88/3096488_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "에버랜드 러시아풍 건물이 있는 광장",
+    "score": 7
    },
    {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/T_Express_lift_hill.jpg/1920px-T_Express_lift_hill.jpg",
-    "w": 2112,
-    "h": 2816,
-    "credit": "Roller Coaster Philosophy, Jeremy Thompson / Wikimedia Commons",
-    "license": "Public domain",
-    "page": "https://commons.wikimedia.org/wiki/File:T_Express_lift_hill.jpg",
-    "alt": "언덕을 오르는 롤러코스터 열차",
-    "score": 5,
-    "label": "티 익스프레스",
-    "reason": "긴 리프트 언덕을 오르는 열차가 보이지만 평범한 기록 사진 수준입니다."
+    "src": "https://tong.visitkorea.or.kr/cms/resource/59/3486459_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 624,
+    "alt": "에버랜드 노란 목재 롤러코스터 구조물",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/08/2943208_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 626,
+    "alt": "에버랜드 장미 아치가 있는 정원",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/62/3486462_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 640,
+    "alt": "에버랜드 사파리 버스와 곰 무리",
+    "score": 7
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Everland_%2813%29.JPG/1920px-Everland_%2813%29.JPG",
+    "w": 1600,
+    "h": 1200,
+    "credit": "콩가루 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Everland_(13).JPG",
+    "alt": "에버랜드 철쭉 정원과 분수 풍경",
+    "score": 6
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Entrance_of_Everland.jpg/1920px-Entrance_of_Everland.jpg",
+    "w": 1600,
+    "h": 1033,
+    "credit": "Christophe95 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Entrance_of_Everland.jpg",
+    "alt": "에버랜드 정문 아치와 입장객들",
+    "score": 6
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/240115_Everland_etc_06.jpg/1920px-240115_Everland_etc_06.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "*Youngjin / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:240115_Everland_etc_06.jpg",
+    "alt": "에버랜드 겨울 크리스마스 장식과 트리",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/44/3095444_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "에버랜드 노란 외벽의 대형 건물 정면",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/74/3096774_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "에버랜드 돔 건물이 있는 넓은 광장",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/24/2943224_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "푸른 하늘 아래 놀이공원 대관람차",
+    "score": 5
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/63/3096563_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "에버랜드 성 아래 광장과 기념 기둥",
+    "score": 5
    }
   ]
  },
