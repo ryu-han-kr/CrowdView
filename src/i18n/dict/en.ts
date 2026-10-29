@@ -1417,7 +1417,7 @@ const dict: Dict = {
   "입장권·요금·가는 길·볼거리·추천 동선 한눈에 · 유료 회원 전용": "Tickets, prices, getting there, highlights & route at a glance · Members only",
   "입장권·요금·가는 길·볼거리·추천 동선": "Tickets, prices, getting there, highlights & route",
   "최신 요금·교통을 확인하는 중…": "Checking the latest prices & transport…",
-  "처음 여는 곳은 30초~1분쯤 걸려요": "First time for this place takes about 30–60 seconds",
+  "처음 여는 곳은 1~2분쯤 걸려요": "First time for this place takes 1–2 minutes",
   "무료 입장": "Free entry",
   "입장권 필요": "Ticket required",
   "입장 무료 · 일부 유료": "Free entry · some paid",

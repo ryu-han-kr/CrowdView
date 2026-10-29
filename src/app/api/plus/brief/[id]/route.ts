@@ -10,7 +10,7 @@ import { kst } from "@/lib/time";
 import { getTripBrief } from "@/lib/trip-brief";
 
 // 웹 검색까지 하면 1분 안팎 걸린다
-export const maxDuration = 120;
+export const maxDuration = 300; // 웹 검색 여러 번이면 2분 넘게 걸린다 (10/29 롯데월드 129초)
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const limited = await rateLimit(req, "alerts");

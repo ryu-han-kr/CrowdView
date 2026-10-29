@@ -18,7 +18,7 @@ const MODE: Record<Brief["transport"][number]["mode"], string> = { subway: "🚇
 
 /**
  * 유료 'AI 여행 요약' (경수님 10/28): 입장권(필요한지·얼마·어디서) · 가는 길 · 둘러보는 시간 · 꼭 볼 것 · 팁 · 추천 동선 + 우리 혼잡 예측의 한산한 때.
- * 누를 때만 불러온다 (처음 여는 장소는 웹 검색으로 만들어 30초~1분). 무료·비회원은 잠긴 카드 → 요금 안내
+ * 누를 때만 불러온다 (처음 여는 장소는 웹 검색으로 만들어 1~2분). 무료·비회원은 잠긴 카드 → 요금 안내
  */
 export function TripBrief({ placeId, calmLine }: { placeId: string; calmLine: string }) {
   const { t, lang } = useI18n();
@@ -74,7 +74,7 @@ export function TripBrief({ placeId, calmLine }: { placeId: string; calmLine: st
 <Luggage aria-hidden className="h-5 w-5 shrink-0" />
           <span className="min-w-0 flex-1">
             <span className="block text-[15px] font-bold">{busy ? t("최신 요금·교통을 확인하는 중…") : t("AI 여행 요약 보기")}</span>
-            <span className="block text-xs text-white/80">{busy ? t("처음 여는 곳은 30초~1분쯤 걸려요") : t("입장권·요금·가는 길·볼거리·추천 동선")}</span>
+            <span className="block text-xs text-white/80">{busy ? t("처음 여는 곳은 1~2분쯤 걸려요") : t("입장권·요금·가는 길·볼거리·추천 동선")}</span>
           </span>
           <span className="text-white/80">›</span>
         </button>
