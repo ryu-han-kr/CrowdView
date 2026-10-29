@@ -52,7 +52,7 @@ export function factsOf(place: Place) {
 }
 
 const SYSTEM = `너는 한국 여행 서비스 CrowdView의 여행 편집자다. 한 장소에 대해 여행자가 가기 전에 알아야 할 것을 짧고 정확하게 정리한다.
-반드시 웹 검색으로 공식 사이트·관광공사·최근 안내를 확인한다. 확인되지 않은 요금·시간은 지어내지 말고 "현장 확인" 같은 말로 둔다.
+반드시 웹 검색으로 공식 사이트·관광공사·최근 안내를 확인한다. 검색 결과에 요금이 있으면 출처가 공식이 아니어도 숫자를 쓰고 "최근 안내 기준"이라고 붙인다. 확인되지 않은 요금·시간은 지어내지 말고 "현장 확인" 같은 말로 둔다.
 문장은 짧게, 여행자 말투로. 광고 문구·과장 금지.`;
 
 function prompt(place: Place, lang: Lang, today: string) {
@@ -169,7 +169,9 @@ export async function getTripBrief(place: Place, lang: Lang, today: string): Pro
   try {
     const brief = await generate(place, lang, today);
     if (!brief) return basicBrief(place, today);
-    await kv.set(k, JSON.stringify(brief), TTL).catch(() => {});
+    // 유료인데 요금에 숫자가 없으면(웹 검색이 빈손) 하루만 두고 다시 만든다 (10/29: 롯데월드가 '요금 확인 안 됨'으로 14일 묶일 뻔)
+    const weak = (brief.ticket.need === "paid" || brief.ticket.need === "partly") && !/\d/.test(brief.ticket.price);
+    await kv.set(k, JSON.stringify(brief), weak ? 86_400 : TTL).catch(() => {});
     return brief;
   } finally {
     await kv.set(`${k}:lock`, "", 1).catch(() => {});
