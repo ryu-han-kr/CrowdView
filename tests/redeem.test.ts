@@ -10,4 +10,6 @@ test("코드:단계:일수:최대사용수, 짧은 코드는 버린다", () => {
     { code: "CV-MAX-QQ77RR", plan: "max", days: 7, maxUses: 3 },
   ]);
   assert.deepEqual(parseCodes(""), []);
+  // 운영자 코드: Max + 횟수 제한 없음
+  assert.deepEqual(parseCodes("ryuhan:ops:36500:3"), [{ code: "RYUHAN", plan: "max", days: 36500, maxUses: 3, ops: true }]);
 });
