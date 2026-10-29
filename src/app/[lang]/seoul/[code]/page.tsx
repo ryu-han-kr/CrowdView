@@ -21,7 +21,6 @@ import { levelOf, inkOf } from "@/lib/levels";
 import { translateNames } from "@/lib/name-translate";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { SEOUL_GROUPS, getSeoulAreaExtra, getSeoulAreaLive, seoulGroup } from "@/lib/seoul-live";
-import { getSktCongestion } from "@/lib/skt";
 import { GUIDE, GUIDE_KINDS, TOILETS, nearest, areaPhoto, areaPhotoCredit } from "@/lib/seoul-guide";
 import { guideNames } from "@/lib/guide-names";
 import Image from "next/image";
@@ -68,11 +67,10 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
   const area = SEOUL_AREAS.find((a) => a.code === code);
   if (!area) notFound();
   const crowdPage = CROWD_PAGES.find((c) => c.kind === "seoul" && c.id === area.code);
-  // 서울시(KT 기반) + SK텔레콤 장소 혼잡도(키가 있을 때)를 함께 보여준다
-  const [live, names, skt, extra, holidays] = await Promise.all([
+  // SK 장소 혼잡도는 유료 '지금 실제 인원' 버튼을 누를 때만 부른다 (경수님 10/29: 화면 열 때마다 불러 하루 한도를 먹던 것)
+  const [live, names, extra, holidays] = await Promise.all([
     getSeoulAreaLive(area.code),
     translateNames([area.name], lang),
-    getSktCongestion(area.name.replace(/\(.*?\)/g, ""), area.lat, area.lng),
     getSeoulAreaExtra(area.name),
     getHolidays().catch(() => undefined),
   ]);
@@ -177,16 +175,6 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
             <EmptyState name="otter" pose="wait">{t("지금은 서울시 데이터를 받지 못했어요. 잠시 후 다시 확인해 주세요.")}</EmptyState>
           )}
           <NearbyChips lat={area.lat} lng={area.lng} lang={lang} exclude={[`/seoul/${area.code}`]} className="mt-3" />
-
-          {skt && (
-            <section className="mt-3 flex items-center justify-between rounded-2xl border border-gray-100 px-4 py-3">
-              <div>
-                <p className="text-xs text-gray-500">{t("SK텔레콤 장소 혼잡도")}</p>
-                <p className="text-sm font-semibold">{skt.poiName}</p>
-              </div>
-              <LevelBadge score={skt.score} />
-            </section>
-          )}
 
           {extra?.commerce && (
             <section className="mt-4 rounded-3xl border border-gray-100 p-4">
