@@ -10,6 +10,8 @@ export function SiteFooter({ lang, className = "" }: { lang: Lang; className?: s
   return (
     <footer className={`border-t border-gray-100 pt-6 pb-8 text-xs leading-relaxed text-gray-500 ${className}`}>
       <nav className="flex flex-wrap gap-x-4 gap-y-1 font-semibold text-gray-700">
+        <Link href="/about">{t("서비스 소개")}</Link>
+        <Link href="/contact">{t("문의하기")}</Link>
         <Link href="/pricing">{t("요금 안내")}</Link>
         <Link href="/terms">{t("이용약관")}</Link>
         <Link href="/privacy" className="text-gray-900">

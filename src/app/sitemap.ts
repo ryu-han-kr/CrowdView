@@ -43,6 +43,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     entry("/guide", "weekly", 0.8),
     entry("/explore", "daily", 0.8),
     entry("/methodology", "monthly", 0.6, new Date("2026-10-17T00:00:00+09:00")),
+    entry("/about", "monthly", 0.5, new Date("2026-10-30T00:00:00+09:00")),
+    entry("/contact", "monthly", 0.4, new Date("2026-10-30T00:00:00+09:00")),
     entry("/accuracy", "daily", 0.5),
     // 질문형 검색 페이지 ("Is Myeongdong crowded right now?")
     entry("/crowd", "hourly", 0.8),
