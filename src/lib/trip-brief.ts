@@ -64,9 +64,10 @@ function prompt(place: Place, lang: Lang, today: string) {
 휴무: ${f.rest || "정보 없음"}
 가까운 지하철역(우리 계산): ${f.station || "1.2km 안에 없음"}
 
+요금은 "${f.name} 입장료"·공식 사이트로 꼭 검색해 숫자로 쓴다.
 확인할 것: 입장권이 필요한지와 요금(어른·어린이), 어디서 사는지(현장·공식 앱·온라인 예매), 가는 방법(지하철·버스·차·주차), 둘러보는 데 걸리는 시간, 꼭 볼 것, 알아 두면 좋은 팁, 같이 묶기 좋은 동선.
 마지막 답은 다른 말 없이 아래 모양의 JSON 하나만 쓴다:
-{"summary":"한 줄 요약 (60자 안)","ticket":{"need":"free|paid|partly|unknown","price":"요금 (모르면 빈 값)","where":"사는 곳"},"transport":[{"mode":"subway|bus|car|taxi|walk|train|other","how":"한 줄"}],"stay":"걸리는 시간","highlights":["볼거리 3~5개"],"tips":["팁 2~3개"],"plan":"추천 동선 한두 문장"}`;
+{"summary":"한 줄 요약 (60자 안)","ticket":{"need":"free|paid|partly|unknown","price":"요금 (모르면 빈 값, 200자 안)","where":"사는 곳"},"transport":[{"mode":"subway|bus|car|taxi|walk|train|other","how":"한 줄"}],"stay":"걸리는 시간","highlights":["볼거리 3~5개"],"tips":["팁 2~3개"],"plan":"추천 동선 한두 문장"}`;
 }
 
 const str = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
@@ -91,20 +92,20 @@ export function parseBrief(text: string, updated: string): TripBrief | undefined
     summary,
     ticket: {
       need: NEEDS.includes(t.need as (typeof NEEDS)[number]) ? (t.need as TripBrief["ticket"]["need"]) : "unknown",
-      price: str(t.price, 160),
-      where: str(t.where, 160),
+      price: str(t.price, 400),
+      where: str(t.where, 240),
     },
     transport: (Array.isArray(x.transport) ? x.transport : [])
       .map((r: Record<string, unknown>) => ({
         mode: MODES.includes(r?.mode as (typeof MODES)[number]) ? (r.mode as TripBrief["transport"][number]["mode"]) : "other",
-        how: str(r?.how, 160),
+        how: str(r?.how, 240),
       }))
       .filter((r) => r.how)
       .slice(0, 4),
-    stay: str(x.stay, 40),
-    highlights: list(x.highlights, 5, 80),
-    tips: list(x.tips, 3, 120),
-    plan: str(x.plan, 240),
+    stay: str(x.stay, 100),
+    highlights: list(x.highlights, 5, 120),
+    tips: list(x.tips, 3, 240),
+    plan: str(x.plan, 400),
     source: "ai",
     updated,
   };
@@ -127,7 +128,7 @@ export function basicBrief(place: Place, updated: string): TripBrief {
 }
 
 async function generate(place: Place, lang: Lang, today: string): Promise<TripBrief | undefined> {
-  const client = new Anthropic({ timeout: 100_000 });
+  const client = new Anthropic({ timeout: 120_000 });
   const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: "user", content: prompt(place, lang, today) }];
   for (let turn = 0; turn < 3; turn++) {
     const res = await client.beta.messages.create({
@@ -163,7 +164,7 @@ export async function getTripBrief(place: Place, lang: Lang, today: string): Pro
     } catch {}
   }
   if (!tripBriefAi()) return basicBrief(place, today);
-  const lock = await kv.setNX(`${k}:lock`, "1", 150).catch(() => true);
+  const lock = await kv.setNX(`${k}:lock`, "1", 320).catch(() => true);
   if (!lock) throw new Error("요약을 만들고 있어요. 잠시 뒤 다시 눌러 주세요");
   try {
     const brief = await generate(place, lang, today);
