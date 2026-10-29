@@ -17,6 +17,7 @@ import { getT } from "@/i18n/server";
 import { SITE, pageMeta } from "@/lib/seo";
 import "../globals.css";
 import { TrafficBeacon } from "@/components/TrafficBeacon";
+import { AutoRefresh } from "@/components/AutoRefresh";
 
 // 언어별로 미리 만들고, 그 외 언어 주소는 아래 isLang 검사로 404.
 // dynamicParams=false를 두면 하위 페이지(가이드 상세처럼 처음 열 때 만드는 곳)까지 미리 만든 주소만 허용돼 404가 났다
@@ -99,6 +100,7 @@ export default async function RootLayout({ children, params }: { children: React
           <ErrorReporter />
           <WebVitals />
           <TrafficBeacon />
+          <AutoRefresh />
           <TopNav authEnabled={authEnabled} />
           {authEnabled && <LazySyncs />}
           {/* 모바일: 가운데 448px 앱 화면 그대로 / 태블릿·PC: 넓은 웹 화면 */}

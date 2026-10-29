@@ -1,14 +1,17 @@
-// 장소 대표 사진을 Claude로 고르기 (경수님 10/29: 크레딧을 사진 품질에). 후보 = 지금 쓰는 사진 + 관광공사 상세 사진 + 관광사진 갤러리
-// 후보를 긴 변 512px로 줄여(토큰 절약) 운영의 /api/cron/photo-pick 에 보내면 Claude가 점수·제외·설명을 매긴다
-//   결과: src/data/korea/photo-picks.json ({ [장소 id]: { model, date, photos: [점수 순, 첫 장이 대표] } }) — lib/place-photos가 있으면 이 순서를 쓴다
-//   전후 비교: BEFORE_AFTER 폴더(기본 현재 폴더)에 photo-pick-compare.png
-// 실행: npx tsx scripts/korea-data/photo-pick.mts   (CRON_SECRET·DATA_GO_KR_KEY, ONLY=everland,high1, MODEL=claude-haiku-5-5|claude-sonnet-5-5|claude-opus-5-5)
+// 장소 사진 고르기 (경수님 10/29~30). 순서: ① 사전조사 ② 명소별 사진 모으기 ③ 기준 채점 ④ 애매한 건 경수님 확인
+//   ① /api/cron/photo-spots: Claude가 웹 검색으로 그곳의 대표 명소·포토 스폿과 검색어를 정리 → src/data/korea/photo-spots.json (한 번 하면 다시 안 함)
+//   ② 명소마다 위키미디어 공용(CC0·CC BY·CC BY-SA, 긴 변 1,200px 이상)에서 후보 + 지금 쓰는 사진
+//   ③ 후보를 긴 변 512px로 줄여(토큰 절약) /api/cron/photo-pick 에 보내면 Claude가 점수·제외·명소·설명을 매긴다
+//      7점 이상 = 바로 사용 (대표 → 명소마다 1장 → 나머지 점수 순), 5~6점 = 애매 → pending 으로 두고 확인 시트를 만든다
+//   결과: src/data/korea/photo-picks.json ({ [장소 id]: { model, date, photos, pending } }) — lib/place-photos가 photos 순서를 쓴다
+//   비교·확인 시트: BEFORE_AFTER 폴더(기본 현재 폴더)에 photo-pick-compare.png, photo-pick-pending.png
+// 실행: npx tsx scripts/korea-data/photo-pick.mts   (CRON_SECRET, ONLY=everland,high1, MODEL=claude-sonnet-5-5|claude-haiku-5-5|claude-opus-5-5, RESEARCH=1 다시 조사)
+//       APPROVE=everland:3,7 → 확인 시트 번호를 photos 로 옮긴다 (Claude는 다시 부르지 않음)
 import fs from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
 import { PLACES } from "../../src/lib/places.ts";
 import { placePhotos, type PlacePhoto } from "../../src/lib/place-photos.ts";
-import images from "../../src/data/korea/place-images.json" with { type: "json" };
 
 if (fs.existsSync(".env.local")) {
   for (const line of fs.readFileSync(".env.local", "utf8").split(/\r?\n/)) {
@@ -17,120 +20,219 @@ if (fs.existsSync(".env.local")) {
   }
 }
 const SECRET = process.env.CRON_SECRET;
-const KEY = process.env.DATA_GO_KR_KEY;
 if (!SECRET) {
   console.error("CRON_SECRET이 없어요");
   process.exit(1);
 }
-const ENDPOINT = process.env.ENDPOINT ?? "https://crowdview.app/api/cron/photo-pick";
-const MODEL = process.env.MODEL ?? "claude-haiku-5-5";
-const OUT = process.env.OUT ?? "src/data/korea/photo-picks.json";
-const COMPARE_DIR = process.env.BEFORE_AFTER ?? ".";
-// 시험 10곳 (테마파크 6 · 스키장 4). 대표를 직접 고른 곳(HERO)·기존 대표를 지킨 곳(KEEP_HERO)은 뺐다
-const PILOT = ["lotteworld", "everland", "seoulland", "legoland", "lotteworld-busan", "oworld", "yongpyong", "high1", "vivaldi", "muju"];
+const BASE = process.env.ENDPOINT ?? "https://crowdview.app/api/cron";
+const MODEL = process.env.MODEL ?? "claude-sonnet-5-5";
+const OUT = "src/data/korea/photo-picks.json";
+const SPOTS_OUT = "src/data/korea/photo-spots.json";
+const SHEET_DIR = process.env.BEFORE_AFTER ?? ".";
+// 시험 9곳 (테마파크 5 · 스키장 4). 대표를 직접 고른 곳(HERO)·기존 대표를 지킨 곳(KEEP_HERO)은 뺐다
+const PILOT = ["everland", "lotteworld", "seoulland", "legoland", "oworld", "yongpyong", "high1", "vivaldi", "muju"];
 const ONLY = (process.env.ONLY ?? "").split(",").filter(Boolean);
-const ids = ONLY.length ? ONLY : PILOT;
-const MAX = 20;
-const KTO = { credit: "한국관광공사", license: "공공누리 제1유형" };
+const MAX = 36;
+const PER_SPOT = 5;
+const UA = { "User-Agent": "CrowdView/1.0 (https://crowdview.app; photo curation)" };
 
-// 관광사진 갤러리 (전문 사진가). 제목에 장소 이름이 있는 것만
-async function gallery(name: string): Promise<PlacePhoto[]> {
-  if (!KEY) return [];
-  const kw = name.replace(/\(.*?\)/g, "").trim();
-  const short = kw.replace(/\s*(어드벤처|스키장|스노우파크|리조트)$/, "").replace(/^모나/, "");
-  const out: PlacePhoto[] = [];
-  for (const k of [...new Set([kw, short])]) {
-    const qs = new URLSearchParams({ serviceKey: KEY, MobileOS: "ETC", MobileApp: "CrowdView", _type: "json", numOfRows: "40", pageNo: "1", arrange: "A", keyword: k });
-    const res = await fetch(`https://apis.data.go.kr/B551011/PhotoGalleryService1/gallerySearchList1?${qs}`, { signal: AbortSignal.timeout(20_000) }).catch(() => null);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const items = res ? ((await res.json().catch(() => ({}))) as any).response?.body?.items?.item : undefined;
-    for (const it of Array.isArray(items) ? items : items ? [items] : []) {
-      const title = String(it.galTitle ?? "");
-      if (!title.replace(/\s/g, "").includes(short.replace(/\s/g, ""))) continue;
-      const by = String(it.galPhotographer ?? "").replace(/^한국관광공사\s*/, "");
-      out.push({ src: String(it.galWebImageUrl ?? "").replace(/^http:/, "https:"), credit: by ? `한국관광공사 · ${by}` : "한국관광공사", license: KTO.license, alt: title });
-    }
+type Pick = { n: number; score: number; reject: boolean; spot: string; reason: string; alt: string };
+type Saved = PlacePhoto & { score: number; label?: string; reason?: string };
+type Entry = { model: string; date: string; photos: Saved[]; pending: Saved[] };
+type Spots = { nameEn?: string; spots: { label: string; why: string; queries: string[] }[] };
+
+const picks: Record<string, Entry> = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, "utf8")) : {};
+const spotsAll: Record<string, Spots> = fs.existsSync(SPOTS_OUT) ? JSON.parse(fs.readFileSync(SPOTS_OUT, "utf8")) : {};
+const save = () => {
+  fs.writeFileSync(OUT, JSON.stringify(picks, null, 1) + "\n");
+  fs.writeFileSync(SPOTS_OUT, JSON.stringify(spotsAll, null, 1) + "\n");
+};
+
+// 확인 시트에서 고른 번호를 사용 사진으로 옮긴다
+if (process.env.APPROVE) {
+  for (const part of process.env.APPROVE.split(";")) {
+    const [id, nums] = part.split(":");
+    const e = picks[id];
+    if (!e) continue;
+    const take = new Set(nums.split(",").map((x) => Number(x) - 1));
+    e.photos.push(...e.pending.filter((_, i) => take.has(i)));
+    e.pending = e.pending.filter((_, i) => !take.has(i));
+    console.log(`${id}: ${take.size}장 사용으로 옮김`);
   }
-  return out;
+  save();
+  process.exit(0);
 }
 
-// 받아서 크기를 재고 512px로 줄인다. 작은 사진(긴 변 900px 미만)·깨진 사진은 null
+async function post<T>(route: string, body: unknown): Promise<T & { error?: string; usage?: { input_tokens: number; output_tokens: number } }> {
+  const res = await fetch(`${BASE}/${route}`, {
+    method: "POST",
+    headers: { authorization: `Bearer ${SECRET}`, "content-type": "application/json" },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(295_000),
+  });
+  return (await res.json().catch(() => ({ error: `HTTP ${res.status}` }))) as T & { error?: string };
+}
+
+// 위키미디어 공용: 상업적 이용·변경이 되는 라이선스만 (NC·ND 제외), 긴 변 1,200px 이상
+async function commons(q: string): Promise<PlacePhoto[]> {
+  const u = `https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=15&gsrsearch=${encodeURIComponent(q + " filetype:bitmap")}&prop=imageinfo&iiprop=url|size|extmetadata&iiurlwidth=1600`;
+  const j = (await (await fetch(u, { headers: UA, signal: AbortSignal.timeout(20_000) })).json().catch(() => ({}))) as {
+    query?: { pages?: Record<string, { title: string; imageinfo?: { thumburl?: string; width: number; height: number; descriptionurl: string; extmetadata?: Record<string, { value: string }> }[] }> };
+  };
+  return Object.values(j.query?.pages ?? {})
+    .map((p) => {
+      const ii = p.imageinfo?.[0];
+      const m = ii?.extmetadata ?? {};
+      const who = String(m.Artist?.value ?? "").replace(/<[^>]+>/g, "").trim().slice(0, 60) || "Unknown";
+      return { src: String(ii?.thumburl ?? "").split("?")[0], w: ii?.width ?? 0, h: ii?.height ?? 0, page: ii?.descriptionurl, lic: m.LicenseShortName?.value ?? "", who };
+    })
+    .filter((x) => x.src && Math.max(x.w, x.h) >= 1200 && /CC0|CC BY|Public domain/i.test(x.lic) && !/NC|ND/.test(x.lic))
+    .map((x) => ({ src: x.src, w: x.w, h: x.h, credit: `${x.who} / Wikimedia Commons`, license: x.lic, page: x.page }));
+}
+
 async function load(p: PlacePhoto): Promise<{ p: PlacePhoto; small: Buffer } | null> {
   try {
-    const res = await fetch(p.src, { signal: AbortSignal.timeout(30_000), headers: { "User-Agent": "CrowdView/1.0 (https://crowdview.app)" } });
+    const res = await fetch(p.src, { signal: AbortSignal.timeout(30_000), headers: UA });
     if (!res.ok) return null;
     const buf = Buffer.from(await res.arrayBuffer());
     const meta = await sharp(buf).metadata();
     if (!meta.width || !meta.height || Math.max(meta.width, meta.height) < 900) return null;
     const small = await sharp(buf).rotate().resize(512, 512, { fit: "inside" }).jpeg({ quality: 72 }).toBuffer();
-    return { p: { ...p, w: p.w ?? meta.width, h: p.h ?? meta.height }, small };
+    return { p: { ...p, w: p.w || meta.width, h: p.h || meta.height }, small };
   } catch {
     return null;
   }
 }
 
-type Pick = { n: number; score: number; reject: boolean; reason: string; alt: string };
-const prev: Record<string, unknown> = fs.existsSync(OUT) ? JSON.parse(fs.readFileSync(OUT, "utf8")) : {};
-const out: Record<string, unknown> = { ...prev };
-const rows: { name: string; before?: Buffer; after: Buffer[] }[] = [];
+const cell = async (buf: Buffer | undefined, w: number, h: number) =>
+  buf ? sharp(buf).resize(w, h, { fit: "cover" }).toBuffer() : sharp({ create: { width: w, height: h, channels: 3, background: "#ddd" } }).jpeg().toBuffer();
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+const label = (s: string, w: number, h = 28, size = 16) =>
+  Buffer.from(`<svg width="${w}" height="${h}" xmlns="http://www.w3.org/2000/svg"><text x="4" y="${h - 8}" font-family="Malgun Gothic, sans-serif" font-size="${size}" font-weight="700">${esc(s)}</text></svg>`);
+
+const compare: { name: string; before: (Buffer | undefined)[]; after: { buf: Buffer; tag: string }[] }[] = [];
+const pendingRows: { name: string; items: { buf: Buffer; tag: string }[] }[] = [];
 let tokens = 0;
-for (const id of ids) {
+
+for (const id of ONLY.length ? ONLY : PILOT) {
   const place = PLACES.find((p) => p.id === id);
   if (!place) continue;
+  // ① 사전조사
+  if (!spotsAll[id] || process.env.RESEARCH) {
+    const r = await post<Spots>("photo-spots", { name: place.name, address: place.address });
+    if (!r.spots?.length) {
+      console.log(`${place.name}: 사전조사 실패 ${r.error ?? ""}`);
+      continue;
+    }
+    tokens += (r.usage?.input_tokens ?? 0) + (r.usage?.output_tokens ?? 0);
+    spotsAll[id] = { nameEn: r.nameEn, spots: r.spots };
+    save();
+  }
+  const spots = spotsAll[id].spots;
+  console.log(`${place.name} 명소: ${spots.map((s) => s.label).join(" · ")}`);
+
+  // ② 명소별 후보 + 지금 사진
   const current = placePhotos(id);
-  const kto = ((images as Record<string, string[]>)[id] ?? []).map((src) => ({ src, ...KTO }));
-  const all = [...current, ...kto, ...(await gallery(place.name))].filter((p, i, a) => p.src && a.findIndex((x) => x.src === p.src) === i);
-  const loaded = (await Promise.all(all.slice(0, MAX + 10).map(load))).filter((x): x is NonNullable<typeof x> => !!x).slice(0, MAX);
+  const found: PlacePhoto[] = [];
+  for (const s of spots) {
+    const per: PlacePhoto[] = [];
+    for (const q of s.queries) {
+      if (per.length >= PER_SPOT) break;
+      for (const p of await commons(q)) if (!per.some((x) => x.src === p.src) && per.length < PER_SPOT) per.push(p);
+    }
+    found.push(...per);
+  }
+  const all = [...current.slice(0, 8), ...found].filter((p, i, a) => a.findIndex((x) => x.src === p.src) === i);
+  const loaded = (await Promise.all(all.slice(0, MAX + 8).map(load))).filter((x): x is NonNullable<typeof x> => !!x).slice(0, MAX);
   if (loaded.length < 3) {
     console.log(`${place.name}: 후보 ${loaded.length}장 — 건너뜀`);
     continue;
   }
-  const res = await fetch(ENDPOINT, {
-    method: "POST",
-    headers: { authorization: `Bearer ${SECRET}`, "content-type": "application/json" },
-    body: JSON.stringify({ name: place.name, category: place.category === "ski" ? "스키장" : "테마파크", model: MODEL, images: loaded.map((x) => x.small.toString("base64")) }),
-    signal: AbortSignal.timeout(290_000),
+
+  // ③ 채점
+  const j = await post<{ photos?: Pick[]; hero?: number }>("photo-pick", {
+    name: place.name,
+    category: place.category === "ski" ? "스키장" : "테마파크",
+    model: MODEL,
+    spots: spots.map((s) => s.label),
+    images: loaded.map((x) => x.small.toString("base64")),
   });
-  const j = (await res.json().catch(() => ({}))) as { photos?: Pick[]; hero?: number; error?: string; usage?: { input_tokens: number; output_tokens: number } };
   if (!j.photos) {
-    console.log(`${place.name}: 실패 ${res.status} ${j.error ?? ""}`);
+    console.log(`${place.name}: 채점 실패 ${j.error ?? ""}`);
     continue;
   }
   tokens += (j.usage?.input_tokens ?? 0) + (j.usage?.output_tokens ?? 0);
   const by = new Map(j.photos.map((x) => [x.n, x]));
-  const kept = loaded
-    .map((x, i) => ({ ...x, pick: by.get(i + 1)! }))
-    .filter((x) => x.pick && !x.pick.reject)
-    .sort((a, b) => Number(b.pick.n === j.hero) - Number(a.pick.n === j.hero) || b.pick.score - a.pick.score);
-  out[id] = { model: MODEL, date: new Date().toISOString().slice(0, 10), photos: kept.map((x) => ({ ...x.p, alt: x.pick.alt || x.p.alt, score: x.pick.score })) };
-  console.log(`${place.name}: 후보 ${loaded.length} → 사용 ${kept.length} (제외 ${loaded.length - kept.length}), 대표 ${kept[0]?.pick.score}점 · ${kept[0]?.pick.reason}`);
-  const beforeSrc = current[0]?.src;
-  rows.push({ name: place.name, before: loaded.find((x) => x.p.src === beforeSrc)?.small, after: kept.slice(0, 4).map((x) => x.small) });
+  const scored = loaded
+    .map((x, i) => ({ ...x, pick: by.get(i + 1), n: i + 1 }))
+    .filter((x): x is typeof x & { pick: Pick } => !!x.pick && !x.pick.reject)
+    .sort((a, b) => b.pick.score - a.pick.score);
+  const good = scored.filter((x) => x.pick.score >= 7);
+  // 대표 → 명소마다 가장 좋은 1장 → 나머지
+  const hero = good.find((x) => x.n === j.hero) ?? good[0];
+  const firsts = spots.map((s) => good.find((x) => x !== hero && x.pick.spot === s.label)).filter((x): x is NonNullable<typeof x> => !!x);
+  const ordered = [hero, ...firsts, ...good.filter((x) => x !== hero && !firsts.includes(x))].filter((x): x is NonNullable<typeof x> => !!x);
+  const unsure = scored.filter((x) => x.pick.score >= 5 && x.pick.score < 7);
+  const toSaved = (x: (typeof scored)[number]): Saved => ({
+    ...x.p,
+    alt: x.pick.alt || x.p.alt,
+    score: x.pick.score,
+    label: x.pick.spot && x.pick.spot !== "전경" ? x.pick.spot : undefined,
+    reason: x.pick.reason,
+  });
+  picks[id] = { model: MODEL, date: new Date().toISOString().slice(0, 10), photos: ordered.map(toSaved), pending: unsure.map(toSaved) };
+  save();
+  console.log(`  후보 ${loaded.length} → 사용 ${ordered.length} · 애매 ${unsure.length} · 제외 ${loaded.length - scored.length + scored.filter((x) => x.pick.score < 5).length}`);
+  console.log(`  대표 ${hero?.pick.score}점 [${hero?.pick.spot}] ${hero?.pick.reason}`);
+  const small = new Map(loaded.map((x) => [x.p.src, x.small]));
+  compare.push({
+    name: place.name,
+    before: current.slice(0, 5).map((p) => small.get(p.src)),
+    after: ordered.slice(0, 5).map((x) => ({ buf: x.small, tag: `${x.pick.score}점 ${x.pick.spot}` })),
+  });
+  if (unsure.length) pendingRows.push({ name: place.name, items: unsure.map((x, i) => ({ buf: x.small, tag: `${i + 1}번 · ${x.pick.score}점 ${x.pick.spot}` })) });
 }
-fs.writeFileSync(OUT, JSON.stringify(out, null, 1) + "\n");
 console.log(`→ ${OUT} · 토큰 ${tokens.toLocaleString()} (${MODEL})`);
 
-// 전후 비교 한 장: 줄마다 [지금 대표] | [새 대표] [2] [3] [4]
-const W = 300;
-const H = 200;
-const PAD = 8;
-const LABEL = 28;
+// 전후 비교: 장소마다 [지금 5장] 아래 [새 5장 + 점수·명소]
+const W = 280;
+const H = 186;
+const G = 6;
 const tiles: sharp.OverlayOptions[] = [];
-const cell = async (buf: Buffer | undefined) =>
-  buf ? sharp(buf).resize(W, H, { fit: "cover" }).toBuffer() : sharp({ create: { width: W, height: H, channels: 3, background: "#ddd" } }).jpeg().toBuffer();
-const label = (s: string, w: number) =>
-  Buffer.from(`<svg width="${w}" height="${LABEL}" xmlns="http://www.w3.org/2000/svg"><text x="4" y="20" font-family="Malgun Gothic, sans-serif" font-size="16" font-weight="700">${s}</text></svg>`);
-for (const [r, row] of rows.entries()) {
-  const y = r * (H + LABEL + PAD);
-  tiles.push({ input: label(`${row.name} — 왼쪽: 지금 대표 | 오른쪽: 새 대표 · 다음 3장`, 5 * (W + PAD) + 16), left: 0, top: y });
-  tiles.push({ input: await cell(row.before), left: 0, top: y + LABEL });
-  for (const [i, b] of row.after.entries()) tiles.push({ input: await cell(b), left: (i + 1) * (W + PAD) + 16, top: y + LABEL });
+let y = 0;
+for (const row of compare) {
+  tiles.push({ input: label(`${row.name} — 위: 지금 / 아래: 새로 고른 순서`, 5 * (W + G), 30, 18), left: 0, top: y });
+  y += 30;
+  for (const [i, b] of row.before.entries()) tiles.push({ input: await cell(b, W, H), left: i * (W + G), top: y });
+  y += H + G;
+  for (const [i, a] of row.after.entries()) {
+    tiles.push({ input: await cell(a.buf, W, H), left: i * (W + G), top: y });
+    tiles.push({ input: label(a.tag, W, 24, 14), left: i * (W + G), top: y + H });
+  }
+  y += H + 24 + 18;
 }
-if (rows.length) {
-  const file = path.join(COMPARE_DIR, "photo-pick-compare.png");
-  await sharp({ create: { width: 5 * (W + PAD) + 16, height: rows.length * (H + LABEL + PAD), channels: 3, background: "#fff" } })
-    .composite(tiles)
-    .png()
-    .toFile(file);
+if (compare.length) {
+  const file = path.join(SHEET_DIR, "photo-pick-compare.png");
+  await sharp({ create: { width: 5 * (W + G), height: y, channels: 3, background: "#fff" } }).composite(tiles).png().toFile(file);
+  console.log(`→ ${file}`);
+}
+
+// 애매한 사진 확인 시트: 번호를 보고 APPROVE=장소id:번호,번호
+const pt: sharp.OverlayOptions[] = [];
+y = 0;
+for (const row of pendingRows) {
+  pt.push({ input: label(row.name, 5 * (W + G), 30, 18), left: 0, top: y });
+  y += 30;
+  for (const [i, it] of row.items.entries()) {
+    const x = (i % 5) * (W + G);
+    if (i && i % 5 === 0) y += H + 24 + G;
+    pt.push({ input: await cell(it.buf, W, H), left: x, top: y });
+    pt.push({ input: label(it.tag, W, 24, 14), left: x, top: y + H });
+  }
+  y += H + 24 + 18;
+}
+if (pendingRows.length) {
+  const file = path.join(SHEET_DIR, "photo-pick-pending.png");
+  await sharp({ create: { width: 5 * (W + G), height: y, channels: 3, background: "#fff" } }).composite(pt).png().toFile(file);
   console.log(`→ ${file}`);
 }
