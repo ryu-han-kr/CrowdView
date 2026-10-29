@@ -9,8 +9,11 @@ export async function GET(req: Request) {
   if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const key = process.env.SK_OPENAPI_APP_KEY;
   if (!key) return NextResponse.json({ error: "no key" }, { status: 503 });
-  const kind = new URL(req.url).searchParams.get("kind") === "areas" ? "areas" : "pois";
-  const res = await fetch(`https://apis.openapi.sk.com/puzzle/place/meta/${kind}`, { headers: { appKey: key, accept: "application/json" }, signal: AbortSignal.timeout(60_000) });
+  const q = new URL(req.url).searchParams;
+  const kind = q.get("kind") === "areas" ? "areas" : "pois";
+  // 3만 곳이 넘어 나눠 받는다 (offset·limit)
+  const page = new URLSearchParams({ offset: String(Number(q.get("offset")) || 0), limit: String(Math.min(Number(q.get("limit")) || 1000, 5000)) });
+  const res = await fetch(`https://apis.openapi.sk.com/puzzle/place/meta/${kind}?${page}`, { headers: { appKey: key, accept: "application/json" }, signal: AbortSignal.timeout(60_000) });
   const text = await res.text();
   return new NextResponse(text, { status: res.status, headers: { "content-type": res.headers.get("content-type") ?? "application/json" } });
 }
