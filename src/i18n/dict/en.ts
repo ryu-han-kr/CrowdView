@@ -1335,6 +1335,7 @@ const dict: Dict = {
   "{hour} 예상 {level}": "{hour}: expected {level}",
   "혼잡 점수 {n}/100": "Crowd score {n}/100",
   "가장 한산한 {hour}보다 {n}점 더 붐빌 것 같아요": "About {n} points busier than the quietest time ({hour})",
+  "가장 한산한 {hour}보다 약 {v} 더 많을 것 같아요": "About {v} more people than the quietest time ({hour})",
   "오늘 남은 시간 중 가장 한산한 때예요": "The quietest time left today",
   "{level}인 칸 {n}개": "{n} slots are {level}",
   "{time}에 가장 한산한 날: {day} ({level})": "Quietest day at {time}: {day} ({level})",

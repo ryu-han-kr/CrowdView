@@ -2755,6 +2755,7 @@ export default {
   "{hour} 예상 {level}": ["{hour}: expected {level}","{hour} 予想 {level}","{hour} 预计 {level}","{hour} 預計 {level}"],
   "혼잡 점수 {n}/100": ["Crowd score {n}/100","混雑スコア {n}/100","拥挤指数 {n}/100","擁擠指數 {n}/100"],
   "가장 한산한 {hour}보다 {n}점 더 붐빌 것 같아요": ["About {n} points busier than the quietest time ({hour})","一番空いている{hour}より{n}ポイント混みそうです","预计比最清静的{hour}拥挤{n}分","預計比最清靜的{hour}擁擠{n}分"],
+  "가장 한산한 {hour}보다 약 {v} 더 많을 것 같아요": ["About {v} more people than the quietest time ({hour})","一番空いている{hour}より約{v}多そうです","预计比最清静的{hour}多约{v}","預計比最清靜的{hour}多約{v}"],
   "오늘 남은 시간 중 가장 한산한 때예요": ["The quietest time left today","今日の残りで一番空いている時間です","今天剩余时间里最清静的时候","今天剩餘時間裡最清靜的時候"],
   "{level}인 칸 {n}개": ["{n} slots are {level}","{level}の枠 {n}個","{level}的时段 {n}个","{level}的時段 {n}個"],
   "{time}에 가장 한산한 날: {day} ({level})": ["Quietest day at {time}: {day} ({level})","{time}に一番空いている日: {day}（{level}）","{time}最清静的日子：{day}（{level}）","{time}最清靜的日子：{day}（{level}）"],

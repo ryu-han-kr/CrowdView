@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { levelOf, inkOf } from "@/lib/levels";
 import { Glyph } from "@/components/Glyph";
+import { fmtPeople } from "@/i18n/patterns";
 
-export function UpcomingHours({ hours, bestHour }: { hours: { hour: number; label: string; score: number }[]; bestHour?: number }) {
-  const { t } = useI18n();
+export function UpcomingHours({ hours, bestHour }: { hours: { hour: number; label: string; score: number; people: number }[]; bestHour?: number }) {
+  const { t, lang } = useI18n();
   const ref = useRef<HTMLUListElement>(null);
   // 가장 한산한 시간이 줄 밖(오른쪽)에 있으면 그 칸이 보이게 넘겨 둔다 (사용자 10/23: 23시가 가장 한산한데 칸이 안 보였다)
   useEffect(() => {
@@ -49,14 +50,14 @@ export function UpcomingHours({ hours, bestHour }: { hours: { hour: number; labe
         <div className="mt-1.5 animate-[fade-in_0.2s_ease-out] rounded-xl bg-white px-3 py-2.5 text-sm text-gray-700" role="status">
           <p className="font-bold text-gray-900">
             {t("{hour} 예상 {level}", { hour: sel.label, level: t(levelOf(sel.score).label) })}
-            <span className="ml-1.5 text-xs font-medium text-gray-500">{t("혼잡 점수 {n}/100", { n: Math.round(sel.score) })}</span>
+            <span className="ml-1.5 text-xs font-medium text-gray-500">{t("약 {v}", { v: fmtPeople(sel.people, t, lang) })}</span>
           </p>
           <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-gray-100">
             <div className="h-full rounded-full" style={{ width: `${Math.max(4, Math.min(100, sel.score))}%`, background: levelOf(sel.score).color }} />
           </div>
           <p className="mt-1.5 text-xs text-gray-600">
             {bestRow && bestRow.hour !== sel.hour
-              ? t("가장 한산한 {hour}보다 {n}점 더 붐빌 것 같아요", { hour: bestRow.label, n: Math.max(0, Math.round(sel.score - bestRow.score)) })
+              ? t("가장 한산한 {hour}보다 약 {v} 더 많을 것 같아요", { hour: bestRow.label, v: fmtPeople(Math.max(0, sel.people - bestRow.people), t, lang) })
               : t("오늘 남은 시간 중 가장 한산한 때예요")}
           </p>
         </div>

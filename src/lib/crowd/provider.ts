@@ -1,6 +1,6 @@
 // 외부 혼잡도 데이터 소스.
 // 서울시 실시간 도시데이터(citydata_ppltn)·공항 혼잡도가 있는 장소는 실데이터, 나머지는 모델값.
-import type { CrowdSnapshot, Place } from "../types";
+import type { CrowdSnapshot, HourPoint, Place } from "../types";
 import { fetchAirport } from "./airport";
 import { SEOUL_AREAS } from "../seoul-areas";
 import { SEOUL_LEVEL_SCORE, getAllSeoulLive } from "../seoul-live";
@@ -51,6 +51,11 @@ export function siteShare(place: Place): number {
 export function sitePeople(place: Place, score: number): number {
   const steps = [0.2, 0.4, 0.6, 0.8].map((r) => Math.round(place.capacity * r)) as LevelSteps;
   return Math.min(place.capacity, Math.round(valueFromScore(score, steps) / 100) * 100);
+}
+
+/** 인원이 없는 시간(대기 분 기준 놀이공원 등)도 정원 기준 추정 인원으로 채운다 (경수님 10/29: 그래프 단위를 사람으로 통일) */
+export function withPeople(place: Place, points: HourPoint[]): HourPoint[] {
+  return points.map((p) => (p.people !== undefined ? p : { ...p, people: sitePeople(place, p.score), peopleKind: "est" as const }));
 }
 
 /**
