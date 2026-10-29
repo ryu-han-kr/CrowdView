@@ -1248,6 +1248,7 @@ const dict: Dict = {
   "지금 혼잡도 보기": "See current crowd",
   "지금까지 쌓인 실제 기록의 평균이에요. 옅을수록 한산해요.": "Average of the real records so far. Lighter means quieter.",
   "지난 혼잡 기록": "Crowd history",
+  "이 장소는 아직 실제 인원 데이터가 없어요": "Live headcount isn't available for this place yet",
   "서비스 소개": "About",
   "문의하기": "Contact",
   "평균 인원": "Avg. people",
