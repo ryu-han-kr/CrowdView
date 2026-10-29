@@ -47,11 +47,12 @@ export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
   const { t } = useI18n();
   return (
     <header className="sticky top-0 z-40 hidden border-b border-gray-100 bg-white md:block">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-2 px-4 lg:gap-8 lg:px-6">
+      {/* 헤더만 화면 폭을 넉넉히 쓴다 (경수님 10/29: 본문·배너 폭은 그대로). 1,152px 안에 묶여 넓은 PC에서 '마이'가 잘렸다 */}
+      <div className="mx-auto flex h-16 max-w-[1800px] items-center gap-2 px-4 lg:gap-8 lg:px-8">
         <Link href="/" className="shrink-0 text-lg font-extrabold tracking-tight">
           <span className="text-indigo-600">Crowd</span>View
         </Link>
-        <nav className="no-scrollbar flex min-w-0 gap-0.5 overflow-x-auto">
+        <nav className="no-scrollbar flex min-w-0 gap-0.5 overflow-x-auto lg:gap-1">
           {/* 공항은 홈의 파트 탭으로 들어간다 (상단 메뉴에서는 뺌) */}
           {TABS.filter((tab) => tab.href !== "/airport").map((tab) => {
             const active = isTabActive(tab.href, pathname);
