@@ -3,6 +3,7 @@
 // 커먼즈 사진은 저작자·라이선스·원본 페이지를 함께 보여 준다 (CC BY-SA 표시 조건)
 import data from "@/data/korea/place-photos.json";
 import pro from "@/data/korea/pro-photos.json";
+import picks from "@/data/korea/photo-picks.json";
 import type { Place } from "./types";
 
 export interface PlacePhoto {
@@ -42,10 +43,16 @@ const HERO: Record<string, PlacePhoto> = {
   "gwangju-familyland": { src: "https://tong.visitkorea.or.kr/cms/resource/01/3351301_image2_1.jpg", credit: "한국관광공사", license: "공공누리 제1유형", alt: "꽃밭과 대관람차가 보이는 광주패밀리랜드" },
 };
 
+// Claude가 후보 사진을 보고 고른 순서 (경수님 10/29, scripts/korea-data/photo-pick.mts): 흐림·안내도·글자 이미지는 빼고 점수 순, 첫 장이 대표.
+// 있으면 위 목록 대신 이 순서를 쓴다 (직접 고른 HERO는 그대로 맨 앞)
+const PICKS = picks as Record<string, { photos: PlacePhoto[] }>;
+
 /** 장소의 고해상도 사진 (모자라면 빈 배열 → 기존 사진을 쓴다). 관광공사 전문 사진이 있으면 앞에, 겹치는 주소는 한 번 */
 export function placePhotos(id: string): PlacePhoto[] {
   const own = (PHOTOS[id] ?? []).map((p) => ({ ...p, src: clean(p.src) }));
-  const base = KEEP_HERO.has(id) && own.length ? [own[0], ...proPhotos(id), ...own.slice(1)] : [...proPhotos(id), ...own];
+  const base = PICKS[id]?.photos.length
+    ? PICKS[id].photos.map(({ src, w, h, credit, license, page, alt }) => ({ src: clean(src), w, h, credit, license, page, alt }))
+    : KEEP_HERO.has(id) && own.length ? [own[0], ...proPhotos(id), ...own.slice(1)] : [...proPhotos(id), ...own];
   const ordered = HERO[id] ? [HERO[id], ...base] : base;
   const list = ordered.filter(
     (p, i, arr) => arr.findIndex((x) => x.src === p.src) === i,
