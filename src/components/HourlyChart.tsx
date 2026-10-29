@@ -206,9 +206,7 @@ export function HourlyChart({
     // 인원 증감은 같은 종류의 수치끼리만 (실측과 추정을 섞으면 엉뚱한 차이가 난다)
     prev && p.people !== undefined && prev.people !== undefined && (p.peopleKind === "est") === (prev.peopleKind === "est")
       ? { text: `${p.people >= prev.people ? "+" : "−"}${val(Math.abs(p.people - prev.people))}`, diff: p.people - prev.people }
-      : prev
-        ? { text: `${p.score >= prev.score ? "+" : "−"}${t("{n}점", { n: Math.abs(p.score - prev.score) })}`, diff: p.score - prev.score }
-        : null;
+      : null;
 
   return (
     <div>
@@ -228,9 +226,8 @@ export function HourlyChart({
               </span>
             )}
           </p>
-          {/* 인원이 있으면 인원의 출처를, 없을 때만 혼잡 지수를 (점수로 판단하지 않게) */}
+          {/* 인원의 출처. 인원 기준이 없는 곳도 점수는 보이지 않는다 (경수님 10/29: 단위는 모두 사람) */}
           <p className="min-h-4 text-xs text-gray-500">
-            {p.people === undefined && t("혼잡 지수 {n}", { n: p.score })}
             {p.peopleKind && SHOW_DATA_LABELS && (
               <span className={p.peopleKind === "est" ? "text-amber-700" : undefined}>
                 {t("인원")}: {t(PEOPLE_NOTE[p.peopleKind])}
@@ -267,7 +264,7 @@ export function HourlyChart({
             score={p.score}
             lines={[
               `${formatHour(p.hour, lang)} · ${t(level.label)}`,
-              p.people !== undefined ? (p.peopleKind === "est" ? t("약 {v}", { v: val(p.people) }) : val(p.people)) : t("혼잡 지수 {n}", { n: p.score }),
+              ...(p.people !== undefined ? [p.peopleKind === "est" ? t("약 {v}", { v: val(p.people) }) : val(p.people)] : []),
             ]}
           />
         </AreaChart>

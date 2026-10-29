@@ -22,7 +22,7 @@ import { TripWatchButton } from "@/components/TripWatchButton";
 import { getHistory, type HistoryPoint } from "@/lib/crowd/history";
 import { getSignals } from "@/lib/crowd/signals";
 import { getCrowd } from "@/lib/crowd/service";
-import { sitePeople, siteShare } from "@/lib/crowd/provider";
+import { sitePeople, siteShare, withPeople } from "@/lib/crowd/provider";
 import { levelOf, valueFromScore, inkOf } from "@/lib/levels";
 import { closedToday, getLivePlace, isOngoingEvent } from "@/lib/place-info";
 import { CrowdMascot } from "@/components/place/CrowdMascot";
@@ -217,29 +217,15 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   // 서울시 명소: 10/20 이전 기록은 주변 지역 인원 그대로라, 장소 수용 인원보다 한참 크면 명소 기준으로 줄인다
   const share = siteShare(place);
   const recordPeople = (n: number) => (crowd.area && n > place.capacity * 1.5 ? Math.round((n * share) / 100) * 100 : n);
-  const hourly = withRecordedHours(
-    crowd.hourly,
-    today.points,
-    crowd.source !== "model" && place.criteria?.unit === "명" ? recordPeople : undefined,
-    crowd.area ? "area" : "real",
+  const hourly = withPeople(
+    place,
+    withRecordedHours(crowd.hourly, today.points, crowd.source !== "model" && place.criteria?.unit === "명" ? recordPeople : undefined, crowd.area ? "area" : "real"),
   );
   const week = weekForecast(place, signals);
-  // 예상 인원: 점수 대신 사람 수로 (기준 단위가 '분'인 놀이공원은 대기 분). 지역 안 시설(롯데월드)은 지금 인원과 같은 시설 정원 기준
-  const steps = place.criteria?.steps;
-  const unit = place.criteria?.unit;
-  const peopleAt = (score: number) =>
-    steps
-      ? unit === "분"
-        ? valueFromScore(score, steps)
-        : crowd.area
-          ? sitePeople(place, score)
-          : Math.round(valueFromScore(score, steps) / 100) * 100
-      : undefined;
-  const peopleText = (score: number) => {
-    const v = peopleAt(score);
-    if (v === undefined) return undefined;
-    return unit === "분" ? t("대기 약 {n}", { n: fmtMinutes(v, t) }) : t("약 {v}", { v: fmtPeople(v, t, lang) });
-  };
+  // 예상 인원: 점수 대신 사람 수로 (경수님 10/29: 단위는 모두 사람). 인원 기준이 없는 곳(대기 분 기준 놀이공원 등)·지역 안 시설(롯데월드)은 시설 정원 기준
+  const steps = place.criteria?.unit === "명" ? place.criteria.steps : undefined;
+  const peopleAt = (score: number) => (steps && !crowd.area ? Math.round(valueFromScore(score, steps) / 100) * 100 : sitePeople(place, score));
+  const peopleText = (score: number) => t("약 {v}", { v: fmtPeople(peopleAt(score), t, lang) });
   const calmest = week.reduce((a, b) => (b.peakScore < a.peakScore ? b : a));
   const todayPeak = week[0];
   const todayReasons = forecastReasons(place, todayPeak.date, todayPeak.peakHour + 0.5, signals);
@@ -261,7 +247,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const lastHour = place.hours[1] >= 24 ? 23 : place.hours[1] - 2;
   const upcoming = hourly
     .filter((p) => p.hour >= Math.floor(now.hour) && p.hour >= place.hours[0] && p.hour <= lastHour)
-    .map((p) => ({ hour: p.hour, label: formatHour(p.hour, lang), score: p.score }));
+    .map((p) => ({ hour: p.hour, label: formatHour(p.hour, lang), score: p.score, people: p.people ?? peopleAt(p.score) }));
   // 한 달·1년 탭: 날마다 가장 붐빌 때 (추정)
   const long = weekForecast(place, signals, 365);
   // 달력 칸: 한 달 달력(5주)·1년(365일)이 같이 쓴다 (사용자 10/23: 석 달 달력 → 한 달 달력 + 1년 탭)
@@ -570,7 +556,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                     <span style={{ color: inkOf(levelOf(eventPeak.score).color) }}>{levelOf(eventPeak.score).label}</span>
                   </p>
                   <div className="mt-4 rounded-2xl bg-white p-3 text-gray-900">
-                    <HourlyChart points={eventForecast} />
+                    <HourlyChart points={withPeople(place, eventForecast)} />
                   </div>
                 </>
               )}
@@ -623,7 +609,6 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                         highlightHour={Math.floor(now.hour)}
                         aspect="3 / 1"
                         estimated={isEstimated(crowd)}
-                        unit={place.criteria?.unit === "분" ? "분" : "명"}
                       />
                     </div>
                   </>
@@ -634,7 +619,6 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                       points={hourly}
                       highlightHour={Math.floor(now.hour)}
                       estimated={isEstimated(crowd)}
-                      unit={place.criteria?.unit === "분" ? "분" : "명"}
                     />
                     <HourTable
                       nowHour={Math.floor(now.hour)}
@@ -644,7 +628,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                           hour: h.hour,
                           label: formatHour(h.hour, lang),
                           score: h.score,
-                          value: h.people !== undefined ? (place.criteria?.unit === "분" ? fmtMinutes(h.people, t) : fmtPeople(h.people, t, lang)) : peopleText(h.score),
+                          value: h.people !== undefined ? fmtPeople(h.people, t, lang) : peopleText(h.score),
                           forecast: h.forecast,
                         }))}
                     />
