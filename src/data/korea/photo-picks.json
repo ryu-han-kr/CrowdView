@@ -1,0 +1,1157 @@
+{
+ "lotteworld": {
+  "model": "claude-haiku-5-5",
+  "date": "2026-10-29",
+  "photos": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Lotte_World_morning_view_8.jpg/1920px-Lotte_World_morning_view_8.jpg",
+    "w": 1600,
+    "h": 1093,
+    "credit": "kallerna / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Lotte_World_morning_view_8.jpg",
+    "alt": "석양 속 롯데월드 타워와 롯데월드 어드벤처 전경",
+    "score": 9
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Lotte_World_day_view_5.jpg/1920px-Lotte_World_day_view_5.jpg",
+    "w": 1600,
+    "h": 878,
+    "credit": "kallerna / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Lotte_World_day_view_5.jpg",
+    "alt": "맑은 하늘 아래 롯데월드 타워와 놀이공원 전경",
+    "score": 9
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/94/3304294_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "야간 조명을 밝힌 신데렐라 성과 다리 풍경",
+    "score": 9
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/View_of_Seokchon_Lake.jpg/1920px-View_of_Seokchon_Lake.jpg",
+    "w": 1600,
+    "h": 894,
+    "credit": "Simon Williams-Im / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:View_of_Seokchon_Lake.jpg",
+    "alt": "푸른 하늘 아래 롯데월드 어드벤처와 롯데월드 타워",
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/96/3304296_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "파란 첨탑 다리 너머 롯데월드 성 전경",
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/97/3304297_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "롯데월드 성과 타워, 자이로 놀이기구 풍경",
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/99/3304299_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "맑은 하늘 아래 롯데월드 성과 타워 전경",
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/34/2494734.jpg",
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "호수 너머로 보이는 롯데월드 타워와 놀이공원",
+    "w": 1280,
+    "h": 853,
+    "score": 8
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Lotte_World_seen_from_Lotte_World_Tower.jpg/1920px-Lotte_World_seen_from_Lotte_World_Tower.jpg",
+    "w": 1600,
+    "h": 1064,
+    "credit": "Tristan Surtel / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Lotte_World_seen_from_Lotte_World_Tower.jpg",
+    "alt": "항공에서 본 롯데월드 건물과 호수 놀이공원",
+    "score": 7
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Lotte_World_day_view_9.jpg/1920px-Lotte_World_day_view_9.jpg",
+    "w": 1600,
+    "h": 1069,
+    "credit": "kallerna / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Lotte_World_day_view_9.jpg",
+    "alt": "롯데월드 어드벤처 놀이기구와 주변 빌딩 풍경",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/89/3304289_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "유리 천장 아래 매직 아일랜드 실내 전경",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/98/3304298_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "겨울 장식이 있는 롯데월드 성 입구",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/02/3304302_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "깃발 장식 다리 너머 롯데월드 성 풍경",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/88/3304288_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "매직 아일랜드 실내를 달리는 모노레일",
+    "score": 7
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Seoul_Songpagu_sunset.jpg/1920px-Seoul_Songpagu_sunset.jpg",
+    "w": 1600,
+    "h": 581,
+    "credit": "cmmellow / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:Seoul_Songpagu_sunset.jpg",
+    "alt": "석양 무렵 잠실 호수와 주변 고층 빌딩",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/92/3304292_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "매직 아일랜드 실내에서 캐릭터 마스코트 모습",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/93/3304293_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "매직 아일랜드 실내의 조명 장식 회전목마",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/91/3304291_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "실내에서 캐릭터가 탄 빨간 클래식 자동차",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/04/3304304_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "실내 크리스마스 장식과 캐릭터 조형물",
+    "score": 5
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/67/Lotte_World_night_view_2.jpg/1920px-Lotte_World_night_view_2.jpg",
+    "w": 1600,
+    "h": 856,
+    "credit": "kallerna / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Lotte_World_night_view_2.jpg",
+    "alt": "밤에 불 켜진 서울 잠실 일대 도시 야경",
+    "score": 4
+   }
+  ]
+ },
+ "everland": {
+  "model": "claude-haiku-5-5",
+  "date": "2026-10-29",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/17/2943217_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 626,
+    "alt": "에버랜드 유럽풍 거리와 롤러코스터 저녁 전경",
+    "score": 9
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/240115_Everland_etc_02.jpg/1920px-240115_Everland_etc_02.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "*Youngjin / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:240115_Everland_etc_02.jpg",
+    "alt": "에버랜드 거대한 판다 조형물과 유럽풍 광장 전경",
+    "score": 8
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/T_Express_Everland_Resort.jpg/1920px-T_Express_Everland_Resort.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "Roller Coaster Philosophy, Jeremy Thompson / Wikimedia Commons",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:T_Express_Everland_Resort.jpg",
+    "alt": "에버랜드 T익스프레스 목재 롤러코스터와 유럽풍 거리",
+    "score": 8
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/240115_Everland_etc_07.jpg/1920px-240115_Everland_etc_07.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "*Youngjin / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:240115_Everland_etc_07.jpg",
+    "alt": "에버랜드 시계탑과 조명이 켜진 저녁 광장",
+    "score": 7
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Everland_Magic_tree.jpg/1920px-Everland_Magic_tree.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "Wikiwater2020 / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Everland_Magic_tree.jpg",
+    "alt": "에버랜드 대형 장식 나무와 방문객",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/28/3095328_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "에버랜드 이국적 건물과 탑이 있는 광장",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/88/3096488_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "에버랜드 러시아풍 건물이 있는 광장",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/59/3486459_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 624,
+    "alt": "에버랜드 노란 목재 롤러코스터 구조물",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/08/2943208_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 626,
+    "alt": "에버랜드 장미 아치가 있는 정원",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/62/3486462_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 640,
+    "alt": "에버랜드 사파리 버스와 곰 무리",
+    "score": 7
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Everland_%2813%29.JPG/1920px-Everland_%2813%29.JPG",
+    "w": 1600,
+    "h": 1200,
+    "credit": "콩가루 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Everland_(13).JPG",
+    "alt": "에버랜드 철쭉 정원과 분수 풍경",
+    "score": 6
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Entrance_of_Everland.jpg/1920px-Entrance_of_Everland.jpg",
+    "w": 1600,
+    "h": 1033,
+    "credit": "Christophe95 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Entrance_of_Everland.jpg",
+    "alt": "에버랜드 정문 아치와 입장객들",
+    "score": 6
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/240115_Everland_etc_06.jpg/1920px-240115_Everland_etc_06.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "*Youngjin / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:240115_Everland_etc_06.jpg",
+    "alt": "에버랜드 겨울 크리스마스 장식과 트리",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/44/3095444_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "에버랜드 노란 외벽의 대형 건물 정면",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/74/3096774_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "에버랜드 돔 건물이 있는 넓은 광장",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/24/2943224_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "푸른 하늘 아래 놀이공원 대관람차",
+    "score": 5
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/63/3096563_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "에버랜드 성 아래 광장과 기념 기둥",
+    "score": 5
+   }
+  ]
+ },
+ "seoulland": {
+  "model": "claude-haiku-5-5",
+  "date": "2026-10-29",
+  "photos": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/2015%EB%85%84_5%EC%9B%94_5%EC%9D%BC_%EC%84%9C%EC%9A%B8%EB%9E%9C%EB%93%9C_%EC%A0%84%EA%B2%BD_DSC09925.jpg/1920px-2015%EB%85%84_5%EC%9B%94_5%EC%9D%BC_%EC%84%9C%EC%9A%B8%EB%9E%9C%EB%93%9C_%EC%A0%84%EA%B2%BD_DSC09925.jpg",
+    "w": 1600,
+    "h": 1067,
+    "credit": "최광모 / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:2015%EB%85%84_5%EC%9B%94_5%EC%9D%BC_%EC%84%9C%EC%9A%B8%EB%9E%9C%EB%93%9C_%EC%A0%84%EA%B2%BD_DSC09925.jpg",
+    "alt": "산자락에 롤러코스터와 놀이기구가 펼쳐진 서울랜드 전경",
+    "score": 9
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/44/3345744_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 529,
+    "alt": "롤러코스터와 원형 건물이 보이는 서울랜드 항공 전경",
+    "score": 9
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c9/20151003%EC%B5%9C%EA%B4%91%EB%AA%A8RX10DSC02894.JPG/1920px-20151003%EC%B5%9C%EA%B4%91%EB%AA%A8RX10DSC02894.JPG",
+    "w": 1600,
+    "h": 1067,
+    "credit": "최광모 / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:20151003%EC%B5%9C%EA%B4%91%EB%AA%A8RX10DSC02894.JPG",
+    "alt": "노란 꽃밭 너머 서울랜드 간판과 캐릭터 조형물",
+    "score": 8
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/20241228_%EC%84%9C%EC%9A%B8%EB%9E%9C%EB%93%9C_%EB%A7%A4%ED%91%9C%EC%86%8C_%EC%B6%9C%EC%9E%85%EA%B5%AC.jpg/1920px-20241228_%EC%84%9C%EC%9A%B8%EB%9E%9C%EB%93%9C_%EB%A7%A4%ED%91%9C%EC%86%8C_%EC%B6%9C%EC%9E%85%EA%B5%AC.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "Striker9498 / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:20241228_%EC%84%9C%EC%9A%B8%EB%9E%9C%EB%93%9C_%EB%A7%A4%ED%91%9C%EC%86%8C_%EC%B6%9C%EC%9E%85%EA%B5%AC.jpg",
+    "alt": "서울랜드 정문 입구와 맑은 파란 하늘",
+    "score": 8
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/20151003%EC%B5%9C%EA%B4%91%EB%AA%A8RX10DSC02895.JPG/1920px-20151003%EC%B5%9C%EA%B4%91%EB%AA%A8RX10DSC02895.JPG",
+    "w": 1600,
+    "h": 1067,
+    "credit": "최광모 / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:20151003%EC%B5%9C%EA%B4%91%EB%AA%A8RX10DSC02895.JPG",
+    "alt": "주황 꽃밭과 대형 캐릭터 조형물이 있는 서울랜드",
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/46/3345746_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 593,
+    "alt": "돔 건물 위로 터지는 불꽃놀이 장면",
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/32/3345732_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 502,
+    "alt": "빨간 대형 회전 놀이기구를 올려다본 모습",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/45/3345745_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 529,
+    "alt": "물놀이 시설과 놀이기구가 모인 서울랜드 항공 사진",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/34/3345734_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 529,
+    "alt": "파란 하늘 아래 달리는 주황색 롤러코스터",
+    "score": 7
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/99/20150331%EC%B5%9C%EA%B4%91%EB%AA%A8238.jpg/1920px-20150331%EC%B5%9C%EA%B4%91%EB%AA%A8238.jpg",
+    "w": 1600,
+    "h": 1067,
+    "credit": "최광모 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:20150331%EC%B5%9C%EA%B4%91%EB%AA%A8238.jpg",
+    "alt": "밤에 조명이 켜진 서울랜드 입구 광장",
+    "score": 6
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/2014%EB%85%84_8%EC%9B%94_31%EC%9D%BC_%EC%84%9C%EC%9A%B8%EB%9E%9C%EB%93%9C_%EC%9E%85%EA%B5%AC.jpg/1920px-2014%EB%85%84_8%EC%9B%94_31%EC%9D%BC_%EC%84%9C%EC%9A%B8%EB%9E%9C%EB%93%9C_%EC%9E%85%EA%B5%AC.jpg",
+    "w": 1600,
+    "h": 1067,
+    "credit": "최광모 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:2014%EB%85%84_8%EC%9B%94_31%EC%9D%BC_%EC%84%9C%EC%9A%B8%EB%9E%9C%EB%93%9C_%EC%9E%85%EA%B5%AC.jpg",
+    "alt": "넓은 광장 너머 서울랜드 정문 풍경",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/37/3345737_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 529,
+    "alt": "화려하게 장식된 회전목마 놀이기구",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/38/3345738_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 693,
+    "alt": "가을 나무 아래 캐릭터 테마 놀이기구",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/33/3345733_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 529,
+    "alt": "파란 하늘 아래 컵 모양 회전 놀이기구",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/27/3345727_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 529,
+    "alt": "빨간 노란 튤립 화단과 흰 조형물이 있는 공원",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/39/3345739_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 705,
+    "alt": "야간 조명이 켜진 장미 정자 정원",
+    "score": 5
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/40/3345740_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 705,
+    "alt": "별 모양 장식 조명이 줄지어 있는 야간 아치길",
+    "score": 5
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/85/Gwangmyeong-ro%2C_Gwacheon-si%2C_Gyeonggi-do%2C_South_Korea_-_panoramio_%282%29.jpg/1920px-Gwangmyeong-ro%2C_Gwacheon-si%2C_Gyeonggi-do%2C_South_Korea_-_panoramio_%282%29.jpg",
+    "w": 1600,
+    "h": 1067,
+    "credit": "최광모 / Wikimedia Commons",
+    "license": "CC BY 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gwangmyeong-ro,_Gwacheon-si,_Gyeonggi-do,_South_Korea_-_panoramio_(2).jpg",
+    "alt": "벽돌 바닥의 분수가 있는 정원 쉼터",
+    "score": 4
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/28/3345728_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 529,
+    "alt": "대형 LED 화면이 설치된 공연 무대",
+    "score": 3
+   }
+  ]
+ },
+ "legoland": {
+  "model": "claude-haiku-5-5",
+  "date": "2026-10-29",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/39/3057039_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "황혼의 레고랜드 코리아 입구 간판과 광장 전경",
+    "w": 940,
+    "h": 706,
+    "score": 9
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/20231226_%EB%A0%88%EA%B3%A0%EB%9E%9C%EB%93%9C%EC%BD%94%EB%A6%AC%EC%95%84_%ED%98%B8%ED%85%94_%EC%A0%84%EA%B2%BD.jpg/1920px-20231226_%EB%A0%88%EA%B3%A0%EB%9E%9C%EB%93%9C%EC%BD%94%EB%A6%AC%EC%95%84_%ED%98%B8%ED%85%94_%EC%A0%84%EA%B2%BD.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "YellowTurtle9 / Wikimedia Commons",
+    "license": "CC BY 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:20231226_%EB%A0%88%EA%B3%A0%EB%9E%9C%EB%93%9C%EC%BD%94%EB%A6%AC%EC%95%84_%ED%98%B8%ED%85%94_%EC%A0%84%EA%B2%BD.jpg",
+    "alt": "레고 블록 무늬의 레고랜드 호텔 정문 전경",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/38/3057038_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "성 앞 무대에서 펼쳐지는 캐릭터 공연 장면",
+    "w": 940,
+    "h": 627,
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/33/3057033_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "레고 테마 회전목마 놀이기구 모습",
+    "w": 940,
+    "h": 705,
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/37/3057037_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "레고 기관차 모양 열차가 숲 사이를 달리는 모습",
+    "w": 626,
+    "h": 940,
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/35/3057035_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 626,
+    "h": 940,
+    "alt": "붉은 아치 다리와 바위 절벽이 있는 테마 풍경",
+    "score": 6
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Panoramic_view_of_Legoland_Korea_Resort_in_Chuncheon.jpg/1920px-Panoramic_view_of_Legoland_Korea_Resort_in_Chuncheon.jpg",
+    "w": 1600,
+    "h": 513,
+    "credit": "열린공감TV / Wikimedia Commons",
+    "license": "CC BY 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Panoramic_view_of_Legoland_Korea_Resort_in_Chuncheon.jpg",
+    "alt": "레고랜드 코리아 전체를 내려다본 항공 전경",
+    "score": 5
+   }
+  ]
+ },
+ "oworld": {
+  "model": "claude-haiku-5-5",
+  "date": "2026-10-29",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/97/3513197_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "눈사람과 크리스마스 장식이 있는 오월드 성 전경",
+    "w": 940,
+    "h": 705,
+    "score": 9
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Daejeon_Zooland.JPG/1920px-Daejeon_Zooland.JPG",
+    "w": 1600,
+    "h": 1200,
+    "credit": "Ryuch / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Daejeon_Zooland.JPG",
+    "alt": "Welcome to O-World 문구가 적힌 오월드 정문",
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/98/3513198_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "오월드 광장의 캐릭터 조형물과 뒤편의 성",
+    "w": 940,
+    "h": 705,
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/95/3513195_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "오월드의 집 모양 회전 놀이기구",
+    "w": 940,
+    "h": 705,
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/96/3513196_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "사자 조각과 달 장식이 있는 오월드 정원",
+    "w": 940,
+    "h": 705,
+    "score": 5
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/99/3513199_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "오월드 광장과 높은 타워 전경",
+    "w": 940,
+    "h": 705,
+    "score": 5
+   }
+  ]
+ },
+ "yongpyong": {
+  "model": "claude-haiku-5-5",
+  "date": "2026-10-29",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/05/2475705.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "눈 덮인 슬로프 너머로 보이는 모나용평 리조트 호텔 전경",
+    "score": 9
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/09/2475709.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "길게 뻗은 슬로프에서 스키를 타는 사람들",
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/25/4064125_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "리프트와 리조트 건물이 보이는 슬로프 전경",
+    "w": 940,
+    "h": 627,
+    "score": 8
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c9/Ski_slopes_of_YongPyong_Resort%2C_2013-03-10.jpg/1920px-Ski_slopes_of_YongPyong_Resort%2C_2013-03-10.jpg",
+    "w": 1600,
+    "h": 501,
+    "credit": "Kalatpadai / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:Ski_slopes_of_YongPyong_Resort,_2013-03-10.jpg",
+    "alt": "리조트 건물과 슬로프가 펼쳐진 스키장 파노라마",
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/17/2475717.jpg",
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "스키어들로 붐비는 슬로프와 리조트 건물 전경",
+    "w": 1280,
+    "h": 853,
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/16/2475716.jpg",
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "산 아래 펼쳐진 슬로프에서 스키를 타는 사람들",
+    "w": 1280,
+    "h": 853,
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/15/2475715.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "넓은 슬로프와 전광판이 보이는 스키장 풍경",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/14/2475714.jpg",
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "스키장 슬로프와 뒤편 산이 보이는 맑은 날 풍경",
+    "w": 1280,
+    "h": 853,
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/07/2475707.jpg",
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "햇살 아래 슬로프와 산이 펼쳐진 스키장 풍경",
+    "w": 1280,
+    "h": 853,
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/21/2475721.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "슬로프 옆 건물과 크레인이 보이는 스키장 전경",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/20/2475720.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "햇살이 비치는 파란 하늘 아래 슬로프 풍경",
+    "score": 6
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/Yongpyong_Alpine_Center_%28Pyeongchang_2018%29.jpg/1920px-Yongpyong_Alpine_Center_%28Pyeongchang_2018%29.jpg",
+    "w": 1600,
+    "h": 969,
+    "credit": "DangTungDuong / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Yongpyong_Alpine_Center_(Pyeongchang_2018).jpg",
+    "alt": "리프트가 설치된 눈 덮인 스키 슬로프",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/27/4064127_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "산 능선 사이로 이어지는 스키 슬로프 조망",
+    "w": 940,
+    "h": 627,
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/28/4064128_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "눈 덮인 광장 옆 목조 스키장 건물 입구",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/13/2475713.jpg",
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "스키를 신고 슬로프를 바라보는 어린이 스키어",
+    "w": 1280,
+    "h": 853,
+    "score": 6
+   }
+  ]
+ },
+ "high1": {
+  "model": "claude-haiku-5-5",
+  "date": "2026-10-29",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/11/1985011.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "푸른 하늘 아래 곤돌라가 지나는 설원 슬로프",
+    "score": 9
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/12/1985012.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "눈 덮인 슬로프 위를 지나는 곤돌라 전경",
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/08/1985008.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "스키어들이 모이는 리조트 베이스 롯지 건물",
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/85/3578085_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 626,
+    "alt": "하이원 로고가 있는 슬로프 베이스 건물",
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/10/1985010.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "곤돌라와 리조트 건물이 보이는 산 풍경",
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/86/3578086_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "설경 속 곤돌라와 슬로프 전경",
+    "w": 940,
+    "h": 626,
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/87/3578087_image2_1.JPG",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "상고대 낀 숲 사이로 이어지는 설원 슬로프",
+    "w": 940,
+    "h": 626,
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/09/1985009.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "곤돌라 지주와 리조트 건물 모습",
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/82/3578082_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "원형 유리 건물이 있는 리조트 입구",
+    "w": 940,
+    "h": 626,
+    "score": 6
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/84/3578084_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "석양 무렵 슬로프와 전망 타워",
+    "w": 940,
+    "h": 626,
+    "score": 5
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/83/3578083_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 626,
+    "alt": "넓은 슬로프에서 스키를 타는 사람들",
+    "score": 4
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/17/2777717.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 강원지사 모먼트스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "낙엽 쌓인 가을 숲길 계단",
+    "score": 3
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/81/3578081_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "아테나 슬로프 입구와 스노보더",
+    "w": 940,
+    "h": 626,
+    "score": 3
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/16/2777716.jpg",
+    "credit": "한국관광공사 · 강원지사 모먼트스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "노랗게 물든 가을 낙엽송 숲",
+    "w": 1280,
+    "h": 853,
+    "score": 3
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/15/2777715.jpg",
+    "credit": "한국관광공사 · 강원지사 모먼트스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "주황빛 가을 숲을 올려다본 풍경",
+    "w": 1280,
+    "h": 853,
+    "score": 3
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/14/2777714.jpg",
+    "credit": "한국관광공사 · 강원지사 모먼트스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "햇살이 비치는 가을 산길",
+    "w": 1280,
+    "h": 853,
+    "score": 3
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/13/2777713.jpg",
+    "credit": "한국관광공사 · 강원지사 모먼트스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "잎 진 나무와 파란 하늘",
+    "w": 1280,
+    "h": 853,
+    "score": 3
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/2025-11-13_13.32.18_jeongseon.jpg/1920px-2025-11-13_13.32.18_jeongseon.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "Choikwangmo25 / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:2025-11-13_13.32.18_jeongseon.jpg",
+    "alt": "가을 산자락에 자리한 성 모양 리조트 건물",
+    "score": 2
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/10/2777710.jpg",
+    "credit": "한국관광공사 · 강원지사 모먼트스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "난간이 있는 가을 등산로",
+    "w": 1280,
+    "h": 853,
+    "score": 2
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/09/2777709.jpg",
+    "credit": "한국관광공사 · 강원지사 모먼트스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "낙엽 덮인 가을 등산로와 나무 난간",
+    "w": 1280,
+    "h": 853,
+    "score": 2
+   }
+  ]
+ },
+ "vivaldi": {
+  "model": "claude-haiku-5-5",
+  "date": "2026-10-29",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/66/2779466_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "눈 덮인 슬로프 너머로 보이는 비발디파크 호텔 단지 전경",
+    "w": 940,
+    "h": 627,
+    "score": 9
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/71/2779471_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "리프트 너머로 보이는 눈 쌓인 비발디파크 리조트 전경",
+    "w": 940,
+    "h": 627,
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/65/2779465_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "비발디파크 시계탑과 호텔 앞 슬로프 광장 풍경",
+    "w": 940,
+    "h": 627,
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/64/2779464_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "슬로프 위에서 내려다본 겨울 리조트 단지와 산 풍경",
+    "w": 940,
+    "h": 389,
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/67/2779467_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "눈 덮인 슬로프에서 스키와 보드를 즐기는 사람들",
+    "w": 940,
+    "h": 627,
+    "score": 5
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/69/2779469_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "스키 슬로프에서 바라본 비발디파크 호텔과 산 풍경",
+    "w": 940,
+    "h": 627,
+    "score": 5
+   }
+  ]
+ },
+ "muju": {
+  "model": "claude-haiku-5-5",
+  "date": "2026-10-29",
+  "photos": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/%EB%8D%95%EC%9C%A0%EC%82%B0_%EC%84%A4%EC%B2%9C%EB%B4%89.jpg/1920px-%EB%8D%95%EC%9C%A0%EC%82%B0_%EC%84%A4%EC%B2%9C%EB%B4%89.jpg",
+    "w": 1600,
+    "h": 1066,
+    "credit": "Mg shin / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:%EB%8D%95%EC%9C%A0%EC%82%B0_%EC%84%A4%EC%B2%9C%EB%B4%89.jpg",
+    "alt": "눈 덮인 덕유산 정상 리조트 전경과 슬로프, 아래 계곡과 호수 풍경",
+    "score": 9
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/52/4064152_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "하얀 눈 슬로프에서 스키와 보드를 타는 사람들과 겨울 산 풍경",
+    "w": 940,
+    "h": 627,
+    "score": 8
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/47/4064147_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "눈 덮인 스키 슬로프와 리프트, 뒤편 산이 보이는 스키장 전경",
+    "w": 940,
+    "h": 627,
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/49/4064149_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "슬로프에서 스키를 타는 사람들과 곤돌라 승강장이 있는 겨울 스키장",
+    "w": 940,
+    "h": 627,
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/50/4064150_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "눈 덮인 슬로프 끝의 리조트 건물과 파란 간판, 뒤편 산",
+    "w": 940,
+    "h": 627,
+    "score": 7
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/48/4064148_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "눈 슬로프 위를 지나가는 스키 리프트 의자",
+    "score": 5
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/%EB%8D%95%EC%9C%A0%EC%82%B0%EC%97%90%EC%84%9C.jpg/1920px-%EB%8D%95%EC%9C%A0%EC%82%B0%EC%97%90%EC%84%9C.jpg",
+    "w": 1600,
+    "h": 1066,
+    "credit": "Mg shin / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:%EB%8D%95%EC%9C%A0%EC%82%B0%EC%97%90%EC%84%9C.jpg",
+    "alt": "눈 쌓인 덕유산 능선과 아래 평야 마을이 보이는 산 풍경",
+    "score": 4
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/55/4064155_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "w": 940,
+    "h": 627,
+    "alt": "넓은 눈 슬로프를 혼자 내려가는 스키어",
+    "score": 4
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/MJ-Deogyusan.jpg/1920px-MJ-Deogyusan.jpg",
+    "w": 1600,
+    "h": 1068,
+    "credit": "Dittwjfsdgkvkdjg / Wikimedia Commons",
+    "license": "CC BY 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:MJ-Deogyusan.jpg",
+    "alt": "여름 푸른 하늘 아래 산 능선과 숲이 보이는 풍경",
+    "score": 3
+   }
+  ]
+ }
+}
