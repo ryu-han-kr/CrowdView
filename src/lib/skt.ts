@@ -62,11 +62,14 @@ function normalizeLevel(v: unknown): 1 | 2 | 3 | 4 | undefined {
   return n <= 3 ? 1 : n <= 5 ? 2 : n <= 7 ? 3 : 4;
 }
 
-/** 장소 이름·좌표로 실시간 혼잡도. 키가 없거나 데이터가 없으면 undefined */
-export async function getSktCongestion(name: string, lat: number, lng: number): Promise<SktCongestion | undefined> {
+/**
+ * 장소 이름·좌표로 실시간 혼잡도. 키가 없거나 데이터가 없으면 undefined.
+ * knownPoiId: 퍼즐 지원 장소 목록(src/data/skt-pois.json)에서 맞춘 ID — 있으면 TMAP 검색을 건너뛴다 (TMAP 첫 결과가 퍼즐에 없는 ID일 수 있다)
+ */
+export async function getSktCongestion(name: string, lat: number, lng: number, knownPoiId?: string): Promise<SktCongestion | undefined> {
   if (!appKey()) return undefined;
   try {
-    const poiId = await poiIdOf(name, lat, lng);
+    const poiId = knownPoiId ?? (await poiIdOf(name, lat, lng));
     if (!poiId) return undefined;
     return await cached(`skt:rltm:${poiId}`, 600, async () => {
       const json = (await call(`/puzzle/place/congestion/rltm/pois/${poiId}`)) as {

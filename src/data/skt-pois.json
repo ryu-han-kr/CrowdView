@@ -1,0 +1,398 @@
+{
+ "lotteworld": {
+  "poiId": "6967166",
+  "poiName": "롯데월드어드벤쳐"
+ },
+ "everland": {
+  "poiId": "387701",
+  "poiName": "에버랜드"
+ },
+ "seoulland": {
+  "poiId": "192300",
+  "poiName": "서울랜드"
+ },
+ "korean-folk-village": {
+  "poiId": "388207",
+  "poiName": "한국민속촌"
+ },
+ "seoul-grand-park": {
+  "poiId": "381867",
+  "poiName": "서울대공원"
+ },
+ "lotteworld-aquarium": {
+  "poiId": "5800430",
+  "poiName": "롯데월드아쿠아리움"
+ },
+ "aquaplanet-ilsan": {
+  "poiId": "5675168",
+  "poiName": "아쿠아플라넷일산"
+ },
+ "aquaplanet-gwanggyo": {
+  "poiId": "10205145",
+  "poiName": "아쿠아플라넷광교"
+ },
+ "aquaplanet-jeju": {
+  "poiId": "2769058",
+  "poiName": "아쿠아플라넷제주"
+ },
+ "aquaplanet-yeosu": {
+  "poiId": "2820630",
+  "poiName": "아쿠아플라넷여수"
+ },
+ "gyeongbokgung": {
+  "poiId": "362105",
+  "poiName": "경복궁"
+ },
+ "namsan": {
+  "poiId": "8345746",
+  "poiName": "N서울타워"
+ },
+ "haeundae": {
+  "poiId": "152054",
+  "poiName": "해운대해수욕장"
+ },
+ "lantern-festival": {
+  "poiId": "2929200",
+  "poiName": "서울빛초롱축제"
+ },
+ "gyeongjuworld": {
+  "poiId": "318195",
+  "poiName": "경주월드"
+ },
+ "legoland": {
+  "poiId": "7887862",
+  "poiName": "레고랜드코리아리조트"
+ },
+ "eworld": {
+  "poiId": "146890",
+  "poiName": "이월드"
+ },
+ "lotteworld-busan": {
+  "poiId": "10323070",
+  "poiName": "롯데월드어드벤처부산"
+ },
+ "oworld": {
+  "poiId": "136971",
+  "poiName": "대전오월드"
+ },
+ "gwangju-familyland": {
+  "poiId": "2758698",
+  "poiName": "광주패밀리랜드"
+ },
+ "caribbean-bay": {
+  "poiId": "386789",
+  "poiName": "캐리비안베이"
+ },
+ "ocean-world": {
+  "poiId": "1185758",
+  "poiName": "비발디파크오션월드"
+ },
+ "lotte-waterpark": {
+  "poiId": "5405629",
+  "poiName": "김해롯데워터파크본관"
+ },
+ "seorak-waterpia": {
+  "poiId": "396933",
+  "poiName": "설악워터피아"
+ },
+ "yongpyong": {
+  "poiId": "56996",
+  "poiName": "모나용평스키장"
+ },
+ "high1": {
+  "poiId": "1182299",
+  "poiName": "하이원리조트스키장"
+ },
+ "vivaldi": {
+  "poiId": "369516",
+  "poiName": "비발디파크"
+ },
+ "phoenix": {
+  "poiId": "369448",
+  "poiName": "휘닉스평창스노우파크"
+ },
+ "konjiam": {
+  "poiId": "532103",
+  "poiName": "곤지암리조트스키장"
+ },
+ "muju": {
+  "poiId": "529758",
+  "poiName": "무주덕유산리조트스키장"
+ },
+ "welli-hilli": {
+  "poiId": "349936",
+  "poiName": "웰리힐리파크스노우파크"
+ },
+ "oakvalley": {
+  "poiId": "1198030",
+  "poiName": "오크밸리스키장"
+ },
+ "alpensia": {
+  "poiId": "2504568",
+  "poiName": "알펜시아리조트"
+ },
+ "seoulforest-climbing-jongno": {
+  "poiId": "11369507",
+  "poiName": "서울숲클라이밍종로점"
+ },
+ "climb-931706576": {
+  "poiId": "11119809",
+  "poiName": "서울숲클라이밍잠실점"
+ },
+ "climb-496958523": {
+  "poiId": "11178005",
+  "poiName": "서울숲클라이밍구로점"
+ },
+ "climb-850543972": {
+  "poiId": "10931762",
+  "poiName": "서울숲클라이밍영등포점"
+ },
+ "climb-1045438278": {
+  "poiId": "11571164",
+  "poiName": "더클라임문래점"
+ },
+ "climb-807578478": {
+  "poiId": "10900004",
+  "poiName": "더클라임강남점"
+ },
+ "climb-408430175": {
+  "poiId": "11263028",
+  "poiName": "더클라임논현점"
+ },
+ "climb-78694546": {
+  "poiId": "10586425",
+  "poiName": "더클라임연남점"
+ },
+ "climb-367482090": {
+  "poiId": "11145402",
+  "poiName": "더클라임사당점"
+ },
+ "climb-610038060": {
+  "poiId": "10494548",
+  "poiName": "더클라임신림점"
+ },
+ "climb-26842478": {
+  "poiId": "6509193",
+  "poiName": "더클라임일산점"
+ },
+ "climb-1796322688": {
+  "poiId": "10485950",
+  "poiName": "클라이밍파크종로점"
+ },
+ "climb-403186026": {
+  "poiId": "10039992",
+  "poiName": "클라이밍파크신논현점"
+ },
+ "climb-24374877": {
+  "poiId": "5694860",
+  "poiName": "손상원클라이밍짐판교점"
+ },
+ "climb-196180430": {
+  "poiId": "11302056",
+  "poiName": "손상원클라이밍짐을지로점"
+ },
+ "climb-132573277": {
+  "poiId": "10906013",
+  "poiName": "피커스클라이밍구로"
+ },
+ "climb-662516308": {
+  "poiId": "11494915",
+  "poiName": "오프더월클라이밍"
+ },
+ "climb-768810860": {
+  "poiId": "11019238",
+  "poiName": "강남스포츠클라이밍센터"
+ },
+ "climb-188938778": {
+  "poiId": "10335448",
+  "poiName": "훅클라이밍왕십리점"
+ },
+ "climb-26527675": {
+  "poiId": "6358145",
+  "poiName": "클라이밍88"
+ },
+ "climb-14825359": {
+  "poiId": "1879981",
+  "poiName": "에이스클라이밍센터"
+ },
+ "climb-1015936668": {
+  "poiId": "8974872",
+  "poiName": "클라임웍스"
+ },
+ "climb-690907860": {
+  "poiId": "6961925",
+  "poiName": "서종국클라이밍짐"
+ },
+ "climb-1455205552": {
+  "poiId": "10157091",
+  "poiName": "알레클라이밍혜화점"
+ },
+ "climb-893297359": {
+  "poiId": "10292421",
+  "poiName": "비숍클라이밍"
+ },
+ "climb-1071989415": {
+  "poiId": "10244379",
+  "poiName": "드림캐처클라이밍짐"
+ },
+ "climb-792588420": {
+  "poiId": "10445782",
+  "poiName": "리버스락"
+ },
+ "climb-563525502": {
+  "poiId": "10940509",
+  "poiName": "포고클라임"
+ },
+ "climb-353166306": {
+  "poiId": "11191395",
+  "poiName": "오터클라이밍"
+ },
+ "climb-1824791409": {
+  "poiId": "10261949",
+  "poiName": "노루클라이밍"
+ },
+ "climb-333102814": {
+  "poiId": "11241153",
+  "poiName": "초크업더볼더"
+ },
+ "climb-2097478089": {
+  "poiId": "11371484",
+  "poiName": "뉴비클라이밍수성점"
+ },
+ "climb-1000916943": {
+  "poiId": "10446393",
+  "poiName": "남구국제스포츠클라이밍장"
+ },
+ "climb-132452873": {
+  "poiId": "10589715",
+  "poiName": "볼더라운지플립대구점"
+ },
+ "climb-1857857925": {
+  "poiId": "6968748",
+  "poiName": "클라이밍줌"
+ },
+ "climb-1278653375": {
+  "poiId": "11459070",
+  "poiName": "허브클라이밍"
+ },
+ "climb-1888231641": {
+  "poiId": "6962606",
+  "poiName": "부평클라이밍센터"
+ },
+ "climb-876554869": {
+  "poiId": "10327636",
+  "poiName": "클라임스퀘어청라점"
+ },
+ "climb-992376105": {
+  "poiId": "8755840",
+  "poiName": "비블럭클라이밍송도점"
+ },
+ "climb-668372942": {
+  "poiId": "7797025",
+  "poiName": "비블럭클라이밍영종하늘도시점"
+ },
+ "climb-592291597": {
+  "poiId": "8874317",
+  "poiName": "에픽클라임"
+ },
+ "climb-795490276": {
+  "poiId": "10032969",
+  "poiName": "서수원클라이밍센터"
+ },
+ "climb-1777945869": {
+  "poiId": "10951471",
+  "poiName": "클라이밍하이프렉스"
+ },
+ "climb-1701692104": {
+  "poiId": "11593320",
+  "poiName": "코알라클라이밍킨텍스점"
+ },
+ "climb-18496346": {
+  "poiId": "6959806",
+  "poiName": "대전클라이밍센터"
+ },
+ "climb-1032498372": {
+  "poiId": "11266418",
+  "poiName": "어웨이크클라이밍타임월드점"
+ },
+ "climb-1667333925": {
+  "poiId": "11157825",
+  "poiName": "원클라임"
+ },
+ "climb-2061802180": {
+  "poiId": "10246253",
+  "poiName": "온클라이밍"
+ },
+ "climb-359538448": {
+  "poiId": "10941352",
+  "poiName": "클라임라운지"
+ },
+ "climb-283870296": {
+  "poiId": "10147774",
+  "poiName": "레드원클라이밍"
+ },
+ "climb-27446581": {
+  "poiId": "7827981",
+  "poiName": "바위클라이밍센터"
+ },
+ "climb-1959834135": {
+  "poiId": "11865163",
+  "poiName": "그랩잇클라이밍"
+ },
+ "climb-1993300418": {
+  "poiId": "10811299",
+  "poiName": "몽키즈클라이밍답십리점"
+ },
+ "climb-1225322806": {
+  "poiId": "11022611",
+  "poiName": "몽키즈클라이밍북가좌점"
+ },
+ "climb-879069003": {
+  "poiId": "11252000",
+  "poiName": "몽키즈클라이밍동탄반송점"
+ },
+ "climb-180386579": {
+  "poiId": "11285843",
+  "poiName": "몽키즈클라이밍수원호매실점"
+ },
+ "climb-2115393134": {
+  "poiId": "11035982",
+  "poiName": "몽키즈클라이밍용인역북점"
+ },
+ "climb-140829074": {
+  "poiId": "11060888",
+  "poiName": "몽키즈클라이밍파주운정점"
+ },
+ "climb-1928631583": {
+  "poiId": "11306766",
+  "poiName": "몽키즈클라이밍고양화정점"
+ },
+ "climb-820005366": {
+  "poiId": "10273906",
+  "poiName": "닷클라이밍짐"
+ },
+ "climb-958971411": {
+  "poiId": "8344366",
+  "poiName": "루트클라이밍"
+ },
+ "climb-1822085153": {
+  "poiId": "10572939",
+  "poiName": "브릭스클라이밍짐"
+ },
+ "climb-27323437": {
+  "poiId": "6935073",
+  "poiName": "버티고클라이밍짐"
+ },
+ "climb-457300921": {
+  "poiId": "10836206",
+  "poiName": "북한산국제클라이밍센터"
+ },
+ "climb-2078945273": {
+  "poiId": "10872929",
+  "poiName": "퍼즐클라이밍"
+ },
+ "climb-222397833": {
+  "poiId": "11014156",
+  "poiName": "크래커클라이밍"
+ }
+}

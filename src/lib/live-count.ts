@@ -6,6 +6,11 @@ import { kv } from "./cache";
 import { planOf, type PlanId } from "./business";
 import { getSktCongestion, type SktCongestion } from "./skt";
 import { kst } from "./time";
+import sktPois from "@/data/skt-pois.json";
+
+// SK 퍼즐이 실제 인원을 주는 장소 (10/30: 퍼즐은 정해진 3만여 곳만 — scripts/korea-data/skt-pois.mts 로 맞춤)
+const SKT_POIS = sktPois as Record<string, { poiId: string; poiName: string }>;
+export const hasLiveCount = (placeId: string) => placeId in SKT_POIS;
 
 const SHARE_SECONDS = 600;
 
@@ -51,7 +56,10 @@ export async function liveCount(
   if (u.day >= P.liveDaily) return { shared: false, left: { day: 0, month: Math.max(0, P.liveMonthly - u.month) }, error: "오늘 횟수를 다 썼어요" };
   if (u.month >= P.liveMonthly) return { shared: false, left: { day: 0, month: 0 }, error: "이번 달 횟수를 다 썼어요" };
 
-  const data = await getSktCongestion(place.name, place.lat, place.lng);
+  // 퍼즐이 지원하지 않는 곳은 SK를 부르지 않는다 (불러도 NOT_FOUND_POI, 하루 한도만 줄어든다)
+  const poi = SKT_POIS[place.id];
+  if (!poi) return { shared: false, left: await liveLeft(uid, plan, unlimited), error: "이 장소는 아직 실제 인원 데이터가 없어요" };
+  const data = await getSktCongestion(place.name, place.lat, place.lng, poi.poiId);
   if (!data) return { shared: false, left: await liveLeft(uid, plan, unlimited), error: "지금은 실제 인원을 불러올 수 없어요" };
   // 성공했을 때만 횟수를 줄인다
   await Promise.all([
