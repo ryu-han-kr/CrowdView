@@ -935,6 +935,8 @@ const dict: Dict = {
   "플래그십·팝업": "Flagships & pop-ups",
   "최근 소식": "Latest news",
   "뉴스 검색으로 하루 한 번 모아요. 내용은 각 기사에서 확인하세요.": "Collected once a day from news search. Check each article for details.",
+  "뉴스 검색으로 하루 한 번 모으고, '지금 이슈'는 AI가 기사를 요약했어요. 내용은 각 기사에서 확인하세요.": "Collected once a day from news search; 'Now' is an AI summary of the articles. Check each article for details.",
+  "지금 이슈": "Now",
   "요즘 뜨는 곳 TOP {n}": "Trending now TOP {n}",
   "네이버 검색량과 AI 뉴스 검색으로 매일 아침 갱신": "Updated every morning from Naver search volume and AI news search",
   "검색량 {n}배 ↑": "Searches up {n}×",
