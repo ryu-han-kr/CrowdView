@@ -425,7 +425,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               </p>
             )}
             {/* 갱신·출처·자료 등급: 흐리고 작게 (경수님 10/30: 흰 상자가 위의 중요한 정보보다 먼저 눈에 들어왔다) */}
-            <p className={`mt-3 text-[11px] leading-relaxed ${crowd.stale ? "font-semibold text-amber-700" : "text-gray-400"}`}>
+            <p className={`mt-3 text-[11px] leading-relaxed ${crowd.stale ? "font-semibold text-amber-700" : "text-gray-600"}`}>
               {t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}
               {crowd.stale && <> · {t("갱신 지연")}</>} · {t(SOURCE_LABEL[crowd.source])} ·{" "}
               <span className="rounded bg-gray-200 px-1 py-px text-[10px] font-bold text-gray-500">{dataGrade(crowd)}</span> {t(GRADE_LABEL[dataGrade(crowd)])}
