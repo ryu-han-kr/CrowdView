@@ -441,63 +441,158 @@
   ]
  },
  "oworld": {
-  "model": "claude-haiku-5-5",
-  "date": "2026-10-29",
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
   "photos": [
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/97/3513197_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "눈사람과 크리스마스 장식이 있는 오월드 성 전경",
-    "w": 940,
-    "h": 705,
-    "score": 9
-   },
-   {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Daejeon_Zooland.JPG/1920px-Daejeon_Zooland.JPG",
+    "src": "/api/gphoto/oworld/bbaaa0274898",
     "w": 1600,
     "h": 1200,
-    "credit": "Ryuch / Wikimedia Commons",
-    "license": "CC BY-SA 3.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Daejeon_Zooland.JPG",
-    "alt": "Welcome to O-World 문구가 적힌 오월드 정문",
-    "score": 8
+    "credit": "Google 지도 · Simon Chan",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/108170187862434082043",
+    "gname": "places/ChIJXWJF3WFOZTURTmrtYDD54Nk/photos/AV-0GLe5Tfb0onYotbFGn6pomoPm6U8DGQdelbcg_1hJAS4iTcH6zSyV2Njt98qQelTvLvalyqeGrvTQQvs677RLYeKYOe_tLMjU9e3ShwNLcX1eOJCpqAHckxwgDBUFHn8KLYKQyCxC4bUkF53wmzKGa8NEk-24QDZtaNtS5AUFwzF83Nx0wCEizmj1vwmPn3HfM0I8cSGDuBtY0ogrdVhMAKcfe33h5X3NlL7msYBi04LbEeCCsDSGwWYuGf2LysXNNDuznu9cLoZJIHPpueTabkf2s2znq2AQI57pJTLfBUiuaoGmaONtmfOylDsm8JtgobZbWHBjydll3qC2NkjP_NEVf7O97TXH8h1eAE57CsjM1EOwOBcYe8QVGnJuxbVIwr5zDrFY2iMCA0417R2XM9lMTFY",
+    "alt": "맑은 하늘 아래 오월드 입구와 방문객",
+    "score": 8,
+    "reason": "파란 하늘 아래 화사한 입구와 방문객들로 활기가 넘쳐 한눈에 테마파크임이 전달된다."
+   },
+   {
+    "src": "/api/gphoto/oworld/f3f560d8a6e9",
+    "w": 3024,
+    "h": 4032,
+    "credit": "Google 지도 · 윤라영",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/101071490794607918083",
+    "gname": "places/ChIJXWJF3WFOZTURTmrtYDD54Nk/photos/AV-0GLdr0RM-btpqJydqw0MJ2mcnM_czC0S1RfazvcEIzD8UR8LqVePODBaNN5gDwmpNw5gqM9gHIqYCAXQEqNpIU1PVWtVRW802kgpwZPInDScS78XhbeeimbAAjEW8rdedMP9Ea4BqecQfY3-JLB4FbkAvICvidOPvS0SkOcL0ilKOkCqFg96goBNOUhCJaVAmhBx1hP-eOPj2UQhCFqnMCzCA0eaZMwN7-I92LiCcoFXeUQUXtwoadbRFf3HvNDSYIONY97mSfhRZDe_hlVtTopscaIPJ7SLY8BJ7BAxRVK5pv7RLdkiD7QiNSnKUl6caS76D9FijJEnPrDhZExN6dDyjdMUWrlHVFg4c_ia0EF12L4Jj6hudSK8lpg0u8Rmn-DSbDrsMK_bYw9d9e7b0JN7_oz0",
+    "alt": "바위 앞에서 노니는 기린 두 마리",
+    "score": 8,
+    "label": "주랜드·사파리",
+    "reason": "맑은 하늘과 바위 배경 속 기린 두 마리가 선명하고 따뜻한 빛으로 담겼다."
+   },
+   {
+    "src": "/api/gphoto/oworld/86ad85587664",
+    "w": 3024,
+    "h": 3024,
+    "credit": "Google 지도 · 박정규",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107506955958317919148",
+    "gname": "places/ChIJXWJF3WFOZTURTmrtYDD54Nk/photos/AV-0GLdXOV6pcDDoOaYoDu9vIWYD-_S0yRD0RtdmVIqBkw4duUtdH8WxYjxPHN-8-frPX-EpT1X7ByYd-p7_hEh2h53WH9C7GmahGAdRZRDIkfHKBHVBl3kDaQ6zdJ5qowTPtOX8u1YXujF9wbR3EzqEh2tl9RuxvcA7tIDgoP-jvoTl2MTFMWXyw72arIDlHf0nrTMeOApNw_JxChnzs_2lCF5SP8CtfRAGKqNwrJIMAtWLkasRwOsu0HmnBRCfkA0DdHwNH-cIU1y-b9CbzdpeXcCdUv4Ji0XVYhPMsthtly5DcytYWc1NoPYQHBth8_O7j7CCidlJ1G6ieaDpEEGqUEpI7CtzbxkdcPxC4Uswwlg-O1S6C70eJhbFecsLWEUqh8XAPlvzHly_YXVxiugf8XIniA",
+    "alt": "하늘 높이 오르는 바이킹 놀이기구",
+    "score": 8,
+    "label": "조이랜드",
+    "reason": "바이킹 놀이기구가 역동적으로 담기고 사람들의 즐거운 분위기가 살아 있으나 하늘이 다소 하얗다."
+   },
+   {
+    "src": "/api/gphoto/oworld/ecbc02f50a13",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · Aeji Kim",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/109837614110629847445",
+    "gname": "places/ChIJXWJF3WFOZTURTmrtYDD54Nk/photos/AV-0GLe1ZEzzLnDy4PQuCM7T5uU_npEBjct7N-bhN4xeaz4Tt7MhQsz3U8KAa2oeD3bkgxKcl6nh8wAnqcHWWsQxfX_kIvnxMBVICXx-43PsYFGGyWZea7FnKWbhZ98ZaxSuRxvKQGMi7j6Kf-OyoWxFuIIgcjMWl_L8lyhBbasdWswgn2aLGigaJWUfuv9juLugQv7jNUTny1fpo3tTEMWCBzkE_R5stPpH2mVBlhgDoblRs8WDR2ZQl-C8ZgdkA0VKwrofw9Sj0UN_OuICfp-AmgVz4AwIZZ5Qh8LvqDkbNzpP7Li-3j11B1cvC1cBS8VZz7bRzkrstbZUeYEss7xeat04745F0YxGMmnAf4tEpxlaakDl6JVZ7kwclGxn7d1-41OHsk2u_VZ5vcB_s75hqsRnicJmOIk",
+    "alt": "햇살 아래 걷는 코끼리",
+    "score": 7,
+    "label": "주랜드·사파리",
+    "reason": "밝은 햇빛 아래 코끼리가 선명하고 크게 담겨 대표 동물로 잘 전달된다."
+   },
+   {
+    "src": "/api/gphoto/oworld/97e040d941be",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · XD",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/113425482624743859377",
+    "gname": "places/ChIJXWJF3WFOZTURTmrtYDD54Nk/photos/AV-0GLdd0p0rH-ZFxHTCjPZ4rKdlsDed0f4qPlXPd_j5ktdTjrRcpsQoEeA10e5h4OLqaH1u0qpaENxln4xfzsenP-maygIvGpF9Zl51QSNmMBCqyF2QQZj4W-SoCmMdlDLOfdrmscpPWdIlnzCp7ZJ3T7SP6BQR4BW2-mdzZVhS1ztZ7rNF5A6NsfzTyGwvknd0W4r4WPYxamKZYRvTsrlIzuy9EjRC4PEcEnDdpfB6Y26vZ1amH1mARWCbxk_2B8bxhqmdehXugLaGnKkii2IQ3koY-cEESydfXukj7uVeaNZtDvBQkS6y1LLg_ElJbjSPocOhYQ4QXvmZINFKtvcYmXlK1MaeWljopfp7-jHLmBDAKy6SGa6rrYJvhehJXX_FhW9qxJe8P3ytMmLKyE3Q02kAYIlTgkY",
+    "alt": "바위 위에서 쉬는 흑곰들",
+    "score": 7,
+    "label": "주랜드·사파리",
+    "reason": "흑곰 무리가 바위 위에서 쉬는 모습이 생생하고 귀엽지만 나무가 앙상해 다소 칙칙하다."
+   },
+   {
+    "src": "/api/gphoto/oworld/5ebead1fa9ad",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · Jun Park (Jun.P)",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/103039582644279097489",
+    "gname": "places/ChIJXWJF3WFOZTURTmrtYDD54Nk/photos/AV-0GLe0VS4mhoGBtRdleVOMPBr7FAgca3CN-R-j1nayuRNJyfuHW02j8NmAXN0n9xsOk-C2lZ4wc3jcXHpeRj4Rs31mbHLoUXIEfmtQNvgWcgj2O9wWAr3eHLOMVrEY13aAmvbwoAyRjo5q--BlOOvcq44O-8fUMHA93KEE6EUUstTQYVhp4N6Wxm3glq4fcGDpmLWqwGMPv2BvCUxw18JA3wlusgVIWkJ-qVXLlJuKoY6GmAn--4DmRKYvT-8DVkWdcK4i7s2HAr5Vd8_lneQbKxfhRwxxb0EyCFI4GD6gh3hyMJW7Gl4DeiQ0CgGpTe3JGF8mO8aQrZWXJEclDtevGj_7w_sOPskKrl6wdl8XM-RPn4F7RniVnyiNY1TZXQAR_66vXIjVflyQm4s7em3Qrzh8jXE",
+    "alt": "사파리 버스에서 본 얼룩말 무리",
+    "score": 7,
+    "label": "주랜드·사파리",
+    "reason": "버스 안에서 보는 얼룩말 사파리가 밝은 햇살과 초록으로 생동감 있지만 창가 인물이 일부 걸린다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/oworld/81e58069a9e4",
+    "w": 3060,
+    "h": 4080,
+    "credit": "Google 지도 · 민재",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/108980887805967874662",
+    "gname": "places/ChIJXWJF3WFOZTURTmrtYDD54Nk/photos/AV-0GLcifKSUV4Iv2cvGs5I_skzrg-lN3GELWh3QkhFEK9KEW9HX5AJwC1aSsyL486mEE9XByqUsNPEohgRCQFWV1a5PS1hzqhaRQenF2QSeWhZVccim4LOIrEOP42tHydr5Qfms0QYU1ECLOMzWcWYC9XsXf_RQYcJBRO3GNsxd9mx1tQpHpWLjyBh_wCo5_xNQGXbteZllFrlxM5Ujzo3RvTssbN4A0ZWfPGrcPcz17kJ4u5z7K6XpTJaUp4cf2tKMAw8N8SGg97btMF2yhP8Wi0NG7fo80RliGYE_sc8aaZMsg_MFMB-c9gc4jTo7b_n0krYiSkq8pG4uNdnN1DyOo6a0Rdj_28x1mDews10citdegoBVwii5VDirp3PXXBezLtP-dNrhxypkBzShpHAInsef0rYeiX82LyJ5_HK41KubpA",
+    "alt": "풀밭 옆에 앉은 수사자",
+    "score": 6,
+    "label": "주랜드·사파리",
+    "reason": "수사자가 크게 선명하게 담겼지만 배경이 평범하고 빛이 평이하다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/97/3513197_image2_1.jpg",
+    "w": 940,
+    "h": 705,
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "흐린 날 크리스마스 성 장식과 눈사람",
+    "score": 5,
+    "label": "할로윈 행사",
+    "reason": "성 모양 크리스마스 장식이 화려하지만 하늘이 흐리고 회색빛이라 활기가 부족하다."
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms/resource/98/3513198_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "오월드 광장의 캐릭터 조형물과 뒤편의 성",
     "w": 940,
     "h": 705,
-    "score": 7
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "캐릭터와 줄무늬 조형물이 있는 광장",
+    "score": 5,
+    "reason": "알록달록 조형물과 캐릭터가 귀엽지만 흐린 하늘과 한산한 광장이라 쓸쓸하다."
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms/resource/95/3513195_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "오월드의 집 모양 회전 놀이기구",
     "w": 940,
     "h": 705,
-    "score": 7
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "집 모양 놀이기구",
+    "score": 5,
+    "label": "조이랜드",
+    "reason": "집 모양 놀이기구가 개성 있지만 흐린 하늘과 앙상한 나무로 분위기가 가라앉는다."
    },
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/96/3513196_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "사자 조각과 달 장식이 있는 오월드 정원",
-    "w": 940,
-    "h": 705,
-    "score": 5
+    "src": "/api/gphoto/oworld/8e559ef655e2",
+    "w": 3000,
+    "h": 4000,
+    "credit": "Google 지도 · James Beaulieu",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/103647583280643705512",
+    "gname": "places/ChIJXWJF3WFOZTURTmrtYDD54Nk/photos/AV-0GLf1cdCSr-cDyaquttycPcmTbwH4HlbiIgzlf8bpmORQ65qn4z1GRDe9PUp6EmJcYSrw9JQxQwdO3jzXP795vl9M0ogA6PMYhA8Wag5_kvPjD-VL41ZvSSH_z1dnT_aDL_DPqsHl8HudUzi_Hb4OojCn3_ZJSKBecTn0HDEVcjiU4-jsglW4T9xRJ996vxHvhDgesNPrAxIQ_tHp_pcTsbrleHIiRsK99ExL_dE1vda6Kd6al3tbjMwmX0i8gnmfsXX65w9IGDBLl-JViCLGbGqo3NTyoRs7vF3md0Ly7IRz5YEjH1T9DY2Hv-Jafw0eukwPDcms3NHwGlJRRqkcD8DMw624lws6sPbc8mMlR3mElkgZcPBTvxa4cBQHYI8xRnsJhzeNagOz3kNQ",
+    "alt": "철창 너머 호랑이",
+    "score": 5,
+    "label": "주랜드·사파리",
+    "reason": "호랑이 표정은 선명하지만 철창이 가려 답답하고 배경이 칙칙하다."
    },
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/99/3513199_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "오월드 광장과 높은 타워 전경",
-    "w": 940,
-    "h": 705,
-    "score": 5
+    "src": "/api/gphoto/oworld/15bd8739be26",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · XD",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/113425482624743859377",
+    "gname": "places/ChIJXWJF3WFOZTURTmrtYDD54Nk/photos/AV-0GLf4yapt-QY44LvXUnL_KSLhCTByagUSkE78QQSIfwMFoQgmqWGB_lidKgISzwoQyhmNBBYEpNCxnZiB0SzF0Or1EGNBNiy5qjr-cfndSYEGjr3-H9BpzX-FU7Q3PuSo3jUYLCrPqQaDsMEa6-uDDw3AHXPJmo_pPv0xra3wOvnqftzn0Lf8iEbBslP_hGU2wYfZcX1m-1iZCt2HFqsD4Rs8gcg3_dRi1For21gusTIVxWVp1P4Cskq4JfDMpOPoIojZEzWL49A58ctWlTcyIzpaiJjLJcmFbMax4YtzYtVkWg4QrkcfMHxaroncWrQJMRoWu3lKMi1wo-ndn2FDy4jqoCS4UdOhii7Ea-r_uPeMwMpt2oZCWEBfl49sEyKMBvrk61dbgi379fHrJCP5BSQuHA",
+    "alt": "바위 위에서 잠든 호랑이",
+    "score": 5,
+    "label": "주랜드·사파리",
+    "reason": "바위 위에서 자는 호랑이가 귀엽지만 구도가 어둡고 배경이 칙칙하다."
    }
   ]
  },
@@ -1374,28 +1469,42 @@
   "date": "2026-10-30",
   "photos": [
    {
+    "src": "/api/gphoto/lotteworld-aquarium/f62afff06878",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · Sonny Eric P",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/109390590445716937646",
+    "gname": "places/ChIJY4ot2QqlfDURFzi2WmB3i6U/photos/AV-0GLeTZkLtkOwRzqr6dwquwTzPLkOB-iyv2TTvfEG8rozRONc6ELTQlnOV_bt3FWsBbsxPApK60p9HIZ_cfzlRxecoFxs3xxHHBNcnM1DAgiCelR4RDgz3OdKGvSdrpaOZk8nbaIzVnDz7NDy8-4atriy0UV4fV7Ix3vUs2WizVf0h3d7p37HNWp_Zr-FofgR-M-ocGqKfDgcbwoU79Fk7cpuURAKpEQLpgBkSi15n6-KEwI4FbyIjfMKjD673PZQhwLRLRng6uIwTo_UGOiW91BO_CQBk5GvXmBvRBOF_5DNzIxD0qugi-fYIvRkY1o9MNIcmds7DjIQ36UC15k0iEv3z_HxlHUG8GrmqOcVKCkI0y4mGDe88dBSmAUFp1iUzUV-VC4CA9wj8iOs-LfSwh-s0Wbs",
+    "alt": "물고기가 헤엄치는 해저터널",
+    "score": 9,
+    "label": "해저터널",
+    "reason": "물고기가 머리 위로 지나가는 해저터널의 모습이 한눈에 들어오고 푸른 조명이 아름답다."
+   },
+   {
     "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Beluga_Whale_02.jpg/1920px-Beluga_Whale_02.jpg",
     "w": 1600,
     "h": 2133,
     "credit": "Versions111 / Wikimedia Commons",
     "license": "CC BY 4.0",
     "page": "https://commons.wikimedia.org/wiki/File:Beluga_Whale_02.jpg",
-    "alt": "푸른 수조에서 다가오는 벨루가",
-    "score": 9,
+    "alt": "푸른 물속에서 다가오는 벨루가",
+    "score": 8,
     "label": "벨루가",
-    "reason": "푸른 물속에서 벨루가가 카메라를 향해 다가오는 귀엽고 인상적인 장면입니다."
+    "reason": "푸른 수조 속에서 카메라를 향해 다가오는 벨루가의 표정이 귀엽고 인상적이다."
    },
    {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Spotted_Eagle_Ray.jpg/1920px-Spotted_Eagle_Ray.jpg",
-    "w": 1600,
-    "h": 2133,
-    "credit": "Versions111 / Wikimedia Commons",
-    "license": "CC BY 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Spotted_Eagle_Ray.jpg",
-    "alt": "수조 수면 가까이 떠오른 가오리",
-    "score": 8,
+    "src": "/api/gphoto/lotteworld-aquarium/5655d46509a0",
+    "w": 4800,
+    "h": 3600,
+    "credit": "Google 지도 · 신종호 (Luis)",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/106060091079012253404",
+    "gname": "places/ChIJY4ot2QqlfDURFzi2WmB3i6U/photos/AV-0GLe4usx01v4at_9_ADB17XoIIUXsCVN5hjHFgc8Tn-w_ilgYdDPFzYPz2pQNT_IXYAd4EoXPLa9NaEopcFtGHpkohl4eBXjejablp-VpTmC_fFaJEQ7dUIes2VsACx-3SseWnYU_HvqU1VhNn23P6ep4RQtRsfMezWrQL5j7sgP6PbvdBXKq_CBEngU8efdHiV4eUzBJfCsm3zy5BxKl9PHFPD3FXo7uVIjsdv60dLXcucPl5YOzXfN91hpEEUu-ZGhq7friXtqcPc8oE9NvT7djSppq58YkcVzH3Py1qKpZ54WxoESlB5K_kls3UOY-yzadIrMDElTtgJOOdwtS0WkjlWIpspuuy2ZSsApSiL2aPEEm_2VNdaQFJW4xJOugRymNTIL06t_cgJwF9-S9b7Q9UevJFgA",
+    "alt": "열대어로 가득한 대형 수조",
+    "score": 9,
     "label": "대형 수조",
-    "reason": "넓은 수조에서 가오리가 정면으로 떠오른 독특하고 선명한 구도입니다."
+    "reason": "다양한 열대어가 가득한 대형 수조가 밝고 선명해 활기가 넘친다."
    },
    {
     "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Aurelia_Aurita_02.jpg/1920px-Aurelia_Aurita_02.jpg",
@@ -1404,36 +1513,99 @@
     "credit": "Versions111 / Wikimedia Commons",
     "license": "CC BY 4.0",
     "page": "https://commons.wikimedia.org/wiki/File:Aurelia_Aurita_02.jpg",
-    "alt": "분홍빛으로 빛나는 해파리",
-    "score": 9,
+    "alt": "분홍빛으로 빛나는 해파리들",
+    "score": 8,
     "label": "해파리",
-    "reason": "핑크빛으로 빛나는 해파리가 크게 선명하게 담겨 색감과 감성이 뛰어납니다."
+    "reason": "분홍빛으로 빛나는 달해파리가 선명하고 감성적인 색감을 보여준다."
+   },
+   {
+    "src": "/api/gphoto/lotteworld-aquarium/c6262b164fdd",
+    "w": 3024,
+    "h": 4032,
+    "credit": "Google 지도 · hoey sab",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107358089157568048992",
+    "gname": "places/ChIJY4ot2QqlfDURFzi2WmB3i6U/photos/AV-0GLdNrApqccsPDueUKXCXHQAjd1nGAcxL7J8JOUWGhHFIcnuEb3nd4rRO8Xr89_OK266aO4iPFfGvgvDYOZ9a89Jh5tHHtmVb3Tzlz1kHFdMpzmkCCfUcDVEGZBbtR5q-G8JxZ1V1k5B-JONmpMNsWu4hoMzjOnryMjm9crHmbKF3CIcJQ9Ijk9wrXZ1kQiJupe1sCOenkGd4NIapBRJSZg-QE4jke8LgaFhQY9ESMEWpSIzlDQCigpH_DUCVyFxSMa31sMQug6E30laVCFjwg2ltlc6xt6Uz30Ewh-2YExO3rBuIorMA4NXrlC_XTUhF5Be9ckUUZDfhmEjjZX4OINf7Xg1aSqxBOqo97DfabV8MNwCNcqwrTdlAS9hXnx-RMfuu3WBtH6ColmabF6P1l79K52t5",
+    "alt": "긴 촉수의 분홍빛 해파리",
+    "score": 8,
+    "label": "해파리",
+    "reason": "긴 촉수를 늘어뜨린 분홍 해파리가 몽환적이고 인스타 감성이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Spotted_Eagle_Ray.jpg/1920px-Spotted_Eagle_Ray.jpg",
+    "w": 1600,
+    "h": 2133,
+    "credit": "Versions111 / Wikimedia Commons",
+    "license": "CC BY 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Spotted_Eagle_Ray.jpg",
+    "alt": "수조에서 날개를 펼친 가오리",
+    "score": 7,
+    "reason": "수면 아래에서 날개를 펼친 가오리의 대칭 구도가 눈에 띄고 선명하다."
+   },
+   {
+    "src": "/api/gphoto/lotteworld-aquarium/b4ed73a03f43",
+    "w": 4800,
+    "h": 3600,
+    "credit": "Google 지도 · Kijo",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/115052819802844679884",
+    "gname": "places/ChIJY4ot2QqlfDURFzi2WmB3i6U/photos/AV-0GLfHkGYGJsJhWS4-7K3WTuhZEMc38WXBKmzY2NjilGZr7bUqGKwcVzjn32zJ1wps_fDMfYS8qmLXSSiBf_mQ4VjDu0H1WdODfpi0UAuB-kYpsskpP3sAtOqzeek1fSN1zqXsrK78Rbqg8z9Wzv-gd0er4NIx-E-VZXglq3Pe9LcYknAH0UG-Ur4pTHdDGn5Fm5dlyCMqzzKg64I-vewzSVJCMHeSxIE5SHMk0_hlVpXd1Avmo4FicVAum7xGHpUjcC5PX8KMU8L_TJyHXlGnEMkHz3x63QcljBruqKy9hZIweoyM-PHexPYKWwmRM8whu84-lZkZKFvBjgXsPQbeQ7EhM7ZSw5FjT1-43gLwyYJEoTVQjsPtsLyeyjJkpk0VBC8mqdu3g97JqcyB5f8AjqEHamWYuyBz6HeYrgxTDZ9h",
+    "alt": "유리 앞에 다가온 벨루가",
+    "score": 7,
+    "label": "벨루가",
+    "reason": "벨루가가 유리 앞에 가까이 다가온 모습이 친근하지만 반사와 어두운 톤이 아쉽다."
+   },
+   {
+    "src": "/api/gphoto/lotteworld-aquarium/182aaa4d8b12",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · hoey sab",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107358089157568048992",
+    "gname": "places/ChIJY4ot2QqlfDURFzi2WmB3i6U/photos/AV-0GLfWQjCB3hAKdS8kza7qHvwQDyB-86xG0HH2OsZ1fJUXpQx9YcJtwUeVhV784yaxy29sw6xcrI2aBLgoMN4yEErEGLZNfkSRUpTkJHKVTUa_zrK634vN5FhUOnOHWrIa2gwyNRLBuXTMMFdTjthh9wm-6byQ-_dKIA_Ghwscf1MeSefHIB2xjBEizpQ02_8neej5eLwq2ZwUxhcDutip0GrrrVDjsZ0dzILtHMNh71jGEUiSsKuySkylgua7QGM4JWaEJj8tWKBuBuZtUFUg1HMGWSL3xUfelzJAQu1TzlZUW-YX5vRAITGr51i-eNhCnSv7OkBSiMUKa7MXbudLUmqhb8ngvFxApWJTWO6fNnH3njUSjXANhOrVsX874V1cz_kYRWcz2aVxYm3zOotMWAM-pA",
+    "alt": "조명 아래 화려한 산호초 수조",
+    "score": 7,
+    "label": "대형 수조",
+    "reason": "다채로운 산호 군락이 푸른 조명 아래에서 화려하게 담겼다."
+   },
+   {
+    "src": "/api/gphoto/lotteworld-aquarium/6a97463773ea",
+    "w": 3799,
+    "h": 2515,
+    "credit": "Google 지도 · 김도원",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/103028717262586962409",
+    "gname": "places/ChIJY4ot2QqlfDURFzi2WmB3i6U/photos/AV-0GLe3BBI2SoCvIasQsZ1SCBceAXS8I55jOJfXOB0ioP0SddYvSii3c1FiD24mHyu1wD8-HDmI8Ewf7PwrcXjE1rWUy6y86suelTbHDfUZM-ZILl-rzO4uzlrJSRAdsMlGymqp72iRhs0xrb3PcssY2U-P2The5bxCxjBkT96F1GS_enDAUidHmyF1JvyyuRWSO9n9JPyMYGwRljbQK0P4siYuPo3VXO6BYt6gRt6BLDoOCgvMIBB8basfMWl7oyYit4JbWDutQG5ets0_TAM-ZMXU1TXS9q5XbZ-18MgAEiPDgquiJEBCsjUHU802CrIL5MXtKDgqaM5c1SD7LH31_Q_Z85rq2fWd7NVcoV6KDZezK6qYsFEuhHNIGKS6-87zctTGtedcszeKqVJw2_u2QWIDN3t7loA",
+    "alt": "바위와 산호 사이의 열대어",
+    "score": 7,
+    "label": "대형 수조",
+    "reason": "바위와 산호 사이를 헤엄치는 알록달록한 물고기가 선명하지만 색이 다소 과하다."
    }
   ],
   "pending": [
    {
+    "src": "/api/gphoto/lotteworld-aquarium/7af8dece1bfb",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · Donghyun Seo",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/113061589355675325566",
+    "gname": "places/ChIJY4ot2QqlfDURFzi2WmB3i6U/photos/AV-0GLc4gSBy4frZC9_zc-3DXM_gHYOKXNi3Y9ZxMpAxJwTeFP0JuaVWpj5wdw0xpTC8aaDGltfQnQKiiNtPYwPx0tQQS4ZeRbJOn1uy4f4fk4rD7UJ15ZTYBero3UEMzcVBA5dOFDcMSBHJ75Hcu3ohlPmtdwmjIfbLnN4eFqb-tgw5V-JdDnR3s_SZDHXGqOSyQGj5Ikbc6XACDRPGCzUFdAfgP4aOiIvRmN1w-FjahHAHH6LNUz9mCBErKDahMiTix25DaCHFKbgG0OHtd1i2s4oc9TEyy3UOpNYPHtekMQOecPBgNHCOB4htm-NF6NofHnc4ddz6c-0tcqEuwcDaflux9opatuUxfbAWqkdJ_JwFREx3YUf2QVAwgaDGUqdj1MtMjf4aVbNajzzX0XeQDwiM1X3LK80",
+    "alt": "해초 사이의 은빛 물고기들",
+    "score": 6,
+    "reason": "은빛 물고기와 노란 해초가 선명하지만 대표 명소는 아니다."
+   },
+   {
     "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/Beluga_in_Lotte_World_Aquarium.jpg/1920px-Beluga_in_Lotte_World_Aquarium.jpg",
-    "w": 1600,
-    "h": 900,
+    "w": 4160,
+    "h": 2340,
     "credit": "Handan99 / Wikimedia Commons",
     "license": "CC BY-SA 4.0",
     "page": "https://commons.wikimedia.org/wiki/File:Beluga_in_Lotte_World_Aquarium.jpg",
-    "alt": "대형 수조 수면 아래를 헤엄치는 벨루가",
-    "score": 6,
+    "alt": "수조 수면 아래의 벨루가",
+    "score": 5,
     "label": "벨루가",
-    "reason": "수조 속 벨루가의 전체 몸이 보이지만 조명 반사와 유리 때문에 다소 평범한 기록 사진 느낌입니다."
-   },
-   {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/Medusas_Acuario.jpg/1920px-Medusas_Acuario.jpg",
-    "w": 4000,
-    "h": 3000,
-    "credit": "MmMmJim / Wikimedia Commons",
-    "license": "CC BY-SA 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Medusas_Acuario.jpg",
-    "alt": "어두운 수조에 떠다니는 여러 해파리",
-    "score": 6,
-    "label": "해파리",
-    "reason": "색색의 해파리가 분위기 있게 떠 있지만 작고 흩어져 있어 강조가 약합니다."
+    "reason": "벨루가 전신이 보이지만 화질이 낮고 배경이 휑하다."
    }
   ]
  },
@@ -1495,48 +1667,124 @@
   "photos": [
    {
     "src": "https://tong.visitkorea.or.kr/cms/resource/09/3515009_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "가오리와 상어가 헤엄치는 푸른 해저터널",
     "w": 940,
     "h": 626,
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "가오리가 헤엄치는 푸른 해저터널",
     "score": 9,
     "label": "메인 수조",
-    "reason": "푸른 빛의 해저터널 안에서 가오리와 상어가 머리 위로 지나가 아쿠아리움의 매력이 한눈에 전해지는 선명한 사진입니다."
+    "reason": "푸른 빛의 해저터널과 가오리·상어가 한눈에 들어와 아쿠아리움의 매력이 바로 전해지는 대표 사진이다."
+   },
+   {
+    "src": "/api/gphoto/aquaplanet-gwanggyo/92af9d4ea0e4",
+    "w": 4000,
+    "h": 2926,
+    "credit": "Google 지도 · 김도원",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/103028717262586962409",
+    "gname": "places/ChIJeYwpoMJbezURoBBwF9Srdj8/photos/AV-0GLdXs3v6czkRXCr4sPETMkAbgrOHjbLs2I7Isxslx9wKhjZAa_NtphWjW8DP1ZEJnc7LWOvFASzChYY3fCkchGkreqBeCoID5JOJrrI1A10cKmGEAZdai_JTbpw-qRyJKaYZxRl33u38ESa-FSTf-Y7hMWEOQXG9OpeLBH3Ky8Dp1s1FlTfWEki_l9Xz0UCHp2WzzgwGCAV6zLfhxjutmRtrFtja9Y4jMnK0dGwBx52NEd-drfskyCKOzK6LU50B_Bq794Wyzm_1dK1PvUJ79ez-GoUZ6rFNoEnJSso9-ZXvYM23CQgsucrNonohnqCUKXinPdpb1tFh8K-zZVHMo_7b4uLu6EBuy4t7rnvrqz893335fXBhqvW19D9vLCgc8eR8I2r0qaVeH0rnpVfalbeOVQc",
+    "alt": "상어와 물고기가 가득한 대형 수조",
+    "score": 7,
+    "label": "메인 수조",
+    "reason": "상어와 다양한 물고기가 있는 대형 수조가 선명하게 담겼으나 터널 사진보다 임팩트가 약하다."
+   },
+   {
+    "src": "/api/gphoto/aquaplanet-gwanggyo/7791f04c0692",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Google 지도 · 이강민",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/101776630711883966183",
+    "gname": "places/ChIJeYwpoMJbezURoBBwF9Srdj8/photos/AV-0GLf10zielCIjXZZgolrUJgdNF7l-PjKr97mQqwl8yahYu1N9JvSscO_ANcL1zb6Ycki8uqasytV5Mcnf7L_vuQhAgyKx9pq4h30k0S6nFt0pILqWIiQsBlTCHpATzmIjs_KN0AhG24JvdDHNaMN1K-PElHJQQqlJbTKbtJe8yFPek_BYSSaTGaeeeQNgY-43qkn1P0JcIUA389xgG3viictZDVhVMY6NZ9UfhRozYe4z1XE7nFZMyiz-wmSUY6Nt59vVVVS1eNcih0BjmlS_yoGqQJYaJnpE9yiXpGvg3BBK31eRpARvC9LJSm8D3CStTM9uVlQJTFR_RXL8boVFlLnlQDv5Pvyzhctc5SxUxq7j6spiIsffZP8kxaRg3Sr2-vIubNUl-9C5kGCXzeRqsC-OEHVtjl4",
+    "alt": "바위 위에 선 훔볼트펭귄 두 마리",
+    "score": 8,
+    "label": "펭귄빌리지",
+    "reason": "훔볼트펭귄 두 마리가 선명하고 귀엽게 강조되어 동물 매력이 잘 전달된다."
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms/resource/11/3515011_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "원통 수조에 해파리가 떠 있는 젤리피시랩",
     "w": 940,
     "h": 626,
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "원통 수조가 늘어선 젤리피시랩",
     "score": 8,
     "label": "젤리피시랩",
-    "reason": "원통형 수조들이 줄지어 서 있고 바닥과 천장에 빛이 반사되어 몽환적인 분위기가 살아 있는 사진입니다."
+    "reason": "원통 수조와 조명이 어우러져 몽환적이고 감성적인 젤리피시 공간이 잘 담겼다."
    },
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/10/3515010_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "주황색 물고기가 가득한 원형 수조",
-    "w": 940,
-    "h": 626,
+    "src": "/api/gphoto/aquaplanet-gwanggyo/c4f821e5d693",
+    "w": 3600,
+    "h": 2656,
+    "credit": "Google 지도 · 김도원",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/103028717262586962409",
+    "gname": "places/ChIJeYwpoMJbezURoBBwF9Srdj8/photos/AV-0GLeurseicomJHd9aynXiFN4QVI5HyPswf-b_53cFzOqEpqUAiHqq2FQ39Tm-5hPSrdyoPj4g5UHJlWZcIjTyxHi3EH9c969pW8vpHGjOn2HGfogV3B9iBsE_YpTtm7fyTptB9KoPrL2FYf5LkWj9fiuDRON3tBoDW2grGhhIKIe27eWbThWjjKjeX2a3KQpa8Th_Tkb3nm7u40k4Ov9VfGw4Cu8w7RTRYLrF8_YL6sIUP6pzoA-2U1Xge04qzeQGMHMh4E0i4QfNeaidsEysVAjgllbXkAkf2wPGvTVVwMJfH-bAilAXhyIC-dymD5ELViGDoVczMYUpU36GIysmX8t38E_03UhMFrDF50ki_OVw0GN_hxGI3S2Nte4qRMLWDRAsRK_giSlBePcT1JaRckv55I1B",
+    "alt": "산호 사이를 헤엄치는 흰동가리",
     "score": 7,
-    "reason": "주황빛 물고기 떼가 보라색 조명 속에서 선명하게 돋보이지만 대표 명소 목록에는 해당하지 않습니다."
+    "reason": "흰동가리와 산호의 색감이 화사하고 귀여우나 대표 명소는 아니다."
    }
   ],
   "pending": [
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/12/3515012_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "대형 수조 앞 무대에서 공연하는 모습",
+    "src": "https://tong.visitkorea.or.kr/cms/resource/10/3515010_image2_1.jpg",
     "w": 940,
     "h": 626,
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "주황 물고기가 가득한 원형 수조",
     "score": 6,
-    "label": "머메이드쇼",
-    "reason": "큰 수조 앞 공연 무대 분위기는 전해지지만 전체적으로 어둡고 공연자가 작게 나왔으며 머메이드쇼 장면은 아닙니다."
+    "reason": "주황색 물고기가 가득한 원형 수조 색감은 예쁘지만 대표 명소와는 거리가 있다."
+   },
+   {
+    "src": "/api/gphoto/aquaplanet-gwanggyo/1662779a190c",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Google 지도 · 김도원",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/103028717262586962409",
+    "gname": "places/ChIJeYwpoMJbezURoBBwF9Srdj8/photos/AV-0GLc7vDOQse2UTmgW7MQ0Z71GasvuMIFuRHE2gpAsrGU2ypHPPKd7xFfURcdFoVRHG2_0qaZxB4JYRDd5VW4NEfsXDYcjt5PbssCj2kUTtFb5asTgOjwFP2qkKxbfye48o1CPXBaK-YCzBU8CGnFdlTV-kBAyVBs5DPbXg8sScUE0bGg0t2mmTH2FDEsU50pjeKrfe-QKf9fYe1q5qhsZqxhqhgfkLNsNPy38nKbA77a0O9uycEf07-HBamuiNo83AHbjI9sTRJwIBakd_dtpkZw7b7LnanVlUzHGN2tH-nUHGI92xCRJYyo4aOzijJHCpXthQ9nyRCVxu6SmiQTn13ZodmQjdzjsLtGSvIdfBbijoeiU5t6S3GlBCUMLvKbMc9OI-5gpJa8VzIqWCmulvMXkS-7oNAOwfUzHGICHw2nc",
+    "alt": "산호와 열대어가 있는 수조",
+    "score": 6,
+    "reason": "열대어와 산호 수조가 보이지만 글자 로고가 보이고 구도가 평범하다."
+   },
+   {
+    "src": "/api/gphoto/aquaplanet-gwanggyo/c522bcf71c59",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Google 지도 · 김도원",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/103028717262586962409",
+    "gname": "places/ChIJeYwpoMJbezURoBBwF9Srdj8/photos/AV-0GLcEEd_IKL3iJjc4ZJyc24LuJ1slnJdkpjDz_2eKsYT1lubWsphX985s9qvhdGuIiNV61pWqrDrRLXSgr6MCvzoCT7QGQxmWZ650GZ1UbrunlH6wDyvhP7M_bqO5JxFsoLgCXTxm8CtJo8xYDacbpYvmDVpoLFOKsIEcOmDj9JxImK7LeAmcsi--GmbAfVnVfdhi4gAI4P_5J1Q6sFj3KCDmtxz9eGL3u4TathNzwS6HdgGQHF75iwig6PU9bMsgHktF93iNlbC7FeToTccBGJeTrifrm77EdNzo-fWfoBaXNuAoBNd6YcZCgReZ2GT8rwBroFbWhS_YGM-EL_60NI17-s-JiB0nZn2UnKn_H3VobRUUhc5JEa1r_e0nIMV7gQiKwhqo3i4nLFjMV2foc4YDpKe1Muk",
+    "alt": "수조 속 큰 점박이 바리",
+    "score": 6,
+    "label": "메인 수조",
+    "reason": "큰 바리류 한 마리를 선명하게 담았지만 전체 분위기 전달은 약하다."
+   },
+   {
+    "src": "/api/gphoto/aquaplanet-gwanggyo/75314ec1e875",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Google 지도 · DOE",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/116865828601560190834",
+    "gname": "places/ChIJeYwpoMJbezURoBBwF9Srdj8/photos/AV-0GLdkjtXYn1iA79pBFJc4K0_qtPIv0DCv6aRx1EBYORIy1D0McvB5GTJl5jlaZWvT986TF9_EbWIulAJRaV4RkINoiwd0spWQfhZ6IliMGjC5o3TOTlYF26MR-cDLCbsCoppIjTCa8xQ4MCiuP928eLPfRtlsrGv1quvo5TutxmUe4ufdjpse1bGia-uN5eaUMiOGQqPCYcgR9s6CUcadP5nIoHnPaDroACNxH5Yta-5FJiHPE5bz88WEyZpT7__ATnYHoH-LvqQasMjqK7-bbY0fGDdCHqAsSc8CuS8a3Lmz9CQbyPUvXl78Kgg_d2FPFdSnZGE2PMYB4yPxZoxrI1Un_pEIAIQhRkuX2NRCDJgEHEQl6sWssD2OzqWjA6lbNNyINQsYtOkvqfP5yNfccGq1-l9azHkKkNvBA5CUuPheDw",
+    "alt": "나무가 있는 피라냐 원통 수조",
+    "score": 6,
+    "reason": "나무와 피라냐가 있는 원통 수조가 독특하지만 반사와 어두운 배경이 아쉽다."
+   },
+   {
+    "src": "/api/gphoto/aquaplanet-gwanggyo/69d2d68353e9",
+    "w": 4000,
+    "h": 2252,
+    "credit": "Google 지도 · Howard Hahn",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/114008469709168609023",
+    "gname": "places/ChIJeYwpoMJbezURoBBwF9Srdj8/photos/AV-0GLftF8ObqRpodIGH1671q9wn_wzaGTiIuuMqEZGIdWGkjMXW0W7IrIuMdmv3FZ59ErI9IXnclKN7wgiXLEPCoyaaFaAAOGGPcWCXerscZFXt3qH4CmG9nG1djAlW-4FU1tUyAKAepEdib4PdB-TVUxDf_aRebgaAftX3GCMqqe4qWWTy0aZ1jk31uOuIFoSUtEm8uDQ695Bw0wFAxgGwaVqbzqtCPR0sL_dNf4BscH9VJTFrcXQ4eOQWzMRUTXECZzWn8hy_76IY3U9NPhp7T5b8oJfDpbFvz3WDvcOs9LZ8fe9pBQOzy5UBXuViU9Arrul4_5P0I3QJrl5Z2kpoykSVP2d9BUd-f8QT_0w-Q7Y2lfGbvQzf6dwolsxJlk1J9XBm5aWoG7i4KFLiFAq7OPKiF1LhoD8",
+    "alt": "실내 대형 수조 전경",
+    "score": 5,
+    "reason": "넓은 수조 공간이 보이나 조명이 평범하고 휑한 느낌이라 매력이 떨어진다."
    }
   ]
  },
@@ -1776,26 +2024,43 @@
   "date": "2026-10-30",
   "photos": [
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/10/3020610_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "푸른 수조가 감싸는 해저터널 통로",
-    "w": 940,
-    "h": 705,
+    "src": "/api/gphoto/sealife-busan/5949a4cbf171",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Google 지도 · Airben",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/115025844774972915290",
+    "gname": "places/ChIJq7TCXVyNaDURsEf5F93nr84/photos/AV-0GLehMnemzHBwjJMUoGEAk4irVfZZzeI8A9gIeJ15Tq6DuQRNjh-SDIj8-LsHvF4eoHW4USkg1feuLqo_LZb1KQf22L_80NLqbyfbwrBeKcyaCP8XrgUIvtN3tV5vgltEA1CW-QtElnUcxkZ67Jyo4HBDElEU8iN5VTLC5IoVKKdKa1JHBr1VnIjnRZGFKCYA0h0VVyHIN98yZdIuqOlovxNCZsEezjL_X5kJMA3rGC4ytAmjg9WxkyozAtas7bPAOzOZWxsrBfWb6imXOKkYhCVdAkdGGalodA-C4EYqm_DGtscuLwnkVgctTCmPXNYFPWUdGq9Jxl7AzY_AU7teGyBegRYP5QVDXnTLBwzjRE9Dg3qYj7XucB58ZIL5gjRTnSjRk7JpgsDSfcsY9reXE-YHLOhsqrs",
+    "alt": "상어가 헤엄치는 해저터널을 걷는 관람객",
     "score": 9,
     "label": "해저터널",
-    "reason": "푸른 아치형 해저터널이 한눈에 들어와 이곳이 어떤 곳인지 바로 설명해 줍니다."
+    "reason": "상어가 지나가는 화려한 해저터널과 관람객의 활기가 한눈에 전해진다."
    },
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/09/3020609_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "큰 수조 앞 관람석과 헤엄치는 물고기",
-    "w": 940,
-    "h": 705,
-    "score": 7,
+    "src": "/api/gphoto/sealife-busan/ccc01d9cf5b8",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 신동건",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112282275537096945256",
+    "gname": "places/ChIJq7TCXVyNaDURsEf5F93nr84/photos/AV-0GLc3EL2fUYvfb_nHgiENnPYPmw29iyHm8zZ50DbUgxkfZX7vNYWvtlJIJ3lTRFueKSGqhSvum_KmRafTG6ZvdaM-SBAztMGzAcfHIWxTWKS0PT07KHxZUUIKRxdZg1uFChSqODLyjxN5bpv9Ho5osjFzM29T7UptYgEo9-M0rheXstIwUZURyN-0zLpdJCssP0pkPm2S7HjN8XlI25vJAoT24Jj5ZPckD2sJIU2hmm8l13Gsm46NO3A_Gs65xiP8niUq5mCj31z6L6s7X_y5Q-sCBY9H81BUgWNL4yXojDFotPe8WD8QFF6BBqkEUGGhjqEhxxDjzufjFt4D4zHSSiLYkmdg6iK0WtuxNLeZCvyG9vDbW6_24xh9JqdcabLXSBVdrK7JJwTQt5dC0IiHu6QXE5GHde8",
+    "alt": "산호와 물고기가 가득한 대형 수조",
+    "score": 8,
     "label": "대형 수조",
-    "reason": "대형 수조 속 물고기들이 시원하게 보여 규모가 느껴지지만 다소 어둡습니다."
+    "reason": "산호와 열대어 떼, 상어가 어우러진 선명한 푸른 대형 수조다."
+   },
+   {
+    "src": "/api/gphoto/sealife-busan/ecfbcb7b1796",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 한석현",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/111305184515856690326",
+    "gname": "places/ChIJq7TCXVyNaDURsEf5F93nr84/photos/AV-0GLdwe0wk57nEHGpH1tkbF-Q1JPy6eQsC_uAQAhGg87bvUlfK1VbWCdxk5pzeJVGU-phA4LXKePcSNlcQC7uS4fX9QicLAxb_dcdgzK9ef1HI0J8qEZip6VgBX1pJXyjdq_0633GL17NxE7HUuy1Z1V_Qo3snaLtNroM06Z0O8oBbeQkveFRkh1K28W_WamOrBzDbCWINn6_tNw9JfoShsJVFjRCquJ3apdreuCtSEaOM0SRZCmT9bqBVUQsLuMegpi72Toh3bQ-7SpiFaquhR27JpnLuYtNcZySuwPwb47PHibIGQ2phjzXkcEknmkObovEOwUo7b5BDpHP91JIkZRjNVqN48yLfRLuiIAnZk8f7EGTMj-abN5frrHukt8e-Er9jFVKIpTfwzXyW01amxUX9TYw",
+    "alt": "수조 속 가오리를 바라보는 아이",
+    "score": 8,
+    "label": "대형 수조",
+    "reason": "아이가 수조의 가오리를 바라보는 뒷모습이 활기와 감성을 준다."
    },
    {
     "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Sea_Life_Busan_Aquarium_18.jpg/1920px-Sea_Life_Busan_Aquarium_18.jpg",
@@ -1804,32 +2069,58 @@
     "credit": "Joamm Tall / Wikimedia Commons",
     "license": "CC BY-SA 2.0",
     "page": "https://commons.wikimedia.org/wiki/File:Sea_Life_Busan_Aquarium_18.jpg",
-    "alt": "모래 위 푸른 점박이 가오리 눈",
+    "alt": "모래 속 푸른 점 가오리 클로즈업",
     "score": 7,
-    "reason": "모래 속에 몸을 묻은 푸른 점박이 가오리의 색감과 근접 구도가 인상적입니다."
+    "reason": "모래 위 노란 가오리를 선명하게 크게 담은 감성 사진이다."
    }
   ],
   "pending": [
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/92/4120592_image2_1.jpg",
+    "src": "https://tong.visitkorea.or.kr/cms/resource/10/3020610_image2_1.jpg",
+    "w": 940,
+    "h": 705,
     "credit": "한국관광공사",
     "license": "공공누리 제1유형",
-    "alt": "형광 조명으로 빛나는 산호 전시관",
-    "w": 940,
-    "h": 627,
+    "alt": "푸른 빛의 텅 빈 해저터널",
     "score": 6,
-    "reason": "형광빛 산호 전시관이 독특하지만 어두워서 선명도가 떨어집니다."
+    "label": "해저터널",
+    "reason": "푸른 해저터널 분위기는 좋지만 사람이 없어 다소 휑하다."
    },
    {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Sea_Life_Busan_Aquarium_17.jpg/1920px-Sea_Life_Busan_Aquarium_17.jpg",
-    "w": 1600,
-    "h": 1067,
-    "credit": "Ryan Bodenstein / Wikimedia Commons",
-    "license": "CC BY 2.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Sea_Life_Busan_Aquarium_17.jpg",
-    "alt": "푸른 물속을 헤엄치는 가오리 두 마리",
+    "src": "https://tong.visitkorea.or.kr/cms/resource/09/3020609_image2_1.jpg",
+    "w": 940,
+    "h": 705,
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "씨라이프 간판 아래 대형 수조",
     "score": 6,
-    "reason": "푸른 물속을 날 듯 헤엄치는 가오리 두 마리의 색감이 좋습니다."
+    "label": "대형 수조",
+    "reason": "대형 수조의 규모는 보이지만 어둡고 한산하다."
+   },
+   {
+    "src": "/api/gphoto/sealife-busan/ebc0b7631d30",
+    "w": 4640,
+    "h": 3472,
+    "credit": "Google 지도 · Rendi Mahadi",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/101254362606963875463",
+    "gname": "places/ChIJq7TCXVyNaDURsEf5F93nr84/photos/AV-0GLdC8koVZjtmUsgZXM6JlgBFZxq7IOh7iD-9tubvvrF4NXnIQytzoAga_CQCNwHiqQZtkkAvbY9ZZBDPxliKR6RRPKmh6quym6qFqWuJqKJIDCGUqdmwxLf_T7D2Fnmqj63VwFEgpxXP15ijV6e6Fcg7Tsp70yzJDYZTIc7Yp6fruvIW1doLRpkKzE2dDp0jVsgZihenxaGFyiOv83mtV6fxprRfh-CTEUIVlynQa8jFSt8xZK4cTEbb7TDlD3SAxgsuu1KwyzBqTGOyeE6QrZhr0abdVt9Zrf2C6IM-Ea1fBR6uMeGOHOHDRKQubyLuDVv_Wghqs0zlVYbQUhO3a2bb7Thmnz5VdNR8vpFuPjJ-7-GpQJe6NJQpyBR7S1CQ6bLfwKGpV67_BNzo_npb-ku6DhWd-mE",
+    "alt": "줄무늬가 선명한 쏠배감펭",
+    "score": 6,
+    "reason": "쏠배감펭을 선명하게 크게 담았지만 배경이 평범하다."
+   },
+   {
+    "src": "/api/gphoto/sealife-busan/6b0cc4a7226b",
+    "w": 4618,
+    "h": 3464,
+    "credit": "Google 지도 · さくらだふぁみお",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/113923894617049189013",
+    "gname": "places/ChIJq7TCXVyNaDURsEf5F93nr84/photos/AV-0GLfNGpKaxnxk2fV0ojQOzEeWAvVxkE9wIpzwSBQQFCNiNZO6FALCsOSktLGBuV4xeikLy8DiV7sV8jzm1j-GrzDVGndPiCYqRr5b9VYLqvqer8MQUFLDk1OM2mGarrmwMWcs_RtJKm5T7qrpagDf4Z4dGPtfqZej6dOkbjtN8YTyGcswjvgl_j_AMJdY_LNj139NcYSeTszl6BVlov9Fj2qIP4ERViFxcIhZm3hkPwQ1jV5fi-ixWX-TQLBO32RI1XsVCpfr8n6Aiq8p2jl_BpKbpS37TgULtof3qc4rJoIfMPETbO6zbH532hIZaDkdMRRS27g4ggXv8TfrRpQzFvBs5hSbcSEFpBdX-fMmfcsGbUn0D5uwjNwqHv2jzeUdC2iErKbHvWT_cIz_2olyRwj8YEm2O9A",
+    "alt": "작은 열대어와 대왕조개 수조",
+    "score": 6,
+    "label": "대형 수조",
+    "reason": "푸른 수조와 대왕조개가 예쁘지만 다소 흐릿하다."
    },
    {
     "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Sea_Life_Busan_Aquarium_01.jpg/1920px-Sea_Life_Busan_Aquarium_01.jpg",
@@ -1838,20 +2129,57 @@
     "credit": "Ryan Bodenstein / Wikimedia Commons",
     "license": "CC BY 2.0",
     "page": "https://commons.wikimedia.org/wiki/File:Sea_Life_Busan_Aquarium_01.jpg",
-    "alt": "수초 옆을 지나는 가오리",
+    "alt": "수초 앞을 헤엄치는 가오리",
     "score": 6,
-    "reason": "수초 사이로 지나가는 가오리가 부드러운 색감으로 담겼습니다."
+    "reason": "초록 수초 앞을 지나는 가오리가 부드럽게 담겼다."
    },
    {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Sea_Life_Busan_Aquarium_11.jpg/1920px-Sea_Life_Busan_Aquarium_11.jpg",
-    "w": 1600,
-    "h": 1067,
-    "credit": "Ryan Bodenstein / Wikimedia Commons",
-    "license": "CC BY 2.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Sea_Life_Busan_Aquarium_11.jpg",
-    "alt": "정면으로 헤엄쳐 오는 가오리",
+    "src": "/api/gphoto/sealife-busan/bf4d006705b3",
+    "w": 4000,
+    "h": 2992,
+    "credit": "Google 지도 · Jason “SB” K",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/110621053801512275813",
+    "gname": "places/ChIJq7TCXVyNaDURsEf5F93nr84/photos/AV-0GLdwkcqeJKCppgBGyzQfR0cFeCR3dbRUWcxuF3iWwNa0spC0b70yjcfdPponz6ygFs4V1kVO0_X3I0Xub_7XsODl4MJUUQsx_pU0eR0hkTPBmJMFlEAaUrjO-hVTH9zKLRcdEEwJ3iPAmS-FkVBOTTc4CNfz0BFT7oJdAO59wuD9lcu1MgdR5vaN3Xd4TDj4YzF2seAExgld3fqhn941m9Ta-S6aIHeRNlRFxdGhrX6uzdPdf3hEwygJhAyajbOC3Hd6Mf3Fk919lR6o3OeRg_dtjhy6zpOaOUX5p89gAO8Hp0AfjYv2Xsfcunlu-3SMxYNp8nYwGrApSimUGz81E7wpdquZzZ6XejBePmWIYjwi-mBkaR77ViYfdJRArd_GzGkAC_MWxVLdcDKHKeDEoi0FS5CCwg8",
+    "alt": "수조 속 커다란 아라파이마",
     "score": 5,
-    "reason": "가오리가 정면으로 다가오는 장면이 재미있지만 초점이 흐립니다."
+    "reason": "대형 민물고기가 인상적이나 어둡고 칙칙한 색감이다."
+   },
+   {
+    "src": "/api/gphoto/sealife-busan/64e9c687dc21",
+    "w": 3072,
+    "h": 3072,
+    "credit": "Google 지도 · 陳躍升",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/118398226792986777607",
+    "gname": "places/ChIJq7TCXVyNaDURsEf5F93nr84/photos/AV-0GLflBB1TLp23DpvWR7XFVWwK3wwIpF7vwYtGThqtZKeGZCkMkfQRL20W6FpVpgEnArqwGp_j7tFZ0CQly-p8oaEX2B-a5BUP96yo0tkAT3X1mG58wjM9VXisBIT_KXdizjqq6rdsXrOl4CGWczx0L_1fJLNWD93FWh-UmchIjNAF5og1xuaEZwLYKEsD4pzURU7FsI1KrMSvm87snMk5Y9MgAbSgttcnUth7jw1DlLPIT-xFpTl8utisTB35heR_d2qQzC-FsI-w0aid7vQwHd7DAD9emk4dx47SsSezDlrg9Y81Bh7N2Vr16JEQj2ff4xUx5gOlsqjqBNrBqnlwV2veFY4uR54VGAhCnafc5uLouhJCzhs0m8_FTFjPwy17G12rEp2gN8PzjvGCPF3vpKkpDOkK4HzlUJIJakC7TmSHvw",
+    "alt": "위에서 내려다본 가오리와 상어",
+    "score": 5,
+    "reason": "위에서 본 가오리와 상어가 재미있지만 구도가 평범하고 흐릿하다."
+   },
+   {
+    "src": "/api/gphoto/sealife-busan/9279f25c4df1",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · Alex Wang",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/110040459395555251569",
+    "gname": "places/ChIJq7TCXVyNaDURsEf5F93nr84/photos/AV-0GLe0DZ5NMjEMwofTsT6K-MyxyjKxWRs3bqEeny7VvEMXoAU7InVoUPtPKCgtd_OsenTDvnjDk4m8WVuAb-2GycWd-wYKWMQdYEmYEn9NGQSEbfIBooN1-DEQ5pmaNgGU_xt8yvQB-gLlKxYFxUARw71YYiSjavuEoB4bb0ksd1cIltHgDf2xJsi1o0TsPxfxsThRFp978DmdHRGcozju55ESTj4-kSAZBBDQgcZvU9MqL5jgeRaZN-CDvHK5rEfBRqIhYYk1fshZNIydBrYyxP_5qFBm0_h8Xwu8lHjEoiVxTmIDppWIDFBr-VAKfm7_v9cdqOIQ8nVjP2EcxtUtXnJZT59wWbnADpla0BmoSsb6SvuRW22jjG544436xYTeya_KnfvJsY10CEV0PFbFAgy2d0wJLp4",
+    "alt": "노란 물방울 무늬 복도",
+    "score": 5,
+    "reason": "독특한 물방울 무늬 공간이지만 아쿠아리움의 대표 모습은 아니다."
+   },
+   {
+    "src": "/api/gphoto/sealife-busan/9bea154381b6",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Google 지도 · Andrey Zhidenkov",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/109010073673408224356",
+    "gname": "places/ChIJq7TCXVyNaDURsEf5F93nr84/photos/AV-0GLdO3iTbyDfzCmlStSAoryFQ0du-ILyJzMUcRIlBJkjTHQ44GYzcmEB2qMb79_TlHn4aleX47n8Qo8JS7Qwk2_8h5BzDkseYhgGHKcJs4hpMpCCmlxNICT9QRmbfT1SaArtUFACZW7baqlHqk8OTIoHLF9M8sUE97OC79nRIIlEk7L0G8OQKPB8Nwdqi6tmzZxxr-DVRJkUr2Fkntvxva_UCjYQ4DRDBg6NgVVaf5wl2zX6XuwYGBgDJm5XZMXTJdqxb_jJYa0hs_FXvj7CTW9ubGdhVzVA9_VcMTozGowHC5Yv6HhS8rw0YTaQnQ8zXnAOoRKUlxD9Qi30MJGOXUCxDm_D0PvVJvMyrmx-mi3vlvnz9mwZEoLpEQePOSscrue4JZPRdyGtguwy2Xqu3HvwTEcM",
+    "alt": "붉은 조명 속 피라냐 떼",
+    "score": 5,
+    "reason": "붉은 조명의 피라냐 수조로 색감이 거칠고 어수선하다."
    },
    {
     "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Sea_Life_Busan_Aquarium_04.jpg/1920px-Sea_Life_Busan_Aquarium_04.jpg",
@@ -1860,9 +2188,9 @@
     "credit": "Ryan Bodenstein / Wikimedia Commons",
     "license": "CC BY 2.0",
     "page": "https://commons.wikimedia.org/wiki/File:Sea_Life_Busan_Aquarium_04.jpg",
-    "alt": "가까이서 본 가오리 얼굴",
+    "alt": "수조 속 상어류 클로즈업",
     "score": 5,
-    "reason": "가오리 얼굴을 가까이 담았지만 색이 칙칙하고 초점이 아쉽습니다."
+    "reason": "물고기 얼굴이 보이나 색감이 칙칙하고 구도가 평범하다."
    }
   ]
  },
@@ -3637,71 +3965,153 @@
   "date": "2026-10-30",
   "photos": [
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/70/3588770_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "바위 사이 푸른빛 노천탕과 리조트 야경",
-    "w": 940,
-    "h": 626,
+    "src": "/api/gphoto/seorak-waterpia/27a037a58997",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 김민지 (제시카)",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/104416662984260421458",
+    "gname": "places/ChIJ2yrIfQO92F8R6-y47A7bDyA/photos/AV-0GLftYJzWwqdwQa7zuczyY8x2e1wjZOoPq4XtGuyi_jJ1tiLzCD4Ro9yZdz0cihtFP8-K8xW7VQxrcLKeqaqb6Ejl3SVuIgV8fOw4-Lodz9juEw2dsub0XCkRd19i5_pjI15VeC0PqXIAoQtk1UL4QZOp4Nyg45GSZBK2zt6kVBNWfBs-vF3f0H33zhYd5AHw2ZnwAfwkjHtVd8JaJ3x1oeq9oxbHrKu1YWXAZohkMy4MWzwEgN_uItbC4Bq1yliXcUgQceKBKq3jmDVHEu8MSBcs22yrVcm3JQV6Vu2ZgvMhyQuqAJ0xrIHsJRyfuP-AGJ5nM8zy2p5yj5BFQB5KWnZEDcCBN43kZJPChmF2-VZP_1fyAjIYaIBDF65dKTFXXg8jwiWtbPY8Yvf9vv4IeVOoQcR7EiLt2K5sSukUu9O2aA",
+    "alt": "푸른 하늘 아래 알록달록한 워터슬라이드",
     "score": 9,
-    "label": "스파밸리 노천탕",
-    "reason": "바위로 둘러싸인 푸른 노천탕이 석양빛 하늘과 어우러져 색감과 구도가 매우 뛰어납니다."
+    "label": "워터슬라이드",
+    "reason": "맑은 하늘 아래 알록달록한 대형 슬라이드를 크게 강조해 선명하고 활기차다."
    },
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/69/3588769_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "폭포가 흐르는 청록빛 노천 스파",
+    "src": "https://tong.visitkorea.or.kr/cms/resource/70/3588770_image2_1.jpg",
     "w": 940,
     "h": 626,
-    "score": 8,
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "밤에 푸르게 빛나는 바위 노천탕과 리조트",
+    "score": 9,
     "label": "스파밸리 노천탕",
-    "reason": "청록빛 폭포와 계단, 노천탕이 어우러져 감성적인 분위기를 만들어 줍니다."
+    "reason": "바위 사이로 푸르게 빛나는 야외 노천탕과 리조트가 어우러진 야경이 인상적이지만 야경이라 대표 후보에서는 낮 사진에 밀린다."
+   },
+   {
+    "src": "/api/gphoto/seorak-waterpia/9bd113a45404",
+    "w": 3648,
+    "h": 2736,
+    "credit": "Google 지도 · S “F7234”",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/102007943578873281020",
+    "gname": "places/ChIJ2yrIfQO92F8R6-y47A7bDyA/photos/AV-0GLd6NNxwb0p0czO5WlgjYwwrGW41XHua3M6tG3_wyx91R0XD4Xgs3rrIgM3YIjdPfDK5qOVeKYlwTtG_q219b2mf2SrYPGNb_wXh0C-GSMpLErmOgaMIjim9A3NhJ_TnNCngssYaXf1mDBh2H8tlufFuFAEanQY3YMRfXgUnfsi-RBtweJ9qXyFldQazJ3suulSv-MD193yhbT6XVMqMbYrt9g6IT_ZcU4h_oW51cmfyZsNN1GE4JQABvaMHrfSD24fz9oIun9bTvzDLuoGFIsQEomXKH4B9jLdf-UVDnozK3vGd0LyIUGwiK8UxCPisJAWobTyYzA_brymUXkNbEl6FmgtLFy0smdZwht6kXHUzykX62zQBEkc3rjPwMgiiJ3scKmnbfAzqE8J9ZeAoPCpz4nc4",
+    "alt": "푸른 하늘 아래 파도풀에서 노는 사람들",
+    "score": 8,
+    "label": "샤크웨이브",
+    "reason": "맑은 하늘과 파란 파도풀, 물놀이하는 사람들로 활기가 넘친다."
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms/resource/67/3588767_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "밤하늘 아래 불 밝힌 대형 워터슬라이드",
     "w": 940,
     "h": 626,
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "밤하늘 아래 조명이 켜진 대형 워터슬라이드",
     "score": 8,
     "label": "워터슬라이드",
-    "reason": "별이 총총한 밤하늘 아래 조명을 밝힌 대형 워터슬라이드가 한눈에 들어오는 인상적인 야경 전경 사진입니다."
+    "reason": "별이 뜬 밤하늘 아래 대형 슬라이드가 화려하게 보여 인상적이지만 야경이다."
+   },
+   {
+    "src": "/api/gphoto/seorak-waterpia/3a783f266c4e",
+    "w": 4608,
+    "h": 3456,
+    "credit": "Google 지도 · Taewhan Rhee",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/114565226612100216609",
+    "gname": "places/ChIJ2yrIfQO92F8R6-y47A7bDyA/photos/AV-0GLfxNB1htGnAKMQbFfXKfYEH_ZyljYkKhIQezMzxBgV1piWruvpE7gAUlGESu2fWEDVtstntshtO8xJmJuXNkQnoLqI3EpxQD5t1BcsAoobzvZc5avBhwazko8PVJwRSSUE_WYxzuQjvhJ_Swy2ILuXJbb0FBNNNSAiJXbrJTPg8TllDSA3SJ5qAvRBqeBOl0kS6aaVB7Ec9WvGY3JwlDHMluMspgS6sXI65dBWWAylpcOvhn9v6bqDBEARJhyJeMbk8eQwCkl8S21Ui7slzX84FPT7uASvPmn5Y-PWo-1TpJDc45pFAIn1OKIuo3MHDsGv_jySNLVS21_CAMEK2RzLri-M8TOpSrqyKEkUgPU6KRS-aWGJz6weVw5zrko_GF7U7y1vRy2QSBBayWEApBpFB3y2hghA",
+    "alt": "푸른 하늘 아래 어린이 물놀이 시설",
+    "score": 7,
+    "label": "스플래시 페스타",
+    "reason": "파란 하늘과 어린이 물놀이 시설이 선명하고 활기가 있다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/69/3588769_image2_1.jpg",
+    "w": 940,
+    "h": 626,
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "조명이 켜진 폭포와 바위 노천탕",
+    "score": 8,
+    "label": "스파밸리 노천탕",
+    "reason": "폭포와 계단, 청록빛 조명이 어우러져 감성적인 분위기를 만든다."
+   },
+   {
+    "src": "/api/gphoto/seorak-waterpia/7d1f85954959",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Google 지도 · 심형준",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/105778896652367424169",
+    "gname": "places/ChIJ2yrIfQO92F8R6-y47A7bDyA/photos/AV-0GLcDF2w6Ef0btZ3m49HWt799XUsfOxrzIL3f2Sq6SevrT0yWjPvHoHQAHd64I6nZztY0k_d0aFR3x8fvG3ILBuObT9XW4WpwcDdFuzQcBaS5kBtBG4zEwvANvEN81cyKCVvkPYtAJCHyQM-cqxIOTRVU0t7YciLvKqbEk_BK_Ui8HZ-lc0yxqUqESqv_14GaIO09mPrCIxDwMKZiSRZWBywx4EMGpy0T9i8rpwbDQeNe0mhTEuh254xvub5W6x2a_btIhs8-8a9C-Yo_WCuEIsO1PBUsLWjIgZGHM5xC6kl4gmB_9xg0eYEEqAsobUnv6CArf5zrsWkV22DSw_vpyIBJYDsw2JyAKG3J0e-1G64vSNh4VRQrc0CAVHZ68952ChqhjD8edLwLIyMS2AF2GdDecswfFRU",
+    "alt": "호수 옆으로 길게 이어진 대형 워터슬라이드",
+    "score": 8,
+    "label": "워터슬라이드",
+    "reason": "호수와 숲을 배경으로 대형 슬라이드 전체가 시원하게 담겨 한눈에 설명된다."
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms/resource/71/3588771_image2_1.jpg",
+    "w": 940,
+    "h": 626,
     "credit": "한국관광공사",
     "license": "공공누리 제1유형",
     "alt": "해질녘 바위로 둘러싸인 노천탕",
-    "w": 940,
-    "h": 626,
     "score": 7,
     "label": "스파밸리 노천탕",
-    "reason": "황혼 하늘 아래 바위로 둘러싼 노천탕이 차분하고 깔끔하게 담겼지만 임팩트는 조금 약합니다."
+    "reason": "노을빛 하늘과 바위 노천탕이 예쁘지만 사람이 없어 활기가 부족하다."
+   },
+   {
+    "src": "/api/gphoto/seorak-waterpia/b2f1e50e0f1c",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Google 지도 · 우히히",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/114118437459551883633",
+    "gname": "places/ChIJ2yrIfQO92F8R6-y47A7bDyA/photos/AV-0GLfB2NR5Nfv4pyJZwowoAJHmW_TmUEXzhrmgwo0Kl73yrH5h_DK_A2fwS4cfc2Dpjj4D7022fy7AyPOHB51dky_knDyJ0ICA3rzWkUw5QvbzpMq_ztiHEqaYC9c6E4xsti3rZLb22M_TFcC-wQW3cKtjO_U2uwPXmRbGQvCbK6Ka6gueEF9a62OKQRH9joT2JX2ob110a-ZNcOsBsjncNFFMp6W5cER4UIiRv-qUavqtcppnjDdamckMVwe2Q5gm0TeKe5CtdDMNFTJANSfc2WB3WHgKwMJCAfuB1cktnbbikBM-NWV7dT__b-KQjo5g9iV7TUOF53oSYt219JpW_X_zXR3C69VpxjshGDox0jLtMsghbZ9eOu_mD843TmsWDE6CFWKw_3Ogun3jjSAXTIP31JM",
+    "alt": "주차장 옆 거대한 주황 슬라이드",
+    "score": 7,
+    "label": "워터슬라이드",
+    "reason": "파란 하늘 앞에 선 거대한 슬라이드가 눈에 띄지만 주차장이 함께 보인다."
    }
   ],
   "pending": [
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/68/3588768_image2_1.JPG",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "실내 대형 온수 풀장 전경",
-    "w": 940,
-    "h": 626,
+    "src": "/api/gphoto/seorak-waterpia/98e9aaf97d4c",
+    "w": 4800,
+    "h": 3600,
+    "credit": "Google 지도 · 정라파",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/117946155055913188163",
+    "gname": "places/ChIJ2yrIfQO92F8R6-y47A7bDyA/photos/AV-0GLdfUOq-NITnxNkBPxyF25nquZDPHL76_4AFjh5vjVgSRF43BJlzW7oYpMN_4pTyJSOwiLRAWiyqkMaaAGhD2JKUBE7SsjvR6KpAKYQwDememkbCXAfZGgDiFT6UhczKZ8Pv_QhUZEQ9Ob7Os9lbH-n4ETSM1vJy4cwhR6LM9iD4zv9jEpshCCCf72lXumdnINyRj5xBxfrbn5jWOZdo0LfD1-Hmni2H1W7dIqUppTs_BhOYfzY-Vc6Me1FKwPWTKZnS4YgZxCBQ1n7yalRGGBON6isjboJ1TnwpasyqeKh70wSuDm4HZHlUsfXmbFPxO5vG9qgLGNb6h7hQcoz7-231JcoilGtnbG0b-Z8szgLHoa2O0nqwyKeDvFqO78PpI5b1NE4jT3y2cWOmsCcYaHkR2E6s1TJmfXGb9rpmjFEN7A",
+    "alt": "바위 장식이 있는 야외 풀과 슬라이드",
     "score": 6,
-    "reason": "실내 대형 온수 풀장 전체가 내려다보여 규모는 전달되지만 색감과 조명이 평범합니다."
+    "reason": "푸른 풀과 바위 장식이 예쁘지만 하늘이 흐리고 사람이 가까이 나왔다."
    },
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/72/3588772_image2_1.JPG",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "물벼락이 쏟아지는 실내 워터플레이 존",
-    "w": 940,
-    "h": 626,
-    "score": 6,
-    "label": "스플래시 페스타",
-    "reason": "물이 쏟아지는 어린이 워터플레이 시설이 생동감 있게 보이나 실내 조명이 다소 밋밋합니다."
+    "src": "/api/gphoto/seorak-waterpia/47a42324b5d6",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 투자정보",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/104666934229610477641",
+    "gname": "places/ChIJ2yrIfQO92F8R6-y47A7bDyA/photos/AV-0GLfTaTn3DFNsLumAXmDgI2CmQRCfFyP0Q2zxvhdJlGvLkwZv8RH9fh3OnLuSyFJPwp8ioHKtWv97ory5xjt1TWzLA2CW3L_j0mDA6SA68iWjNrGqXsMXa6Y0buvd5F7qRcy_osaC0zt-rJoj1I2DKp68Wyk4TH9_D3cJsD0B2COFLyaU75Z2IJkjN-ycfpG_ba9e0rXHPzCliBqcASB7O_KUUQg-hKlv3fbtylUO_XGchN2PbQDup5e60Plnti8LzCB9-erAdBYu7WXnGvupCsXIPQZyxwTR3l8JVVsUgzLlYThA4vO0hrhCTUMm0Qr2o_z4P56KPyKkzBHNAl13txa8HeKJ40cEVZ_KA1K0JE0m78pAViWnDKtTglEVY9BlYWdJauqWXPHxYeuFP2NdJ3fsP5mRGlc",
+    "alt": "사람들이 즐기는 실내 물놀이 풀",
+    "score": 5,
+    "label": "토렌트리버",
+    "reason": "실내 물놀이 풀의 활기는 느껴지지만 사진이 흐릿하고 사람이 많아 어수선하다."
+   },
+   {
+    "src": "/api/gphoto/seorak-waterpia/c42679f241de",
+    "w": 4000,
+    "h": 2252,
+    "credit": "Google 지도 · 양규빈",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/110118309423372703297",
+    "gname": "places/ChIJ2yrIfQO92F8R6-y47A7bDyA/photos/AV-0GLdR3DmK3ap_lu1OBcgDRL3sRz1NZJt-h9VOuHUz23p7ve9iAXiFhXpxN0vG_mfNtJPsi9UmfynUI_BLXcOMDXx6Jc_l1mU2zXAoTMQ7MqYflvBsqA-XYmHJVSW1A-bmVS-f4qnI5TduwSDF05GA-JDE-n0hGJDaGuR_Myz7xIEUYr-F0lnaurh9wnW3MJBbTLoYIZVkOSzAJ9vLZezp1iK3l2_kozLdbHEPG5cSpQS50wL00l3ptgxFQHOSQUNKd_ennhRHFzJh08zgx1eLb8frm0eLlYuI9boiT2ZziMRyZpHPlOuSMAWGs_XpuGpDKyNy5_MUVPZ_doucLGt3bvTHOLfWmmJxdEEuj2nXH0RvUgLWqFutSkWt2f0tnpN2XMoqTFrHJF9DjJzFOlQD4JPSpXbF",
+    "alt": "야간 실내 파도풀",
+    "score": 5,
+    "label": "샤크웨이브",
+    "reason": "실내 파도풀의 분위기는 보이지만 어둡고 사람이 적어 매력이 떨어진다."
    }
   ]
  },
@@ -3819,59 +4229,128 @@
   "date": "2026-10-30",
   "photos": [
    {
+    "src": "/api/gphoto/splas-resom/f1d00397eea8",
+    "w": 4800,
+    "h": 3197,
+    "credit": "Google 지도 · 스플라스 리솜 워터파크",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/117317983257756267172",
+    "gname": "places/ChIJRVHpsOP0ejURyDCdgphABOc/photos/AV-0GLdhv-v8v0kgdK-LU03OeGfJiqtTq_rGaxa1S_wvi_GDhxlDSgydkKFqex-KFTJI2E2ck8HanBUHBw_8aMkUoQt2LI5AkWBg5a2qstXWH_GQAEkp7yTpRoemXQjojIXEuqpYyXf_-rZrc572gZREhryZpgjSkMhfSHE5bHdZ7C3A57l7Ycho9wH_dCfpbTgMygJzjYOZjBdkEjWXuohlybUedTm1D3A4fBoEbzS_zNFczuy3mqSbc6ugfSP43WjVtm_4kcyUJRitEPjxyLYJEt4iccRAX4Xr_h6196Wxz8YkvYvXM1vkK4p86j0Tu-cMp0KgXz_A-uFQWzq_WB9zOsSNh26T9_npY__c3gIiJQQ9ojVbK4oaYuAjpJSK8UnC9l48_Bn89PhJWrlB2upA8Nk7Wg",
+    "alt": "리조트와 워터파크 전경 항공 사진",
+    "score": 9,
+    "reason": "맑은 하늘 아래 리조트 건물과 워터파크, 슬라이드 전체가 한눈에 보이는 항공 전경입니다."
+   },
+   {
     "src": "https://tong.visitkorea.or.kr/cms/resource/20/2769520_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "산을 바라보는 목재 야외 온천 스파",
     "w": 940,
     "h": 627,
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "산을 바라보는 목재 지붕의 야외 온천 스파",
     "score": 9,
     "label": "야외 온천 스파",
-    "reason": "나무 지붕 아래 온천탕과 휴식 공간, 산 풍경이 한 장에 담겨 스파의 매력이 한눈에 전달된다."
+    "reason": "목재 루버 지붕 아래 산 전망의 노천 스파가 감성적이고 밝게 담겨 곳의 매력이 한눈에 보입니다."
+   },
+   {
+    "src": "/api/gphoto/splas-resom/133f59aa92b8",
+    "w": 2252,
+    "h": 4000,
+    "credit": "Google 지도 · 더블라떼",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/117509412574566678548",
+    "gname": "places/ChIJRVHpsOP0ejURyDCdgphABOc/photos/AV-0GLcXCzi2zHEwtPd5YdZgO8wcl-jNxnGQQ7v6y1S346WEZEyn4VExwg252z8TZUIKwX8zI7vwNanl_96ABZbPCQxHB0IRUkTZ8wyVIlht4dwsLbPTTu1zWzvLJUqDozrFkYsSYneVFidQtVYYAJQ7xOOG_1uljJDM5qk4DZWm28Q3ZxeeHi-HwezyL-FIAXRz5QIzxC7yUDMGakYqPS2TmwaRYOaU6bi4XmFJsR7AHmYNbFJlY-gcRp0r5VRUsD-ssdCmuEXoVLgcMwFzsINWilULX9zVJZv-qcf4dWUMgTK2JY9TzeqauiGQWBN-hXmYuEvllGuvMt7FS3GvoaYGpxcjkXXx5UDmur0RCevp1Stea68VbIZrxA72VPqGvKUFa1rydEvVQQOsYti6lwqlC82pc6E",
+    "alt": "워터파크 풀과 슬라이드 전경",
+    "score": 8,
+    "label": "실내 워터파크",
+    "reason": "넓은 풀과 슬라이드, 튜브가 보이는 워터파크 풍경이 화사하지만 하늘이 약간 흐립니다."
+   },
+   {
+    "src": "/api/gphoto/splas-resom/f0fc870f912f",
+    "w": 4608,
+    "h": 3456,
+    "credit": "Google 지도 · 이기연",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/114018450438581897274",
+    "gname": "places/ChIJRVHpsOP0ejURyDCdgphABOc/photos/AV-0GLfWI201Hk_rdw_FKri1-7mt6tkhIxgubXy97lTjksTjzhAGPJGB9YuknECiI-MfYFfm4AEkOHC6YIqqIooy6BOdMhO-FwGTc2ce1Excnj_7oGAgpS9Rf5wCEjheTLhWpg8v1Ij2HdURD2YBAP4TWeF_MVmUHv8A22eSslGigJJwJ-B6lu5rjpygAHwyzkSot146WfCYZlRRJyAkdJmbPAEXkgptTYi7Wtzy5MEy3WcQ62e7qtSq5gVvdbdvPUPtNp1d0P7RUV5ATLRA3tnt5i_Dh2uNSsmL8Eju3zbo7U0-8Q-9aOoSSv5kJN48jq1PYsrXHAQ9Smu_5UI1ikbVxcha_WaGtvOqBFS0oW2Pc_eS3SgENdGwsqZQZ4g9OXrhjUTNqVkJf80BGSeEZ1eqnhaLiPs",
+    "alt": "해적선이 보이는 유수풀",
+    "score": 7,
+    "label": "파도풀",
+    "reason": "해적선과 유수풀에서 즐기는 사람들로 활기가 있으나 색감이 다소 평범합니다."
+   },
+   {
+    "src": "/api/gphoto/splas-resom/4aa682842f0b",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 이병주",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/117877942894639079346",
+    "gname": "places/ChIJRVHpsOP0ejURyDCdgphABOc/photos/AV-0GLc17euBfBc3nU-2z_hTFMnldBGFY9kcPLKyGhhUe5rcv4NxMvcuQzTq6fD4orZrIZsmLOLD8OSzKespY_aUmxb4DXOsA_SfYQFVw-WaSEcpBKIu6gF_u_GA7PqL-GtWlctZ3c04SKyvqCQU-_cK9lKFpxnrvfIyNfu_sWQwTd1hUpnhJ3GQiLmWs0utlyV84lqJGa650h2xSHDPwiUOlVapNWYFksBBfYQcbd9a_o-EIPDdxwRT4Z8JKtZd018YSpgy3Oh5KtVw10NdZsS1f32gvQ7fLxsil0Q8t9y-JNU7mr67rsyEjXVPiSbtf1uKdZHJ-xLBK4mfFP6_lmlrVEO6D_TqBDNdCPlhXjrRwL9pkp1juwiQG_OcIeHAWpxHsv24xbnZYGQgGtB6ldzij-cRa4UUzsA",
+    "alt": "튜브 타고 내려오는 워터슬라이드",
+    "score": 7,
+    "label": "워터슬라이드",
+    "reason": "튜브를 타고 내려오는 슬라이드의 역동성이 보이지만 날씨가 흐리고 안내 글자가 있습니다."
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms/resource/07/2769507_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "산 능선이 보이는 야외 스파 테라스",
     "w": 940,
     "h": 626,
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "산 전망의 루프톱 데크와 카바나",
     "score": 8,
     "label": "야외 온천 스파",
-    "reason": "파란 하늘과 산 능선이 시원하게 펼쳐진 야외 테라스 스파 공간으로 색감과 구도가 뛰어나다."
+    "reason": "푸른 하늘과 산 능선, 우드 데크 카바나가 어우러진 시원한 루프톱 전망입니다."
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms/resource/15/2769515_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "숲이 비치는 야외 풀과 선베드",
     "w": 940,
     "h": 529,
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "숲이 비치는 야외 스파 수영장",
     "score": 7,
     "label": "야외 온천 스파",
-    "reason": "푸른 숲을 비추는 야외 풀과 선베드가 맑고 청량하지만 구도는 다소 평범하다."
+    "reason": "숲 풍경이 수면에 비치는 맑은 야외 풀이지만 사람이 없어 다소 조용합니다."
+   },
+   {
+    "src": "/api/gphoto/splas-resom/0952d026b124",
+    "w": 4160,
+    "h": 3120,
+    "credit": "Google 지도 · 권대경 (Edward Kwon)",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/102574240889756364950",
+    "gname": "places/ChIJRVHpsOP0ejURyDCdgphABOc/photos/AV-0GLdtIyQLMBSLDDC01Zjv6laZXlHvrZN9BmBTvOxH5-283ITgQzpQxfYJXEVPGc2LH26rtXAr26Z4owJIJWI4SnVEb7Jr4tZN-KnYA4W8TJ4VyaEaRXRC-YI8lT1m2Z2GFY7PLjFjNPC73EyuSfpuQ1f26aXgMKIHheHEKRAF4fZ2XspOvMFfKFDP-PsmH_MrUe5CpV-efmMKWotkCWEzW0pLUoucgm0DXxs2ti43K8A896IoD6QJrpYjTpYXY7AFPnBzS9h6oIdE9gSKvrzacyYWeIEd8vePgrCMRLwTv2QxrKgXxref-dkJYfYpH6GB_0y3PLG4dAVInrHT1nL1zSL-RUREmniW0Bxu0SwVe7naYdgZIB6Geq7vCBGVt23vdGPYceLSVTHuj0JovZFmjfeXJw",
+    "alt": "튜브로 가득한 유수풀",
+    "score": 7,
+    "label": "파도풀",
+    "reason": "노란 튜브가 가득한 유수풀에서 즐기는 활기가 느껴지지만 사람이 다소 크게 보입니다."
    }
   ],
   "pending": [
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/87/2769487_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "노을 무렵 숲으로 둘러싸인 리조트 전경",
-    "w": 940,
-    "h": 655,
+    "src": "/api/gphoto/splas-resom/fa8ae160d434",
+    "w": 3024,
+    "h": 4032,
+    "credit": "Google 지도 · 에브리띵",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/101247427883491836025",
+    "gname": "places/ChIJRVHpsOP0ejURyDCdgphABOc/photos/AV-0GLfFN5X31LuAmOFA-p5yDqbSCm4vXRN3RPNBcvYh6d8iIrFGntT1sqzdkdAf8hHEeUB0DHvYwP3lK03XQASKCKB02yjHPNVxdrtmGf_wcvHaHm3WXckcDMLGkQYSK_m0NOxvKR4h7JjovbaqtG8Z5GkzD9eGUhj6rL2uPVzXFoC31LWzeP6UvhJ01wQIWpHLypuBxgFfzx4osaO_aKcj1yHLs9yehqbhCOTSkMEZdkQO7XEbeY3Jild2O60vbXA65P1FvRs3F9Ec4bYTlGUU-CzbdrXrHOAUFJ29ZQAPlrd5BedOcG5ksZsOBD50cZw3DP2tDLJhKkqS3GQ2tLnGRidUllBydUi7i9zoHghZEoJq2YUT5cqn12Jfm4Zy7kBh8JL1Z9ULr4HXI3XVrOU2sn3fFmycF00",
+    "alt": "튜브 타는 사람들이 있는 유수풀",
     "score": 6,
-    "reason": "노을 진 숲속 리조트 전체를 높은 곳에서 보여 주어 위치 설명은 좋지만 대표 명소는 잘 안 보인다."
+    "label": "파도풀",
+    "reason": "튜브를 탄 사람들의 활기는 있으나 얼굴이 가깝게 나오고 구도가 평범합니다."
    },
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/90/2769490_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "alt": "노을 속 산자락의 리조트 건물과 조형물",
-    "w": 940,
-    "h": 558,
+    "src": "/api/gphoto/splas-resom/e395c9973ed0",
+    "w": 3456,
+    "h": 3456,
+    "credit": "Google 지도 · Brad",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/100816389954033795571",
+    "gname": "places/ChIJRVHpsOP0ejURyDCdgphABOc/photos/AV-0GLcUteI2FCPgXTBPK-urHQAyYq_BpO9HVvoQTxZqOigqOqo1R9grftI084vxLkgHe4EgHqcdfsUaiA89dxtnjOrirQLLYzWENHSSpYpmlQVfLFYtSegdxbWWlSq7G7-BpLqGw-S_aqyuZVObDs3gszgWcpTHoOxSoT1BPul-yHtpqA3MtGdefTLCkbXl-G15RhuACPiH7v3VZ8LO3Js1EnMskPWW4dqpzha_L12Ofwss1Prjd6ERv8pg_RrptNxGr-Gq-Z10RdnbTEpKDefY947WRwnh96DCquxDuaS6Y0h36YFnFrv6YTK6OHGK6aMHUb2teos-cnw1yaZbhYmesIhFamZljFSTJY4-RyRWKLvZowyODb4Bdi_UQVCkGTybhtlDjrvX0E7-HXz28mRPY1EM_OktJd4",
+    "alt": "노을 속 리조트 건물 입구",
     "score": 5,
-    "reason": "노을 하늘과 산을 배경으로 리조트 건물과 조형물이 담겼지만 어둑하고 워터파크 명소는 보이지 않는다."
+    "reason": "노을빛 하늘은 감성적이나 건물 외관 기록 사진 성격이 강합니다."
    }
   ]
  },
@@ -5734,6 +6213,1220 @@
     "alt": "롯데월드 건물과 석촌호수 항공뷰",
     "score": 6,
     "reason": "롯데월드와 석촌호수를 높이서 담았지만 하늘이 흐리고 건물 글자가 크게 보입니다."
+   }
+  ]
+ },
+ "icn-t2": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "/api/gphoto/icn-t2/0bcedb7fd34f",
+    "w": 4800,
+    "h": 3600,
+    "credit": "Google 지도 · hiro",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/111396674096054970248",
+    "gname": "places/ChIJ7TZN-XaQezUR0UAqfjDR5eU/photos/AV-0GLdLxJITiLLSCwsqjCzXhVPJBAdsN7LCasqx0XTMjI5wk1OtoodJcjGn6o4EJWUNkvdzZ0XV6w6QUlv2XjPSNJKjB-uDXDyZITPU3_LZk9hWUmpKfJnqAre2fTiX1bp3hs8J-Nbev1JKEZS4mPodEpUP8ztVU5g1Hk83qu8EeRNL_j71L5Mj9L49KQyF4dnU23w742qLpF5J36-T96eNfZlMdQ7np-67BcgjB8Qk7AbJU368eQnP42ve7HNKSiQePmrP4Apne4OY9wazq7OgWyVRvAHKSZEu_6VO0u_uabdn1EjxsdecS8bSzFFFWCzEG6u6qQmhS0fBTrP21_Omqvm2Jgt4fsd0n92tmCBt0MprF5vnEdGGMOnZcWzAJ-hGE0i1Dmdf_8ygUrLNdEgsUZR1Ylz2MZM",
+    "alt": "바다 영상이 흐르는 대형 LED 벽",
+    "score": 9,
+    "reason": "거대한 바다 영상 LED 벽과 햇살이 들어오는 홀이 인상적이다."
+   },
+   {
+    "src": "/api/gphoto/icn-t2/bf5e62252d2a",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · Steven Hwang (아쭈s)",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107996375339685991855",
+    "gname": "places/ChIJ7TZN-XaQezUR0UAqfjDR5eU/photos/AV-0GLdUt203chPXljfSPedNNH4ychXUWBmd65rdU3oONL6xAj28tiKfNbabZT-RA06EOek4-eIyKJJPcYy6UHicBOIjPBKi0efjG_fVtaWToEWZOTXRqASM2J0yM35WsDW7mZuIuSnwTt12L6HMf2cOoBtnPqFSXnbHqrmV8FZ_kqIs_bTiOCN0K9_uTc9fWp1fYqvTHdEfFEEk6_k2JhkePcDxSLnd95kSwHidhDcFEvN5dFKaBId_iZBh6jQrF5Xl5BpDxkNcaxi835NXsnS_nnWvRlxNy52zVklhTd2Zr95eAZX_zKA05gLkjmV73dj-dQ1lZOCF-6JPUwIWdPVebKGVSaJ6cNLbUc97pmg73USzv5ytA5CEF3el6xxq1R55kfHYD0bNx6bzKAUH8DdbMGtgVA_XXO4a2cVUD5RjA9fm0A",
+    "alt": "천장 조형물이 있는 출국장 홀",
+    "score": 8,
+    "label": "키네틱 조형물",
+    "reason": "물결 천장과 매달린 조형물이 한눈에 들어오고 활기도 있다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/2025-10-14_17.34.10_Incheon_International_Airport.jpg/1920px-2025-10-14_17.34.10_Incheon_International_Airport.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "Choikwangmo25 / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:2025-10-14_17.34.10_Incheon_International_Airport.jpg",
+    "alt": "노을 지는 터미널 진입 도로",
+    "score": 7,
+    "reason": "노을빛 하늘 아래 출국장 진입로가 분위기 있게 담겼다."
+   },
+   {
+    "src": "/api/gphoto/icn-t2/e22167917c70",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 橘CHAN",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/113134181877920785977",
+    "gname": "places/ChIJ7TZN-XaQezUR0UAqfjDR5eU/photos/AV-0GLeEdtNxFIzf1XypLs7bB1yWcuWhg0u3scGX8YBHzjLJyXLauEr5ItC9jzOCgfTvkHsF4J0BE-hUY5h0NMlfJPFHY-3xsuY8d2uKVaquiNj561MHfb8sFI7k_iXQQ6RUCwo4l6LjbwZ8gpqXXLw6DYmppOyJAlQJ0VvZ2PkMuwls0gNlKKT1opudifAdbDEox5uKVK6uZmJRpQoOaOKF667DdbaPfxrYry9mJVrEYGhRC4MI5kfLRq1-IKsHhBoP3oe-DmenXqPOArdPvY_oSXYleTv78l5onhMEtjX8jViajTzJTliO9B_X__vIYcexlpFyRM8ow7Or5KIBS_jsdcxvJ9ULz9bRTAMiIQe0X_rBYcFMzFIPS6eM_s25TIjjnn64pkXmZtBwI4a3_ZeFY9vcACqKLgGvVISO0p9KNGOJdQ",
+    "alt": "유리 돔이 보이는 넓은 출국장",
+    "score": 7,
+    "reason": "유리 돔과 넓은 홀, 여행객의 활기가 잘 보이는 광각 사진이다."
+   },
+   {
+    "src": "/api/gphoto/icn-t2/26d0f1016c18",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 이윤재 (TNT-GINO)",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/101893998946183151580",
+    "gname": "places/ChIJ7TZN-XaQezUR0UAqfjDR5eU/photos/AV-0GLdyBb1bSOMW9X9GzJgcWrpEhCQdC3GuBIcXfxi7kD76VWvGhgDLm7YzOr8a3EwTz0xjVB2OgbvlPPWSJuxQRG5qrfs5NLJ5i59xCDozkxEE4UnulaRxdHsRAsc3Zxg-7YoaRlE9tCCxhfupZ-4x8KyFW3EoOwfGEVeExmNs9C6N9FrgpXrA62fW3WouFgFZlfP1kXbfYOawjQlg5v-zY-BeCAi0tv0vw_BSs0EHLSOhrJNaOLMGg3AS6rGn8mia3aoHiZctSUVTsFo3VXryOXJ9kh9mUtc2SDMlhGN2xQRWP5Yp-NXIGFHKnv54Y4A5H_cWh7k4OQhRG29KRnhzFc06CJPQgXNO__vW2GiFL1wqSbJHbxIaCCzMzlPxpwpHf569jVgRFCbtoo32uyEE_hHwKQ",
+    "alt": "유리 돔 아래 나무와 꽃 정원",
+    "score": 7,
+    "reason": "유리 돔 아래 나무와 꽃이 있는 정원형 홀이 밝고 쾌적하다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/ICN_T2_Departure.jpg/1920px-ICN_T2_Departure.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "AirportTerminalGuy / Wikimedia Commons",
+    "license": "CC BY 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:ICN_T2_Departure.jpg",
+    "alt": "조형물이 빛나는 텅 빈 공항 홀",
+    "score": 6,
+    "label": "키네틱 조형물",
+    "reason": "보라색과 분홍색으로 빛나는 천장 조형물이 인상적이지만 사람이 없어 휑하다."
+   },
+   {
+    "src": "/api/gphoto/icn-t2/baccd5e64f09",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Google 지도 · Mike Chi",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/110102301566318987569",
+    "gname": "places/ChIJ7TZN-XaQezUR0UAqfjDR5eU/photos/AV-0GLfOCSsAU85y0bjJ4u1HRiUh1ZioKIUJOmKpvsUr4-3F-svNzgVLr6-qCS_h3pBgNoMSWOxbXGLaIvJg-02XdAxrB9Dv2VDKqzxsTPpWgb5MtRyR5eeoQsKYaC9aKH3FCjYAcj-sjqFQgnB-S39GhJMn7NY9olT5UZj_SYE_LDyUDBHB_WyGHKfFwbd-Xve3peQcf91n8WybkCBNofRWMFwbHndYQys318QN-yJ0kOt3Aeasl0qU0PfV78_weZ7V6_qhwIImbONf0NN6esxIH6YbUIhI31UBQEHBf30K4c46daBTHulnZctsNbes6NBmzpba-4ytPWMGagqGEhDo-CI-PYBBnGWjZ_uSkumrAwl5KfhaDXgWXyyAhAatPxMYM8IYzbCul4jB4fFpqblaTr3JF9Am",
+    "alt": "맑은 하늘 아래 터미널 외부 도로",
+    "score": 6,
+    "reason": "맑은 파란 하늘과 터미널 외관이 시원하지만 평범한 외관 사진이다."
+   },
+   {
+    "src": "/api/gphoto/icn-t2/6afa25373b07",
+    "w": 4608,
+    "h": 3456,
+    "credit": "Google 지도 · STEPHEN Kim",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/100167884841605185056",
+    "gname": "places/ChIJ7TZN-XaQezUR0UAqfjDR5eU/photos/AV-0GLda8_u4zBOPs6Jk3vppo1F-lGB2_R51ifaiDQB84nta7jk2nlOT23IQiFCH9rcedmLO4d9r3AwnEVUPnJ9ofEmSic3WqqADsX6w59HHLq9cfuWI6j3pLi7j77BwyMTJDp28qleiWyh9Uql9TFpWaKMIQ_tZHvAM_u0EepMZfYLTrXgTJTPYNukyeUzPmIahUEHz7Mx-3hgKOb-rMuNlF8gsYJE3fdJ3TY1sWyTtiRbD_QHU6YZmJQttiVXNFFstNpwRhy5T4-6SyVDjlsTv-N8xLCujuKGj7goqCezGIH3fM-ExMKDTpmMwOywkvfVxUHk2nXC-xQU8tuGogYjFv1FhQN8iiqnUpQ2t318EWDgs9-QMhHUODAZIQH_oeG8Jz6v0NWPtmR_VdEzLI3pfftURwRaPy8A",
+    "alt": "조명이 켜진 넓은 문화 홀",
+    "score": 6,
+    "reason": "넓은 문화 공간과 조명이 근사하지만 야간이라 대표 이미지로는 약하다."
+   }
+  ]
+ },
+ "gimpo": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "/api/gphoto/gimpo/e0c659cde394",
+    "w": 4000,
+    "h": 2252,
+    "credit": "Google 지도 · kyoungsook kim",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/103906179526609300825",
+    "gname": "places/ChIJxZMcCsKcfDURxtwFeSfjj-o/photos/AV-0GLfVES2dlMjW9Rn_MGSq7Xo1_ad0mKR7ccDy8-W-kAH2JAEB9hnqHs4E-dS1n-On7BN7T1kbWxksKd8pdasxt_E8pdH2TAu1HkNMjdRMt4i9shPiJqdbr0fjFcxLJ8tAMJopZvSpwFrkVpRqJDar-Yu5V77aQ1YEx7w11cd8fU054jWCgIzgmGLQTQxvbDROhSlUQhZI-HmYoO3TP1l4X4HEbv3fBvNadsQa_8OdfqbtmjJjJMiZ6s5tSPD9wFLOACSZUD399KgB__MBR8VRCBauwfr7l0H78il1Zug3J2DmzM885NHEDH13lcDMGx4ebrAtKzqr1W9OMAHoUJiLDix6lIgz8ctbnD_fuspLXYCnlKLYXSBNMCHnXkPaHTVbrewW_0cT1oSA69W07AJuDm9udzAQ9mzHkJ1DP2buppi48g",
+    "alt": "전망대에서 본 맑은 날 활주로",
+    "score": 8,
+    "label": "6층 공항 전망대",
+    "reason": "푸른 하늘 아래 여러 항공기가 한눈에 보이는 시원한 전망입니다."
+   },
+   {
+    "src": "/api/gphoto/gimpo/5a549b7bdbb1",
+    "w": 4000,
+    "h": 2252,
+    "credit": "Google 지도 · 방문자",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/104705551338523483677",
+    "gname": "places/ChIJxZMcCsKcfDURxtwFeSfjj-o/photos/AV-0GLeJa_k72VPW_pOGlCFeJSDun0aMyBmjAv2GkAvZta0TarULezZ9AqKAe0FoB6ZAmVhR0kpzJNb-A4VsdvTUTPCwb9RDd333ASGf5n_5r-VLaU2l2BZauofeI1QjbNgmmRcEO9UO4uNTu1stgPrGx5EoovFx5pD4ahKE01DA08D_UsjxM1iD0XstuVBxnhYigrEA0yGiweynhOvtaxibq5UvTErIIU0DJfJuqe1AZNTr7ZyOyH5_Bfgni3l3RjA_4mFXql0ve1NID-8m-gnJpSwUT_EmtIHviSxPRrzWsZMZjjuoPb5_DM4yuvGSj4W0n1wMzPHCA6WrMw2-5RI_omQyxCnOGuKEz_cfP2bp478d1fpGKD-ueR0O31M5kEEF1soddibtbe80ckNtgHdggCeu-o-7KxgGdN9jDwIAF4uD8g",
+    "alt": "햇빛 받는 제주항공 여객기",
+    "score": 8,
+    "label": "활주로 스포팅",
+    "reason": "푸른 하늘과 따뜻한 빛 속 제주항공 기체가 선명하게 담겼습니다."
+   },
+   {
+    "src": "/api/gphoto/gimpo/4d5760320612",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · ACE Lee",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112647416201297147916",
+    "gname": "places/ChIJxZMcCsKcfDURxtwFeSfjj-o/photos/AV-0GLdeU_ou4eln1r5y3Q6ihTgwDrb1cuZqzk7tn6k4nt9SqSIHzdo59wP5A1Tjz0EgVWVUJ4qa42uI60LPO4abcVjwRivLOO7O4hIPeGNR4OM2u-SJ5zbg5q29BFhD5mkgMfR7pQarinLBKG6qBLtN_1qHteBkf35WKrFItlDbUWIFeOWN6dsXW0QlHlzJYh0cApETijqNVAH4nZHGgPzcPkp6S8nufucuRYkKhh_R-ZB11Ax8sHRbOw398oxBqPxD5T1H1O2AlxVm35wbs3Zlt0hyg1XoHtRGzRpHdHQO1D1JnVIL1i_N52zDJceQ4lHni_pqgqUvUWMPSUvbZSHjw-AC-yvx2-QUfrAH9mejs-hRLoan9xYB1L1pr5svvUbYVwvlF5DIgzkDs48P9lxBuCPLywwDOUI",
+    "alt": "맑은 날 계류장의 대한항공 여객기",
+    "score": 7,
+    "label": "활주로 스포팅",
+    "reason": "맑은 하늘 아래 대한항공 여객기와 계류장이 선명합니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/87/1862787.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "푸른 하늘 아래 국내선 청사 입구",
+    "score": 6,
+    "label": "국내선 청사 외관",
+    "reason": "맑은 하늘 아래 청사 외관이 보이지만 역광에 기록 사진 느낌입니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Gimpo_International_Airport.jpg/1920px-Gimpo_International_Airport.jpg",
+    "w": 1600,
+    "h": 1098,
+    "credit": "Brücke-Osteuropa / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gimpo_International_Airport.jpg",
+    "alt": "하늘에서 본 김포공항 전경",
+    "score": 6,
+    "reason": "공항 전체 위치를 한눈에 보여 주지만 색감이 탁합니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d2/N7777Q%40PEK_%2820191028154640%29.jpg/1920px-N7777Q%40PEK_%2820191028154640%29.jpg",
+    "w": 3869,
+    "h": 2580,
+    "credit": "N509FZ / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:N7777Q@PEK_(20191028154640).jpg",
+    "alt": "하늘을 나는 흰색 여객기",
+    "score": 6,
+    "label": "활주로 스포팅",
+    "reason": "앞 사진과 거의 같은 구도의 착륙 장면입니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/GMP_domestic.jpg/1920px-GMP_domestic.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "Hajoon0102 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:GMP_domestic.jpg",
+    "alt": "주차장 너머로 보이는 국내선 청사",
+    "score": 5,
+    "label": "국내선 청사 외관",
+    "reason": "청사 전체가 보이지만 하늘이 흐리고 주차장이 크게 나와 평범합니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/86/1862786.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "국내선 출발층 도로와 도시 전경",
+    "score": 5,
+    "reason": "출발층 도로와 도시 풍경이 보이나 구도가 평범합니다."
+   },
+   {
+    "src": "/api/gphoto/gimpo/fe3f3b4f625e",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Google 지도 · 성스타 (뉴스타만세)",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/106057556769009572167",
+    "gname": "places/ChIJxZMcCsKcfDURxtwFeSfjj-o/photos/AV-0GLdoP3gpIRmIu5y_WFqQyTneJWAFD-BjnfKNkCZEIWQ0FO5fd0HPxJpLGqO0-tuIntM6DuOv7BRm90KwKKJ3BJrOu4yKZ9jSCpRVZVlyKGXJlyMm3zFjHYJe8tDJF5wHoe-tJe3vsmP7MdZ7WWyXTu_bYSkPnebOc8wqSUvqvHobZ3sPlDmkD9kI-iOgau7CaE55o7_qqX5Zaomt7244304SGrFqLVV51aimGFTWt0Vf9H450Y8N6rY5n2nxfJatNsNbHK9w5EgRYP0vlqABcmHIkX8TuDkSV0i1IuYdrbIMAe3xTdHS6sGr0LA0eOxHh4ciReOJexG2mcJ0UMtwsBUxm7_VbD0zPbHltS4EqHqUlZR9ecZ7KoxtCJ0zLbSdXb47TXFKBvI0VjG_m1xh8FHay_EeDLA",
+    "alt": "창 너머로 보이는 계류장 항공기",
+    "score": 5,
+    "label": "활주로 스포팅",
+    "reason": "유리창 너머 항공기가 보이지만 하늘이 흐립니다."
+   },
+   {
+    "src": "/api/gphoto/gimpo/f5cec057f854",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Google 지도 · 오준영",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112734057609159342406",
+    "gname": "places/ChIJxZMcCsKcfDURxtwFeSfjj-o/photos/AV-0GLdYM3pY9rCLCMHxncdpGNLcUTl_Ks9Di0aYbJkztxuaox8tgg_yWAzGBAS1fG5h-5l1eIm0ade6TTxTdz9rMAmgCq_YrhmQ5AcIdJ9-a5ys5y7UnTRiA6ElDMHhm7D1LrLiFPtLS4dt10lImFhI-K0arlG3dJQKAZ16Wlikiva6aOpLe3VgofAtljoR0YDq1SiiUEARtsnyhq0jSZCNZIQGzFZXx5q0uARUeL-GtfjFgI58SAChXvODbgbLc7rfZIHWmH33sth28fpcPKtVa_IHfrgBZuW2NJjMMp-74ONIpa_V54X8npR8WjgnzD1s4CLtWGxlD-jvGwaMGqh-7Om0X5j31xUHZ0huQXlAy0k__TC4uZmDr6DPUKGFXEH_i5LbNPa7_Rs4uX55CjpkAsueDGk52EX3KBZ2Bn5COo0tdg",
+    "alt": "비 오는 날 창가의 제주항공기",
+    "score": 5,
+    "label": "활주로 스포팅",
+    "reason": "비 오는 날 창 너머 제주항공기가 보이지만 분위기가 어둡습니다."
+   }
+  ]
+ },
+ "lotteworld-busan": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "/api/gphoto/lotteworld-busan/37fb6f4507ab",
+    "w": 4080,
+    "h": 3072,
+    "credit": "Google 지도 · 余新堂",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/100443572648511366415",
+    "gname": "places/ChIJ8XYSxfKNaDURFuMe6s2K4us/photos/AV-0GLdmm-UHkNs_OGXzOwCk1DHiz-qQQ8veDirBXfj9Bw0b-PwHEQn2lVq8TY0b2nmiXPepzH0CskA5A0s_QgaKfd9R7QwwXhG1GiNA378y44UFWLPepyNOWJcrd2oxW7pbJmZZgstmEiWwFE1Oz5X80vsz-3BGJB1Ukd0FOOrvHp5b79eSJ7_MHRtLbshrEobPK8_WBz86Cl3ocT5JTA-HkbC-yxVPJDiSKLYMpCMR1cnRRX261ZzA-vyPAJc35cI9ff_zi-_jT15fH5quaUvvFgy7Dq530-SxCZi6wk7vZE5hnXMJ5C96ONBfNCSBJE6wYS9Scj9cNRW5q6sabXPOVxOzVQC6jjlXOtngJ9vmr_GVopzO8gAtJUUb3yZQ9osZyJ9-r4v5vOOAasrueY_nrJNzr9Ys",
+    "alt": "파란 하늘 아래 꽃 정원과 로리 캐슬",
+    "score": 9,
+    "label": "로리 캐슬",
+    "reason": "구름 없는 쪽빛 하늘 아래 성과 꽃 정원이 한눈에 들어오는 대표 사진이다."
+   },
+   {
+    "src": "/api/gphoto/lotteworld-busan/a2687f759a6b",
+    "w": 4080,
+    "h": 3060,
+    "credit": "Google 지도 · Junhyuk Song",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/102510875738962756454",
+    "gname": "places/ChIJ8XYSxfKNaDURFuMe6s2K4us/photos/AV-0GLcv1z1_KEEKmE57lazLZejAV_UNPkhOU-CrwAezXh31xOnEb85PVeJVK4jCA0rlWexIHFLw6fn9nGTAJk9pL5HYVvukiCNx5H1sZFv5vC0FJU8r5ROLMU93bKBpAkq_aGl343AR5gAfQ7FMXT2e2_U9APu6IXUcYMGCMjc9-ERNs6KqmIqCRnB5kfm2XTJ744YMTmsoqjBVA3_7iary8PlX_sQkw3cTeElw_rjQsOHOJ9OIYO9_LBoaIcnfAML5POzpAdeb9-1d3D3t0m5gKcM_6XzI5O4-zDbpU7wMPg9coMj4i4CIOVdMuiKTzxIvvTuttDNigBJ9Ka-WV2p3Eiqo3Luz0E3UXMwG_jRSFUFxHWrED9h2B5KvsjvdpKw7K2XUNNk3j1TCZDfTcsvn7FL6HGqW",
+    "alt": "분수 너머 파란 하늘 아래의 로리 캐슬",
+    "score": 8,
+    "label": "로리 캐슬",
+    "reason": "맑은 파란 하늘 아래 분수 조각상 너머로 로리 캐슬이 선명하게 보이는 사진이다."
+   },
+   {
+    "src": "/api/gphoto/lotteworld-busan/098de628e9a5",
+    "w": 4032,
+    "h": 2268,
+    "credit": "Google 지도 · 그린비",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112826818094037238848",
+    "gname": "places/ChIJ8XYSxfKNaDURFuMe6s2K4us/photos/AV-0GLeCNhj_lxWgOgYAFPR_hupSDZRlJWbIM7dGZMbRsevLpoWoS9ctsa9ajtc9JxQ9WXrhZP9xd961MfpJQcia8AfnB3O7scrKx8kNFcjKRF4DtFFvT121HySwPAXHhyIPN8JSN5HKRCEZby8fzWqoNqd70VkF9BgE0btundDwLC3yJX64eAfk_CD_ZSi3dNor_4-LoaoZ-yqSfrl9KARKjdqkI8RayqEwCgrKCRZYsECHWGoiB0SsMhR3GZc9AyAhKl_zqhyvA5Y0iesDNuA2c6an0uEivCG7KKZ3Y13c_bNkOiqP4LZBf1LauvsLsr2fknIUzi-BEuAZ-WoPNfNZJO19jdXU01TlNP11u2_svJ5hcVK9dCO9zMQocUZo0xKKAUJuWCz2OHCjdNU_O3WTjI6-8dfRNWw",
+    "alt": "푸른 하늘 아래 주황 롤러코스터와 스윙",
+    "score": 8,
+    "label": "자이언트 디거",
+    "reason": "주황색 코스터와 자이언트 스윙이 푸른 하늘과 구름 아래 역동적으로 담겼다."
+   },
+   {
+    "src": "/api/gphoto/lotteworld-busan/7c24f38ef3a6",
+    "w": 4096,
+    "h": 3072,
+    "credit": "Google 지도 · Connor Lu",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/103483886734332717149",
+    "gname": "places/ChIJ8XYSxfKNaDURFuMe6s2K4us/photos/AV-0GLcNdQjLjeocK0yDoTqyLmmRCM0EhIcjaTi5N_xc52Tl4j3Ju1kOQStZsNVXXngP1YduvuEPvSGbTKA5kRS4DOTMlzwPHzWO1xPYuwo0P_nfaKmgxSb8WukqmwH8SeKpUyDDZsnA0g30V7Fug8DH1udwcA5YGbiel0e1PmSEfy7itLXBsnKuMVyKqvIEQWXWG5wlsd9q3BcMX4Kw_1aN8JxQAsvfctHmy3J1r2qPCtteEYUPxjuiq_ihw8GxvMmwiViTguPS8-57xXzyzBLg7uumVJsCSbab8xydEcG3UHkpyPdQN-TVOg1I1CUvtkyWl7oXcvTFnuu1GqEHZPT6SW5zDY0R1nBoGOLFYsTaw-9tNvbHhjEazZoV8v3dD6rJF0zS26OU4OiCd0VsAS6Iqo8hyg",
+    "alt": "퍼레이드 차 앞 계단에 선 공연단",
+    "score": 7,
+    "label": "매직포레스트 퍼레이드",
+    "reason": "계단 앞에서 공연단이 퍼레이드 차와 함께 서 있어 활기가 느껴진다."
+   },
+   {
+    "src": "/api/gphoto/lotteworld-busan/09ed9d88b68c",
+    "w": 2364,
+    "h": 1773,
+    "credit": "Google 지도 · 林孟潔",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/117622041427642828925",
+    "gname": "places/ChIJ8XYSxfKNaDURFuMe6s2K4us/photos/AV-0GLcs35aQ5ZgcIKLRCY_Yrn8lMhwGWlScSILkjs2cmCGRwEvAyPoxEU3B_onQ2unckVuQIFZ04h8jcZtgScCeg8lpjRbfzwQjen-fVe5SyJ1yobb3aaizVQ2NSyrGgihhRA3P_kei4iRmK10Jui-_AZWLSB87JSVwgbWYr6GSID2pvwMFzKkah_PnRwPni4-0oYzpGt4KnRAiBLGZxdbX6IXITeJA8R8mwMgrEX5hYJy3LxQ8SPWTKidxvRF_T5OH08d4001O2tpvGAMPzTaz3sHA-i85P8ofidU0dHfhGStNuAn7rrJhUm1xKPxgtR8Xzzv1roIDLFiAwA33XfLz2Ny6CXMX4wehC-e-3WTnkTsVf-Ot4i24a5tVDinjtrJtlJDtkRVbGlymmN2Qx9p0SqzNGGg",
+    "alt": "노을 지는 롯데월드 어드벤처 부산 전경",
+    "score": 8,
+    "reason": "노을빛 하늘 아래 파크 전경과 꽃 정원이 어우러져 감성적이다."
+   },
+   {
+    "src": "/api/gphoto/lotteworld-busan/41bf491690b7",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 이용덕",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/104668329518726052176",
+    "gname": "places/ChIJ8XYSxfKNaDURFuMe6s2K4us/photos/AV-0GLfSwZdu9_YWWNu_QV7Y9WZPGeDMJUkgbJAuf1XjT9zeSKUK6gH6My6XruBEk_ijZlGxOvCuglMhI4rwkOhZKADUmk7rAFDVYLK0RbveQO68Po5d2OFADLQWSy2Dgt3XZvEZrwW0JgwWPQA8O14BEd6Y7NJTLMIDR5KKDywDnOQbdJZq9FWm2e90Jyq5-ri-1RaL0ojV4tRLBorQ6hlXvPp5DYI0nawmZaKrXdl_dNP3gxWlTHx0ZLbmTrBqRHrhg4mKPqubER47U-1Xax_ALGujVopMsX53dCVmBH7Ykzj7DdioR5IW1HGRusYDZBn0-lFU499QKyJ-yhxYIKt-4gbSs14WrgH9clTHlNIFlqpGkeXuP-UEplVJ1NQFETsLsqtB_nHHrGXfDF2Xp7_JdXWuKBwhzBU",
+    "alt": "나무 모양 입구 게이트와 캐릭터",
+    "score": 7,
+    "reason": "나무 모양 입구 조형물과 캐릭터가 파란 하늘과 어울리지만 간판 글자가 다소 크다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/lotteworld-busan/7470a921fac3",
+    "w": 756,
+    "h": 1008,
+    "credit": "Google 지도 · Cristina Neacsu",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/104565435350431958479",
+    "gname": "places/ChIJ8XYSxfKNaDURFuMe6s2K4us/photos/AV-0GLe7rNH63oWTWNEsoC9GiGgiPpocFD504tneE6_b5vsAn5AslvSQq8aTxbmrXsy9JOSUkqAl3EUPceJx0i1kxHjvV_BwYG3qH2xZQb7JGx7cTbAqdH7Lsqp3hu3HzOMjqEx96kMsLVBa8YB8fgUaWQ-B2AzBvNd86q5cAss1R-lTqkhy9mJHy6bMCukHKJ0AeEoynctDuMl8I_gSVmvirjPrYmmhdiT_4y3AN3LxB9cTarGiSjTC20pIxOJ0WqlsVmxITT54OI4QaZ7rvgRSyvlHqy2_4RBiLWQWEUNIu31lPuvg5Q0N45XJbbjp10aBbWIT5l-yZxz5twTyHxI2lPRcduvhP3azOjgQZp4iax-GgtxRvQngGrZ7KHy_TkUC8np6nKJNyHeHbXGVTrDOyk3rPhvtrj0",
+    "alt": "드레스 입은 캐릭터 조형물",
+    "score": 6,
+    "reason": "공주 차림 캐릭터 조형물이 귀엽지만 시즌 문구가 들어가 시기가 한정된다."
+   },
+   {
+    "src": "/api/gphoto/lotteworld-busan/d774ef14a31b",
+    "w": 3072,
+    "h": 4096,
+    "credit": "Google 지도 · 41 0",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/108296642789362796997",
+    "gname": "places/ChIJ8XYSxfKNaDURFuMe6s2K4us/photos/AV-0GLc-1wIkgw1seUtVH3QPfkumqzGxjpRKSdihi2BQRrKKv6N94rwiUVkWzTZgRer2PD02wmMD7fVcQXfdOQjl-UvfaQd3tVL4TFWcC-z8oy3K4AuBNYSxQNUsKMI2wYrCAU7OinTbUcJ6mDPTkgR3aIupRSgpPavRs6UV5hFsHUYTpnnGqgWiZokI1xYRfZh-P6xMubDEmhAhBCba-u9oLQiv0DIKtmCOm_h0oSP3IPRr15_2QjPfR_qDlzrz775lLkXDpzYzGtnK_hpA47KNfPGIRq4NlA7kaKPckyG7be3LLAGSegFYhqMcnCoCeKbxcP4TzkYsDcHc__X9wOPKRJ69sIiDnP-91vgh3XSQ9_TiSc0mPOxIGy3w59-qxbOkK40drvuu1iYLLFRsw4TltmKHN28WQjgvT4ik7QRzFpal_g",
+    "alt": "버섯 캐릭터가 모인 거대한 나무 조형물",
+    "score": 5,
+    "reason": "거대한 나무 캐릭터가 눈길을 끌지만 인공적인 질감이라 실제 사진인지 의심스럽다."
+   }
+  ]
+ },
+ "theclimb-hongdae": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "/api/gphoto/theclimb-hongdae/a5126ba0b90b",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Google 지도 · Yunha Kim",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/110486913200251105528",
+    "gname": "places/ChIJ38_UQVSZfDURCeO8Jt3CkA8/photos/AV-0GLfiCrJw8Xel5K6RY_zgHwU5ClALJBtx2rF3SqGeztFb9Bud-7r-nG15QqiY922yucoLZYl7JnoWlL8tmI9RnNDbyzNQLcM2AqAjADmv0dAVHLZC1PHor4SxK5i0ptlMyxEBSwUZcB5d5B9bT2EcWARjWopjLCRfTR_vzyddk5oMgw2Ca5isN7GbeBphB-2N6dYUq-R_1wBpNG7uv39HnyPKDF_drvmDaUA4F5pXlB2Cc35861bzk__zWV8hf_wTAK0Ht7Nd10j5grUOBmc0hpfEtbb6PXxmjCBNLv3fx5LMI4fkNlSj6jbhuyES4G7AOloH-3Mtpt_6pazVl25If6lQmre3jDujCMU5I2AYv-KK1DtxWKWAPN7hk_qk8uvNvv2nGm9n7YvtUOgDfwtJ4rle1763M84mps-esqtIBU-J",
+    "alt": "나무 테이블 너머 컬러풀한 볼더링 벽",
+    "score": 9,
+    "label": "볼더링 벽",
+    "reason": "나무 테이블과 기둥 너머로 화려한 볼더링 벽과 식물이 어우러져 분위기와 활기가 좋습니다."
+   },
+   {
+    "src": "/api/gphoto/theclimb-hongdae/3d07490c1fed",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 아날로그제주",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/102268822616506973037",
+    "gname": "places/ChIJ38_UQVSZfDURCeO8Jt3CkA8/photos/AV-0GLdO7fqntpu5olrgtlFMpa7ys-mD_sb6Xw0psI9IfBeP90Wv_m_uUi2Q8GPwEvTdDcXydJDMrNdSJIzYu9WGiHw7wX3c4uKhsds0B25CEmrfh3cLYWaBL8X6lKulibqYbibjDH1naG0LvgLgp6MeCKkPEnIBRS3N7v0UsUzInuhScO1RTB0Nk6Yec6htIeWwshVsv8s9BjceyfvaZFnynVBEdzdK02j_d_EReXFj--5QZMQgJ9DYYwtR9sq4WfKp50tbjEpOyyzqtf6fxCnvABtnDoA8hunwGqXPk5lAELKFtbewQeWfw1lEgqopcyLhul8Ckd6uy0huqc5IaMc4yEi9RUr3pR46F-2T36RGX7tUkrMZ8yivR165LBPe1BOVRrF_5lRxtxa2DdQn-wxq9m1rddeZVh0",
+    "alt": "컬러 홀드가 가득한 볼더링 벽과 클라이머들",
+    "score": 8,
+    "label": "볼더링 벽",
+    "reason": "컬러 홀드가 가득한 넓은 볼더링 벽과 클라이머들이 한눈에 들어와 이곳을 바로 설명해 줍니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Hongdae_Street.jpg/1920px-Hongdae_Street.jpg",
+    "w": 5044,
+    "h": 3241,
+    "credit": "Minseong Kim / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Hongdae_Street.jpg",
+    "alt": "사람들로 붐비는 낮의 홍대 거리",
+    "score": 7,
+    "label": "홍대 거리",
+    "reason": "낮의 홍대 거리가 활기차게 담겼지만 사람 얼굴이 조금 보이고 하늘이 흐린 편입니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/Eoulmadangro_z.jpg/1920px-Eoulmadangro_z.jpg",
+    "w": 2988,
+    "h": 4312,
+    "credit": "Minseong Kim / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Eoulmadangro_z.jpg",
+    "alt": "맑은 날 내려다본 홍대 거리 전경",
+    "score": 7,
+    "label": "홍대 거리",
+    "reason": "맑은 하늘 아래 홍대 거리를 높은 곳에서 내려다본 선명한 전경입니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/theclimb-hongdae/24f1d4aaaa7f",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 아날로그제주",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/102268822616506973037",
+    "gname": "places/ChIJ38_UQVSZfDURCeO8Jt3CkA8/photos/AV-0GLfb7sfKFE-Qc8E6WpfEIHIGvwGAAud45qjKq5coWTbaAijuLZjqYP_365C0UOjdZvooKk_OAA9OzwlVp28LQKMJmfblr4WsEZSCR4G14GnSgD8bZqfTKpX4DSWf__N6rgm6K0AxQdE1O5qRwOpU7ghLFsjtg4a-PdE2-3Za-IiPbADV8Me8KURAc8ncQcUnDN6fC7sbM4zoA8emGarlVcLdCwmVu2RF9Iy1oGIh2-7wPwPzMWwKGtmtlY9_vT0OQM7m-fF2pdh9vKliCYWhNDqBG7UmEhWRnsfpIKHjxqIZobJ4VRzXtdBn53mzMSzmCtra_DYFowGbmb5AEGhMmE-0PsOFT0kU1G49n_PSykc-Fb_YmP1A21E7XWhwVHGjWLSvrj92_DngKUguIhK78VGSrK4YIg8",
+    "alt": "컬러 홀드 벽 앞의 더클라임 접수 데스크",
+    "score": 6,
+    "label": "컬러 홀드 루트",
+    "reason": "THE CLIMB 로고가 보이는 접수대 뒤로 컬러 홀드 벽이 있지만 다소 기록 사진 같은 인상입니다."
+   },
+   {
+    "src": "/api/gphoto/theclimb-hongdae/475c5e22b051",
+    "w": 3984,
+    "h": 2241,
+    "credit": "Google 지도 · Yunha Kim",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/110486913200251105528",
+    "gname": "places/ChIJ38_UQVSZfDURCeO8Jt3CkA8/photos/AV-0GLcUdh6UcTaRkPM0L5Fs9x5MQ517QRagWrD3DjMw85aeHtZOsKKiHzfvhj6VruBOjK8diNtIOCNyu8fxhFk73IFgT_tZgSbI2Ddt-JTuD0PtSo_jr_algBB5br8lMO8hzSOUXiZ6PrL16gyOKnsYx4Dg6qbST4p6g8H4s42F0xY5KLsG1izocUp81eR0qO3xst546OHTlpQD2nVu0XdTpUv7b9uMSvj6GPXhx3gaJccAUQdgWhoaHYm05pRbgbSqWwgbM83vSNazz7ZmByWdihXALDC-d_08ug_atzsk-sRSD01Z_2hrMV_Q8hAPeV8Y2i_n2q2YTSepE50aIUZfVlF48-QOr3isUSoiqDM9CrRuEE6R6tdl7_HGb66G_A-mGZRhFkqeU8twFPBoKTGotaJgxD1oXLwHfmUku9ykcsfmyg",
+    "alt": "큰 창밖 도시 풍경이 보이는 실내 공간",
+    "score": 5,
+    "reason": "창밖 풍경은 예쁘지만 역광으로 사람이 실루엣이고 클라이밍 장소라는 설명이 부족합니다."
+   },
+   {
+    "src": "/api/gphoto/theclimb-hongdae/5f3d3e449aa2",
+    "w": 2500,
+    "h": 1875,
+    "credit": "Google 지도 · kang kang",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107641118937651317189",
+    "gname": "places/ChIJ38_UQVSZfDURCeO8Jt3CkA8/photos/AV-0GLfgi8UXMK6fa_P_NB-mjmdgxrHGtBMiL0VepeUm7F1D0GfEVMSb7Ez_AME2Z7cTIUzYWqgTA5q8u_i-ZqnOP6JscSQguRjIQ7peCBnFK7Bc6cP_SAr4X1y506m_RKdvz8UbXvDO0VqrzEXfgZbtH2jngjU7uIVyeYfKczWcQ2unOHGMxRJXWzFB9j5OioCVRwD6z28Bc55LJ_2FamK2lBUeFgGvhRmHTsXDALM01UGTONU-KTXL6SAxME5olizKtM76Ul92QegqqFmLv6rvz_yQg-MWREAY_k5qS4uc1itJ49G5es5XPAg_h0a55gEZwbNXmvw9tUavbPSJZ0O8amv0pGV4k0QoGmuNOfd5fnGYAKpw4ps9VMNB27rDqKt5JsoiaHubiB7ruKExS5hSBMaXE847Yc8",
+    "alt": "긴 나무 테이블이 있는 밝은 휴게 공간",
+    "score": 5,
+    "reason": "카페 같은 휴게 공간이 깔끔하지만 클라이밍 대표 명소가 보이지 않고 한산한 편입니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Hongdae_Party_District_at_Night%2C_Seoul.jpg/1920px-Hongdae_Party_District_at_Night%2C_Seoul.jpg",
+    "w": 2000,
+    "h": 1126,
+    "credit": "Ken Eckert / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Hongdae_Party_District_at_Night,_Seoul.jpg",
+    "alt": "네온사인이 빛나는 홍대 밤거리",
+    "score": 5,
+    "label": "홍대 거리",
+    "reason": "네온사인이 있는 홍대 야경이지만 클라이밍 장소의 야경이 유명하지 않고 사람이 크게 나왔습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Gyeonguiseon_Forest_Trail_Park_and_Ttaeng-ttaeng_Street_in_Seoul_%28near_Hongdae%2C_1%29.jpg/1920px-Gyeonguiseon_Forest_Trail_Park_and_Ttaeng-ttaeng_Street_in_Seoul_%28near_Hongdae%2C_1%29.jpg",
+    "w": 4160,
+    "h": 2340,
+    "credit": "Christian Bolz (크리스티안 볼츠) / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gyeonguiseon_Forest_Trail_Park_and_Ttaeng-ttaeng_Street_in_Seoul_(near_Hongdae,_1).jpg",
+    "alt": "단풍 든 나무가 있는 철길 산책로",
+    "score": 5,
+    "reason": "가을 나무가 있는 산책길로 분위기는 좋지만 클라이밍 대표 명소가 아닙니다."
+   }
+  ]
+ },
+ "ayersrock-wirye": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "/api/gphoto/ayersrock-wirye/88b8c28338b1",
+    "w": 4032,
+    "h": 2268,
+    "credit": "Google 지도 · Lupearth.쩡",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/111355273364533089959",
+    "gname": "places/ChIJexiREO2vfDURlZXeXQdaIJI/photos/AV-0GLcVTTRo02NyWEYrLlK-hi3BBC1nUhybHcD5zPsnC9LbOAajVqX7YJUvcIgwNXwAlYlkNIC7zs7GSCHl2rxHSab6ShJ6hru-WbEIHgsFgqAn68cUEtcbmWHjcOZHhwxA0eOnHNFj56Dh-xWmtk721Sskz7JDYns4M9x8by93TESq0e5Kn4CFC1XypaWBNmdC7c8LaPyVPG-VWjIfNoaI9PTSwOoN6VSBAo70BGAt80NL9H1F3H3w55110bMOaSVFdFIUkKspXAAbmg8d9SUeeQIQAmiDLq1OpXavAABXb0fF1GhonsfuA6PoTPRwNmZciRu_N4bYkb5ripxZv2naJ5ZH52pFyF3_cASdkJ6FSuJYPDDFGmq9YRoFluMCG1jLtjFVUK73GgEVVMvh73Dfu_1Lww",
+    "alt": "형형색색 홀드가 붙은 넓은 볼더링 벽",
+    "score": 8,
+    "label": "볼더링 벽",
+    "reason": "알록달록한 홀드가 가득한 볼더링 벽과 넓은 실내 공간이 한눈에 들어오는 대표 사진이다."
+   },
+   {
+    "src": "/api/gphoto/ayersrock-wirye/640c82a059b9",
+    "w": 2604,
+    "h": 4624,
+    "credit": "Google 지도 · sound",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/105794166082947362146",
+    "gname": "places/ChIJexiREO2vfDURlZXeXQdaIJI/photos/AV-0GLc7jxjg_2VY9I6fwnX8rzJuS9JsJW1uUYlRYHkfCWCWkcHs52qBMkdB7c_DS29EzMxJMFmGgUXzOHJpL8fsSgmSkpvd88sSXaUmCue81OcB5Z_Yaoe3MGec4zpUEhrnh350SAED6G2JSx8_p20I5DC3GJ9ujclYaCZoX0Y8dTGGLnhVXXNkHW-Lm4WTtENNbXivr_t8OrUV0BGw726TtD3lSN_t4iik02gGIsNT1ggFJH30B_ELWL4Qk57lD9kgtal_jCuKGFOEOPWNBSow4JSz8oOnOd6ltPWiyhBwP0VOa1SKxEc_oaSAZpktjpJZGWRZD5i5j8rMT_UCLuEpkEPiNz6pjSQk35jzxydrRDJebBVskNn285bDTz2gcXJXBYxPtn89Eaa0gtHfnHnDWXRjhz61_AA",
+    "alt": "아이들이 컬러풀한 벽을 오르는 모습",
+    "score": 8,
+    "label": "볼더링 벽",
+    "reason": "아이들이 컬러풀한 벽을 오르는 모습으로 활기와 즐거움이 잘 드러난다."
+   },
+   {
+    "src": "/api/gphoto/ayersrock-wirye/ed0c46b7d6eb",
+    "w": 4032,
+    "h": 2268,
+    "credit": "Google 지도 · Lupearth.쩡",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/111355273364533089959",
+    "gname": "places/ChIJexiREO2vfDURlZXeXQdaIJI/photos/AV-0GLdFpcUctV_W1bJaoIXkLSQmQdPvt7Ec1X2X4GosZsA8hC_HuKmx9r_JILw4lKL9x7LvoSyYlewERqyw_oC2TNEf4q6cQWsGuIbhCoDztiYTlQczngwlftRVO7JTxb9CE5qSQTVIYudye5G3zv2d8L8nwGBFo-NEUI8JT4hHaRa7l1i63B9qGCILkMK5LB4SBcSlmCVEsjEe76mY80TRTYKxXgepPMIuqjslfqxXN3QujvDAT1_uQMmGap6pJFhx2aMGmgenCpirZfZICkq5VNbp96ko8bLjfpflQEZKHvuozDCPfYJgCW2t3RS1jws_y9eg_b0n-BltNyCtUgJJoQecT-VXQu0RlrtZQ1HjXg5G2QOmjlk6FGevJN4UXXOOmJJId9ancbtI0QrdHA9lu1F6TNWO",
+    "alt": "각도가 다른 벽과 화려한 홀드",
+    "score": 8,
+    "label": "각도조절 벽",
+    "reason": "다양한 각도의 벽과 화려한 홀드가 입체적으로 담겨 암장의 매력을 보여 준다."
+   },
+   {
+    "src": "/api/gphoto/ayersrock-wirye/a4f3fb6b20fc",
+    "w": 2836,
+    "h": 2127,
+    "credit": "Google 지도 · 김영숙",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/110069995672608333473",
+    "gname": "places/ChIJexiREO2vfDURlZXeXQdaIJI/photos/AV-0GLeReFJxFAIf35_y1Xms7BaEDqcUuD-ih8Afjf_3V4P4KZEQ91tn3UARGR7UOln1bKsAjd4hgAuASs7Bq_wOfARS_E0TbQ9pSgKQCU-JiADVhPsd-YC89cUQYh3w-VsDtUexwSiA2-CXJ7kLczkglj2RazeMRA8V57_ZbPmBVkDsTsc52Yn6N942ssyh24OdTNMeIuVhOMnbJN_CgI7xopG_iu12EebxQIuIFR_8m57zV4wFkEacm1oD2U6P22dedDf4914kdc9MDZucfbJLbJWuE7A_1DAgELQB0sm5nMndJj0XTBvp6fXtOgPtakRiCFy9ICW6m0ZKRairWDsCpMJ24Kil1dzSWFFefnc3mLaOEuP23rMrlkASSwv4MX6eo-kwY6eTLkAFgU4B35VNsgUWfaJwqhc",
+    "alt": "사람들이 즐기는 활기찬 클라이밍 암장",
+    "score": 8,
+    "reason": "클라이머와 사람들이 어우러져 활기가 느껴지고 암장 분위기가 잘 전달된다."
+   },
+   {
+    "src": "/api/gphoto/ayersrock-wirye/219392ec6aae",
+    "w": 2268,
+    "h": 4032,
+    "credit": "Google 지도 · Lupearth.쩡",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/111355273364533089959",
+    "gname": "places/ChIJexiREO2vfDURlZXeXQdaIJI/photos/AV-0GLduQ3EJOrKyvBEZOckpluErtbDHe-SM1Lk-4hL_wxEGrK0jQNZ8RLDPPVmeGW90jUSIcsPTck4sgg9He8ZW1IYrDrStrli-KUJ6ejsZYoYmKJF68f7TttzUUj7RO78zO5bsuhCR59RaOihr72nzgjM1e9p7r5st5LaW-2kwk4bwPKsZOfC8pBPxnfUhJ7rCmOsqAheEaTKqWFUCF5o9_QX2gljm8mHq0ijQqgRp9aiDOTNwfxgc7-dRCuYiGrCvl3zKEQdSZd7pWYFY5faTMH1o2ZYI4vU6XNF4xMDskxQRpLVNXwVtAUfBY1ELgy01NQKK2Br5iGarpixYKlGQAdfLcjuRmll9eRwEhBGJOctlHvvLxqyQmqTStyLuRvNPoZepIlq3zgJN_hQNneR9-ouRJYHx",
+    "alt": "각도가 있는 벽에 붙은 다채로운 홀드",
+    "score": 7,
+    "label": "각도조절 벽",
+    "reason": "각도가 꺾인 벽면에 홀드가 선명하게 담겨 색감이 좋지만 공간감은 다소 부족하다."
+   },
+   {
+    "src": "/api/gphoto/ayersrock-wirye/d0afa2c8e881",
+    "w": 2268,
+    "h": 4032,
+    "credit": "Google 지도 · Lupearth.쩡",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/111355273364533089959",
+    "gname": "places/ChIJexiREO2vfDURlZXeXQdaIJI/photos/AV-0GLcLPlRW8b4pNEn1ac2MzhCuIv9cJ_GNcqb6tRxe0k81cRgqDlzjVGnvlaxhwnJ3IBZ4zuQOnLbGiduy-Y4bWKJbFGX7HYKvpLh5rLrp6adim6evvtJAD4ncflfyA1veYHyllyEEESV1oLoCMBbfkXiGSizEHxWO0kP-D2qUyLnWvTURBNQwOEuYf4v55HKyKROsa46IUtpyV65degS_9rN8sj4xkzHjQW5P96mhHMljIsozxTcNi1qri-041An1JNMRBPxdlkzRXopMNoGhJD3Hrp_60lQwgaeTvSvMlhSLy8MM5_4zAOtwAGRGtwUFajJ2nFnC-KNCd0kpSgzpzyHSo5UCQUArdUI1px_s81JIKyMI90swsKpeTayOpNzerOoIRfmXswK5isnOA1Utk_FDNxs",
+    "alt": "홀드가 빼곡한 긴 볼더링 벽면",
+    "score": 7,
+    "label": "볼더링 벽",
+    "reason": "홀드가 빼곡한 벽이 길게 이어져 규모가 느껴지나 다소 기울고 사람이 없다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/ayersrock-wirye/5f81a0425892",
+    "w": 4032,
+    "h": 2268,
+    "credit": "Google 지도 · Lupearth.쩡",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/111355273364533089959",
+    "gname": "places/ChIJexiREO2vfDURlZXeXQdaIJI/photos/AV-0GLe5CrVFF3N2JVVhzDOVkR5bPoNn98GokHQ8QDE8XjgUwP5wUL0_7hFK-6fGTY6GrnRGN7Fk_ymZqlDm0f2Fz11MWVf-BYz2u1J0WvEfwfOjz_p-3j2pzaDP4DObIw8DNIR0genuD5SnoZd-RMS3ShRobA69Ji7BhZ31H1WA5r0A5Nq2TaiydyCI4-KFaUBCHr-Fbfj3XiJSogCef--rfhiY9EsnSUbfDuhup7Y5qjxrwAF6dSuIzOrbpQCdytMnIdHL1nXzTsw30RIMiUpYx4dX8LQhzBRIsi6CtUlMVoI8M2npkZojuqT3rkZ7IqeK8BFoXbrpliQdg1Cepg2U8IRRrK-xaT5gSkh9eNWWyzuUYm6F1T3vXrSJdv8Eli8g4YZd_EX2XU80o6lJi5Eta9nzjD8",
+    "alt": "다양한 홀드가 가득한 벽 클로즈업",
+    "score": 6,
+    "label": "볼더링 벽",
+    "reason": "홀드 클로즈업으로 색감은 화사하나 어디인지 설명력이 약하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/Bouldering_Shoes_with_Chalk_Bag.jpg/1920px-Bouldering_Shoes_with_Chalk_Bag.jpg",
+    "w": 4351,
+    "h": 3747,
+    "credit": "Brett Jordan / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Bouldering_Shoes_with_Chalk_Bag.jpg",
+    "alt": "암벽화와 파란 초크백",
+    "score": 6,
+    "label": "암벽화·초크",
+    "reason": "암벽화와 초크백이 선명하게 나왔지만 상품 촬영 같아 분위기가 약하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/Climbing_Shoes_and_Chalk_Bag.jpg/1920px-Climbing_Shoes_and_Chalk_Bag.jpg",
+    "w": 5292,
+    "h": 3888,
+    "credit": "Brett Jordan / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Climbing_Shoes_and_Chalk_Bag.jpg",
+    "alt": "암벽화 두 켤레와 초크백",
+    "score": 6,
+    "label": "암벽화·초크",
+    "reason": "두 켤레 암벽화와 초크백이 함께 나와 구성은 좋으나 현장감이 없다."
+   },
+   {
+    "src": "/api/gphoto/ayersrock-wirye/b1dac02d3b86",
+    "w": 2268,
+    "h": 4032,
+    "credit": "Google 지도 · Lupearth.쩡",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/111355273364533089959",
+    "gname": "places/ChIJexiREO2vfDURlZXeXQdaIJI/photos/AV-0GLe-9h77UA4IMS7Wv-kYyP5yw0eKbzZVX5ETZFPrJp-W7e3XNg0KAvrGSIQ4aH3IE-exsERz7HXx17SPH45fWEZg-XxqJ9SY1V9bMNbBHL2NRCV0YBYSryPlp0gr_XWhtNj6iGb3sFoTOHg7BiV9cw2jxqXFsVoBjMntNv0AD32zJ88X69zn1tcBGTEshjSzzLPdnSeIWJpZNfHqMKxhomyCziJ-o3sJs5h0LgG5L8qi9XZjofoH-DU771S1e0s1zSWLXdJp17OfXDxG879cTfBhm14Zo3LsRn3wQtT1JTrauTcopvqCdehuRjfYk_3ueLJ7HyY0xRcbFFGbps6IMdQhFzk9swVOoy7Ni3gUUtALirs4VF8hEX1mWlN9rMf9tL1_OGmPz85WzyLniDqGvT76Y4fP",
+    "alt": "창가 옆 곡선 클라이밍 벽",
+    "score": 5,
+    "label": "각도조절 벽",
+    "reason": "창가의 초록 식물과 벽이 분위기 있지만 텅 비어 휑하고 색감이 밋밋하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Sport_Climbing_Equipment.jpg/1920px-Sport_Climbing_Equipment.jpg",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Climber.Ben.Johnson / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Sport_Climbing_Equipment.jpg",
+    "alt": "바닥에 놓인 로프와 클라이밍 장비",
+    "score": 5,
+    "label": "암벽화·초크",
+    "reason": "장비가 바닥에 놓인 사진으로 이곳 현장이 아닌 일반 장비 사진 느낌이 강하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fb/La_Sportiva_Tarantula_-_03.jpg/1920px-La_Sportiva_Tarantula_-_03.jpg",
+    "w": 3964,
+    "h": 3503,
+    "credit": "Brett Jordan / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:La_Sportiva_Tarantula_-_03.jpg",
+    "alt": "초록 암벽화와 파란 초크백",
+    "score": 5,
+    "label": "암벽화·초크",
+    "reason": "암벽화와 초크백이 깔끔하지만 회색 배경의 단조로운 제품 사진이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Climbing_Shoes_and_Chalk_Bag_-_02.jpg/1920px-Climbing_Shoes_and_Chalk_Bag_-_02.jpg",
+    "w": 4864,
+    "h": 3791,
+    "credit": "Brett Jordan / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Climbing_Shoes_and_Chalk_Bag_-_02.jpg",
+    "alt": "암벽화 두 켤레와 초크백 정면",
+    "score": 5,
+    "label": "암벽화·초크",
+    "reason": "13번과 비슷한 구성이며 약간 흐릿하고 단조롭다."
+   }
+  ]
+ },
+ "smob-hanam": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "/api/gphoto/smob-hanam/c163a9e74f04",
+    "w": 3024,
+    "h": 4032,
+    "credit": "Google 지도 · 2nd_choi",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/110850115383941660475",
+    "gname": "places/ChIJfeiEJsyzfDUR6YqYnSHWdas/photos/AV-0GLcJNLtZHKdIES_n3itWaUAaNnO89eg5r8YG8nBYbCeRsB9rSUXJ0lovVzSdkKKUkz9Jb2YAoQKESYrSRkGnaq19N7RTK8chCPBErvPgkeLBrgKevmEHM_p6vu7ORpMVUNDeZ8sVDiac0-EZ48QgCtmS_AHYPX0KyfasBGoYG0dk-rHbdAhPLs9pxiRjoyWAJLvq2iu0mb_dW3GYyC3tCefkmVWMQGsnO5kHmhZonIyIAEDTxEFj5u7mDgSljP3vWxXfGcQd9JhNIOqg1yQgqN8faEPjueXDSxVYRBaZZDLqKdJAa_BZB5c3CZOTPtWsOC1VWLUwL38zmf6gQPxWBPiQlYFQlsy8-2SZ7L8_64GyNrRLgbJ6ec1R-jj3cnNf4WOq3ZMvKsS-T1L4EXSWGiG-5fQ",
+    "alt": "컬러풀한 클라이밍 벽을 오르는 사람들",
+    "score": 9,
+    "label": "스포츠몬스터",
+    "reason": "알록달록한 클라이밍 벽과 붉은 타워 위로 오르는 사람들이 한눈에 들어와 활기와 색감이 뛰어나다."
+   },
+   {
+    "src": "/api/gphoto/smob-hanam/eaabaa6d4db4",
+    "w": 3120,
+    "h": 3120,
+    "credit": "Google 지도 · 황형동",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/115593377944450379931",
+    "gname": "places/ChIJfeiEJsyzfDUR6YqYnSHWdas/photos/AV-0GLcnr-ueSMvGdp5-A5ein7D6kUW0qwi1Fy1XanmYqHtVLqoNI0S7BmcP0Wg0ITEm4K7RzKYN6u8ecRWcMkCouCl9yA7qSCKt7VO3zUVBpFh2dntHsS52DhmlN6lUgFaQeRayL6Cklb0SrG3QAHYpi0Cmonl2D1unsVbJtK8TRYj6IMGz94fr3u3gpzC9MVVY7Ef6SNGXDHWrJo44KhplPMy9uEH5ZjPq1nGuI_8-l23yTIEPYKiKf05Ws2hqGnRJJvz4cGXafcRSwGnNIq_DC9CvTkvp39ca_ZPg9qpxpsO5ooNScG-z1yiOdeZuwSQ-FigymQL8fqta1NagrFp8rY6zUipMXiTGNXiRCUxepXEyPQfPVmxVBCQCzRPZ7xc5tePuwpr0xyaRtN2ZILiOSCnk-1947WA",
+    "alt": "네온 라인 농구 코트에서 노는 사람들",
+    "score": 8,
+    "label": "스포츠몬스터",
+    "reason": "네온 라인이 빛나는 농구 코트에서 사람들이 뛰노는 모습이 스포츠몬스터의 분위기를 잘 설명한다."
+   },
+   {
+    "src": "/api/gphoto/smob-hanam/4a27a33f6659",
+    "w": 4608,
+    "h": 3456,
+    "credit": "Google 지도 · unknown",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/106010077577851507077",
+    "gname": "places/ChIJfeiEJsyzfDUR6YqYnSHWdas/photos/AV-0GLdzPKUNskk6_J0DXn47rBMMmaPQ8m4ddQ0lfCeBDDTyhxZ_cw9ZJvtQ47S4Z6cSw833Hdv3ny67eBWDGjnPERerrErbk_f6SR9ChFPYFeOxZ-1WuYL8kiGw1iZLON1Efz55xsg3UW1JshwcQZ_Pms2Br-VAotuBMSnYvT8nurv-lyGvY_s3ohiGAMvI0WDVcKpRxT1j0hC1E0ERCFcMCQvIfhvyjvS_R2eiKP0IqkdZPD2lh5Z8qgbuAwaFo-mKsIrd1MAp0MjRCtBgoc1QrtMBLIGECkOO9bjILCTA-wT69honUSD52n1tBZQ4tnPfkE5x--KWGgAYV2W6Bs44FOpNqCvd-M4d6E_jDedV-hmy-BnCTRkayKh2MQBpj_l4AMDZyuJNsmSasZVPvOWbtv-cuZXk",
+    "alt": "유리 돔 아래 곡선형 층의 중앙 아트리움",
+    "score": 7,
+    "label": "중앙 아트리움",
+    "reason": "유리 돔과 곡선형 층이 시원하게 펼쳐진 아트리움 전경이 밝고 웅장하다."
+   },
+   {
+    "src": "/api/gphoto/smob-hanam/12cdcd494584",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 仙婆婆的腳毛遊記 Simpleball Diary",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/110047763247054797625",
+    "gname": "places/ChIJfeiEJsyzfDUR6YqYnSHWdas/photos/AV-0GLe2faTVyutFNUmmNrs5bvHxgJFds9v-ri8mqNeVZvOB9TejsdtYJJfq9uBar7Rf1qN6sQ-LkDnLF5KpyTgHpwk37256UihSXWoHMRYksvPSi2haViTjoJnVsssuvz-YjAmOTNew6guZ9dLSxgW1lt8gm30FDPsUrUTGqLjk-EKqOlB0FUWdh_UxvhxjWTrYqNqjgAYoyViiW_g3uvBYpkpgoCyzAmwTF_yIq5THsOIRW2KmRKpezi9hpGJUf5q-9FYYDT-jWJ4N58jlu2yFgQFHfi_GxDVGcVpFB8XJVe5CCZA-mx2StCE3FrTrGdFaJVefK7UYPnxYwyMiHQhnoJZT_i3TgqnU8AP2GU4i-fbZXP-zLXzD4N7fZYo0UIiSwfcPOTUoLAVUNCiKGORXt25qfo0UYso",
+    "alt": "핑크빛 로프 코스가 있는 실내 놀이 공간",
+    "score": 7,
+    "label": "스포츠몬스터",
+    "reason": "핑크빛 로프 코스와 캐릭터 장식이 어우러져 신나는 실내 놀이터 느낌을 준다."
+   },
+   {
+    "src": "/api/gphoto/smob-hanam/20db279e1730",
+    "w": 2880,
+    "h": 2160,
+    "credit": "Google 지도 · 정현섭",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/108209840599160644305",
+    "gname": "places/ChIJfeiEJsyzfDUR6YqYnSHWdas/photos/AV-0GLdci_lZYiyTmd5XFpvO8hinlVUE4a30V0XEIEwVm7JWmJtGmyi_ts5WULlVkrJBEohLjJCpRYnjCRZJF6RH8tBgce-EuFlL1JIvKBgwUBLcK53gDD9RriwphjUilZcaHZaxLQnCpBLKSDxMf9z-fHgxXZHGDWcGpjjEFjEWAvHaQHBslVzHY78wGe2RL4o-3Yh43M30_1hVsDFV1PK78UJMpsZ2eNs5t7f8lyX4_diZRE7ybknZdE_0iH26VgIRNgPclK07eLgx0tOBTZhL2d2Igw28T7KmBDtqAGH-JXT1w01VcI1IV9GXXb67s9in0RNp-_jqX6jNJJfCgG4gSGqaYT9HP96BEVWDTCQ5QSav8IAxjos_KjJh38ycknjqueHGmuJhJeaeIsRd7XQKxplybzhG",
+    "alt": "로프 코스를 체험하는 사람들의 모습",
+    "score": 7,
+    "label": "스포츠몬스터",
+    "reason": "높은 곳에서 로프 코스를 체험하는 사람들과 넓은 공간이 활기차게 담겼다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/smob-hanam/6aaa4ca30887",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · JJANGA K",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/104626619134550360461",
+    "gname": "places/ChIJfeiEJsyzfDUR6YqYnSHWdas/photos/AV-0GLcnndF-RrKHZB2gYWg0emCF2es_G5N1Loql_wjzcN2K5PLPdpjHla7OcncDjCmaewyP5X4U6Sqm88d_SBAtehMmy4-C6cQZtMh1_Y_W1d5vOFc-oxpb86O1R-rftamOQQtn3S37494ehGHEcOkAxnY2wjmj_I_EIBYY3y3pW_Bd_mnqd5mr-yRsDv7S2pjCPQ3wzaIp4YA8Fhc7ktdGmXP6wQ5DxzXKc0MCJOP5_aOOjtpinNze9NlKH0wJVYLEYGX2BW5jEQY2kM6rfGsDlwce6kwQ7JoMddhd_nha0VJNReF3JNH-ssWSdO7tRfSzInbddKPFOwsMR5jezAjL5_2ryowr-n1CpWb3TzOgPVevWylW600hZF85O7QQkwJBr7ogLVzCB0E72HDEG9l6s20Q2A",
+    "alt": "가상 라이딩 화면 앞 빨간 자전거",
+    "score": 6,
+    "label": "스포츠몬스터",
+    "reason": "빨간 자전거와 대형 가상 라이딩 화면이 선명하게 보여 체험 거리가 잘 전달된다."
+   },
+   {
+    "src": "/api/gphoto/smob-hanam/39adfd714c65",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · Now",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/109822361906725433727",
+    "gname": "places/ChIJfeiEJsyzfDUR6YqYnSHWdas/photos/AV-0GLeiaPguG8coYIaVkayvEqw3rKU8vFCiGFFkUkvWwCeCGrItRuMZWh90yzBCv2PCo93-arkGZREOIB_a_-OghweLjBonQvN9GTiGiCJ1UHxRQzi4ivywdzrZuz-4AOBF59UUa_DEQlL2195RLffiWOCBLoseNt7GQPqlH7kg4oiA7cTqYf-8f_QapWgYyGld9XbtYYUtP87fGlxm0fdzg3SmGCYM0sw2TOq91N_n673h-_QMTTGvhjVLuPrMQdngY0iHT0QntcEUfYFGpny1pUfMv09fFr6jL5wszWtjrWImNc0Dj0wKDCHpAscbLHOgZ1nIFtLMuL-wAv0WOldJEJ4cuNih7HDJCejF9WQIy-RjJH-gQDiSH0fwfUXq28bX8P0ewX6OQoIe0M9k79ShXIabf1Q",
+    "alt": "스크린 야구 투구 체험",
+    "score": 6,
+    "label": "스포츠몬스터",
+    "reason": "야구 투구 체험을 하는 모습이 역동적이지만 인물이 크고 구도가 다소 어수선하다."
+   },
+   {
+    "src": "/api/gphoto/smob-hanam/faf710f9c070",
+    "w": 4032,
+    "h": 2268,
+    "credit": "Google 지도 · 박선정",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/114390229737728426152",
+    "gname": "places/ChIJfeiEJsyzfDUR6YqYnSHWdas/photos/AV-0GLcBJKcGziP0jmVwIR9PmyZ0J7Qu3b4O3WJV_W8dBhYRRhYLs20N4oYwwMsruS0MrU13FQAMhuR33v0I-1KsNSGh5F71wRvg_4qRd-inHkpX86PLKlpuMaXXH0CHHCJiwb1Ig-2_POXd74eFQoyhsySA-ZhKmo8h6M7FYq-r32_qFgPjzPQxPAdFySCkVbx7_95-gWdOSWJB983CGIdW4Y1h8Q-Keqkd0N0rBlr86NJ5_fhsq95ZqacY-DbYD_z7bswFTvKcglMiH_dqMiFJ7naPlhytyR7JOwzoUPD3ySUJqVKCWRGbehKOuQxW4MCPTDSUone2Th3syk8gYNV03HaeQhDfSDjdFNrZlvubbGzE2FiIFtrBEa9MMwetO0dF26HS7qnu3ImmBXZ4y_MY6v5KjY0",
+    "alt": "다트 기계 앞에 선 아이",
+    "score": 5,
+    "label": "스포츠몬스터",
+    "reason": "다트 기계가 줄지어 있어 즐길 거리를 보여 주지만 조명이 어둡고 구도가 평범하다."
+   }
+  ]
+ },
+ "smob-goyang": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "/api/gphoto/smob-goyang/003767abcf93",
+    "w": 3024,
+    "h": 4032,
+    "credit": "Google 지도 · Nabil Park",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107196531943272372739",
+    "gname": "places/ChIJR1G4_hSXfDURqH-doMWbWqI/photos/AV-0GLdDBSthalEc65LYf-qtnXKoR6MhyTD_aChk7S47Gr4HVg0QxbRKP2sgt5EALxvfEXLKxPpoTEP15oAc8J6tgzvY_f8fh7PMAIqhA5k5DsrNxT3Vx8lrcys06tpslz9M8BfvGnovikTFFM6QBkV7xQsO2ZvnCk_MB9rrQHDqt6xeumRXijYCNaND8AksTeJ3AV5uT1JMOP7Zfff4Iy5ZzQi7Ipw3woGfKjaQLxaVJIXSd6h-34qcH82O1bLAqPSzSSyXhaxMc-qwYcSZcwjRqjByRw5Y333zqJQNEnwUKP-h1pH-eB-8HxCeFSL4LKklTgToH9pO6tmmeyGm5fgNSkXzwndrALcIWtEHOu8Pfp5PyHH-cYBJwGx1s44b6xhJDpkDThxJPgIVz9hgC571pjfZVAEPmX4",
+    "alt": "높은 실내 클라이밍 벽을 오르는 모습",
+    "score": 8,
+    "label": "실내 클라이밍",
+    "reason": "알록달록한 홀드가 가득한 높은 클라이밍 벽과 오르는 사람이 한눈에 들어옵니다."
+   },
+   {
+    "src": "/api/gphoto/smob-goyang/413c8e72ef5c",
+    "w": 2268,
+    "h": 4032,
+    "credit": "Google 지도 · 쥬쥬아빠",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112512230838745124811",
+    "gname": "places/ChIJR1G4_hSXfDURqH-doMWbWqI/photos/AV-0GLejwIPJqHwXO_oUv-rhqCSmXa-d6UVxMPVOshaE4fx6f3QKih98WHh2DjgKo-CRYtha3PRZWgmqpcb5LzisK_U408N2EBDz7eyaRjFIOneGMDDOoQW5kSzquMwSwfBJw6Yedv-AzpGLkHlZYRh4wS9z5q78ewn9JtShFVxWRYlQC8mLn5aOavPfJk3AXkemWUJJqPfuXjZfOt4pMgCIs76HW9GQUM2j9cGuOFryCTCCB83v9AIFqvtYlNu8LZ7mTB6rF7j74qvy3Wr5Fw8QQpvDhiIMlfIKr5pW4IE1pOKXz4n1rqTsMryPDB7D550CNX6Bo_G4YT7bOSIwZ8-CrIEnO5H1npuX1E8Mo6zk06cfqQm5LImV4XS_ORUugtcYMdWp7a6CGEsS_cb3RS_mYGpuRQ",
+    "alt": "볼더링 벽을 오르는 아이",
+    "score": 7,
+    "label": "실내 클라이밍",
+    "reason": "줄무늬 볼더링 벽의 색감이 선명하고 즐기는 활기가 느껴집니다."
+   },
+   {
+    "src": "/api/gphoto/smob-goyang/acca6d0ff1d5",
+    "w": 3024,
+    "h": 4032,
+    "credit": "Google 지도 · Chul",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107239091909113188676",
+    "gname": "places/ChIJR1G4_hSXfDURqH-doMWbWqI/photos/AV-0GLdkX1493-G7L7rHkbv-y1XvSV7QqX0EfqMOn4F0iZ1mRKdhPhVQ0JdOj6MPEZOLzsQ6bNJnSisp9hJEB7ZmI870DukCLwHWvJNH-9-NTrykyOxN1xHaPZY1QI7-ByesTXP_coQwxV5UQVuxxTPchOPnoSHYiGGVVKpXDem30M_pSYSUgalFh_GOimYdvTBw1PMbpyBWuDH5rGTGF7AIPviegSJxfp0MacdLtL2R7zRUhv48HP0GJbzs2Q8hvIPESU2EoFsRnoslA4ONOSCk1BjDFfcch9cFDS3S32dOh_qlszN2wUpoJuyg0lfgzZdUK9lsyQM5-XDUc7VCOWSZuIgci2i3FCInrOIjgibqyu3-6rFzuxW0irlr3n1g13TQ-dbSjL0USc0Lb2rm2otJ3F70TAGOtdbkj9w0UogojeRl",
+    "alt": "핑크빛 버티컬 드롭 슬라이드",
+    "score": 8,
+    "label": "11m 컬러 공간",
+    "reason": "핑크와 노랑이 강렬한 버티컬 드롭 슬라이드가 대표 명소로 인상적입니다."
+   },
+   {
+    "src": "/api/gphoto/smob-goyang/7376b94f6c76",
+    "w": 4608,
+    "h": 3456,
+    "credit": "Google 지도 · 쥬쥬아빠",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112512230838745124811",
+    "gname": "places/ChIJR1G4_hSXfDURqH-doMWbWqI/photos/AV-0GLcD44_Nh0_uehnbUGGDonObP_cTQM1WTCjTntc2fol38TaSL5ptbxjlGb96F0ZJrHC1LboMB59v1CFRGr-YiIBJ3icsyozNJwQ1ZfDhti1Tw8F1jtxE4gx6OZS73Vhk6Vcjd6gyfABhgxZ27PIhPjDjZgOWySLCaRuwiwLfVUFQOaWA_X6aN59MHiV78kkz8hYvRwOfDSkU1D8j_psijKxUrhdhAIp64O97QRSfznPYqaerELk0fcNXBu7qGLB0D26a7o47TNOfhm2Fi-UkwH6f9joZtLbNLDm33dPb0-uOXm_MG3nQuNLHbivnrjNuoffn36FJROIV14y9gdGyhME4JYAzPHiGXRZAJ0HaZkkJu6FB_LlUIo96gr5AA0pMNEZAPRBDPFbzRgXFsuwqiJ3LL2c",
+    "alt": "붉은 등이 걸린 실내 놀이 공간 전경",
+    "score": 7,
+    "reason": "붉은 등과 출렁다리가 있는 실내를 위에서 담아 공간감이 잘 드러납니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/smob-goyang/0f5b5ef13100",
+    "w": 1816,
+    "h": 4032,
+    "credit": "Google 지도 · 찐쫑TV",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/109702734667838307156",
+    "gname": "places/ChIJR1G4_hSXfDURqH-doMWbWqI/photos/AV-0GLdVb2eU__rX5lbCjABeNQDEqCNWNUoBR6MziMRLpdEG-H0sX3wmhOokHrmz1i3DJwtY9o5apapx3HWUSK7xMayRkwW4df6IFDR-lurow3CTtBvqW60GCVTCOj-Smg5cPCjPM-7ajnBNKoVEB342f2aHiquIF-ykR4yBXzXpCyylDycNJbXMwf1JBF2JzHtZsRjbNx58V85ZRSnDnQnu69cPgMVYFYoNgxqPUrS7YRirC8tTdBRRCxyS9S-Zii15babiUuJzYYo8Xax5ssRcytZMUbLdiZQHgVFIqnz5Ablgv_BfYeo5N6yfZMB6m5Fr_vzO2WFgtB25EOrklthu957iV6XdhTaFCbexe5JOq8BCloKcQ5StBswFte6xBhCxJd4SuqQM1gDAiMv4Ro-BAXsDUsk",
+    "alt": "높은 수직 슬라이드에 매달린 체험객",
+    "score": 6,
+    "label": "11m 컬러 공간",
+    "reason": "붉은 줄무늬 슬라이드에 매달린 모습이 짜릿하지만 다소 어둡고 해상도가 아쉽습니다."
+   },
+   {
+    "src": "/api/gphoto/smob-goyang/9504f0b5d12d",
+    "w": 3024,
+    "h": 3024,
+    "credit": "Google 지도 · 도희",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/104464899259190580854",
+    "gname": "places/ChIJR1G4_hSXfDURqH-doMWbWqI/photos/AV-0GLcXLoXach3nwXrewx8IKhwCp0vdXtbjJQv7T7QEJOEWr1uacMywlwwlWSfsE6sggI7Fs8YIZi_co6unS5_rkFmhvH_c6Ja4ag3KEOYrerb6URtS_hWlVf5REQnqn0p4pY7xvJUJ6z9mipUTc9nra7np2gj9EHKa6fy25Rft_s6PfMbwyc4GFByqR7s0_kLCr98AVwoNO6_TLhRZE3fBpJsL5upLY9cerTKJRWwzphIRWpWHil6CDS5drXFLrfMpmrhs1lgKFWOf9Cp6Gpjdr9Y8cg0S7V3zXXusz7b9nIW8ybTIuZ8XaPRaVR3_9r1psYbVAcY9qk9eqPJZAlrraGV9AWFU-3mXhkJcuP13v5iv70pTpe9o22VZ-As8tIz353_2lYHPWS9YNz9EvwkAcN28MUM",
+    "alt": "스포츠 몬스터 입구 전경",
+    "score": 6,
+    "reason": "조명 장식이 있는 스포츠 몬스터 입구라 분위기는 좋지만 기록 사진에 가깝습니다."
+   },
+   {
+    "src": "/api/gphoto/smob-goyang/9206ce5785bc",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 김청수Chase,Cheong-Soo,KIM",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/105299457227065627751",
+    "gname": "places/ChIJR1G4_hSXfDURqH-doMWbWqI/photos/AV-0GLftMa5PmdrXOfGnBCyWurtJ8torCOWJDt0EAHMELQEz5HieAeZ-kzGxQ0Wg7xA-oJtVgq8HBZfzJUlSQ4L0Ymm-0duG1ckenf7Wk_BxBh8z89d9ZdFHcU05m9kW6fExww3h5QsWl30aAjH33EkwPwvlYii2NjtJk4rumpaYNrVgzzthOC1LqjrNXRLjiGXrRNJ5-QW2MgZHzJtbDsLskG6PIXeGMfsV_pOyNqJr2quK3f9x3kIEf6usX3VaYXwJyHVV2CE3LuyU8HguRFqXLfxv9H_8LQvcVygcmGbR52JvV1B9WdDh3DZVq96GaGEBpNXm1UP1mfmob3upqCtPPj-Gl_3n4tg6NsKKyE2qDqsYudpN2ZCkfnetlOrjBy3cl7iOnROmWAl4pT3jCbKOZoPSlw",
+    "alt": "그물 너머 3x3 농구 경기장",
+    "score": 5,
+    "reason": "그물 너머로 3x3 농구 경기가 보이지만 거리가 멀고 구도가 답답합니다."
+   },
+   {
+    "src": "/api/gphoto/smob-goyang/88c3982917ef",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 쥬쥬아빠",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112512230838745124811",
+    "gname": "places/ChIJR1G4_hSXfDURqH-doMWbWqI/photos/AV-0GLfuYHNBEZkxSCV_P8FYc-iPxJivRnD5R9R1_9uxz7D-VtG2T52bAS98VVexJEcg8Sb4Sr85YzNNotc1a5nyLdg32gI-j1w1pGfBpBzo0YHq4w9GKwRxKyQcEtCDq4ieMJNt_AWzmPUPomKAtz9GMwG6XLRhRTtooJu_DfkuQsjOLw18y18t5LR1dgY_q2XKiUjQdVKLNpG7XGQdmqye2Ve3yWgWbN4T3gIGOlfuUHRy-BAiI8lXXnudS70dhmnlHHOolwwz_JNA20_2wL1Ry0sBJKqFF-FmH72pQvPgKCEhaBUU2rt9DID_B5kNMBZfPeeRgqaU-RIgBz0QHNf92u_xgzYSfDVAf7L-xJ756Aqk6Zrf6hfhzK-tMir_Ku4rMWh_-nrYYRNHAUfSQbXGFPgi2g",
+    "alt": "스크린 클레이 사격을 체험하는 아이",
+    "score": 5,
+    "reason": "클레이 사격 체험이지만 대표 명소가 아니고 인물이 가까워 평범합니다."
+   },
+   {
+    "src": "/api/gphoto/smob-goyang/87ab4331e4d3",
+    "w": 3024,
+    "h": 4032,
+    "credit": "Google 지도 · 시은",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/111316553217506222331",
+    "gname": "places/ChIJR1G4_hSXfDURqH-doMWbWqI/photos/AV-0GLe5Jff8mR2P_KQVbwvpjOsERMWppVJ4wtK_s1Xh6kE_mXxhpWZAZy3VYH1teCi19-rgEONT6r1bDBmvOKyTERtooxpRYeA-AesrYecZ-s0a6HybfP07jruE-JZf3i8YKfPkRKQVPB8tkqA4_UG67V252jaFFoX8zf8DfBuTzG99aBkLesGzg1KEkLre6ocx5jk1rIHqBet_FmNl8N_nABtV_jSdT5SWjORY8eBs1_LHzZGlnb6h-COZwlUbBujOO9-IuBKSVqhZ8qng1Mz8UHf6dmGAVl4KHM2qLeocNUzOJoFWsWIQOhR9s8Uf214Und9fMqTKvJLXFixIFyHRPMkDWqiIzEUo-nUU7dPSH9kMTHBLCP7QqCDtY_EcekR5UtEOzSF3Gl58ZaWG0Rhtr783F4ogTtY",
+    "alt": "다트를 던지는 체험객",
+    "score": 5,
+    "reason": "다트 체험 장면이지만 구도가 평범하고 대표 명소는 아닙니다."
+   },
+   {
+    "src": "/api/gphoto/smob-goyang/e3f476f1186e",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · Leslie M",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/105311814196163003842",
+    "gname": "places/ChIJR1G4_hSXfDURqH-doMWbWqI/photos/AV-0GLcPeh1pGinyXwCr74VvTcPJqbJuVgr6PETkyKTEoWVU3YXjVLnNhX7Kl6JuHgohOeo3cNd5KW0UC5kvD8D5W4HOytCAiyMpmsfIXb1jnLSHa7FQ68mrY6uaSDsU7UGzU_WX60HQqN-zGbD0iSzIz58sxDdTj26LNPi4BZUWBEyzf3jny0ljPX3n2uBvstgUlkJPfVrT7vVe4wYeCTS3kLAt-b6E1us1EM9Ic0HdT1qYIxzg-jqGPr56tMCaoV8xuv0wgriPGydwPfJTVTI96R_neo4wlwpeR3LThxAZ9GFguErYhm5d2T3LJaPDYmXh7tv21pGFdcro40Yz-ba4LS6x9NlniJTBY3X5q2s7jT2dDOPd3kDdEFDeM7qtX10mhMNijKSRZ3btd1ZZMRrTeDkiJyQADYI",
+    "alt": "스타필드 안에서 본 스몹 간판",
+    "score": 5,
+    "label": "스타필드 고양",
+    "reason": "스타필드 내부에서 본 입구라 위치는 알 수 있으나 평범한 기록 사진입니다."
+   }
+  ]
+ },
+ "kidzania-seoul": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "/api/gphoto/kidzania-seoul/d7887ff8dcd8",
+    "w": 4800,
+    "h": 3194,
+    "credit": "Google 지도 · 키자니아 서울",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/100579214706792441269",
+    "gname": "places/ChIJX4Jk8aalfDURAAgqAbtSof8/photos/AV-0GLdSKIje4LHQVi_FlAyhLvxtF72wdERp2k7XZNOzEwqT-CGrUtvXP_eu9Zh1MA9JwrktFKe98h7Gssgiy1IlO64yb1lPOso6i03hTN5HJC3Wv77PZCsJCMKim8gCjaOnDXeEI_qKP9AbmI_7ZORsNkf6ovW-HaVr0vs4JRb_zo7r-quIooXZEa5puVCJqkVt2BG_EZBSohbx_oQcx5bPyXiMJZaU8j0sCdoM0ocoxWKmZFkBiHSOkRfpasvg8hOgnu-wHliZ1hd5q6WnQo5p7QeJkW6X9pj8PtlnZdELiz9Dk8gtJNvh93PrLseAdFOMbzwcoNTo4Tp9I5xl1AtS1XeoNlyhQ5KaIP68VLURpRtXxZseDZWvalaG03KCQ94uZtow6a2udj9lU7cmc7uQ8pn1oz8",
+    "alt": "하늘 천장 아래 대한항공 비행기 체험관",
+    "score": 9,
+    "label": "항공사 체험",
+    "reason": "푸른 하늘 천장 아래 실물 크기 비행기가 선명하고 색감 좋게 담겼습니다."
+   },
+   {
+    "src": "/api/gphoto/kidzania-seoul/6b3aaeac5118",
+    "w": 4800,
+    "h": 3200,
+    "credit": "Google 지도 · JINs You",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/116766706201357027604",
+    "gname": "places/ChIJX4Jk8aalfDURAAgqAbtSof8/photos/AV-0GLdkurVovXmp9DaZXLEw1twQAkBQdEJ_wbyiTxzac1h-PAsdkRvz9JEB5o_u93fAvN0l58YXfC6WdhrcKCwwilOiaXhEvhXMTBNJ2sn8vEU32kuwU1zD4Ue0yxgUy4evrBrq64v1vHkoXwSkXxy8bdotxpYFpSTaNfexatxdGTXyn4zWa2-LkZAZuDYIgZpqUCykIKOuyVIWijik_JsJ5bgC54Hn-i3o3ydDZ_xH_JhFFKgMwKZTy9AMmvdxAeHZmISadHH4xwPqj98xShwRDsQRt8fcMVWuI31dNeSqCP1-F7bRucc_FZajWOqDRcWmPrVHKikD27hFTJYyPpaKL8ab_salC56ebtBPDWlSzEF6IbIz4SdbaU2sNiTBLqxYJ1_9ReEqUq_Fe4Z9tCKFcPRYmHfttjo",
+    "alt": "거리를 달리는 소방차 체험",
+    "score": 8,
+    "label": "소방서 체험",
+    "reason": "소방차를 탄 아이들과 젖은 도로의 불빛이 생동감 있고 분위기가 좋습니다."
+   },
+   {
+    "src": "/api/gphoto/kidzania-seoul/27ef80cf1488",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · Sanghoon LEE",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/111134374490868674930",
+    "gname": "places/ChIJX4Jk8aalfDURAAgqAbtSof8/photos/AV-0GLfIutgkOXv5cm_965UzYEzyGyRAyObectv4wWbc6CvNN1xRabEpxM-gpI8zKCpsylz2NCfv4awum1aqjzh85Zyk7eqiCJk22YZ_WiblqTkRU9xnrZ1qywjP6yhmBWP-0TUOS30vaCSQr7RXt-dcABkzTCdSMQdSGc9QPpHKWhpN54eohAyl95gyhbg-Cxr1hRCxL4eA_876B2DlGxqhZYcG5RhRRkNA_my4u60cwrZD-EZUFd1pLNDSZjtmjVyzrYUSnbqUmwj55XpkVZ29_dqspW1uuPL6W-YbC51Blo58DK125dhwT0Av-eB3wdjAKDvgOsEoXc5gQeC9a-V4sv2zjJsNgv3BN4Y2SQ9ZUfK7I740avlttsDfUf7M3ltUbdd_osSiz-lSgk78U34nMKvPfnoCzXg",
+    "alt": "구름 천장 아래 미니 도시 전경",
+    "score": 8,
+    "label": "키자니아 도시",
+    "reason": "구름 천장과 아기자기한 건물이 이어지는 도시 전경이 넓고 색감이 좋습니다."
+   },
+   {
+    "src": "/api/gphoto/kidzania-seoul/7650eb977bb1",
+    "w": 3456,
+    "h": 4608,
+    "credit": "Google 지도 · Oh오재평",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/104625380550189759611",
+    "gname": "places/ChIJX4Jk8aalfDURAAgqAbtSof8/photos/AV-0GLcdAhbCoW6YT36PxzFNQtn8NqB44_KJp25ISON4331rW5_gOm6p6-m7rpMYZ92UNuYOBkm7YuCB8k2XZXOgWuHbVW_FZHSNA4jYIbdUmbBob1DiuzatsnC2Ng1d-q_62JlPU6kMSMBGHKb0PMLMh2FyNrPeRQcDdnBU0gRM9DyaZTRU1cKVwzRsVvWKE50Dbf5UhyqIIZmUjJokIAXDTKU-6faDSV2zS1Nq8jR6mKJMrFLrim2kQILF1NTPtsh4kzB8x4ZET4JeTfy4xKxrbMELN_u5cJGluSr6cqkN0I-Hvk7qXaOXCLJ-1RI6uWRuJ54k6OvpyMjXIM8RoL11GA-_d7eG3SoJbByb1JcqQ1HjEx0FSSD_Ltvfcjsq4q9f9nfyLOTA4UC29It8blg9rM3FH9mttRQ",
+    "alt": "하늘 천장 아래 활기찬 키자니아 거리",
+    "score": 7,
+    "label": "키자니아 도시",
+    "reason": "파란 하늘 천장 아래 거리와 간판, 체험하는 아이들의 활기가 한눈에 들어옵니다."
+   },
+   {
+    "src": "/api/gphoto/kidzania-seoul/1d22ae088ffc",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 강지훈",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/117178952607209530792",
+    "gname": "places/ChIJX4Jk8aalfDURAAgqAbtSof8/photos/AV-0GLcAnsJnja_0ek0gfq7rfq6XBfanyrUEf35bmHsusUN3rnr_HERtvnd0clEG0GHG2Ryyxjleqaqhdtay5r67f9b_YbXHEIYSwVa6BqQB71DyTphgnGEocdk4BTPkD3nR0VDKvsXPcF3TgKWT08RQH6Re_kA7Ri34UkPFMtORzw7_xNhCd6N01p6i469_2AJyeH44Vp97KmRzl2n8U3f9j0SWBb3KBccterhXai9ih4UsR2imYRtkpkf1AYufRcHhCj38uebOWLUu4vhEOFWwFhYPkrjymeePTeOD46kx2hKIAkk5iyVKXsa97QTqpM4faPQv8OW0u2xvCztxAoZpYIz76cs25A4scW5jf9Q4Wtzz6gjNq6ODOgOI4rUmjDQzByu3rPArMVSt0JmNmvtGXaHH2Q",
+    "alt": "소방차에 탄 아이들이 손을 든 모습",
+    "score": 7,
+    "label": "소방서 체험",
+    "reason": "소방차에서 손을 든 아이들 모습이 활기차게 담겼습니다."
+   },
+   {
+    "src": "/api/gphoto/kidzania-seoul/2ad0208bf04c",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 기막힌감독",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/102502566925146274855",
+    "gname": "places/ChIJX4Jk8aalfDURAAgqAbtSof8/photos/AV-0GLdyom9Nl1bCljV7CtsMMgBkYvNJu_qTNH3zLczMPvMkuBcQA0-VS7eb6rTnfEdQKxFU4Uqsk2dWhtvGrjQiTbF1YNZHnKIdi-_zg8oZS9tUmzCGg8p8mvIX7dtTttq_TQd4L4WV8g1lItnv2r1nS3WTwPMsurlURNgejjvxzayAaZcncI4JNG2MJ8u4zWxqhNHwZtKMMGlQnNJH93s1sCuL6Ymi9BqXd5t5ypFaCXQfJT6R7NmhNztakh67ifwkY-UxRsv_K7_mD6xCpq1W41ZD_4ATApbW9PAXqE4iqxIxL26z5dUY3dIUh4E3Xi4nKsZKzirsrwLsxio20xKK3_c-gwrItZCX8o6XsEp1JbY2u1GTAV4FMwfa6AmI2tr68KIZxjneeGtwF2AR07iD30o3wcE",
+    "alt": "네온 간판이 있는 키자니아 거리",
+    "score": 7,
+    "label": "키자니아 도시",
+    "reason": "네온 간판과 하늘 천장이 어우러진 거리 풍경이 감성적입니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/kidzania-seoul/5261e904d735",
+    "w": 2252,
+    "h": 4000,
+    "credit": "Google 지도 · 노혁신",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/118257523453762421832",
+    "gname": "places/ChIJX4Jk8aalfDURAAgqAbtSof8/photos/AV-0GLf8MC7DyVBJ6pODzBX2_30TQeeOYlm24ySny5_s3YjC1beGHUKp9Fa-eK_xZ-aN5CLX3xAonJmtkWIWTc-lZdtEop_GdZqYNbEZhARyQ5Om62Utsi3w9WtG4LqcmxejjloOPyg1SLQBmCyAM6VAagDH1Sv0jWc_Io2z9cD4552iBbODEr9IAsIK4R0onVged4IZaAV865SUsNTwZ1pdHlTxE4C5yK4ArmZtd29n1N6hjDNHMYobs2HMCwzIx30HETU24Iu4p-PrQjmgLzBt_1SyjXyI4Cbz6iJa8Lzx_EHsLZc2u7qr_wNE2_cLuh4-eG0ltP6S5SXJGzv5uZnIscgFalHWjVcrl0OByLz3-zQKT6hvox9ibqO1QuNzN0DtwFA_JW-qhE1jFHEyumSBMnfVTUUUsSA",
+    "alt": "노란 유니폼의 제과 체험",
+    "score": 5,
+    "reason": "아이들의 제과 체험 모습이지만 대표 명소가 아니고 구도가 평범합니다."
+   },
+   {
+    "src": "/api/gphoto/kidzania-seoul/56a81aab26c4",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · JH LEE",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/111443140714005917359",
+    "gname": "places/ChIJX4Jk8aalfDURAAgqAbtSof8/photos/AV-0GLfO5nVbNNhSB2v9TCOdZJodS_geGefFWGv1v_diqLrmtU0ChLPOmUi4bg4vtBcqCQuho6T5k8eBByRvUwaRkiSCYBjo8TpyxQX5vODCv3y7Z4YY-fKSIhxuhNPSvuLcC5BVaiyZbx0gt1LJ1OB4pcr3KWn_jDOhrWzbhXmANN-kNQGOgOqKfYVohoqV9naoBZ299Mwr8Tuh_O82HzFLuaYy8758meI28QNVIOcTAuNiHAlE5prx9rnZWYOjKiwsJa5z1KMR8kWzWceWgE8Hrpcx7qCsMIZtZoJ7fdKYoXePaGg2IjQDmlSZ0guJZO6CA89ihCuOMjzJU6WDrRr2YznwcmT-rCFy7Ecf_PCdeSVJL9iAK6HSXDn1VukPlIiplQIbfm9WbSlXSMBxg-_YCk4YSUDQpW4",
+    "alt": "쿠킹스쿨 앞에 모인 사람들",
+    "score": 5,
+    "reason": "간판이 크고 사람들 뒷모습 위주라 장소의 매력이 약합니다."
+   }
+  ]
+ },
+ "kidzania-busan": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "/api/gphoto/kidzania-busan/61bff97df31b",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 전병호",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/108938428233266841983",
+    "gname": "places/ChIJr6q5GMSSaDUR91Wo2qYY_fo/photos/AV-0GLcTtkTcijax4ziglXKUpbAxBnzY52_bwAaku_NLTlGGbbmKeugrPfr03kLr3JQkhCV2nwV0tZ-sFbFMjqoww3yMHfE3xIQCTvXABOBaSzFr1eRRse99Ch7MiOcfEQPra6hb6sZTMmkHLJ5bOSNcGPow-Z084Cu2jbv41gSkzyTv45LFoKlAdsYKAeH_p-ckBOJhLrjdS8tnjxi1RXCbGDJDwSjiRpaNFk9U_mlK6ygg6fC9-6hlvFGHbhZ_LBYGcPK6hmYBcI8Y615QhFca1QiUBpp6ClwOLTCdvf34bSPvcr9jmkc1CyC71LibVvx3JhSOc7XwMbjjXxsG-Tl4aQZc6vk0zXlXPKAGKErd4_3HukgvC97aiNUDJ2j9T7AtKNKYgoPppC3u1hGK4QDCFKcwZLM",
+    "alt": "마스코트가 있는 중앙광장 공연",
+    "score": 9,
+    "label": "중앙광장",
+    "reason": "극장 건물 앞 중앙광장에서 마스코트와 사람들이 어울려 활기와 감성이 살아 있다."
+   },
+   {
+    "src": "/api/gphoto/kidzania-busan/f44e5ab995db",
+    "w": 3024,
+    "h": 3024,
+    "credit": "Google 지도 · 김지환",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107451160064999586021",
+    "gname": "places/ChIJr6q5GMSSaDUR91Wo2qYY_fo/photos/AV-0GLckJgXmt66jSPjYjOF5tVowKplH-TklDIqKBkvQdg0C-CHf4MYePX0hwwP89u7E81kHk8hDxp1U-AbcHL1Jg99v_hlMeGbEeXJ3eIo-wiCiH8wcwAnbD8vmNbyOD9oaPNITHc-r31LJgQms2iFb-ywdWYEmSUkF_tDUA_xYK8ZdwxUekhmnzexX0FQJKvJrWn5I4zjf66z1W4H-awD_xgG1Fzcx78DcuRwWn7oQllrmWI5xQHY7fR5bCSawBKYZtiGqIQfKq-t1IsW10963nqdg30XbNSdmkGX6Gx08v0t16tYOyLqZj6f6qkpmLEEZAoPLdpDS1CmYO7gZTsMWDhlKERDOFPB1CIbpt0l2ePPo5lHTzJ72Qy4lzl2c5HMLwz0_ffJqey0uQIuI4fwByNzAo_w",
+    "alt": "비행기 모형과 긴 슬라이드",
+    "score": 7,
+    "label": "입국장·공항",
+    "reason": "비행기 모형과 탈출 슬라이드가 선명하게 보여 공항 체험이 한눈에 설명된다."
+   },
+   {
+    "src": "/api/gphoto/kidzania-busan/fad6bf95860a",
+    "w": 3456,
+    "h": 3456,
+    "credit": "Google 지도 · W-DIY",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/106568300864580135075",
+    "gname": "places/ChIJr6q5GMSSaDUR91Wo2qYY_fo/photos/AV-0GLcKd4erIuqUqqyT4zL3h25NlBhf_xTphOf341yCDIaq9xYwfsvzxl5va8IDlwPJMXDU3BEKYnGJZjuu6BNl7h7wf7ilKi2XtVIwfup97aYjk61qjqMMM_SMrQgPlc39DGXe7YX_FP9DoUERvKm-W1Bg275SIs8HH264rbzwagVhlEcsAUApubuL1OL2blXgXcS2AZy1fS2KzxDRFD4JjHD4tRa71eVI3dUOfG50wXYhhQOB6IC2-dASm97LPDYOuETo2Z7eBYrt0TtCFwwGPAo1MHgOYhStUSt7nczLU7yDF0nQcavaUpgptVWhcK4dlnCoLCkfKhewSa-n0bXUmCz7du1YJP1Cgs3UnC4QvQj2d7vYCnRHUertbGmMWdJVcVi4UDOq5mz_WQOX1e2ml5r1db8",
+    "alt": "조명이 반사되는 중앙광장 거리",
+    "score": 7,
+    "label": "중앙광장",
+    "reason": "젖은 바닥에 조명이 반사되는 중앙광장과 큰 나무가 분위기 있게 담겼다."
+   },
+   {
+    "src": "/api/gphoto/kidzania-busan/312e7ddb2646",
+    "w": 4032,
+    "h": 2268,
+    "credit": "Google 지도 · 굿보리오",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/116991232480852882089",
+    "gname": "places/ChIJr6q5GMSSaDUR91Wo2qYY_fo/photos/AV-0GLdWWPeEieMEMgl6RdqRkXenJqe7mZ3K0BIuyRwvZaQtUGiC8b_Jh5OW9go6x0n1ymTc6FssosghUCeJYV2NKWvGSxpHswyGYePIxtPr0ZrxkevT8eGrLOsUzE6vD9UYsEAGrVgrmVlZcmlTyLnzSvbmHPuuDeoddQgCkhQ_grgQFxIRwSqXRKdGfAN8FW7Sf51wfjGdX5IbzFwx_mR3B2O8LkM9J5Fh216u8tfeAz_u48Jz_XdWSgZmWu95ZFBA34QbcE7bUgDb7OPf-HE5N4d968q4WXSRaCsqXyeyIfvfh0d82D7leE5W-IMja9tpF6yPk1RqY3nQghHzVE4mocuztRaRm-zeeF2VbS4tvtqxQy_KyL08bLXR_UwvEV8_eWhutTOs8fBjuB8D7KA-iIrZjbI",
+    "alt": "소방관 체험으로 호스 물을 쏘는 아이",
+    "score": 8,
+    "label": "소방서 체험",
+    "reason": "소방복과 헬멧을 쓴 아이가 호스로 물을 쏘는 모습이 생생하고 얼굴은 크게 드러나지 않는다."
+   },
+   {
+    "src": "/api/gphoto/kidzania-busan/95d42a279a3a",
+    "w": 4800,
+    "h": 2994,
+    "credit": "Google 지도 · 키자니아 부산",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/101815554374996731643",
+    "gname": "places/ChIJr6q5GMSSaDUR91Wo2qYY_fo/photos/AV-0GLcVoXZ31nJvNazGmTld9lOUT8n0nM7S00mzYoi9YKx5Kr98bY9Y9axTSuLVAtwkbt06GIDdZbt8JFCYoTeXZRXZONZ25cHrERD2lnSqPfGyEFnmMpa4r8JEsVU6x6XrpGYXhz6GFk9ddq21Xn0o2CHe2LYB_QQhto1jOhUtG7KnKLqZC0_ERrGuSaN5xQ3Ud5ZGK3N38lT_SCQAIPutFyzFjy-ELFW-ZE9xkBZhofNhhlmK14PYZLord-0b6hQWXuoMxMRK-iNLNO0QwY0ZZ7I93QU3vc-alB9yIszjOyrSR6XvSBWFwz8NZfE_dAKqAIODYQO-xBw0MpX2h1XJK8ROBcvWOHFo9otXASA7Gn9jTPwOx4VkcC0YQMz73q3gBesq41V1NFH0b8ZpU-nhOMxhZA",
+    "alt": "실내 레이싱 트랙과 미니 도시 전경",
+    "score": 7,
+    "reason": "레이싱 트랙과 미니 도시 거리가 한눈에 보여 키자니아가 어떤 곳인지 잘 설명되지만 사람이 없어 활기는 아쉽다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/kidzania-busan/00e28e6d161c",
+    "w": 2048,
+    "h": 1536,
+    "credit": "Google 지도 · 김도형",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107804563298751406117",
+    "gname": "places/ChIJr6q5GMSSaDUR91Wo2qYY_fo/photos/AV-0GLdA6M3EqnAPgFwRgzS8ycycU7R6ZNjxYGW-E_2i__04TeK443VQTKcxTkd4YBNKANiTD86nDCPfkhAqbExd-m0wH8Z6yxETX2gDUJ8rXhpaQs1vHjont63luonzy1E-zbGBiASUw8ELNwlRriGfiwuBa3n3iTdD-Q8aTgYi63iMi1h0ep2Kp9ZPpdWIRXzMj3aGXtztCdAsccoLxDW72_Rga_ZPtOjdEHscXRuAOXSKPJkG__5_B92l2asmE6vRCerrNN24QeXMtlYpmvlheOQQXA-pEv7qLOWbn-bRqSTkvJ6saKf81yvT6krIKuCEdXZhlL-Y_8_HS45uBW0ZsWmIOTF6Udno1kU0cfiRrT6emo0H1GEWUjM8aaB-KuIe1BGRKdCCmw3XOjrr9EpI-ourMX3kslc",
+    "alt": "트랙을 달리는 어린이 카트",
+    "score": 6,
+    "reason": "트랙을 달리는 카트가 크게 담겨 활기는 있지만 어둡고 대표 명소 목록에는 없다."
+   },
+   {
+    "src": "/api/gphoto/kidzania-busan/fb34ef9ae368",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 박재성",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/113305401232436716122",
+    "gname": "places/ChIJr6q5GMSSaDUR91Wo2qYY_fo/photos/AV-0GLeIBFZ5_qbGZQbDrc8JftlFURu_e_oyjPJki9BTbp3-NbiahlDmF768eEKYwByprqZSiW9BIma2jLxEnNCzd_tG3CD88DbTvxfKmROWFm3AJn9bYyxtjzwGIgrzzYXu6e6gEAHiGCkBmltSe5Uh4Pe_KvsZW9OlGSbMNxkVxec5gFjaBYxupX2woKJtWsje0Zt5VWJx2VrxaLEdAdehIH_3j1OtaIzxMgTn1DrhuKQVcWB3EJZRaF1kyAJAiPZBynCtHaLz-tGqHTs-L9Lxn0AAkZ9qNbb2IJEHT9Jz17jt6k16EJjELwtaV4y8IfWcmPZhxqSdqpD4MJP3k2OMz4D70IjImEolAnheKEKCv9K2_M-PSE4D8IEJ8KulhVic8FZdO-7NfFQBSOyAALVNz3DFuiE",
+    "alt": "센텀시티몰 키자니아 입구",
+    "score": 5,
+    "label": "센텀시티몰",
+    "reason": "쇼핑몰 안 입구 간판이 보이는 평범한 기록 사진이다."
+   },
+   {
+    "src": "/api/gphoto/kidzania-busan/1e6ecf59f067",
+    "w": 2048,
+    "h": 1536,
+    "credit": "Google 지도 · 김도형",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107804563298751406117",
+    "gname": "places/ChIJr6q5GMSSaDUR91Wo2qYY_fo/photos/AV-0GLeSJLubycOwvUce0A055-PBtcB42qYiomxoO-5-TxgVB8IgqSyySDU6v8CFEBf6P0UvlbDB-7ZOWPbx47L77sfgt1U3ceEbrO_IHbOyCUBZtspIoMbsInVz6x_dXn53hkOJj784KcmWlDdCy4bYBRhtyVwdT92j-eImWfDPRuBX-l0lFOyLhNnZDKmql-u2jESNYuaPicYTN7O--U3vG7wkxI4hgawR_IsOBiRUbZi3lpQtuEVNn3zA1rtVtXqGGo00lvFKv8DClmwwcmwSwwMW5M_Oj9iZgbySkBeOXW7LaEJ4BAL99gQ95AM8q1pzRav9Rk8g5kloAoKt-hiCjwy-Jxu-GzrSmNpOEnMZgpDMGMTFQgt0wU35fn-eJgmzVKtVj3bRVoi4oO_9XJWFFythTg",
+    "alt": "양궁 체험 중인 아이와 직원",
+    "score": 5,
+    "reason": "양궁 체험 장면이지만 대표 명소가 아니고 직원 얼굴이 비교적 크게 보인다."
+   }
+  ]
+ },
+ "centum-icerink": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/98/1709398.jpg",
+    "credit": "한국관광공사 · 김지호",
+    "license": "공공누리 제1유형",
+    "alt": "헬멧 쓴 아이들이 모인 센텀 아이스링크",
+    "w": 1280,
+    "h": 853,
+    "score": 8,
+    "label": "센텀 아이스링크",
+    "reason": "분홍 헬멧 아이들과 고리 조명, 철골 지붕이 한 장에 담겨 아이스링크의 활기가 바로 전해집니다."
+   },
+   {
+    "src": "/api/gphoto/centum-icerink/2e807e211887",
+    "w": 3000,
+    "h": 4000,
+    "credit": "Google 지도 · 김준휘",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112759980952551197230",
+    "gname": "places/ChIJl0D4v8aSaDURx9gA1ibOFkw/photos/AV-0GLc3OwFIGE0Pa4eFO_tlgmX6uCGZDIJWgqA2dkOxDovJW_RduIBTk9kibOF4U1gIaex8OgA76vNq5QSzk4whV6F8mm9oCQBnVXJOEzicz5HWvbtHhnStFk0GdQlAE8uLavWQ7g3idQi1XcaA6ZJICS1t6BzrGntbSR2dt8TY3WhRJ2SttF979Mf0HDTyPKdMr2gyE99IGy-82148tMfpA6uKNqux3H0OaCxa7UZ3jlcAS93yA4ENWlByo5YKQLXyMHIbEDjd0B6WwBfFjbzgSXadwe8LKUuKDkFgLC_-UiBKXAfdliiHIdQ_URxJgAh60zgEM1fQAeka8LWAdmekgSPzG2oQHQKO0Bo8TAG4TkqOAtOsfrlHZgPcxQ0m4Zkl8LqUvbw2MVomrEqdn02yJ_mGUg",
+    "alt": "고리 조명 아래 밝은 아이스링크 전경",
+    "score": 8,
+    "label": "센텀 아이스링크",
+    "reason": "밝은 빛이 드는 높은 철골 천장과 고리 조명 아래 빙판이 시원하게 담겼습니다."
+   },
+   {
+    "src": "/api/gphoto/centum-icerink/6701041d78dc",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · Paul Griffiths",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107348870431072235787",
+    "gname": "places/ChIJl0D4v8aSaDURx9gA1ibOFkw/photos/AV-0GLehIzWGDNdnJwLE3tU1zxA9BVvN0GpeFrNCelYcoPhVB2kkfAK2ssbWEwRmO3fOBho4YgQ_fbeWEjgSU91PH_foLw62CHzPOeGRV72ZaJQaALNS1shfjay_R3p35zMBGSDJhEeE0FcThtaQlzkfJpIbL1XyNmg_YnhvXSQU-UMceCa09cZcAJyLx0-OnpuNexRiakns_23GxWOJ9ijUvO3FXUIWEGFisPStz4_88--5nirQpexcQ6iEG5e8mRPp7fpr3V-J1C6iChePnNat-NP5L1wm97GvlzusQjyXh3mmZExx7UfR_6siPYSXzBNN_vSKu0-ETMD4iSBv6ojw7TeIqEl-ZPixi-XtL1xQoFwSRy0B6K-NRk735SGf9xfyCkqmPeeIf_M9a4Saq74MbZFntWE7wowNRwV5BXtRavFAXg",
+    "alt": "넓은 빙판에서 스케이트 타는 사람들",
+    "score": 7,
+    "label": "센텀 아이스링크",
+    "reason": "넓은 빙판 위에서 스케이트를 타는 모습이 보여 링크의 규모와 분위기를 알 수 있습니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/centum-icerink/159fe41d6c94",
+    "w": 4000,
+    "h": 2252,
+    "credit": "Google 지도 · EunYoung Lee",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112536091198749638383",
+    "gname": "places/ChIJl0D4v8aSaDURx9gA1ibOFkw/photos/AV-0GLfNcY089B_gKAeZJlKdPaQMQJaX_jL9URmfCvyy4be7u57pgPmv7Hn818-6VoQ8fO9hdERjkzsfukhssRY8tMxq1vIKFilDEIEAvAm4Z1NZqSPtxMnNkUT8ZyE8F1OTaE1nuZcmO_ol-ZJMlr7J8tsPk4RZBCIvVzt406su3zovAIQG_05NtiriBaWzsQI4UNrSR5eqR402cfF6WUP3-A-8wimA6Bk9QI4o-dK-CGZMinerE-6nP09rOrApvr8qFQ33sfajEqea22pjWmNEcAaaL-g_SZHguXFkylnu-uVcByz-iQ5UBqKtjj40L7QE-AX7qmpW0mRnQBznIzjFJq87WmpHcjEvdrBH9rmoLOt2WzW5jLjTASAhfXa9snfp2hYIum1kKVqFyQuA0z7eulLWfTY-",
+    "alt": "유리 너머 스케이트 타는 사람들",
+    "score": 6,
+    "label": "센텀 아이스링크",
+    "reason": "콘과 스케이터가 보여 이용 모습은 알 수 있지만 다소 휑합니다."
+   },
+   {
+    "src": "/api/gphoto/centum-icerink/387e3bcc6db1",
+    "w": 1920,
+    "h": 1080,
+    "credit": "Google 지도 · SSoon",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/110495178552946342971",
+    "gname": "places/ChIJl0D4v8aSaDURx9gA1ibOFkw/photos/AV-0GLfAqFRd2tTxZFuq7ye95mUIFR8Ib7yc6ihr7oUd3i3ZAmBeOtEmetSyMwdQvHLdGAvqIde2RNw9hU0r-bj-ATAYHBy2CXIACRfmOtlK2SGicIFp5sa5eaF7EQVEbGMj1uEZVQlC0UZJ1n-4php5wyff9xk3dyEWSzEXjvgrzlyaLzEGEvPAMjnsv6rLMBZcMgRrqwcaRRWiQaJ6ipBfKPjNh7MJ2DGx4952n3jqT4UUqYL_1Q9sY4SC7YxCgoGlpNEObTys5bTtWFM55bKj74HzHFzXehc4WydUh3N4KkZbjGg94qzagT-19wkx-YSmfk-JvxNfR6SU09b51CW0c1fznKG70xMc7AZMYyHXaeZTogrJLEYL9yzTjkflPD8cvg5eO7eOnWAvHpfSL154CRYgiA",
+    "alt": "철골 천장 아래 붐비는 아이스링크",
+    "score": 6,
+    "label": "센텀 아이스링크",
+    "reason": "천장 구조와 링크, 이용객이 함께 보이지만 전체적으로 어둡습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Busan_Cinema_Center_and_Centum_City_Skyline_at_Night.jpg/1920px-Busan_Cinema_Center_and_Centum_City_Skyline_at_Night.jpg",
+    "w": 4928,
+    "h": 3264,
+    "credit": "Raja Syazwina RS / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Busan_Cinema_Center_and_Centum_City_Skyline_at_Night.jpg",
+    "alt": "시네마센터 야외 객석과 야경",
+    "score": 6,
+    "label": "부산시네마센터",
+    "reason": "야외 상영장과 고층 건물의 야경이 분위기 있지만 야경이 대표 매력은 아닙니다."
+   },
+   {
+    "src": "/api/gphoto/centum-icerink/1d5064a3b75d",
+    "w": 1920,
+    "h": 1080,
+    "credit": "Google 지도 · Yonghui Kim (Pianoman)",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/101547327326919285942",
+    "gname": "places/ChIJl0D4v8aSaDURx9gA1ibOFkw/photos/AV-0GLeTAXiTu9U0M3cZLPawtaEdGoIwAeBtB_shEgetSqsGltVFV0tjvW_8OcLmovL8mlehSdXvjQZ3ITFyg6-c8GNvQcrq9vsQCdjWOrSzAOBgx1hGa1Pb9ZiIQX2dMIKqiQI1_PzsKiHkVL6WpITniCYMAD_mZ4IE6HkusRVXuMwzJmB7QXmcHdaOutlzs9Mcs2SwTToUiKtC9xpFNiMTM9gDyZ_vbjnKj5QwjdrITUM57rpi1h0cg0VrbNMNRV9h1FEweZ_rqPc8h0pxIyuuDVg-eIqxZ3tcKJiayuKmlcT9gm-feZnL_SthCaD2lMm6vPrgMZKHuyQ5iJoqrhnwaWTjyot4_JOP7e-VSPnbXPRbqjsrN1Ll7oc1k6MchF5-zEXOjj-W00tCl0suTpc378FxPtA",
+    "alt": "유리벽 너머로 본 아이스링크 내부",
+    "score": 5,
+    "label": "센텀 아이스링크",
+    "reason": "링크 구조는 보이지만 어둡고 활기가 적어 첫인상으로는 약합니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Busan_Cinema_Center_Architecture_1.jpg/1920px-Busan_Cinema_Center_Architecture_1.jpg",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Qian Ding / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Busan_Cinema_Center_Architecture_1.jpg",
+    "alt": "흑백으로 담은 유리 건물 에스컬레이터",
+    "score": 5,
+    "label": "부산시네마센터",
+    "reason": "흑백 에스컬레이터의 구도는 예술적이지만 어둡고 장소 설명이 약합니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Busan_Cinema_Center_Architecture_2.jpg/1920px-Busan_Cinema_Center_Architecture_2.jpg",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Qian Ding / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Busan_Cinema_Center_Architecture_2.jpg",
+    "alt": "흑백으로 담은 시네마센터 지붕",
+    "score": 5,
+    "label": "부산시네마센터",
+    "reason": "지붕의 곡선이 독특하나 어둡고 흑백이라 첫인상으로는 약합니다."
    }
   ]
  }

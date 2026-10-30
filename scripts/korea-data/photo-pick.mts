@@ -99,7 +99,7 @@ async function commons(q: string): Promise<PlacePhoto[]> {
 async function google(id: string): Promise<Cand[]> {
   const r = await post<{ photos?: { name: string; uri: string; w: number; h: number; author: string; authorUri?: string }[] }>("photo-google", { id, max: 10 });
   if (!r.photos) console.log(`  구글 사진 실패 ${r.error ?? ""}`);
-  return (r.photos ?? []).map((x) => ({ src: x.uri, w: x.w, h: x.h, credit: `Google 지도 · ${x.author || "방문자"}`, license: "Google 지도 사용자 사진", page: x.authorUri, gname: x.name }));
+  return (r.photos ?? []).map((x) => ({ src: x.uri, w: x.w, h: x.h, credit: `Google 지도 · ${x.author && x.author !== "null" ? x.author : "방문자"}`, license: "Google 지도 사용자 사진", page: x.authorUri, gname: x.name }));
 }
 /** 구글 사진을 보낼 우리 주소 (api/gphoto/[id]/[k]) — 사진 이름의 짧은 해시 */
 const gsrc = (id: string, gname: string) => `/api/gphoto/${id}/${createHash("sha1").update(gname).digest("hex").slice(0, 12)}`;
