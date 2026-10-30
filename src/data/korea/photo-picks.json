@@ -4114,7 +4114,7 @@
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms2/website/48/1848548.jpg",
-    "credit": "한국관광공사 · 한국관광공사 김지호",
+    "credit": "한국관광공사 · 김지호",
     "license": "공공누리 제1유형",
     "alt": "돌하르방과 야자수가 있는 공항 앞길",
     "w": 1280,
@@ -4147,7 +4147,7 @@
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms2/website/47/1848547.jpg",
-    "credit": "한국관광공사 · 한국관광공사 김지호",
+    "credit": "한국관광공사 · 김지호",
     "license": "공공누리 제1유형",
     "alt": "그늘 너머 야자수가 보이는 공항 앞",
     "w": 1280,
@@ -4168,7 +4168,7 @@
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms2/website/52/1848552.jpg",
-    "credit": "한국관광공사 · 한국관광공사 김지호",
+    "credit": "한국관광공사 · 김지호",
     "license": "공공누리 제1유형",
     "alt": "공항 청사와 앞 도로",
     "w": 1280,
@@ -4368,7 +4368,7 @@
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms2/website/82/1122682.jpg",
-    "credit": "한국관광공사 · 한국관광공사 이범수",
+    "credit": "한국관광공사 · 이범수",
     "license": "공공누리 제1유형",
     "alt": "어두운 밤하늘의 불꽃",
     "w": 1280,
@@ -4379,7 +4379,7 @@
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms2/website/84/1122684.jpg",
-    "credit": "한국관광공사 · 한국관광공사 이범수",
+    "credit": "한국관광공사 · 이범수",
     "license": "공공누리 제1유형",
     "alt": "63빌딩 옆 주황 불꽃",
     "w": 1280,
@@ -5458,7 +5458,7 @@
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms2/website/84/2475684.jpg",
-    "credit": "한국관광공사 · 한국관광공사 이범수",
+    "credit": "한국관광공사 · 이범수",
     "license": "공공누리 제1유형",
     "alt": "스키하우스 앞 스키어들과 리조트",
     "w": 1280,
@@ -5483,7 +5483,7 @@
   "pending": [
    {
     "src": "https://tong.visitkorea.or.kr/cms2/website/92/2475692.jpg",
-    "credit": "한국관광공사 · 한국관광공사 이범수",
+    "credit": "한국관광공사 · 이범수",
     "license": "공공누리 제1유형",
     "alt": "눈썰매장과 뒤편 호텔 건물",
     "w": 1280,
@@ -5494,7 +5494,7 @@
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms2/website/89/2475689.jpg",
-    "credit": "한국관광공사 · 한국관광공사 이범수",
+    "credit": "한국관광공사 · 이범수",
     "license": "공공누리 제1유형",
     "alt": "눈썰매 즐기는 사람들과 안전망",
     "w": 1280,
@@ -5505,7 +5505,7 @@
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms2/website/87/2475687.jpg",
-    "credit": "한국관광공사 · 한국관광공사 이범수",
+    "credit": "한국관광공사 · 이범수",
     "license": "공공누리 제1유형",
     "alt": "햇살 아래 스키장에 모인 사람들",
     "w": 1280,
@@ -5550,7 +5550,7 @@
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms2/website/91/2475691.jpg",
-    "credit": "한국관광공사 · 한국관광공사 이범수",
+    "credit": "한국관광공사 · 이범수",
     "license": "공공누리 제1유형",
     "alt": "눈썰매장과 호텔 전경",
     "w": 1280,
@@ -5561,7 +5561,7 @@
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms2/website/90/2475690.jpg",
-    "credit": "한국관광공사 · 한국관광공사 이범수",
+    "credit": "한국관광공사 · 이범수",
     "license": "공공누리 제1유형",
     "alt": "눈썰매를 타는 사람들과 호텔",
     "w": 1280,
@@ -5572,7 +5572,7 @@
    },
    {
     "src": "https://tong.visitkorea.or.kr/cms2/website/86/2475686.jpg",
-    "credit": "한국관광공사 · 한국관광공사 이범수",
+    "credit": "한국관광공사 · 이범수",
     "license": "공공누리 제1유형",
     "alt": "스키장 리프트 승차장",
     "w": 1280,
@@ -5592,6 +5592,200 @@
     "score": 5,
     "label": "리조트 전경",
     "reason": "호텔 정면 사진으로 깔끔하나 평범한 건물 기록 사진이다."
+   }
+  ]
+ },
+ "smob-daejeon": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Shinsegae_Department_Store_in_Seoul.jpg/1920px-Shinsegae_Department_Store_in_Seoul.jpg",
+    "w": 4638,
+    "h": 2454,
+    "credit": "Minseong Kim / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Shinsegae_Department_Store_in_Seoul.jpg",
+    "alt": "낮의 신세계 본점 외관 전경",
+    "score": 8,
+    "label": "신세계 외관",
+    "reason": "맑은 낮에 신세계 건물 전체가 선명하게 담겨 대표 명소가 한눈에 설명된다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/Expo_Science_Park_in_Daejeon.jpg/1920px-Expo_Science_Park_in_Daejeon.jpg",
+    "w": 6974,
+    "h": 2074,
+    "credit": "Yoo Chung / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Expo_Science_Park_in_Daejeon.jpg",
+    "alt": "강 건너 한빛탑과 아치형 다리",
+    "score": 8,
+    "label": "한빛탑",
+    "reason": "푸른 하늘과 강, 아치형 다리, 한빛탑이 함께 담긴 시원한 전경이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/Daejeon_Expo_Science_Park.jpg/1920px-Daejeon_Expo_Science_Park.jpg",
+    "w": 3637,
+    "h": 1049,
+    "credit": "Yoo Chung / Wikimedia Commons",
+    "license": "CC BY-SA 2.5",
+    "page": "https://commons.wikimedia.org/wiki/File:Daejeon_Expo_Science_Park.jpg",
+    "alt": "물가에 비친 한빛탑과 다리 풍경",
+    "score": 7,
+    "label": "한빛탑",
+    "reason": "맑은 하늘과 물에 비친 반영이 예쁘지만 사진이 다소 납작해 보인다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Gate%2C_bridge%2C_and_tower_at_Daejeon_Expo_Science_Park.jpg/1920px-Gate%2C_bridge%2C_and_tower_at_Daejeon_Expo_Science_Park.jpg",
+    "w": 2411,
+    "h": 3615,
+    "credit": "Yoo Chung / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gate,_bridge,_and_tower_at_Daejeon_Expo_Science_Park.jpg",
+    "alt": "파란 하늘 아래 한빛탑과 아치 다리",
+    "score": 7,
+    "label": "한빛탑",
+    "reason": "파란 하늘 아래 한빛탑과 아치 다리가 보이지만 바닥이 휑하다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Expo_Science_Park_southern_plaza_to_north.jpg/1920px-Expo_Science_Park_southern_plaza_to_north.jpg",
+    "w": 3766,
+    "h": 2518,
+    "credit": "Yoo Chung / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Expo_Science_Park_southern_plaza_to_north.jpg",
+    "alt": "넓은 광장에서 자전거 타는 사람들",
+    "score": 6,
+    "reason": "광장에서 사람들이 자전거를 타는 활기가 있지만 명소가 작고 공간이 넓어 휑하다."
+   },
+   {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Shinsegae_department_store_Gangnam_branch_20090124.jpg",
+    "w": 1536,
+    "h": 2048,
+    "credit": "바리반디 from kowp / Wikimedia Commons",
+    "license": "CC BY-SA 2.0 kr",
+    "page": "https://commons.wikimedia.org/wiki/File:Shinsegae_department_store_Gangnam_branch_20090124.jpg",
+    "alt": "노을 하늘 아래 신세계 건물 외관",
+    "score": 5,
+    "label": "신세계 외관",
+    "reason": "노을빛 하늘 아래 신세계 건물이 보이지만 기울어진 앵글이고 대형 광고 속 인물이 시선을 끈다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Shinsegae_Department_Store_Main_Store_at_night_01.JPG/1920px-Shinsegae_Department_Store_Main_Store_at_night_01.JPG",
+    "w": 2048,
+    "h": 1536,
+    "credit": "Abasaa / Wikimedia Commons",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:Shinsegae_Department_Store_Main_Store_at_night_01.JPG",
+    "alt": "조명이 켜진 신세계 건물 야경",
+    "score": 5,
+    "label": "신세계 외관",
+    "reason": "조명이 켜진 신세계 야경은 분위기가 있지만 이곳이 야경으로 유명하지 않아 점수를 제한했다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1f/Daejeon_Expo_Science_Park_%28dry_river%29.jpg/1920px-Daejeon_Expo_Science_Park_%28dry_river%29.jpg",
+    "w": 3839,
+    "h": 1053,
+    "credit": "Yoo Chung / Wikimedia Commons",
+    "license": "CC BY-SA 2.5",
+    "page": "https://commons.wikimedia.org/wiki/File:Daejeon_Expo_Science_Park_(dry_river).jpg",
+    "alt": "흐린 하늘 아래 한빛탑과 다리",
+    "score": 5,
+    "label": "한빛탑",
+    "reason": "하늘이 흐리고 하얗게 떠서 풍경이 칙칙하고 활기가 부족하다."
+   }
+  ]
+ },
+ "lotteworld-icerink": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Lotte_World_day_view_4.jpg/1920px-Lotte_World_day_view_4.jpg",
+    "w": 8780,
+    "h": 4400,
+    "credit": "kallerna / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Lotte_World_day_view_4.jpg",
+    "alt": "맑은 날 석촌호수와 매직아일랜드 전경",
+    "score": 9,
+    "label": "석촌호수",
+    "reason": "맑은 하늘 아래 석촌호수와 매직아일랜드, 롯데월드타워가 파노라마로 담겨 첫인상으로 가장 좋습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Lotte_World_ice_rink.jpg/1920px-Lotte_World_ice_rink.jpg",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Christophe95 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Lotte_World_ice_rink.jpg",
+    "alt": "돔 아래 동화 성과 아이스링크",
+    "score": 8,
+    "label": "아이스링크",
+    "reason": "선명한 화질로 아이스링크와 동화 성, 유리 돔이 한 화면에 담겨 분위기가 좋습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Lotte_World_day_view_3.jpg/1920px-Lotte_World_day_view_3.jpg",
+    "w": 5200,
+    "h": 3485,
+    "credit": "kallerna / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Lotte_World_day_view_3.jpg",
+    "alt": "석촌호수 위 매직아일랜드 성",
+    "score": 8,
+    "label": "매직아일랜드 성",
+    "reason": "호수 위 매직아일랜드 성이 크게 선명하게 담겨 대표 명소가 잘 드러납니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/View_of_Seokchon_Lake.jpg/1920px-View_of_Seokchon_Lake.jpg",
+    "w": 3008,
+    "h": 1680,
+    "credit": "Simon Williams-Im / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:View_of_Seokchon_Lake.jpg",
+    "alt": "푸른 하늘 아래 석촌호수와 롯데월드타워",
+    "score": 8,
+    "label": "석촌호수",
+    "reason": "푸른 하늘과 석촌호수, 매직아일랜드, 롯데월드타워가 어우러진 맑고 시원한 사진입니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Khitai7.jpg/1920px-Khitai7.jpg",
+    "w": 3264,
+    "h": 2448,
+    "credit": "Khitai (a flickr user) / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Khitai7.jpg",
+    "alt": "실내 아이스링크와 동화 마을 전경",
+    "score": 7,
+    "label": "아이스링크",
+    "reason": "아이스링크와 매직아일랜드 성, 활기찬 사람들이 한눈에 보여 장소가 잘 설명되지만 색감이 다소 바랬습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Lotte_World.jpg/1920px-Lotte_World.jpg",
+    "w": 3264,
+    "h": 2448,
+    "credit": "SJ Yang / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Lotte_World.jpg",
+    "alt": "유리 돔 아래 아이스링크와 성",
+    "score": 7,
+    "label": "아이스링크",
+    "reason": "유리 지붕 아래 링크와 성, 사람들이 어우러져 활기가 느껴지지만 화질과 색감이 평범합니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Lotte_World_seen_from_Lotte_World_Tower.jpg/1920px-Lotte_World_seen_from_Lotte_World_Tower.jpg",
+    "w": 5525,
+    "h": 3674,
+    "credit": "Tristan Surtel / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Lotte_World_seen_from_Lotte_World_Tower.jpg",
+    "alt": "롯데월드 건물과 석촌호수 항공뷰",
+    "score": 6,
+    "reason": "롯데월드와 석촌호수를 높이서 담았지만 하늘이 흐리고 건물 글자가 크게 보입니다."
    }
   ]
  }

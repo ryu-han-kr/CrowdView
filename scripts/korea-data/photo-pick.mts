@@ -116,7 +116,7 @@ async function kto(name: string): Promise<PlacePhoto[]> {
   return [j.response?.body?.items?.item ?? []]
     .flat()
     .filter((x) => x.galWebImageUrl && squash(`${x.galTitle} ${x.galSearchKeyword}`).includes(squash(name)))
-    .map((x) => ({ src: x.galWebImageUrl, credit: `한국관광공사 · ${x.galPhotographer || "관광사진 갤러리"}`, license: "공공누리 제1유형", alt: x.galTitle }));
+    .map((x) => ({ src: x.galWebImageUrl, credit: ["한국관광공사", x.galPhotographer?.replace(/^한국관광공사\s*/, "")].filter(Boolean).join(" · "), license: "공공누리 제1유형", alt: x.galTitle }));
 }
 
 async function load(p: PlacePhoto): Promise<{ p: PlacePhoto; small: Buffer } | null> {

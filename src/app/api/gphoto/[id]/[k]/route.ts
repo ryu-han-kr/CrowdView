@@ -6,6 +6,9 @@ import { cached } from "@/lib/cached";
 import picks from "@/data/korea/photo-picks.json";
 
 const API = APIS.find((a) => a.id === "google-places");
+// 사진을 못 받을 때(키 없음·한도·장애) 보내는 어두운 회색 그림 — 404면 사진 위 흰 글자가 밝은 바탕에 남는다 (api/gphoto/[id]와 같은 이유)
+const FALLBACK = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAwAAAAQCAIAAACtAwlQAAAACXBIWXMAAAPoAAAD6AG1e1JrAAAAGElEQVQokWNwD80kiBhGFTGMBgEDMUEAAEwOw8EDTVFpAAAAAElFTkSuQmCC", "base64");
+const fallback = (maxAge: number) => new Response(FALLBACK, { headers: { "Content-Type": "image/png", "Cache-Control": `public, s-maxage=${maxAge}` } });
 const PICKED = picks as Record<string, { photos: { src: string; gname?: string }[] }>;
 
 async function media(name: string): Promise<string | null> {
@@ -24,7 +27,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   try {
     const load = () => media(name);
     const uri = await cached(`gphoto:n:${name}`, 30 * 86400, load);
-    if (!uri) return new Response("not found", { status: 404 });
+    if (!uri) return fallback(3600);
     let img = await fetch(uri, { signal: AbortSignal.timeout(8000) });
     // 캐시해 둔 사진 주소가 만료됐으면 한 번 새로 받는다
     if (!img.ok) {
@@ -40,6 +43,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     });
   } catch (e) {
     console.warn("[gphoto]", id, k, e instanceof Error ? e.message : e);
-    return new Response("unavailable", { status: 503 });
+    return fallback(300);
   }
 }
