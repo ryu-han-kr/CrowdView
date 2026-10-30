@@ -405,7 +405,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   min: compactNumber(crowd.area.range[0], lang),
                   max: compactNumber(crowd.area.range[1], lang),
                 })}
-                <span className="ml-2 text-[11px] text-gray-500">{t("서울시 실측")}</span>
+                <span className="ml-2 text-[11px] text-gray-600">{t("서울시 실측")}</span>
               </p>
             )}
             {crowd.parking && isOpen && !beforeEvent && (
@@ -415,7 +415,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   n: crowd.parking.occupied.toLocaleString(),
                   total: crowd.parking.total.toLocaleString(),
                 })}
-                <span className="ml-2 text-[11px] text-gray-500">{t("공공데이터 실측")}</span>
+                <span className="ml-2 text-[11px] text-gray-600">{t("공공데이터 실측")}</span>
               </p>
             )}
             {band && isOpen && !beforeEvent && (
