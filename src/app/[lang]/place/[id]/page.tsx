@@ -384,42 +384,34 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               </div>
               {!beforeEvent && <CrowdMascot score={crowd.score} closed={!isOpen} size={112} className="-my-1 shrink-0" label={t(level.label)} character={categoryCharacter(place.category)} />}
             </div>
+            {/* 확정안 (경수님 10/30): 평소 대비를 첫 줄에 크게, 출처는 흐리고 작게 */}
+            {(crowd.area || crowd.parking) && isOpen && !beforeEvent && crowd.vsUsual !== undefined && (
+              <p className="mt-3 text-base font-bold text-gray-900">
+                {Math.abs(crowd.vsUsual - 1) < 0.1
+                  ? t("평소 이 시간과 비슷해요")
+                  : t(crowd.vsUsual > 1 ? "평소 이 시간보다 {n}% 많아요" : "평소 이 시간보다 {n}% 적어요", {
+                      n: Math.round(Math.abs(crowd.vsUsual - 1) * 100),
+                    })}
+              </p>
+            )}
             {crowd.area && isOpen && !beforeEvent && (
-              <p className="mt-2 text-sm text-gray-600">
-                {t("주변 {area} 전체 {min}~{max}명", {
+              <p className="mt-1 text-sm text-gray-700">
+                {t("{area} 전체 {min}~{max}명", {
                   area: areaLabel(crowd.area.name),
                   min: compactNumber(crowd.area.range[0], lang),
                   max: compactNumber(crowd.area.range[1], lang),
-                })}{" "}
-                <span className="text-xs text-gray-600">· {t("서울시 실측")}</span>
-                {crowd.vsUsual !== undefined && (
-                  <span className="block">
-                    {Math.abs(crowd.vsUsual - 1) < 0.1
-                      ? t("평소 이 시간과 비슷해요")
-                      : t(crowd.vsUsual > 1 ? "평소 이 시간보다 {n}% 많아요" : "평소 이 시간보다 {n}% 적어요", {
-                          n: Math.round(Math.abs(crowd.vsUsual - 1) * 100),
-                        })}
-                  </span>
-                )}
+                })}
+                <span className="ml-2 text-[11px] text-gray-400">{t("서울시 실측")}</span>
               </p>
             )}
             {crowd.parking && isOpen && !beforeEvent && (
-              <p className="mt-2 text-sm text-gray-600">
+              <p className="mt-1 text-sm text-gray-700">
                 {t("{lot} {n}/{total}면 주차 중", {
                   lot: t(crowd.parking.label),
                   n: crowd.parking.occupied.toLocaleString(),
                   total: crowd.parking.total.toLocaleString(),
-                })}{" "}
-                <span className="text-xs text-gray-600">· {t("공공데이터 실측")}</span>
-                {crowd.vsUsual !== undefined && (
-                  <span className="block">
-                    {Math.abs(crowd.vsUsual - 1) < 0.1
-                      ? t("평소 이 시간과 비슷해요")
-                      : t(crowd.vsUsual > 1 ? "평소 이 시간보다 {n}% 많아요" : "평소 이 시간보다 {n}% 적어요", {
-                          n: Math.round(Math.abs(crowd.vsUsual - 1) * 100),
-                        })}
-                  </span>
-                )}
+                })}
+                <span className="ml-2 text-[11px] text-gray-400">{t("공공데이터 실측")}</span>
               </p>
             )}
             {band && isOpen && !beforeEvent && (
@@ -428,18 +420,13 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 <UsualBand band={band.band} weekend={weekend} t={t} />
               </p>
             )}
-            <div className="sector-box mt-3 space-y-1">
-              <p className={`text-[13px] ${crowd.stale ? "font-semibold text-amber-700" : "text-gray-700"}`}>
-                {t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}
-                {crowd.stale && <> · {t("갱신 지연")}</>} · {t(SOURCE_LABEL[crowd.source])}
-              </p>
-              {/* 자료 등급: A 실측 · B 실시간 추정 · C 통계 예측 (어디서 온 값인지) */}
-              <p className="text-[13px] text-gray-700">
-                <span className="mr-1 rounded bg-gray-900 px-1.5 py-px text-[11px] font-bold text-white">{dataGrade(crowd)}</span>
-                {t(GRADE_LABEL[dataGrade(crowd)])}
-                {dataGrade(crowd) !== "A" && ` · ${t("인원은 정원 기준으로 환산한 추정치예요")}`}
-              </p>
-            </div>
+            {/* 갱신·출처·자료 등급: 흐리고 작게 (경수님 10/30: 흰 상자가 위의 중요한 정보보다 먼저 눈에 들어왔다) */}
+            <p className={`mt-3 text-[11px] leading-relaxed ${crowd.stale ? "font-semibold text-amber-700" : "text-gray-400"}`}>
+              {t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}
+              {crowd.stale && <> · {t("갱신 지연")}</>} · {t(SOURCE_LABEL[crowd.source])} ·{" "}
+              <span className="rounded bg-gray-200 px-1 py-px text-[10px] font-bold text-gray-500">{dataGrade(crowd)}</span> {t(GRADE_LABEL[dataGrade(crowd)])}
+              {dataGrade(crowd) !== "A" && ` · ${t("인원은 정원 기준으로 환산한 추정치예요")}`}
+            </p>
               <AlertFab
                 placeId={place.id}
                 placeName={t(place.name)}

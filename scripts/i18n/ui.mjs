@@ -2456,6 +2456,7 @@ export default {
   "등록 예정": ["pending", "登録予定", "待登记", "待登記"],
   // 2026-10-20: 그래프·사진·글자 크기·명소 기준 인원
   "주변 {area} 전체 {min}~{max}명": ["{area} area total {min}–{max}", "周辺{area}全体 {min}～{max}人", "周边{area}共 {min}~{max}人", "周邊{area}共 {min}~{max}人"],
+  "{area} 전체 {min}~{max}명": ["{area} total {min}–{max}", "{area}全体 {min}～{max}人", "{area}共 {min}~{max}人", "{area}共 {min}~{max}人"],
   "서울시 실측": ["measured by Seoul City", "ソウル市実測", "首尔市实测", "首爾市實測"],
   "주변 실측 인구로 계산한 명소 기준 추정": ["estimate for this attraction from the measured area population", "周辺の実測人口から算出したスポット推定", "根据周边实测人口推算的景点人数", "根據周邊實測人口推算的景點人數"],
   "입장객 수 (추정, 수용 인원 기준)": ["Visitors (estimated from capacity)", "入場者数（推定・収容人数基準）", "入场人数（估算，按容量）", "入場人數（估算，按容量）"],

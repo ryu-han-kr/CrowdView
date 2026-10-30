@@ -1060,6 +1060,7 @@ const dict: Dict = {
   "운영 시간 평균 혼잡으로 본 CrowdView 추정이에요 (요일·공휴일·계절 패턴).": "CrowdView estimate of the average crowd during opening hours (weekday, holiday and seasonal patterns).",
   "등록 예정": "pending",
   "주변 {area} 전체 {min}~{max}명": "{area} area total {min}–{max}",
+  "{area} 전체 {min}~{max}명": "{area} total {min}–{max}",
   "서울시 실측": "measured by Seoul City",
   "주변 실측 인구로 계산한 명소 기준 추정": "estimate for this attraction from the measured area population",
   "입장객 수 (추정, 수용 인원 기준)": "Visitors (estimated from capacity)",
