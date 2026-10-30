@@ -25,7 +25,8 @@ jobs:
       labels: ${{ steps.t.outputs.labels }}
     steps:
       - id: t
-        shell: powershell
+        # 러너 PC의 스크립트 실행 정책에 막히지 않게 (10/30 데스크탑에서 막혔다)
+        shell: powershell -NoProfile -ExecutionPolicy Bypass -File {0}
         run: |
           $h = [DateTime]::UtcNow.AddHours(9).Hour
           $l = if ($h -ge 20 -or $h -lt 8) { '["self-hosted","crowdview","laptop"]' } else { '["self-hosted","crowdview"]' }
