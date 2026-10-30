@@ -9,6 +9,8 @@ import { useEffect } from "react";
  */
 export function AdSenseLoader({ client }: { client: string }) {
   useEffect(() => {
+    // 유료 회원(Plus 표시 쿠키 → html[data-plus])에게는 스크립트 자체를 받지 않는다: 애드센스 '자동 광고'를 켜면 광고 칸(AdUnit)이 숨어 있어도 광고가 뜬다 (총점검 10/30)
+    if (document.documentElement.dataset.plus === "1") return;
     let done = false;
     const load = () => {
       if (done || document.getElementById("adsbygoogle-js")) return;

@@ -10,6 +10,7 @@ export function PageHeader({
   title,
   className = "",
   children,
+  heading = true,
 }: {
   title: ReactNode;
   name?: CharacterName;
@@ -18,11 +19,13 @@ export function PageHeader({
   className?: string;
   /** 제목 아래 설명 */
   children?: ReactNode;
+  /** false면 제목을 h1이 아닌 글자로 (홈은 숨은 h1이 따로 있어 h1이 둘이었다 — 총점검 10/30) */
+  heading?: boolean;
 }) {
   return (
     <div className={`page-head ${className}`}>
       <span aria-hidden className="page-head-bar" />
-      <h1 className="page-title">{title}</h1>
+      {heading ? <h1 className="page-title">{title}</h1> : <p className="page-title">{title}</p>}
       {children}
     </div>
   );
