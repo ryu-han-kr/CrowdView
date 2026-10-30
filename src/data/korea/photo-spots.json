@@ -1,0 +1,1407 @@
+{
+ "everland": {
+  "nameEn": "Everland",
+  "spots": [
+   {
+    "label": "포시즌스 가든",
+    "why": "봄 튤립, 여름 장미, 가을 국화까지 계절 꽃 축제가 열리는 에버랜드 대표 정원 포토존",
+    "queries": [
+     "Everland Four Seasons Garden",
+     "Everland tulip festival",
+     "Everland rose garden"
+    ],
+    "ko": "에버랜드 포시즌스 가든"
+   },
+   {
+    "label": "판다월드",
+    "why": "자이언트 판다 가족을 볼 수 있는 인기 시설이고, 푸바오 덕분에 사진과 후기가 가장 많이 공유됨",
+    "queries": [
+     "Everland Panda World",
+     "Everland giant panda Fubao",
+     "Everland Yongin panda"
+    ],
+    "ko": "에버랜드 판다월드"
+   },
+   {
+    "label": "T 익스프레스",
+    "why": "국내 대표 목재 롤러코스터로, 에버랜드의 상징처럼 찍히는 어트랙션",
+    "queries": [
+     "Everland T Express roller coaster",
+     "T Express Everland wooden coaster"
+    ],
+    "ko": "에버랜드 티익스프레스"
+   },
+   {
+    "label": "사파리월드",
+    "why": "호랑이·사자·불곰을 버스 안에서 가까이 볼 수 있는 대표 동물 체험",
+    "queries": [
+     "Everland Safari World",
+     "Everland Lost Valley",
+     "Everland tiger safari"
+    ],
+    "ko": "에버랜드 사파리월드"
+   },
+   {
+    "label": "퍼레이드",
+    "why": "낮과 밤에 열리는 퍼레이드와 시즌별 공연이 대표 볼거리로 자주 공유됨",
+    "queries": [
+     "Everland parade",
+     "Everland festival night parade",
+     "Everland Halloween festival"
+    ],
+    "ko": "에버랜드 퍼레이드"
+   },
+   {
+    "label": "에버랜드 정문",
+    "why": "입장 직후 대부분의 방문객이 기념사진을 찍는 입구와 중앙 광장 포토존",
+    "queries": [
+     "Everland entrance",
+     "Everland main gate Yongin",
+     "Everland Global Fair"
+    ],
+    "ko": "에버랜드 입구"
+   }
+  ]
+ },
+ "korean-folk-village": {
+  "nameEn": "Korean Folk Village",
+  "spots": [
+   {
+    "label": "초가 마을",
+    "why": "초가집과 기와집이 늘어선 조선시대 마을 풍경이 민속촌의 대표 사진 배경이다.",
+    "queries": [
+     "Korean Folk Village thatched houses",
+     "Korean Folk Village Yongin",
+     "Korean Folk Village hanok village"
+    ]
+   },
+   {
+    "label": "저잣거리",
+    "why": "주막과 장터 가게가 모인 거리에서 조선 시대 분위기의 인물 사진과 먹거리 사진을 찍는다.",
+    "queries": [
+     "Korean Folk Village market street",
+     "Korean Folk Village Joseon marketplace",
+     "Korean Folk Village tavern"
+    ]
+   },
+   {
+    "label": "양반가 고택",
+    "why": "전국의 전통 가옥을 옮겨 지은 양반가 고택으로, 마당과 처마선이 한복 사진 배경으로 자주 쓰인다.",
+    "queries": [
+     "Korean Folk Village yangban house",
+     "Korean Folk Village traditional house courtyard",
+     "Korean Folk Village hanok"
+    ]
+   },
+   {
+    "label": "농악·줄타기",
+    "why": "농악, 줄타기, 마상무예 같은 전통 공연이 매일 열려 역동적인 사진 소재가 된다.",
+    "queries": [
+     "Korean Folk Village performance",
+     "Korean Folk Village tightrope walking jultagi",
+     "Korean Folk Village nongak farmers music"
+    ]
+   },
+   {
+    "label": "전통 혼례",
+    "why": "전통 혼례 공연과 혼례복 장면이 외국인과 내국인 모두에게 인기 있는 볼거리다.",
+    "queries": [
+     "Korean Folk Village traditional wedding",
+     "Korean Folk Village wedding ceremony",
+     "Korean traditional wedding Yongin folk village"
+    ]
+   },
+   {
+    "label": "계절 풍경",
+    "why": "봄 꽃, 가을 단풍, 겨울 눈 덮인 초가지붕이 전통 건물과 어우러져 계절별 사진 명소가 된다.",
+    "queries": [
+     "Korean Folk Village autumn",
+     "Korean Folk Village snow winter",
+     "Korean Folk Village cherry blossom"
+    ]
+   }
+  ]
+ },
+ "seoul-grand-park": {
+  "nameEn": "Seoul Grand Park",
+  "spots": [
+   {
+    "label": "벚꽃길",
+    "why": "봄마다 대공원 입구부터 호수 주변까지 벚꽃 터널이 이어져 대표 봄 포토 스폿으로 꼽힌다.",
+    "queries": [
+     "Seoul Grand Park cherry blossom",
+     "Seoul Grand Park spring",
+     "Gwacheon Seoul Grand Park cherry blossoms",
+     "서울대공원 벚꽃"
+    ]
+   },
+   {
+    "label": "스카이리프트",
+    "why": "동물원 입구와 동물원 안쪽을 오가는 리프트로, 위에서 호수와 숲을 내려다보며 찍는 사진이 많다.",
+    "queries": [
+     "Seoul Grand Park skylift",
+     "Seoul Zoo sky lift",
+     "Seoul Grand Park cable car",
+     "서울대공원 스카이리프트"
+    ]
+   },
+   {
+    "label": "코끼리열차",
+    "why": "입구에서 동물원까지 이어지는 상징적인 이동 수단이며, 가족 여행객이 많이 찍는다.",
+    "queries": [
+     "Seoul Grand Park elephant train",
+     "Seoul Zoo tram",
+     "Seoul Grand Park tram",
+     "서울대공원 코끼리열차"
+    ]
+   },
+   {
+    "label": "장미원",
+    "why": "초여름에 장미가 만개하면 꽃 사진을 찍으러 오는 사람이 많은 정원이다.",
+    "queries": [
+     "Seoul Grand Park rose garden",
+     "Seoul Grand Park flower garden",
+     "Seoul Grand Park roses",
+     "서울대공원 장미원"
+    ]
+   },
+   {
+    "label": "서울동물원",
+    "why": "코끼리, 기린, 홍학, 호랑이 등 다양한 동물을 볼 수 있는 대공원의 핵심 시설이다.",
+    "queries": [
+     "Seoul Zoo Seoul Grand Park",
+     "Seoul Zoo giraffe",
+     "Seoul Zoo flamingo",
+     "서울동물원 기린"
+    ]
+   },
+   {
+    "label": "호수 둘레길",
+    "why": "대공원 호수를 따라 걷는 산책로로, 물가 풍경과 산책 사진이 많다.",
+    "queries": [
+     "Seoul Grand Park lake",
+     "Seoul Grand Park walking trail",
+     "Seoul Grand Park pond",
+     "서울대공원 호수 산책로"
+    ]
+   }
+  ]
+ },
+ "lotteworld-aquarium": {
+  "nameEn": "Lotte World Aquarium",
+  "spots": [
+   {
+    "label": "해저터널",
+    "why": "머리 위로 상어와 가오리가 지나가는 터널형 수조로, 아쿠아리움에서 가장 많이 찍는 대표 포토존",
+    "queries": [
+     "Lotte World Aquarium tunnel",
+     "Lotte World Aquarium shark",
+     "Lotte World Aquarium Seoul interior"
+    ],
+    "queriesKo": "롯데월드 아쿠아리움 터널"
+   },
+   {
+    "label": "벨루가",
+    "why": "하얀 벨루가(흰고래)가 있는 인기 전시로, 유리 너머 근접 촬영 사진이 많이 공유됨",
+    "queries": [
+     "Lotte World Aquarium beluga",
+     "Lotte World Aquarium Seoul whale",
+     "Beluga Seoul aquarium"
+    ],
+    "queriesKo": "롯데월드 아쿠아리움 벨루가"
+   },
+   {
+    "label": "대형 수조",
+    "why": "롯데월드몰 지하의 대형 메인 수조에서 다양한 어류와 상어 떼를 함께 볼 수 있음",
+    "queries": [
+     "Lotte World Aquarium main tank",
+     "Lotte World Aquarium fish tank",
+     "Lotte World Mall aquarium"
+    ],
+    "queriesKo": "롯데월드 아쿠아리움 대형 수조"
+   },
+   {
+    "label": "수달",
+    "why": "사랑스러운 움직임 덕에 가족 단위 방문객이 즐겨 찍는 인기 동물",
+    "queries": [
+     "Lotte World Aquarium otter",
+     "Seoul aquarium otter",
+     "Lotte World Aquarium animals"
+    ],
+    "queriesKo": "롯데월드 아쿠아리움 수달"
+   },
+   {
+    "label": "펭귄",
+    "why": "펭귄 전시는 아이들과 함께 오는 방문객이 자주 찾는 포토 스폿",
+    "queries": [
+     "Lotte World Aquarium penguin",
+     "Seoul aquarium penguins",
+     "Lotte World Aquarium Seoul penguin exhibit"
+    ],
+    "queriesKo": "롯데월드 아쿠아리움 펭귄"
+   },
+   {
+    "label": "해파리",
+    "why": "조명을 받아 은은하게 빛나는 해파리 수조는 사진 분위기가 좋아 인기",
+    "queries": [
+     "Lotte World Aquarium jellyfish",
+     "Seoul aquarium jellyfish",
+     "Lotte World Aquarium Seoul jellyfish tank"
+    ],
+    "queriesKo": "롯데월드 아쿠아리움 해파리"
+   }
+  ]
+ },
+ "aquaplanet-ilsan": {
+  "nameEn": "Aqua Planet Ilsan",
+  "spots": [
+   {
+    "label": "대형 수족관",
+    "why": "웹 검색이 되지 않아 후기로 확인하지 못했습니다. 아쿠아플라넷 일산의 메인 전시인 대형 수조는 방문객이 가장 많이 찍는 곳으로 알려져 있습니다.",
+    "queries": [
+     "Aqua Planet Ilsan aquarium",
+     "Aqua Planet Ilsan main tank",
+     "Aqua Planet Ilsan fish"
+    ]
+   },
+   {
+    "label": "해저터널",
+    "why": "웹 검색이 되지 않아 후기로 확인하지 못했습니다. 수조 사이를 지나가는 터널형 관람 구간으로 알려져 있습니다.",
+    "queries": [
+     "Aqua Planet Ilsan tunnel",
+     "Aqua Planet Ilsan underwater tunnel",
+     "Aqua Planet Ilsan shark"
+    ]
+   },
+   {
+    "label": "펭귄 전시",
+    "why": "웹 검색이 되지 않아 후기로 확인하지 못했습니다. 펭귄은 가족 방문객이 즐겨 찍는 인기 동물로 알려져 있습니다.",
+    "queries": [
+     "Aqua Planet Ilsan penguin",
+     "Aqua Planet Ilsan penguins exhibit"
+    ]
+   },
+   {
+    "label": "수달 전시",
+    "why": "웹 검색이 되지 않아 후기로 확인하지 못했습니다. 수달은 인기 동물로 알려져 있습니다.",
+    "queries": [
+     "Aqua Planet Ilsan otter",
+     "Aqua Planet Ilsan otters exhibit"
+    ]
+   },
+   {
+    "label": "외관·입구",
+    "why": "웹 검색이 되지 않아 후기로 확인하지 못했습니다. 한류월드 안에 있는 건물로, 방문 인증샷을 남기는 곳으로 알려져 있습니다.",
+    "queries": [
+     "Aqua Planet Ilsan building",
+     "Aqua Planet Ilsan entrance",
+     "Aqua Planet Ilsan exterior"
+    ]
+   }
+  ]
+ },
+ "aquaplanet-gwanggyo": {
+  "nameEn": "Aqua Planet Gwanggyo",
+  "spots": [
+   {
+    "label": "안개 입구",
+    "why": "안개가 깔린 신비로운 입구와 블랙팁샤크가 헤엄치는 벽면 대형 수조가 이곳의 대표 포토 스팟으로 꼽힌다.",
+    "queries": [
+     "Aqua Planet Gwanggyo entrance",
+     "Aqua Planet Gwanggyo blacktip shark tank",
+     "Aqua Planet Gwanggyo Suwon aquarium"
+    ]
+   },
+   {
+    "label": "메인 수조",
+    "why": "샌드타이거샤크와 가오리가 머리 위로 지나가는 대형 터널형 메인 수조는 이곳에서 가장 많이 찍는 장면이다.",
+    "queries": [
+     "Aqua Planet Gwanggyo main tank",
+     "Aqua Planet Gwanggyo shark tunnel",
+     "Aqua Planet Gwanggyo ray"
+    ]
+   },
+   {
+    "label": "펭귄빌리지",
+    "why": "펭귄이 광교점의 마스코트이고, 지하 2층 펭귄빌리지에서는 생태설명회도 열린다.",
+    "queries": [
+     "Aqua Planet Gwanggyo penguin",
+     "Aqua Planet Gwanggyo Penguin Village"
+    ]
+   },
+   {
+    "label": "수달",
+    "why": "작은발톱수달은 대표 동물로 꼽히고, 후기에서 귀엽다는 말이 자주 나오며 생태설명회도 있다.",
+    "queries": [
+     "Aqua Planet Gwanggyo otter",
+     "Asian small-clawed otter Aqua Planet Gwanggyo"
+    ]
+   },
+   {
+    "label": "젤리피시랩",
+    "why": "해파리 성장 과정을 볼 수 있는 공개 연구 시설로, 은은한 조명 속 해파리 수조가 사진 소재로 인기다.",
+    "queries": [
+     "Aqua Planet Gwanggyo jellyfish",
+     "Aqua Planet Gwanggyo Jellyfish Lab"
+    ]
+   },
+   {
+    "label": "머메이드쇼",
+    "why": "레인보우 리프에서 하루 한 번 이상 열리는 머메이드쇼와 가오리와 함께하는 수중발레쇼는 대표 공연이다.",
+    "queries": [
+     "Aqua Planet Gwanggyo mermaid show",
+     "Aqua Planet Gwanggyo underwater ballet"
+    ]
+   }
+  ]
+ },
+ "aquaplanet-jeju": {
+  "nameEn": "Aqua Planet Jeju",
+  "spots": [
+   {
+    "label": "제주의 바다",
+    "why": "약 11m 높이의 국내 최대급 메인 대수조로, 상어·가오리가 도는 모습이 압도적이라 방문객 대부분이 이곳에서 사진을 찍는다.",
+    "queries": [
+     "Aqua Planet Jeju main tank",
+     "Aquaplanet Jeju Sea of Jeju aquarium",
+     "Jeju aquarium giant tank"
+    ],
+    "koQuery": "아쿠아플라넷 제주 메인 수조"
+   },
+   {
+    "label": "오션아레나",
+    "why": "바다사자 치코와 큰돌고래 릴리·놀부가 나오는 대형 해양 공연장으로, 아쿠아플라넷 제주의 대표 쇼로 꼽힌다.",
+    "queries": [
+     "Aqua Planet Jeju Ocean Arena",
+     "Aquaplanet Jeju dolphin show",
+     "Aqua Planet Jeju sea lion performance"
+    ],
+    "koQuery": "아쿠아플라넷 제주 오션아레나 공연"
+   },
+   {
+    "label": "해녀 공연",
+    "why": "제주 해녀의 물질을 수조 안에서 보여 주는 공연이다. 후기에서 가장 좋았다고 꼽는 사람이 있을 만큼 제주다운 볼거리다.",
+    "queries": [
+     "Aqua Planet Jeju haenyeo show",
+     "Jeju haenyeo aquarium performance",
+     "Aquaplanet Jeju haenyeo"
+    ],
+    "koQuery": "아쿠아플라넷 제주 해녀 공연"
+   },
+   {
+    "label": "수중터널",
+    "why": "1층의 수중터널은 머리 위로 물고기가 지나가는 구간이라 인증샷 명소로 자주 소개된다.",
+    "queries": [
+     "Aqua Planet Jeju underwater tunnel",
+     "Aquaplanet Jeju tunnel",
+     "Jeju aquarium tunnel"
+    ],
+    "koQuery": "아쿠아플라넷 제주 수중터널"
+   },
+   {
+    "label": "가오리 식사",
+    "why": "메인 수조에서 열리는 식사시간에는 큰 가오리와 물고기가 먹이를 먹으러 몰려든다. 아이들에게 특히 인기가 많은 볼거리다.",
+    "queries": [
+     "Aqua Planet Jeju stingray feeding",
+     "Aquaplanet Jeju manta ray",
+     "Aqua Planet Jeju rays main tank"
+    ],
+    "koQuery": "아쿠아플라넷 제주 가오리 먹이주기"
+   },
+   {
+    "label": "펭귄",
+    "why": "펭귄 생태설명회가 열리고, 펭귄 같은 인기 동물을 가까이서 볼 수 있어 가족 방문객이 많이 찾는다.",
+    "queries": [
+     "Aqua Planet Jeju penguin",
+     "Aquaplanet Jeju penguins",
+     "Aqua Planet Jeju exterior Seopjikoji"
+    ],
+    "koQuery": "아쿠아플라넷 제주 펭귄"
+   }
+  ]
+ },
+ "aquaplanet-yeosu": {
+  "nameEn": "Aqua Planet Yeosu",
+  "spots": [
+   {
+    "label": "벨루가 수조",
+    "why": "흰고래 벨루가가 이곳의 마스코트다. 2~3층이 이어진 수조에서 헤엄치고 버블링을 만든다.",
+    "queries": [
+     "Aqua Planet Yeosu beluga",
+     "Yeosu aquarium beluga whale",
+     "Aquaplanet Yeosu Expo aquarium"
+    ]
+   },
+   {
+    "label": "오션라이프 메인수조",
+    "why": "입구 쪽 대형 수조에서 상어와 가오리가 조명을 받으며 헤엄치는 모습을 찍는다.",
+    "queries": [
+     "Aqua Planet Yeosu main tank",
+     "Aqua Planet Yeosu ocean life shark ray",
+     "Yeosu aquarium large tank"
+    ]
+   },
+   {
+    "label": "수중터널",
+    "why": "터널형 수조 안에서 물고기가 머리 위로 지나가, 바닷속을 걷는 듯한 사진이 나온다.",
+    "queries": [
+     "Aqua Planet Yeosu tunnel",
+     "Yeosu aquarium underwater tunnel",
+     "Aquaplanet Yeosu shark tunnel"
+    ]
+   },
+   {
+    "label": "아쿠아돔",
+    "why": "사방이 물고기로 둘러싸인 360도 돔 수조다. 바닷속에 있는 듯한 사진을 찍을 수 있어 포토 스폿으로 인기가 많다.",
+    "queries": [
+     "Aqua Planet Yeosu aqua dome",
+     "Yeosu aquarium dome tank",
+     "Aquaplanet Yeosu 360 dome"
+    ]
+   },
+   {
+    "label": "인어공주 공연",
+    "why": "메인 수조에서 매일 수중 인어 공연이 열린다. 월요일에는 마술쇼로 바뀐다.",
+    "queries": [
+     "Aqua Planet Yeosu mermaid show",
+     "Yeosu aquarium diver performance",
+     "Aquaplanet Yeosu aqua show"
+    ]
+   },
+   {
+    "label": "펭귄·물범",
+    "why": "마린라이프 구역에서 펭귄, 바이칼물범, 바다사자, 수달을 가까이서 볼 수 있다.",
+    "queries": [
+     "Aqua Planet Yeosu penguin",
+     "Aqua Planet Yeosu Baikal seal",
+     "Yeosu aquarium sea lion otter"
+    ]
+   }
+  ]
+ },
+ "sealife-busan": {
+  "nameEn": "SEA LIFE Busan Aquarium",
+  "spots": [
+   {
+    "label": "해저터널",
+    "why": "머리 위로 상어와 가오리가 지나가는 대형 수중터널이라 대표 인증샷 장소로 꼽힌다.",
+    "queries": [
+     "SEA LIFE Busan Aquarium tunnel",
+     "Busan Aquarium ocean tunnel",
+     "Haeundae aquarium underwater tunnel",
+     "부산아쿠아리움 해저터널"
+    ]
+   },
+   {
+    "label": "대형 수조",
+    "why": "통유리 앞에서 수천 마리 물고기 떼를 배경으로 사진을 찍는 곳이다.",
+    "queries": [
+     "SEA LIFE Busan Aquarium main tank",
+     "Busan Aquarium fish tank",
+     "Haeundae aquarium sharks",
+     "부산아쿠아리움 대형 수조"
+    ]
+   },
+   {
+    "label": "인어공주쇼",
+    "why": "인어 공연이 끝난 뒤 짧은 포토타임이 있어 인어와 사진을 찍으려는 사람이 많다. 이 내용은 검색 결과 한 곳에서 확인했다.",
+    "queries": [
+     "SEA LIFE Busan Aquarium mermaid show",
+     "Busan Aquarium mermaid performance",
+     "부산아쿠아리움 인어공주 공연"
+    ]
+   },
+   {
+    "label": "펭귄 전시",
+    "why": "펭귄 구역은 가족 여행객이 자주 찾는 인기 전시다. 이 항목은 검색으로 확인하지 못했고 사전 지식에 근거한다.",
+    "queries": [
+     "SEA LIFE Busan Aquarium penguins",
+     "Busan Aquarium penguin",
+     "Haeundae aquarium penguin",
+     "부산아쿠아리움 펭귄"
+    ]
+   },
+   {
+    "label": "해운대 외관",
+    "why": "해운대해수욕장 바로 앞에 있어 건물 외관과 해변을 함께 찍는 사진이 흔하다. 이 항목도 사전 지식에 근거한다.",
+    "queries": [
+     "SEA LIFE Busan Aquarium exterior",
+     "Busan Aquarium Haeundae Beach",
+     "Haeundae Beach aquarium building",
+     "부산아쿠아리움 해운대 외관"
+    ]
+   }
+  ]
+ },
+ "gyeongbokgung": {
+  "nameEn": "Gyeongbokgung Palace",
+  "spots": [
+   {
+    "label": "광화문",
+    "why": "경복궁의 정문이자 수문장 교대식과 광화문광장 배경으로 가장 많이 찍는 첫 포토 스폿",
+    "queries": [
+     "Gyeongbokgung Gwanghwamun gate",
+     "Gwanghwamun Seoul royal guard ceremony",
+     "Gwanghwamun Gate Seoul"
+    ]
+   },
+   {
+    "label": "근정전",
+    "why": "왕의 즉위식과 조회가 열리던 정전으로, 품계석이 늘어선 넓은 마당과 2층 월대가 대표 구도",
+    "queries": [
+     "Gyeongbokgung Geunjeongjeon",
+     "Geunjeongjeong Hall throne hall Seoul",
+     "Gyeongbokgung main hall courtyard"
+    ]
+   },
+   {
+    "label": "경회루",
+    "why": "연못 위에 서 있는 누각으로, 물에 비친 반영 사진과 야간 조명 사진으로 유명",
+    "queries": [
+     "Gyeongbokgung Gyeonghoeru pavilion",
+     "Gyeonghoeru pond reflection",
+     "Gyeonghoeru Pavilion Seoul"
+    ]
+   },
+   {
+    "label": "향원정",
+    "why": "연못 가운데 섬에 있는 육각 정자로, 취향교와 어우러진 사계절 풍경 사진 명소",
+    "queries": [
+     "Gyeongbokgung Hyangwonjeong pavilion",
+     "Hyangwonjeong pond Seoul",
+     "Hyangwonjeong Chwihyanggyo bridge"
+    ]
+   },
+   {
+    "label": "자경전 꽃담",
+    "why": "자경전 담장의 꽃·나비·길상 무늬 장식이 아름다워 한복 인증샷과 디테일 사진으로 인기",
+    "queries": [
+     "Gyeongbokgung Jagyeongjeon flower wall",
+     "Jagyeongjeon Seoul decorative wall",
+     "Gyeongbokgung Jagyeongjeon chimney"
+    ]
+   },
+   {
+    "label": "경복궁 야간개장",
+    "why": "봄·가을 등 기간 한정 야간개장 때 조명 켜진 경회루와 향원정 야경을 보러 많은 사람이 찾음",
+    "queries": [
+     "Gyeongbokgung night Gyeonghoeru illuminated",
+     "Gyeongbokgung night opening",
+     "Gyeongbokgung Palace at night"
+    ]
+   }
+  ]
+ },
+ "namsan": {
+  "nameEn": "N Seoul Tower",
+  "spots": [
+   {
+    "label": "사랑의 자물쇠",
+    "why": "전망 테라스 난간과 하트 나무 조형물에 수많은 자물쇠가 달려 있어 남산타워의 상징적인 인증샷 장소로 꼽힌다.",
+    "queries": [
+     "N Seoul Tower love locks",
+     "Namsan Tower padlocks fence",
+     "Namsan Seoul Tower love lock heart tree",
+     "남산타워 사랑의 자물쇠"
+    ]
+   },
+   {
+    "label": "타워 전경",
+    "why": "마천루 사이로 솟은 서울의 랜드마크로, 정상 광장이나 산책로에서 타워 전체를 한 프레임에 담는 사진이 가장 흔하다.",
+    "queries": [
+     "N Seoul Tower",
+     "Namsan Seoul Tower exterior",
+     "Seoul Tower Namsan Mountain",
+     "남산서울타워"
+    ]
+   },
+   {
+    "label": "서울 야경",
+    "why": "서울 도심이 내려다보이는 야경 명소로 유명하고, 밤에 조명이 켜진 타워도 대표적인 야경 사진 소재다.",
+    "queries": [
+     "N Seoul Tower night view",
+     "Seoul skyline night from Namsan Tower",
+     "Namsan Tower illuminated at night",
+     "남산타워 야경"
+    ]
+   },
+   {
+    "label": "전망대",
+    "why": "타워 전망대에서 360도로 서울 시내를 내려다보는 파노라마 뷰를 찍는 사람이 많다.",
+    "queries": [
+     "N Seoul Tower observatory",
+     "Seoul Tower observation deck view",
+     "Seoul panorama from Namsan Tower",
+     "N서울타워 전망대"
+    ]
+   },
+   {
+    "label": "남산 벚꽃길",
+    "why": "봄에는 남산 순환로와 타워로 오르는 길의 벚꽃이 타워와 함께 찍는 계절 포토 스폿이다.",
+    "queries": [
+     "Namsan cherry blossoms Seoul Tower",
+     "Namsan Park spring cherry blossom",
+     "N Seoul Tower spring",
+     "남산 벚꽃"
+    ]
+   },
+   {
+    "label": "남산 케이블카",
+    "why": "타워 아래 정상으로 올라가는 케이블카로, 타워와 함께 찍는 대표 이동수단이자 포토 소재다.",
+    "queries": [
+     "Namsan Cable Car Seoul",
+     "Namsan cable car N Seoul Tower",
+     "Namsan Seoul cable car gondola",
+     "남산 케이블카"
+    ]
+   }
+  ]
+ },
+ "seongsu": {
+  "nameEn": "Seongsu-dong Cafe Street",
+  "spots": [
+   {
+    "label": "대림창고",
+    "why": "옛 정미소와 물류창고를 고친 붉은 벽돌 갤러리 카페로, 성수 카페거리의 터줏대감이자 대표 랜드마크",
+    "queries": [
+     "Daelim Changgo Seongsu",
+     "Daelim Warehouse Seongsu-dong cafe",
+     "Seongsu-dong Daelim Changgo gallery"
+    ]
+   },
+   {
+    "label": "어니언 성수",
+    "why": "1970년대 금속 부품 공장을 개조한 베이커리 카페로, 철골 구조와 옥상 테라스가 유명",
+    "queries": [
+     "Onion Seongsu cafe",
+     "Cafe Onion Seongsu-dong Seoul",
+     "Seongsu-dong industrial cafe"
+    ]
+   },
+   {
+    "label": "디올 성수",
+    "why": "메탈 메쉬 외관의 랜드마크 콘셉트 스토어로, 외관 앞과 시즌 장식 포토존이 인기",
+    "queries": [
+     "Dior Seongsu",
+     "Christian Dior Seongsu-dong Seoul",
+     "Dior Seongsu facade"
+    ]
+   },
+   {
+    "label": "성수연방",
+    "why": "화학공장을 개조한 ㄷ자 복합문화공간으로, 중앙의 투명 파빌리온이 핵심 포토존",
+    "queries": [
+     "Seongsu Yeonbang",
+     "Seongsu Yeonbang Seoul",
+     "Seongsu-dong Yeonbang cultural complex"
+    ]
+   },
+   {
+    "label": "연무장길 팝업",
+    "why": "브랜드 팝업스토어와 편집숍이 모인 성수 트렌드 거리로, 사진 찍으러 오는 방문객이 많음",
+    "queries": [
+     "Seongsu-dong Yeonmujang-gil",
+     "Seongsu-dong pop-up store street",
+     "Seongsu-dong cafe street Seoul"
+    ]
+   }
+  ]
+ },
+ "hongdae": {
+  "nameEn": "Hongdae Walking Street",
+  "spots": [
+   {
+    "label": "버스킹 공연",
+    "why": "걷고싶은거리에서 가장 유명한 풍경으로, 밴드·댄스 등 거리 공연이 거의 매일 열려 여행자들이 가장 많이 촬영한다.",
+    "queries": [
+     "Hongdae busking",
+     "Hongdae Walking Street street performance",
+     "Hongdae street performer Seoul"
+    ]
+   },
+   {
+    "label": "홍대 놀이터",
+    "why": "어울마당로 중심의 공원으로, 주말 프리마켓과 공연이 열리고 홍대 문화를 대표하는 만남의 장소다.",
+    "queries": [
+     "Hongdae Playground Seoul",
+     "Hongdae Free Market",
+     "Hongik University Playground Hongdae"
+    ]
+   },
+   {
+    "label": "홍대 네온거리",
+    "why": "거리를 가득 채운 간판과 조명이 밤에 화려해져, 클럽·술집 중심의 홍대 밤거리 사진으로 많이 공유된다.",
+    "queries": [
+     "Hongdae night street neon",
+     "Hongdae Seoul night",
+     "Hongdae nightlife street Mapo"
+    ]
+   },
+   {
+    "label": "홍익대 정문",
+    "why": "홍대 상권의 이름이 된 미술대학 캠퍼스로, 정문 앞 거리와 조형물이 인증샷 포인트다.",
+    "queries": [
+     "Hongik University main gate",
+     "Hongik University Seoul campus",
+     "Hongik University Hongdae entrance"
+    ]
+   },
+   {
+    "label": "벽화·스트리트아트",
+    "why": "홍대 골목과 담벼락의 그래피티, 벽화가 젊은 예술 거리의 분위기를 보여 준다.",
+    "queries": [
+     "Hongdae graffiti mural",
+     "Hongdae street art Seoul",
+     "Hongdae Walking Street mural"
+    ]
+   },
+   {
+    "label": "홍대입구역 거리",
+    "why": "홍대입구역 9번 출구에서 걷고싶은거리로 이어지는 입구 구간으로, 인파와 상점가 풍경이 대표 사진이다.",
+    "queries": [
+     "Hongik University Station Seoul",
+     "Hongdae shopping street Seoul",
+     "Hongdae Walking Street crowd"
+    ]
+   }
+  ]
+ },
+ "haeundae": {
+  "nameEn": "Haeundae Beach",
+  "spots": [
+   {
+    "label": "여름 파라솔",
+    "why": "여름이면 백사장을 빼곡히 채우는 파라솔과 인파가 해운대의 대표 사진 장면으로 꼽힘(캐논코리아 출사지 소개)",
+    "queries": [
+     "Haeundae Beach umbrellas",
+     "Haeundae Beach summer crowd",
+     "Haeundae Beach aerial"
+    ],
+    "ko": "해운대 해수욕장 파라솔"
+   },
+   {
+    "label": "해변 스카이라인",
+    "why": "드넓은 백사장 뒤로 마린시티·엘시티 등 초고층 빌딩이 늘어선 모습이 가장 흔한 구도(재경일보·캐논코리아)",
+    "queries": [
+     "Haeundae Beach skyline",
+     "Haeundae Marine City skyscrapers",
+     "Haeundae LCT Landmark Tower"
+    ],
+    "ko": "해운대 해수욕장 마천루"
+   },
+   {
+    "label": "모래축제",
+    "why": "매년 5월 백사장에 대형 모래조각을 전시하는 전국 최대 규모 모래조각 축제(해운대구청·부산관광공사)",
+    "queries": [
+     "Haeundae Sand Festival",
+     "Haeundae Beach sand sculpture",
+     "Haeundae sand art festival"
+    ],
+    "ko": "해운대 모래축제"
+   },
+   {
+    "label": "북극곰축제",
+    "why": "매년 1월 해운대해수욕장에서 열리는 겨울 바다 입수 행사로, 수천 명이 한꺼번에 바다에 뛰어드는 장면이 유명(부산일보)",
+    "queries": [
+     "Haeundae Polar Bear Swimming Festival",
+     "Haeundae Beach winter swimming festival",
+     "Haeundae Polar Bear Festival"
+    ],
+    "ko": "해운대 북극곰축제"
+   },
+   {
+    "label": "동백섬·누리마루",
+    "why": "해수욕장 서쪽 끝 해안 산책로와 APEC 정상회의장 누리마루가 있는 해운대 필수 코스(재경일보 당일 코스)",
+    "queries": [
+     "Dongbaekseom Haeundae",
+     "Nurimaru APEC House Busan",
+     "Dongbaek Island Busan"
+    ],
+    "ko": "동백섬 누리마루 APEC하우스"
+   },
+   {
+    "label": "해변열차",
+    "why": "옛 동해남부선 폐선 부지를 따라 미포에서 청사포·송정까지 바다를 끼고 달리는 해변열차와 스카이캡슐이 인기(트립닷컴·나무위키)",
+    "queries": [
+     "Haeundae Blue Line Park",
+     "Haeundae Beach Train Busan",
+     "Haeundae Sky Capsule Cheongsapo"
+    ],
+    "ko": "해운대 블루라인파크 해변열차"
+   }
+  ]
+ },
+ "gyeongjuworld": {
+  "nameEn": "Gyeongju World",
+  "spots": [
+   {
+    "label": "피닉스",
+    "why": "경주월드의 대표 롤러코스터로, 정상에서 수직으로 떨어지는 구간이 유명하다",
+    "queries": [
+     "Gyeongju World Phoenix roller coaster",
+     "Gyeongju World Phoenix",
+     "Gyeongju World roller coaster"
+    ],
+    "ko": "경주월드 피닉스"
+   },
+   {
+    "label": "드라이브",
+    "why": "경주월드의 대표 어트랙션으로 꼽히는 스릴 라이드로, 후기에 자주 등장한다",
+    "queries": [
+     "Gyeongju World Drive ride",
+     "Gyeongju World thrill ride",
+     "Gyeongju World attraction"
+    ],
+    "ko": "경주월드 드라이브"
+   },
+   {
+    "label": "파이어볼",
+    "why": "경주월드의 대표 스릴 라이드로 알려져 있고, 놀이공원 후기에 자주 언급된다",
+    "queries": [
+     "Gyeongju World Fireball",
+     "Gyeongju World Fireball ride",
+     "Gyeongju World amusement ride"
+    ],
+    "ko": "경주월드 파이어볼"
+   },
+   {
+    "label": "벚꽃 시즌",
+    "why": "보문관광단지는 봄 벚꽃 명소로 유명하고, 경주월드 주변에서도 벚꽃 나들이 사진이 많이 올라온다",
+    "queries": [
+     "Gyeongju World cherry blossom",
+     "Bomun Lake cherry blossom Gyeongju",
+     "Gyeongju World spring"
+    ],
+    "ko": "경주월드 벚꽃"
+   },
+   {
+    "label": "워터파크",
+    "why": "여름에 놀이공원과 함께 즐기는 워터파크로, 물놀이 사진 스폿으로 인기 있다",
+    "queries": [
+     "Gyeongju World water park",
+     "Gyeongju World Aqualoon",
+     "Gyeongju World summer pool"
+    ],
+    "ko": "경주월드 워터파크"
+   }
+  ]
+ },
+ "eworld": {
+  "nameEn": "E-World Daegu",
+  "spots": [
+   {
+    "label": "83타워 전망대",
+    "why": "77층 360도 전망대에서 대구 시내와 두류공원, 이월드 전경을 한눈에 내려다볼 수 있는 대구의 대표 랜드마크",
+    "queries": [
+     "83 Tower Daegu",
+     "E-World Daegu 83 Tower",
+     "Daegu Tower observatory"
+    ],
+    "koQuery": "대구 83타워"
+   },
+   {
+    "label": "이월드 야경",
+    "why": "해가 진 뒤 도심 불빛과 이월드 조명이 어우러져, 83타워와 함께 대구 야경 명소로 꼽힌다",
+    "queries": [
+     "E-World Daegu night view",
+     "83 Tower Daegu night",
+     "Daegu E-World night lights"
+    ],
+    "koQuery": "이월드 야경"
+   },
+   {
+    "label": "벚꽃길",
+    "why": "봄이면 이월드 입구에서 83타워로 이어지는 길이 벚꽃 명소가 된다",
+    "queries": [
+     "E-World Daegu cherry blossom",
+     "83 Tower Daegu cherry blossoms",
+     "Duryu Park Daegu cherry blossom"
+    ],
+    "koQuery": "이월드 벚꽃"
+   },
+   {
+    "label": "빨간 2층버스",
+    "why": "83타워 야외에 있는 빨간 2층버스 포토존으로, 저녁 조명이 켜지면 감성 사진 스폿이 된다",
+    "queries": [
+     "E-World Daegu red double-decker bus",
+     "83 Tower Daegu red bus"
+    ],
+    "koQuery": "이월드 빨간 2층버스"
+   },
+   {
+    "label": "스카이웨이",
+    "why": "스카이웨이와 케이블카로 이월드와 83타워를 오가며 도심을 내려다보는 풍경을 찍는다",
+    "queries": [
+     "E-World Daegu cable car",
+     "E-World Daegu Sky Way",
+     "Daegu E-World amusement park"
+    ],
+    "koQuery": "이월드 케이블카"
+   }
+  ]
+ },
+ "lotteworld-busan": {
+  "nameEn": "Lotte World Adventure Busan",
+  "spots": [
+   {
+    "label": "로리 캐슬",
+    "why": "파크의 상징인 성이며, 꽃으로 꾸민 로리와 성 앞은 줄 서서 찍는 대표 포토존이다.",
+    "queries": [
+     "Lotte World Adventure Busan Lorry Castle",
+     "Lotte World Adventure Busan castle",
+     "Lotte World Busan Royal Garden"
+    ],
+    "ko": "롯데월드 어드벤처 부산 로리캐슬"
+   },
+   {
+    "label": "토킹트리",
+    "why": "눈과 입이 움직이며 말하는 큰 나무로, 사람들이 모이는 곳에 있는 인기 포토 스폿이다.",
+    "queries": [
+     "Lotte World Adventure Busan Talking Tree",
+     "Lotte World Busan Tinker Falls",
+     "Lotte World Adventure Busan Magic Forest"
+    ],
+    "ko": "롯데월드 부산 토킹트리"
+   },
+   {
+    "label": "자이언트 디거",
+    "why": "최고 시속 105km로 달리는 발사형 롤러코스터로, 부산 롯데월드의 대표 놀이기구다.",
+    "queries": [
+     "Giant Digger Lotte World Adventure Busan",
+     "Lotte World Adventure Busan roller coaster",
+     "Giant Digger roller coaster Busan"
+    ],
+    "ko": "롯데월드 부산 자이언트 디거"
+   },
+   {
+    "label": "자이언트 스윙",
+    "why": "최대 120도까지 오르는 스윙 라이드로, 자이언트 삼형제 중 하나이며 후기에서 자주 추천된다.",
+    "queries": [
+     "Lotte World Adventure Busan Giant Swing",
+     "Lotte World Adventure Busan Giant Drop",
+     "Lotte World Adventure Busan rides"
+    ],
+    "ko": "롯데월드 부산 자이언트 스윙"
+   },
+   {
+    "label": "매직포레스트 퍼레이드",
+    "why": "로티스 매직 포레스트 퍼레이드는 상설 공연이며, 플로트카와 조명이 분위기를 살린다는 후기가 많다.",
+    "queries": [
+     "Lotte World Adventure Busan parade",
+     "Lotte World Adventure Busan Lotty's Magic Forest Parade",
+     "Lotte World Busan night parade"
+    ],
+    "ko": "롯데월드 어드벤처 부산 퍼레이드"
+   },
+   {
+    "label": "캐슬 불꽃쇼",
+    "why": "로리캐슬에 3D 맵핑쇼 '글로리 라이츠'와 불꽃놀이를 함께 선보이는 이곳의 대표 야간 콘텐츠다.",
+    "queries": [
+     "Lotte World Adventure Busan fireworks",
+     "Lotte World Adventure Busan Lorry Castle night",
+     "Lotte World Busan Glorry Lights"
+    ],
+    "ko": "롯데월드 부산 불꽃놀이 로리캐슬 야경"
+   }
+  ]
+ },
+ "gwangju-familyland": {
+  "nameEn": "Gwangju Family Land",
+  "spots": [
+   {
+    "label": "빅아이 관람차",
+    "why": "국내 최대 높이를 내세운 대관람차로, 정상에서 놀이공원 전경이 보이고 밤에는 조명이 켜져 관람차 야경 후기도 많다.",
+    "queries": [
+     "Gwangju Family Land Ferris wheel",
+     "Gwangju Family Land Big Eye",
+     "Uchi Park Gwangju Ferris wheel",
+     "광주패밀리랜드 대관람차"
+    ]
+   },
+   {
+    "label": "포토존",
+    "why": "샤이닝웨이, 키싱스완, 슈팅하트 같은 포토존이 사진 맛집으로 소개된다.",
+    "queries": [
+     "Gwangju Family Land photo zone",
+     "Gwangju Family Land entrance",
+     "광주패밀리랜드 포토존"
+    ]
+   },
+   {
+    "label": "눈썰매장",
+    "why": "호남 최장 슬로프를 내세운 사계절 썰매장이다. 겨울에는 눈썰매장, 그 밖의 계절에는 물썰매장으로 운영한다.",
+    "queries": [
+     "Gwangju Family Land snow sledding",
+     "Gwangju Family Land sledding slope",
+     "광주패밀리랜드 눈썰매장"
+    ]
+   },
+   {
+    "label": "동물원",
+    "why": "놀이공원 옆 동물원에서 먹이 체험을 할 수 있어 가족 방문객이 많이 찾는다.",
+    "queries": [
+     "Gwangju Family Land zoo",
+     "Uchi Park Gwangju zoo",
+     "광주패밀리랜드 동물원"
+    ]
+   },
+   {
+    "label": "벚꽃 나들이길",
+    "why": "매표소 오른쪽에서 대관람차까지 이어지는 동물원 나들이길이 봄 벚꽃 명소로 알려져 있다.",
+    "queries": [
+     "Uchi Park Gwangju cherry blossom",
+     "Gwangju Family Land cherry blossom",
+     "우치공원 벚꽃"
+    ]
+   },
+   {
+    "label": "레트로 놀이기구",
+    "why": "청룡열차, 바이킹, 스타워즈 같은 오래된 놀이기구가 레트로 감성 놀이공원의 분위기를 만든다.",
+    "queries": [
+     "Gwangju Family Land roller coaster",
+     "Gwangju Family Land rides",
+     "Gwangju Family Land Viking ship",
+     "광주패밀리랜드 놀이기구"
+    ]
+   }
+  ]
+ },
+ "caribbean-bay": {
+  "nameEn": "Caribbean Bay",
+  "spots": [
+   {
+    "label": "웨이브풀",
+    "why": "대형 인공 파도가 밀려오는 캐리비안 베이의 대표 시설로, 방문객이 가장 많이 사진을 찍는 곳입니다.",
+    "queries": [
+     "Caribbean Bay wave pool",
+     "Caribbean Bay Everland water park",
+     "Everland Caribbean Bay Yongin"
+    ]
+   },
+   {
+    "label": "아쿠아루프",
+    "why": "수직에 가까운 낙하 뒤 360도 루프를 도는 슬라이드로, 스릴 어트랙션으로 자주 소개됩니다.",
+    "queries": [
+     "Caribbean Bay Aqua Loop",
+     "Everland Aqua Loop water slide",
+     "Caribbean Bay water slide"
+    ]
+   },
+   {
+    "label": "메가스톰",
+    "why": "여럿이 한 보트를 타고 내려오는 대형 워터슬라이드로, 단체 인증샷 장소로 알려져 있습니다.",
+    "queries": [
+     "Caribbean Bay Mega Storm",
+     "Everland Mega Storm water slide",
+     "Caribbean Bay slide"
+    ]
+   },
+   {
+    "label": "유수풀",
+    "why": "튜브를 타고 천천히 떠다니는 풀로, 가족과 커플이 많이 찾는 휴식 코스입니다.",
+    "queries": [
+     "Caribbean Bay lazy river",
+     "Everland Caribbean Bay pool tube",
+     "Caribbean Bay Korea water park"
+    ]
+   },
+   {
+    "label": "어드벤처풀",
+    "why": "물놀이 구조물과 슬라이드가 모인 어린이·가족 놀이 구역으로 가족 사진이 많습니다.",
+    "queries": [
+     "Caribbean Bay adventure pool",
+     "Everland Caribbean Bay family pool",
+     "Caribbean Bay Korea kids water park"
+    ]
+   }
+  ]
+ },
+ "ocean-world": {
+  "nameEn": "Vivaldi Park Ocean World",
+  "spots": [
+   {
+    "label": "메가스톰",
+    "why": "오션월드를 대표하는 대형 워터슬라이드로, 깔때기 모양 슬라이드에서 함께 내려오는 사진과 영상이 많이 올라온다",
+    "queries": [
+     "Vivaldi Park Ocean World Mega Storm",
+     "Ocean World Hongcheon water slide",
+     "Vivaldi Park water park slide"
+    ]
+   },
+   {
+    "label": "야외 파도풀",
+    "why": "넓은 야외 파도풀에 사람들이 가득한 장면이 후기 사진의 단골 컷이다",
+    "queries": [
+     "Vivaldi Park Ocean World wave pool",
+     "Ocean World Hongcheon outdoor pool",
+     "Vivaldi Park Ocean World"
+    ]
+   },
+   {
+    "label": "워터밤",
+    "why": "여름마다 열리는 물총 파티 음악 페스티벌로, 홍천 워터밤 인증샷이 SNS에 많이 공유된다",
+    "queries": [
+     "Waterbomb Hongcheon Ocean World",
+     "Waterbomb Korea festival Vivaldi Park",
+     "Vivaldi Park Ocean World summer festival"
+    ]
+   },
+   {
+    "label": "실내 워터파크",
+    "why": "날씨와 상관없이 즐기는 실내 풀과 슬라이드 구역이라 가족 단위 방문객 사진이 많다",
+    "queries": [
+     "Vivaldi Park Ocean World indoor pool",
+     "Ocean World Hongcheon indoor water park",
+     "Vivaldi Park Hongcheon resort"
+    ]
+   },
+   {
+    "label": "유수풀",
+    "why": "튜브를 타고 천천히 떠다니는 유수풀에서 튜브 인증샷을 많이 찍는다",
+    "queries": [
+     "Vivaldi Park Ocean World lazy river",
+     "Ocean World Hongcheon tube river",
+     "Vivaldi Park water park pool"
+    ]
+   },
+   {
+    "label": "겨울 눈썰매",
+    "why": "겨울에는 비발디파크 스노위랜드 눈썰매장이 주요 촬영지가 되고 눈 덮인 리조트 풍경도 함께 담긴다",
+    "queries": [
+     "Vivaldi Park snow sledding Hongcheon",
+     "Vivaldi Park ski resort winter",
+     "Vivaldi Park Hongcheon snow"
+    ]
+   }
+  ]
+ },
+ "lotte-waterpark": {
+  "nameEn": "Lotte Water Park Gimhae",
+  "spots": [
+   {
+    "label": "자이언트 볼케이노",
+    "why": "파크 한가운데 서 있는 높이 38m, 폭 35m의 거대한 화산으로, 워터파크의 상징 랜드마크로 꼽힌다",
+    "queries": [
+     "Lotte Water Park Gimhae Giant Volcano",
+     "Lotte Water Park Gimhae",
+     "Gimhae Lotte Water Park volcano"
+    ]
+   },
+   {
+    "label": "자이언트 웨이브",
+    "why": "국내 최대급 실외 파도풀로, 화산에서 밀려오는 거대한 파도(최대 2.4m)가 대표 인기 시설이다",
+    "queries": [
+     "Lotte Water Park Gimhae Giant Wave",
+     "Gimhae Lotte Water Park wave pool",
+     "Lotte Water Park Gimhae outdoor pool"
+    ]
+   },
+   {
+    "label": "레이싱 슬라이드",
+    "why": "국내 최장 120m, 8개 레인에서 색색의 슬라이드를 타고 내려오며 워터 레이싱을 즐기는 대표 어트랙션이다",
+    "queries": [
+     "Lotte Water Park Gimhae Racing Slide",
+     "Gimhae Lotte Water Park water slide",
+     "Lotte Water Park Gimhae slides"
+    ]
+   },
+   {
+    "label": "워터코스터",
+    "why": "국내 최초 2레인 구성으로 높이 22m, 길이 300m 구간을 롤러코스터처럼 오르내리는 스릴 슬라이드다",
+    "queries": [
+     "Lotte Water Park Gimhae Water Coaster",
+     "Gimhae Lotte Water Park water coaster"
+    ]
+   },
+   {
+    "label": "자이언트 부메랑고",
+    "why": "래피드리버 존에 있는 스릴 슬라이드로, 후기에서 짜릿한 어트랙션으로 자주 언급된다",
+    "queries": [
+     "Lotte Water Park Gimhae Giant Boomerango",
+     "Gimhae Lotte Water Park Boomerango slide"
+    ]
+   },
+   {
+    "label": "실내 워터파크",
+    "why": "약 6,600㎡ 규모의 실내존으로 티키 아쿠아 플렉스·실내 파도풀 등이 있고 사계절 물놀이가 가능하다",
+    "queries": [
+     "Lotte Water Park Gimhae indoor",
+     "Lotte Water Park Gimhae Tiki Aqua Play",
+     "Gimhae Lotte Water Park indoor pool"
+    ]
+   },
+   {
+    "label": "온수 스파풀",
+    "why": "겨울에도 실내외가 이어진 스파풀과 노천탕 스타일 온수풀이 겨울철 인기 코스로 소개된다",
+    "queries": [
+     "Lotte Water Park Gimhae spa pool",
+     "Gimhae Lotte Water Park hot spring spa"
+    ]
+   }
+  ]
+ },
+ "seorak-waterpia": {
+  "nameEn": "Seorak Waterpia",
+  "spots": [
+   {
+    "label": "스파밸리 노천탕",
+    "why": "세계 유명 온천을 테마로 꾸민 노천 온천 구역(블루라군 등 18개 탕)이라 인증샷이 가장 많이 나오는 곳",
+    "queries": [
+     "Seorak Waterpia Spa Valley",
+     "Seorak Waterpia outdoor hot spring",
+     "Hanwha Resort Seorak open-air spa Sokcho",
+     "설악 워터피아 스파밸리"
+    ]
+   },
+   {
+    "label": "설악산 뷰 온천",
+    "why": "겨울 눈 덮인 설악산 능선을 보며 야외 온천에 몸을 담그는 장면이 대표 이미지",
+    "queries": [
+     "Seorak Waterpia Seoraksan view",
+     "Hanwha Resort Seorak Sokcho",
+     "Seoraksan snow Sokcho hot spring",
+     "설악 워터피아 설악산 전망"
+    ]
+   },
+   {
+    "label": "샤크웨이브",
+    "why": "온천수를 쓰는 대표 파도풀로 겨울에도 이용할 수 있는 시그니처 시설",
+    "queries": [
+     "Seorak Waterpia Shark Wave pool",
+     "Seorak Waterpia wave pool",
+     "Seorak Waterpia indoor pool",
+     "설악 워터피아 파도풀"
+    ]
+   },
+   {
+    "label": "토렌트리버",
+    "why": "235m 길이의 야외 대형 유수풀로, 겨울에도 온천수로 운영되는 야외 놀이시설",
+    "queries": [
+     "Seorak Waterpia Torrent River",
+     "Seorak Waterpia lazy river",
+     "Seorak Waterpia outdoor pool winter",
+     "설악 워터피아 유수풀"
+    ]
+   },
+   {
+    "label": "워터슬라이드",
+    "why": "워터파크 구역의 대표 어트랙션으로, 슬라이드와 어린이 놀이시설이 함께 소개됨",
+    "queries": [
+     "Seorak Waterpia water slide",
+     "Seorak Waterpia Sokcho water park",
+     "Seorak Waterpia kids pool",
+     "설악 워터피아 워터슬라이드"
+    ]
+   },
+   {
+    "label": "스플래시 페스타",
+    "why": "여름 성수기마다 열리는 대표 행사로 풀파티·댄스 공연이 함께 열림",
+    "queries": [
+     "Seorak Waterpia summer festival",
+     "Seorak Waterpia pool party",
+     "Seorak Waterpia Splash Festa",
+     "설악 워터피아 스플래시 페스타"
+    ]
+   }
+  ]
+ },
+ "california-beach": {
+  "nameEn": "Gyeongju World California Beach",
+  "spots": [
+   {
+    "label": "파도풀",
+    "why": "인공 파도가 치는 대형 풀로, 이국적인 해변 분위기 때문에 물놀이 인증샷이 많이 나오는 곳",
+    "queries": [
+     "Gyeongju World California Beach wave pool",
+     "Gyeongju World California Beach waterpark",
+     "Gyeongju World water park",
+     " 경주월드 캘리포니아비치 파도풀"
+    ]
+   },
+   {
+    "label": "유수풀",
+    "why": "320m 길이의 유수풀로, 튜브를 타고 떠다니는 모습을 찍는 대표 코스",
+    "queries": [
+     "Gyeongju World California Beach lazy river",
+     "Gyeongju World California Beach pool",
+     "경주월드 캘리포니아비치 유수풀"
+    ]
+   },
+   {
+    "label": "튜브슬라이드",
+    "why": "초대형 튜브슬라이드와 더블 익스트림 같은 스릴 슬라이드가 대표 어트랙션",
+    "queries": [
+     "Gyeongju World California Beach water slide",
+     "Gyeongju World Double Extreme slide",
+     "경주월드 캘리포니아비치 슬라이드"
+    ]
+   },
+   {
+    "label": "섬머린 스플래시",
+    "why": "후기에서 재미있다고 자주 언급되는 인기 물놀이 어트랙션",
+    "queries": [
+     "Gyeongju World California Beach Summerine Splash",
+     "Gyeongju World Splash Adventure",
+     "경주월드 섬머린 스플래시"
+    ]
+   },
+   {
+    "label": "어린이 물놀이장",
+    "why": "수심 35cm 어린이 물놀이장과 바닥분수가 있어 가족 여행객의 사진이 많은 곳",
+    "queries": [
+     "Gyeongju World California Beach kids pool",
+     "Gyeongju World California Beach splash playground",
+     "경주월드 캘리포니아비치 어린이 물놀이장"
+    ]
+   },
+   {
+    "label": "드라켄",
+    "why": "같은 경주월드 단지 안의 대표 스릴 라이드로, 롤러코스터 사진 스폿으로 꼽힌다",
+    "queries": [
+     "Gyeongju World Draken roller coaster",
+     "Gyeongju World roller coaster",
+     "경주월드 드라켄"
+    ]
+   }
+  ]
+ },
+ "splas-resom": {
+  "nameEn": "Splash Resom",
+  "spots": [
+   {
+    "label": "야외 온천 스파",
+    "why": "덕산온천수를 쓰는 야외 노천 스파 구역으로, 이곳 대표 시설로 자주 소개됨 (웹 검색 실패로 후기 교차 확인은 못 함)",
+    "queries": [
+     "Splash Resom outdoor spa",
+     "Spa Plus Resom Deoksan hot spring",
+     "Deoksan hot spring Yesan"
+    ]
+   },
+   {
+    "label": "실내 워터파크",
+    "why": "넓은 실내 워터파크 전경은 방문객 사진에 가장 많이 나오는 장면 (검색 확인 못 함)",
+    "queries": [
+     "Splash Resom water park",
+     "Resom Spa Castle Yesan indoor pool",
+     "Yesan water park Korea"
+    ]
+   },
+   {
+    "label": "파도풀",
+    "why": "워터파크의 대표 물놀이 시설로 꼽히는 웨이브풀 (검색 확인 못 함)",
+    "queries": [
+     "Splash Resom wave pool",
+     "Spa Plus Resom wave pool"
+    ]
+   },
+   {
+    "label": "워터슬라이드",
+    "why": "가족 여행객이 즐겨 찾는 슬라이드 시설 (검색 확인 못 함)",
+    "queries": [
+     "Splash Resom water slide",
+     "Resom Spa Castle water slide"
+    ]
+   }
+  ]
+ }
+}
