@@ -1,6 +1,7 @@
 // 매일 비용 정산 리포트: 서비스별 이번 달 비용과 사용량을 모은다.
 import { getApiUsage, type ApiUsage } from "../api-quota";
 import { kst } from "../time";
+import { costAiNote } from "./ai-note";
 import { getDailyUsage, getMonthDemand, type DailyUsage } from "./ncp";
 
 // 네이버 지도 무료 한도 (월, 대표 계정 기준)와 초과 단가 (원/건)
@@ -47,6 +48,8 @@ export interface CostReport {
   apiUsage: ApiUsage[];
   monthToDateKrw: number;
   projectedKrw: number;
+  /** 평소보다 튄 API를 AI가 한두 줄로 (lib/billing/ai-note). 튄 게 없으면 없다 */
+  aiNote?: string;
 }
 
 const compact = (d: string) => d.replaceAll("-", "");
@@ -70,6 +73,7 @@ export async function buildCostReport(now = new Date()): Promise<CostReport> {
   }
 
   const apiUsage = await getApiUsage(yesterday);
+  const aiNote = await costAiNote(yesterday, apiUsage).catch(() => undefined);
   const fixedKrw = FIXED_MONTHLY.reduce((s, f) => s + f.krw, 0);
   const naverKrw = "error" in naver ? 0 : naver.demandKrw;
   const overageKrw = "error" in naver ? 0 : naver.usage.reduce((s, u) => s + (u.overageKrw ?? 0), 0);
@@ -91,6 +95,7 @@ export async function buildCostReport(now = new Date()): Promise<CostReport> {
     apiUsage,
     monthToDateKrw,
     projectedKrw,
+    aiNote,
   };
 }
 
@@ -138,7 +143,8 @@ export function reportSummary(r: CostReport): string {
 ⚠️ API 한도 70% 이상: ${near.join(", ")}`
     : "";
   return `📄 CrowdView 비용 정산 리포트 · ${reportStamp(r)}
-이번 달 누적 ${won(r.monthToDateKrw)} · 월말 예상 ${won(r.projectedKrw)}${naver}${api}`;
+이번 달 누적 ${won(r.monthToDateKrw)} · 월말 예상 ${won(r.projectedKrw)}${naver}${api}${r.aiNote ? `
+🤖 ${r.aiNote}` : ""}`;
 }
 
 /** 어제 한도의 70% 넘게 쓴 API */
