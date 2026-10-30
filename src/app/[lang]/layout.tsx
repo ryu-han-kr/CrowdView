@@ -70,8 +70,10 @@ export default async function RootLayout({ children, params }: { children: React
   const { lang } = await params;
   if (!isLang(lang)) notFound();
   return (
-    <html lang={lang} suppressHydrationWarning>
+    // translate="no": 언어별 화면이 따로 있어 브라우저 자동 번역을 막는다 (10/30: 앱에서 Chrome이 혼자 번역해 화면이 깨졌다)
+    <html lang={lang} translate="no" suppressHydrationWarning>
       <head>
+        <meta name="google" content="notranslate" />
         {/* 글꼴 선언 CSS는 화면이 다 뜨고 한가할 때 붙인다 (10/26 성능: 한글 조각 23개 600KB가 최상 우선순위로 본문·사진과 경쟁해 첫 그림을 밀어냈다).
             첫 방문은 기기 한글 글꼴(font-display optional), 다음 화면·재방문부터 Pretendard·Wanted Sans */}
         <noscript>
