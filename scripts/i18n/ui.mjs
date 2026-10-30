@@ -2920,4 +2920,8 @@ export default {
   "홍콩": ["Hong Kong", "香港", "香港", "香港"],
   "해외": ["Overseas", "海外", "海外", "海外"],
   "도쿄 디즈니·유니버설 재팬·홍콩 디즈니 등 7곳 대기시간": ["Wait times at 7 parks incl. Tokyo Disney, USJ and Hong Kong Disneyland", "東京ディズニー・USJ・香港ディズニーなど7か所の待ち時間", "东京迪士尼·日本环球影城·香港迪士尼等7处排队时间", "東京迪士尼·日本環球影城·香港迪士尼等7處排隊時間"],
+  // ── 장소 검색 제목·설명 (총점검 10/30 검색어 반영)
+  "{name} 혼잡도 · 오늘 사람 많나요? 실시간 확인": ["{name} crowds today: how busy is it now? Live check", "{name}の混雑・今日は混んでる？リアルタイム", "{name}拥挤度·今天人多吗？实时查看", "{name}擁擠度·今天人多嗎？即時查看"],
+  "{name} 혼잡도 예측 · 오늘 사람 많을까? 한산한 시간": ["{name} crowd forecast: will it be busy today? Best quiet times", "{name}の混雑予想・今日は混む？空いている時間", "{name}拥挤预测·今天人会多吗？人少时段", "{name}擁擠預測·今天人會多嗎？人少時段"],
+  "{name} 오늘 사람 얼마나 많은지 지금 혼잡도와 시간대별 예측으로 확인하고, 한산한 시간에 가세요": ["See how busy {name} is today with the current crowd level and hourly forecast, and go when it's quiet", "{name}が今日どれくらい混んでいるか、今の混雑と時間帯別予想で確認して空いている時間に", "通过实时拥挤度和分时段预测查看{name}今天人有多少，挑人少的时候去", "透過即時擁擠度和分時段預測查看{name}今天人有多少，挑人少的時候去"],
 };
