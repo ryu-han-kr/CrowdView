@@ -230,7 +230,7 @@ function HeatPalettePicker() {
               <span key={c} className="h-3.5 w-2.5 first:rounded-l last:rounded-r" style={{ background: c }} />
             ))}
           </span>
-          <span className="min-w-0 truncate">{t(p.name)}</span>
+          <span className="min-w-0 leading-tight break-keep">{t(p.name)}</span>
         </button>
       ))}
     </div>
