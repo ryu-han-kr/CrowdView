@@ -9,8 +9,19 @@ import { useSession } from "@/lib/auth-client";
 import type { PlanId } from "@/lib/business";
 import { LIVE_PAID_ONLY } from "@/lib/live-flags";
 
+/**
+ * 통신사별 참고값: 휴대폰 회선 점유율(과기정통부 2026년 2월). SK 추정 인원은 이미 전체 인구로 환산한 값이라
+ * 장소별 실제 통신사 비율이 아니라 '약 N명을 점유율로 나눈 값'이다 (화면에도 그렇게 적는다)
+ */
+const CARRIERS = [
+  { name: "SKT", share: 0.39, color: "#ef4444" },
+  { name: "KT", share: 0.233, color: "#111827" },
+  { name: "LG U+", share: 0.1958, color: "#e11d8f" },
+  { name: "알뜰폰", share: 0.1809, color: "#9ca3af" },
+];
+
 interface Res {
-  data?: { level: number; score: number; time: string; poiName: string };
+  data?: { level: number; score: number; time: string; poiName: string; people?: number };
   shared?: boolean;
   left?: { day: number; month: number };
   plan?: PlanId;
@@ -95,10 +106,42 @@ export function LiveCountButton({ placeId }: { placeId: string }) {
       {res?.data && lv && (
         <div className="mt-2 animate-[fade-in_0.2s_ease-out] rounded-2xl px-4 py-3" style={{ background: `${lv.color}1f` }} role="status">
           <p className="text-xs font-semibold text-gray-600">{t("SK텔레콤 실측 · {time} 기준", { time: res.data.time.slice(11) || res.data.time })}</p>
-          <p className="mt-0.5 text-2xl font-black" style={{ color: inkOf(lv.color) }}>
-            {t(lv.label)}
-          </p>
-          <p className="text-xs text-gray-600">{t(lv.desc)}</p>
+          {res.data.people !== undefined ? (
+            <>
+              <p className="mt-0.5 flex items-baseline gap-2">
+                <span className="text-3xl font-black tabular-nums" style={{ color: inkOf(lv.color) }}>
+                  {t("약 {n}명", { n: res.data.people.toLocaleString() })}
+                </span>
+                <span className="text-sm font-bold" style={{ color: inkOf(lv.color) }}>
+                  {t(lv.label)}
+                </span>
+              </p>
+              <p className="text-xs text-gray-600">{t(lv.desc)}</p>
+              <div className="mt-3 flex h-2 overflow-hidden rounded-full" aria-hidden>
+                {CARRIERS.map((c) => (
+                  <span key={c.name} style={{ width: `${c.share * 100}%`, background: c.color }} />
+                ))}
+              </div>
+              <ul className="mt-1.5 grid grid-cols-2 gap-x-3 gap-y-0.5 text-[11px] text-gray-700">
+                {CARRIERS.map((c) => (
+                  <li key={c.name} className="flex items-center gap-1.5">
+                    <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: c.color }} />
+                    {t(c.name)} {Math.round(c.share * 1000) / 10}% · {t("약 {n}명", { n: Math.round(res.data!.people! * c.share).toLocaleString() })}
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-1.5 text-[10px] leading-snug text-gray-600">
+                {t("SK 추정 인원에 장소 넓이(지도 경계)를 곱한 값이에요. 통신사별 인원은 휴대폰 회선 점유율(2026년 2월)로 나눈 참고값이에요.")}
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="mt-0.5 text-2xl font-black" style={{ color: inkOf(lv.color) }}>
+                {t(lv.label)}
+              </p>
+              <p className="text-xs text-gray-600">{t(lv.desc)}</p>
+            </>
+          )}
           {res.shared && <p className="mt-1 text-[11px] font-semibold text-emerald-700">{t("방금 다른 회원이 본 결과라 횟수가 줄지 않았어요")}</p>}
         </div>
       )}
