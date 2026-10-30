@@ -1,7 +1,7 @@
 // 사진 고르기에서 Claude가 고른 구글 지도 방문자 사진을 보낸다 (경수님 10/30: 관광공사·위키미디어에 밝은 사진이 없는 곳).
 // 구글 약관상 사진 파일은 저장하지 않는다 — photo-picks.json에는 사진 이름(gname)과 짧은 키만, 사진 주소는 30일 캐시하고 응답은 CDN이 보관.
 // 주소에 쿼리를 쓰지 않는 건 Next 16 next/image가 쿼리 붙은 로컬 사진을 막아서 (images.localPatterns)
-import { APIS, beforeCall } from "@/lib/api-quota";
+import { APIS, countCall } from "@/lib/api-quota";
 import { cached } from "@/lib/cached";
 import picks from "@/data/korea/photo-picks.json";
 
@@ -14,7 +14,8 @@ const PICKED = picks as Record<string, { photos: { src: string; gname?: string }
 async function media(name: string): Promise<string | null> {
   const key = process.env.GOOGLE_PLACES_API_KEY;
   if (!key) return null;
-  await beforeCall(API, 1);
+  // 사진 한 장당 30일에 한 번이라 하루 한도로 막지 않는다 (10/30: 사진 고르기로 한도를 다 쓴 날 고른 사진까지 회색으로 나왔다)
+  await countCall(API, 1);
   const res = await fetch(`https://places.googleapis.com/v1/${name}/media?maxWidthPx=1600&skipHttpRedirect=true&key=${key}`, { signal: AbortSignal.timeout(8000) });
   if (!res.ok) throw new Error(`google places photo ${res.status}`);
   return ((await res.json()) as { photoUri?: string }).photoUri ?? null;
