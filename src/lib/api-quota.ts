@@ -45,6 +45,8 @@ export const APIS: ApiInfo[] = [
   { id: "kto-cnctr", name: "관광공사 관광지 집중률", prefix: "/B551011/TatsCnctrRateService/", dataset: "15128555", limit: 1000 }, // 운영계정 신청 중 (승인되면 100,000)
   { id: "kto-tour", name: "관광공사 TourAPI(축제·운영시간)", prefix: "/B551011/KorService2/", dataset: "15101578", limit: 1000 }, // 운영계정 신청 중 (승인되면 100,000)
   { id: "kto-related", name: "관광공사 연관 관광지", prefix: "/B551011/TarRlteTarService1/", dataset: "15128560", limit: 1000 }, // 운영계정 신청 중 (승인되면 100,000)
+  { id: "kto-awards", name: "관광공사 관광공모전(사진) 수상작", prefix: "/B551011/PhokoAwrdService/", limit: 1000 }, // 10/30 운영계정 반려(호출 이력 없음) → 하루 1번 부르며 이력 쌓는 중
+  { id: "kto-gallery", name: "관광공사 관광사진 갤러리", prefix: "/B551011/PhotoGalleryService1/", limit: 1000 },
   { id: "kto-datalab", name: "관광공사 데이터랩(지역 방문자)", prefix: "/B551011/DataLabService/", dataset: "15101972", limit: 1000 }, // 운영계정 신청 중 (승인되면 100,000)
   // 강원랜드 광장주차장 실시간 주차 (하이원 보조 지표). 10/27 운영계정 승인 10만/일, 요청 주소는 PARKING_HIGH1_URL (lib/crowd/parking)
   { id: "parking-high1", name: "강원랜드 광장주차장 실시간 주차", dataset: "15168488", limit: 100000 },
