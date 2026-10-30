@@ -11,11 +11,8 @@ import { SHOW_DATA_LABELS } from "@/lib/format";
 import { LEVELS, levelOf, inkOf } from "@/lib/levels";
 import type { HourPoint } from "@/lib/types";
 
-// 왼쪽 58px는 단계 이름 칸 (그래프 선과 글씨가 겹치지 않게 그림 밖에 둔다)
-const MARGIN = { top: 8, right: 10, bottom: 34, left: 78 };
-// 영어처럼 단계 이름이 긴 언어 ('Very crowded'): 왼쪽 칸을 넓히고 글자를 줄인다 (UI QA 12차: 이름이 그래프 안으로 넘쳤다)
-const WIDE_MARGIN = { ...MARGIN, left: 108 };
-const isWide = (labels: Record<number, string>) => Object.values(labels).some((x) => x.length > 6 && /[a-z]/i.test(x));
+// 왼쪽 단계 이름 칸은 없앴다 (지인 QA 10/30: 글씨가 작고 답답, 선 색이 이미 단계) — 첫 시간 눈금 글자만큼만 띄운다
+const MARGIN = { top: 8, right: 12, bottom: 34, left: 12 };
 
 const PEOPLE_NOTE: Record<NonNullable<HourPoint["peopleKind"]>, string> = {
   real: "실측·공식 예보",
@@ -95,30 +92,14 @@ export function LevelGradients({ id }: { id: string }) {
   );
 }
 
-/**
- * 단계 이름: 그래프 왼쪽 바깥 칸에, 각 단계 띠의 가운데 높이로 (선과 겹치지 않게).
- * 띠 경계는 옅은 가로줄, 이름 옆 작은 색 막대로 어느 높이가 어느 단계인지 보이게
- */
-function LevelLines({ labels }: { labels: Record<number, string> }) {
+/** 단계 경계 옅은 가로줄 (단계 이름은 위 칸·말풍선이 보여 준다) */
+function LevelLines() {
   const { yScale, innerWidth } = useChart();
-  const M = isWide(labels) ? WIDE_MARGIN : MARGIN;
-  const fs = isWide(labels) ? 11 : 12;
   return (
     <g pointerEvents="none">
-      {LEVELS.map((l, i) => {
-        const top = LEVELS[i + 1]?.min ?? 100;
-        return (
-          <g key={l.key}>
-            {i > 0 && <line x1={0} x2={innerWidth} y1={yScale(l.min)} y2={yScale(l.min)} stroke="#eef0f3" strokeWidth="1" />}
-            <rect x={-5} y={yScale(top) + 1} width={3} height={Math.max(1, yScale(l.min) - yScale(top) - 2)} rx={1.5} fill={l.color} />
-            {/* 단계 이름: 왼쪽 칸 가운데에 옅은 색 알약 + 진한 글씨 (사용자 QA 10/22: 너무 왼쪽에 붙어 보였다) */}
-            <rect x={-M.left + 6} y={yScale((l.min + top) / 2) - 10} width={M.left - 16} height={20} rx={10} fill={l.color} fillOpacity={0.14} />
-            <text x={-M.left / 2 - 4} y={yScale((l.min + top) / 2) + 4.5} textAnchor="middle" fontSize={fs} fontWeight="800" fill={inkOf(l.color)}>
-              {labels[l.key]}
-            </text>
-          </g>
-        );
-      })}
+      {LEVELS.slice(1).map((l) => (
+        <line key={l.key} x1={0} x2={innerWidth} y1={yScale(l.min)} y2={yScale(l.min)} stroke="var(--color-gray-100)" strokeWidth="1" />
+      ))}
     </g>
   );
 }
@@ -140,8 +121,9 @@ function HourAxis({ hours, nowIdx, nowLabel }: { hours: number[]; nowIdx: number
       )}
       {nowX !== null && (
         <g>
-          <rect x={nowX - 22} y={y - 15} width="44" height="21" rx="10.5" fill="#111827" />
-          <text x={nowX} y={y} textAnchor="middle" fontSize="13" fontWeight="700" fill="#fff">
+          {/* 차트 색 변수라 다크 모드에서 밝은 알약 + 어두운 글씨로 뒤집힌다 */}
+          <rect x={nowX - 22} y={y - 15} width="44" height="21" rx="10.5" fill="var(--chart-foreground)" />
+          <text x={nowX} y={y} textAnchor="middle" fontSize="13" fontWeight="700" fill="var(--chart-background)">
             {nowLabel}
           </text>
         </g>
@@ -153,7 +135,7 @@ HourAxis.__isPostOverlay = true;
 LevelLines.__isPostOverlay = true;
 
 /**
- * 시간대별 혼잡도 (Bklit UI 영역 차트). 실측은 실선, AI 예측은 점선.
+ * 시간대별 혼잡도 (Bklit UI 영역 차트). '지금'까지 지난 시간은 실선, 앞으로는 점선 (지인 QA 10/30: 실측·추정 구분보다 지난·앞으로가 한눈에).
  * 휴대폰: 그래프를 누르거나 옆으로 밀면 그 시간의 단계·인원이 위 칸에 나온다 (세로로 밀면 화면 스크롤)
  * estimated: 지난 시간도 실측이 아니라 예측 모델 값일 때
  * forecastLabel: 예측 구간 이름 (공항은 AI가 아니라 공항공사 예고치라 '공항공사 예고', QA #15 10/27)
@@ -179,8 +161,7 @@ export function HourlyChart({
   const nowIdx = points.findIndex((p) => p.hour === highlightHour);
   const [sel, setSel] = useState(nowIdx >= 0 ? nowIdx : points.reduce((m, p, i) => (p.score > points[m].score ? i : m), 0));
   const data = useMemo(() => points.map((p) => ({ date: hourDate(p.hour), score: p.score })), [points]);
-  const levelLabels = useMemo(() => Object.fromEntries(LEVELS.map((l) => [l.key, t(l.label)])), [t]);
-  const margin = isWide(levelLabels) ? WIDE_MARGIN : MARGIN;
+  const margin = MARGIN;
   const gid = `hc${useId().replace(/:/g, "")}`;
   const touch = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
@@ -196,8 +177,8 @@ export function HourlyChart({
   };
   if (points.length === 0) return null;
 
-  // 실측 구간(예측 아님) 다음부터 점선
-  const lastMeasured = estimated ? 0 : Math.max(0, points.reduce((m, p, i) => (!p.forecast ? i : m), -1));
+  // 오늘 그래프는 '지금'부터 점선, 다른 날은 실측 구간(예측 아님) 다음부터
+  const lastMeasured = nowIdx >= 0 ? nowIdx : estimated ? 0 : Math.max(0, points.reduce((m, p, i) => (!p.forecast ? i : m), -1));
   const p = points[Math.min(sel, points.length - 1)];
   const prev = points[sel - 1];
   const level = levelOf(p.score);
@@ -223,13 +204,14 @@ export function HourlyChart({
             {p.people !== undefined && (
               <span className="ml-2 text-lg font-bold text-gray-900">
                 {p.peopleKind === "est" ? t("약 {v}", { v: val(p.people) }) : val(p.people)}
+                {p.peopleKind === "est" && <span className="ml-1 text-[13px] font-medium text-gray-500">({t("추정")})</span>}
               </span>
             )}
           </p>
           {/* 인원의 출처. 인원 기준이 없는 곳도 점수는 보이지 않는다 (경수님 10/29: 단위는 모두 사람) */}
           <p className="min-h-4 text-xs text-gray-500">
-            {p.peopleKind && SHOW_DATA_LABELS && (
-              <span className={p.peopleKind === "est" ? "text-amber-700" : undefined}>
+            {p.peopleKind && p.peopleKind !== "est" && SHOW_DATA_LABELS && (
+              <span>
                 {t("인원")}: {t(PEOPLE_NOTE[p.peopleKind])}
               </span>
             )}
@@ -245,10 +227,28 @@ export function HourlyChart({
         )}
       </div>
 
+      {/* 선 모양 범례를 그래프 위에 크게 (지인 QA 10/30: 아래 작은 범례로는 실선·점선 구분이 안 보였다) */}
+      <div className="mb-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-semibold text-gray-700">
+        {lastMeasured > 0 && (
+          <span className="flex items-center gap-1.5">
+            <svg width="24" height="8" aria-hidden>
+              <line x1="2" x2="22" y1="4" y2="4" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
+            </svg>
+            {t("지난 시간")}
+          </span>
+        )}
+        <span className="flex items-center gap-1.5">
+          <svg width="24" height="8" aria-hidden>
+            <line x1="1" x2="23" y1="4" y2="4" stroke="currentColor" strokeWidth="3.5" strokeDasharray="6 5" />
+          </svg>
+          {t(forecastLabel)}
+        </span>
+      </div>
+
       <div role="img" aria-label={t("시간대별 혼잡도 그래프")} className="relative select-none">
         <AreaChart data={data} yMax={100} margin={margin} aspectRatio={aspect} animationDuration={700}>
           <LevelGradients id={gid} />
-          <LevelLines labels={levelLabels} />
+          <LevelLines />
           <Area
             dataKey="score"
             fill={`url(#${gid}-fill)`}
@@ -288,23 +288,8 @@ export function HourlyChart({
         />
       </div>
 
-      <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-600">
-        {/* 실측 점이 하나도 없으면(공항 예고치 등) 실측 범례는 뺀다 */}
-        {(estimated || points.some((x) => !x.forecast)) && (
-          <span className="flex items-center gap-1.5">
-            <svg width="20" height="6" aria-hidden>
-              <line x1="0" x2="20" y1="3" y2="3" stroke="#6b7280" strokeWidth="3" strokeDasharray={estimated ? "5 4" : undefined} />
-            </svg>
-            {estimated ? t("지난 시간 (추정)") : t("실측")}
-          </span>
-        )}
-        <span className="flex items-center gap-1.5">
-          <svg width="20" height="6" aria-hidden>
-            <line x1="0" x2="20" y1="3" y2="3" stroke="#6b7280" strokeWidth="3" strokeDasharray="5 4" />
-          </svg>
-          {t(forecastLabel)}
-        </span>
-        <span className="ml-auto text-gray-500">{t("시간을 눌러 자세히")}</span>
+      <div className="mt-1 flex justify-end text-xs text-gray-500">
+        <span>{t("시간을 눌러 자세히")}</span>
       </div>
     </div>
   );

@@ -15,12 +15,12 @@ import { getSignals } from "@/lib/crowd/signals";
 import { HistoryChart } from "@/components/HistoryChart";
 import { ChipTabPanels } from "@/components/IconTabs";
 import { LevelBadge } from "@/components/Level";
-import { PlaceThumb } from "@/components/PlaceRow";
 import { getAirportPaxDays, getArrivals, getParking, getParkingFees, getParkingZones } from "@/lib/airport";
 import { getHistory } from "@/lib/crowd/history";
 import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
 import { PLACES, getPlace, photoCreditText } from "@/lib/places";
+import { PlaceHero } from "@/components/PlaceHero";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import placeImages from "@/data/korea/place-images.json";
 import { kst } from "@/lib/time";
@@ -43,6 +43,9 @@ export function generateStaticParams({ params }: { params: { lang: string } }) {
     id: p.id,
   }));
 }
+
+// 휴대폰 위 사진 높이: 장소(300)보다 낮게 — 공항은 사진이 공간 소개 역할이 작고, 얇은 띠(시안 B)를 좋아한 의견과 사진이 잘린다는 의견의 중간 (지인 QA 10/30)
+const AIRPORT_HERO = 220;
 
 const SOURCE_LABEL = {
   "incheon-airport": "인천국제공항공사 출국장 혼잡도 (1분 주기)",
@@ -92,32 +95,35 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
   const zoneLabels = Object.fromEntries(zones.map((z) => [z.id, z.label]));
 
   return (
-    <main className="px-5 pt-4 pb-8 md:px-0 md:pt-8">
-      <Link href="/airport" className="text-sm text-gray-500">
+    <main className="px-5 pb-8 md:px-0 md:pt-8">
+      {/* 휴대폰: 장소 상세와 같은 꽉 찬 사진 + 위 뒤로 가기 (레퍼런스 여기어때·트립닷컴). 공항은 사진이 덜 중요해 낮게 (지인 QA 10/30) */}
+      {photos.length > 0 && (
+        <div className="-mx-5 md:hidden">
+          <PlaceHero place={place} photos={photos.map((src) => ({ src, credit: photoCreditText(src, place, t) }))} height={AIRPORT_HERO} desktop={false} />
+        </div>
+      )}
+      <Link href="/airport" className={`text-sm text-gray-500 ${photos.length > 0 ? "hidden md:inline" : "mt-4 inline-block"}`}>
         ← {t("공항 목록")}
       </Link>
 
       {/* PC: 왼쪽(사진·지금·날씨) 고정 + 오른쪽(파트 탭) */}
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-10">
         <div className="lg:sticky lg:top-24 lg:self-start">
-          {/* 사진 여러 장 옆으로 넘겨 보기 (장소 상세와 같은 방식) */}
+          {/* PC: 왼쪽 칸 사진 넘겨 보기 */}
           {photos.length > 0 && (
             <PhotoGallery
               photos={photos}
               alt={t(place.name)}
               credits={photos.map((src) => photoCreditText(src, place, t))}
-              sizes="(max-width: 448px) 100vw, 448px"
-              className="mt-3 h-48 rounded-3xl bg-gray-100 md:h-56"
+              sizes="448px"
+              className="mt-3 hidden h-56 rounded-3xl bg-gray-100 md:block"
             />
           )}
 
-          <header className="mt-3 flex items-center gap-3">
-            <PlaceThumb place={place} size={52} />
-            <div>
-              <h1 className="text-2xl font-bold">{t(place.name)}</h1>
-              <p className="text-xs text-gray-500">{address}</p>
-              <KstNote />
-            </div>
+          <header className="mt-4">
+            <h1 className="text-[28px] leading-tight font-extrabold tracking-tight">{t(place.name)}</h1>
+            <p className="mt-0.5 text-xs text-gray-500">{address}</p>
+            <KstNote />
           </header>
 
           {/* 지금 */}
@@ -128,7 +134,18 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-[15px] font-bold text-gray-800">{t("지금 출국 혼잡도")}</p>
+                <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[15px] font-bold text-gray-800">
+                  {t("지금 출국 혼잡도")}
+                  {/* 갱신은 제목 옆 작은 표시로 (지인 QA 10/30: '방금 전 갱신'이 핵심 정보와 크기가 비슷했다) */}
+                  {crowd.source !== "model" && (
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full bg-white/80 px-2 py-0.5 text-[11px] font-semibold ${crowd.stale ? "text-amber-800" : "text-emerald-700"}`}
+                    >
+                      <span className={`h-1.5 w-1.5 rounded-full ${crowd.stale ? "bg-amber-500" : "bg-emerald-500"}`} />
+                      {fmtAge(crowd.ageMinutes, t)}
+                    </span>
+                  )}
+                </p>
                 <p className="text-[34px] leading-tight font-black" style={{ color: crowd.open ? inkOf(level.color) : "#4b5563" }}>
                   {crowd.open ? t(level.label) : t("운영 종료")}
                 </p>
@@ -157,10 +174,9 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
               </div>
               <CrowdMascot character="raccoon" score={crowd.score} closed={!crowd.open} size={104} className="-my-1 shrink-0" label={crowd.open ? t(level.label) : t("운영 종료")} />
             </div>
-            <p className={`sector-box mt-3 text-[13px] ${crowd.stale ? "font-semibold text-amber-800" : "text-gray-700"}`}>
-              {crowd.source === "model"
-                ? t("실시간 데이터를 받지 못해 예측값을 보여드려요")
-                : `${t(SOURCE_LABEL[crowd.source] ?? "")} · ${t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}`}
+            {/* 출처는 카드 아래 작은 글씨 (흰 상자 없이) */}
+            <p className={`mt-3 text-[12px] ${crowd.source === "model" ? "font-semibold text-amber-800" : "text-gray-500"}`}>
+              {crowd.source === "model" ? t("실시간 데이터를 받지 못해 예측값을 보여드려요") : t(SOURCE_LABEL[crowd.source] ?? "")}
             </p>
           </section>
           <WeatherCard signals={signals} lang={lang} place={place} />

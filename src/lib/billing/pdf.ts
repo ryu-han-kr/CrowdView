@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import fontkit from "@pdf-lib/fontkit";
 import { PDFDocument, rgb, type PDFFont, type PDFPage } from "pdf-lib";
-import { reportPeriod, reportStamp, type CostReport } from "./report";
+import { changeLine, reportPeriod, reportStamp, type CostReport } from "./report";
 
 const FONT_DIR = path.join(process.cwd(), "assets/fonts");
 const W = 595.28;
@@ -35,6 +35,7 @@ export async function renderReportPdf(r: CostReport): Promise<Uint8Array> {
   doc.setCreationDate(new Date(r.generatedAt));
 
   const page = doc.addPage([W, H]);
+  const addPage = () => doc.addPage([W, H]);
   const text = (s: string, x: number, y: number, size: number, font: PDFFont = regular, color = INK) =>
     page.drawText(s, { x, y, size, font, color });
   const right = (s: string, xRight: number, y: number, size: number, font: PDFFont = regular, color = INK) =>
@@ -62,6 +63,17 @@ export async function renderReportPdf(r: CostReport): Promise<Uint8Array> {
     text(value, x, y + 14, 18, bold, i === 0 ? INK : ACCENT);
   }
 
+  // 왜 늘었나: 전날 보고서 대비 항목별 + 튄 API 설명 (경수님 10/30)
+  const why = [changeLine(r), r.aiNote && `AI 설명: ${r.aiNote}`].filter((x): x is string => !!x);
+  if (why.length) {
+    y -= 22;
+    text("왜 바뀌었나", M, y, 11, bold);
+    for (const line of why.flatMap((w) => wrap(w, regular, 10, W - 2 * M))) {
+      y -= 15;
+      text(line, M, y, 10);
+    }
+  }
+
   // 네이버 클라우드
   y -= 34;
   text("네이버 클라우드", M, y, 13, bold);
@@ -72,26 +84,32 @@ export async function renderReportPdf(r: CostReport): Promise<Uint8Array> {
   } else {
     text(`청구 금액 (VAT 포함, NCP 집계 기준): ${won(r.naver.demandKrw)}`, M, y, 10.5);
     y -= 8;
-    y = table(page, regular, bold, y, [210, 80, 90, 119], ["항목", `${r.latestDate?.slice(5) ?? "-"} 사용`, "이번 달 누적", "무료 한도 대비"],
+    y = table({ page, addPage }, regular, bold, y, [210, 80, 90, 119], ["항목", `${r.latestDate?.slice(5) ?? "-"} 사용`, "이번 달 누적", "무료 한도 대비"],
       r.naver.usage.map((u) => [
         u.name,
         `${num(u.latestDay)}회`,
         `${num(u.monthToDate)}회`,
         u.free ? `${((u.monthToDate / u.free) * 100).toFixed(2)}% / ${num(u.free)}` : "-",
       ]),
-    );
+    ).y;
   }
+
+  // Claude API (토큰·웹 검색으로 계산)
+  y -= 26;
+  text("Claude API", M, y, 13, bold);
+  y -= 18;
+  text(`이번 달 ${won(r.claude.monthKrw)} · 어제 ${won(r.claude.yesterdayKrw)} (토큰·웹 검색 수로 계산한 추정, 10/30부터 집계)`, M, y, 10.5);
 
   // 기타 서비스
   y -= 26;
   text("기타 서비스 (월 고정비)", M, y, 13, bold);
   y -= 8;
-  y = table(page, regular, bold, y, [150, 100, 249], ["서비스", "월 비용", "상태"],
+  y = table({ page, addPage }, regular, bold, y, [150, 100, 249], ["서비스", "월 비용", "상태"],
     r.fixed.map((f) => [f.name, won(f.krw), f.note]),
-  );
+  ).y;
 
   // 2쪽: 외부 API 하루 호출 수
-  const page2 = doc.addPage([W, H]);
+  const page2 = addPage();
   let y2 = H - M - 6;
   page2.drawText(`외부 API 호출 수 (${r.periodEnd}, 원본 호출만)`, { x: M, y: y2, size: 15, font: bold, color: INK });
   y2 -= 18;
@@ -99,7 +117,8 @@ export async function renderReportPdf(r: CostReport): Promise<Uint8Array> {
     x: M, y: y2, size: 9, font: regular, color: MUTED,
   });
   y2 -= 8;
-  table(page2, regular, bold, y2, [200, 70, 80, 70, 79], ["API", "호출", "하루 한도", "사용률", "데이터셋"],
+  // API가 늘어 한 장을 넘으면 다음 장으로 (경수님 10/30: 마지막 줄이 아래 각주와 겹쳐 잘렸다)
+  const end = table({ page: page2, addPage }, regular, bold, y2, [200, 70, 80, 70, 79], ["API", "호출", "하루 한도", "사용률", "데이터셋"],
     r.apiUsage.map((a) => [
       a.name,
       `${num(a.count)}${a.unit ?? "회"}`,
@@ -108,8 +127,10 @@ export async function renderReportPdf(r: CostReport): Promise<Uint8Array> {
       a.dataset ?? "-",
     ]),
   );
-  page2.drawText("* 공식 확인 전 추정 한도. 한도는 공공데이터포털 개발계정 기준이며 운영계정 전환 시 늘어납니다.", {
-    x: M, y: M + 4, size: 8.5, font: regular, color: MUTED,
+  // 각주는 표 바로 아래 (자리가 없으면 다음 장 맨 위)
+  const foot = end.y - 18 < M ? { page: addPage(), y: H - M - 6 } : { page: end.page, y: end.y - 18 };
+  foot.page.drawText("* 공식 확인 전 추정 한도. 한도는 공공데이터포털 개발계정 기준이며 운영계정 전환 시 늘어납니다.", {
+    x: M, y: foot.y, size: 8.5, font: regular, color: MUTED,
   });
 
   // 꼬리말
@@ -124,9 +145,33 @@ export async function renderReportPdf(r: CostReport): Promise<Uint8Array> {
   return doc.save();
 }
 
-// 헤더 + 행. 첫 열은 왼쪽, 나머지는 오른쪽 정렬. 마지막 y를 반환
-function table(page: PDFPage, regular: PDFFont, bold: PDFFont, y: number, widths: number[], head: string[], rows: string[][]): number {
+// 글자 폭으로 줄 나누기 (pdf-lib는 자동 줄바꿈이 없다)
+function wrap(s: string, font: PDFFont, size: number, width: number): string[] {
+  const out: string[] = [];
+  let line = "";
+  for (const ch of s) {
+    if (font.widthOfTextAtSize(line + ch, size) > width) {
+      out.push(line);
+      line = ch.trimStart();
+    } else line += ch;
+  }
+  if (line) out.push(line);
+  return out;
+}
+
+// 헤더 + 행. 첫 열은 왼쪽, 나머지는 오른쪽 정렬. 쪽 아래 여백에 닿으면 새 장에 헤더부터 다시. 마지막 장과 y를 반환
+function table(
+  at: { page: PDFPage; addPage: () => PDFPage },
+  regular: PDFFont,
+  bold: PDFFont,
+  y: number,
+  widths: number[],
+  head: string[],
+  rows: string[][],
+): { page: PDFPage; y: number } {
   const rowH = 22;
+  const total = widths.reduce((a, b) => a + b, 0);
+  let page = at.page;
   const draw = (cells: string[], font: PDFFont, color = INK) => {
     let x = M;
     cells.forEach((c, i) => {
@@ -137,10 +182,21 @@ function table(page: PDFPage, regular: PDFFont, bold: PDFFont, y: number, widths
       x += w;
     });
     y -= rowH;
-    page.drawLine({ start: { x: M, y }, end: { x: M + widths.reduce((a, b) => a + b, 0), y }, thickness: 0.6, color: LINE });
+    page.drawLine({ start: { x: M, y }, end: { x: M + total, y }, thickness: 0.6, color: LINE });
   };
-  page.drawRectangle({ x: M, y: y - rowH, width: widths.reduce((a, b) => a + b, 0), height: rowH, color: rgb(0.96, 0.96, 0.97) });
-  draw(head, bold, MUTED);
-  rows.forEach((r) => draw(r, regular));
-  return y;
+  const header = () => {
+    page.drawRectangle({ x: M, y: y - rowH, width: total, height: rowH, color: rgb(0.96, 0.96, 0.97) });
+    draw(head, bold, MUTED);
+  };
+  header();
+  for (const r of rows) {
+    // 아래 여백(1쪽 꼬리말 세 줄 자리)까지 남겨 두고 넘친다
+    if (y - rowH < M + 48) {
+      page = at.addPage();
+      y = H - M - 6;
+      header();
+    }
+    draw(r, regular);
+  }
+  return { page, y };
 }

@@ -1,6 +1,8 @@
 // 매일 비용 정산 리포트: 서비스별 이번 달 비용과 사용량을 모은다.
+import { aiCostByDay, USD_KRW } from "../ai-cost";
 import { getApiUsage, type ApiUsage } from "../api-quota";
-import { kst } from "../time";
+import { kv } from "../cache";
+import { addDays, kst } from "../time";
 import { costAiNote } from "./ai-note";
 import { getDailyUsage, getMonthDemand, type DailyUsage } from "./ncp";
 
@@ -50,6 +52,19 @@ export interface CostReport {
   projectedKrw: number;
   /** 평소보다 튄 API를 AI가 한두 줄로 (lib/billing/ai-note). 튄 게 없으면 없다 */
   aiNote?: string;
+  /** Claude API 이번 달 누적·어제 (토큰·웹 검색으로 계산, lib/ai-cost — 10/30부터 집계) */
+  claude: { monthKrw: number; yesterdayKrw: number };
+  /** 항목별 이번 달 누적 (원) — 전날 보고서와 비교하는 기준 */
+  items: Record<string, number>;
+  /** 전날 보고서 대비 (경수님 10/30: 비용이 왜 늘었는지 안 보였다). 전날 기록이 없으면 없다 */
+  change?: { projectedKrw: number; items: { name: string; krw: number }[] };
+}
+
+// 항목별 누적을 날마다 남겨 다음 날 보고서가 '무엇이 늘었나'를 계산한다
+const snapKey = (date: string) => `cost:snap:${date}`;
+interface Snap {
+  projectedKrw: number;
+  items: Record<string, number>;
 }
 
 const compact = (d: string) => d.replaceAll("-", "");
@@ -79,8 +94,32 @@ export async function buildCostReport(now = new Date()): Promise<CostReport> {
   const overageKrw = "error" in naver ? 0 : naver.usage.reduce((s, u) => s + (u.overageKrw ?? 0), 0);
   // 청구액이 아직 확정 전이면 무료 한도 초과분 추정치를 쓴다
   const naverToDate = Math.max(naverKrw, overageKrw);
-  const monthToDateKrw = Math.round(naverToDate + (fixedKrw * daysElapsed) / daysInMonth);
-  const projectedKrw = Math.round((naverToDate * daysInMonth) / Math.max(daysElapsed, 1) + fixedKrw);
+  // Claude: 이번 달 1일~어제
+  const monthDays = Array.from({ length: daysElapsed }, (_, i) => `${month}-${String(i + 1).padStart(2, "0")}`);
+  const claudeUsd = await aiCostByDay(monthDays).catch(() => monthDays.map(() => 0));
+  const claude = { monthKrw: Math.round(claudeUsd.reduce((a, b) => a + b, 0) * USD_KRW), yesterdayKrw: Math.round((claudeUsd.at(-1) ?? 0) * USD_KRW) };
+  const fixedToDate = (fixedKrw * daysElapsed) / daysInMonth;
+  const monthToDateKrw = Math.round(naverToDate + claude.monthKrw + fixedToDate);
+  const projectedKrw = Math.round(((naverToDate + claude.monthKrw) * daysInMonth) / Math.max(daysElapsed, 1) + fixedKrw);
+
+  // 전날 보고서와 비교: 항목별 누적이 얼마나 늘었나 (고정비는 날마다 같은 만큼 늘어 따로 묶는다)
+  const items: Record<string, number> = { "네이버 클라우드": Math.round(naverToDate), "Claude API": claude.monthKrw, "고정비 (일할)": Math.round(fixedToDate) };
+  const prev = await kv
+    .get(snapKey(addDays(yesterday, -1)))
+    .then((x) => (x ? (JSON.parse(String(x)) as Snap) : null))
+    .catch(() => null);
+  // 1일 보고서는 새 달이라 비교하지 않는다
+  const change =
+    prev && daysElapsed > 1
+      ? {
+          projectedKrw: projectedKrw - prev.projectedKrw,
+          items: Object.entries(items)
+            .map(([name, krw]) => ({ name, krw: krw - (prev.items[name] ?? 0) }))
+            .filter((x) => x.krw !== 0)
+            .sort((a, b) => b.krw - a.krw),
+        }
+      : undefined;
+  await kv.set(snapKey(yesterday), JSON.stringify({ projectedKrw, items } satisfies Snap), 40 * 86_400).catch(() => {});
 
   return {
     generatedAt: now.toISOString(),
@@ -96,6 +135,9 @@ export async function buildCostReport(now = new Date()): Promise<CostReport> {
     monthToDateKrw,
     projectedKrw,
     aiNote,
+    claude,
+    items,
+    change,
   };
 }
 
@@ -137,14 +179,25 @@ export function reportTitle(r: CostReport): string {
 // 메시지 본문은 한 줄 요약만, 상세는 첨부 PDF
 export function reportSummary(r: CostReport): string {
   const naver = "error" in r.naver ? " · ⚠️ 네이버 클라우드 조회 실패" : "";
+  const change = changeLine(r);
   const near = apiWarnings(r);
   const api = near.length
     ? `
 ⚠️ API 한도 70% 이상: ${near.join(", ")}`
     : "";
   return `📄 CrowdView 비용 정산 리포트 · ${reportStamp(r)}
-이번 달 누적 ${won(r.monthToDateKrw)} · 월말 예상 ${won(r.projectedKrw)}${naver}${api}${r.aiNote ? `
+이번 달 누적 ${won(r.monthToDateKrw)} · 월말 예상 ${won(r.projectedKrw)}${naver}${change ? `
+${change}` : ""}${api}${r.aiNote ? `
 🤖 ${r.aiNote}` : ""}`;
+}
+
+const signed = (n: number) => `${n >= 0 ? "+" : "−"}${won(Math.abs(n))}`;
+
+/** '어제 보고서보다 월말 예상 +1,234원 — 늘어난 곳: Claude API +800원, 네이버 클라우드 +300원' */
+export function changeLine(r: CostReport): string | undefined {
+  if (!r.change) return undefined;
+  const up = r.change.items.filter((x) => x.krw > 0);
+  return `어제 보고서보다 월말 예상 ${signed(r.change.projectedKrw)}${up.length ? ` — 늘어난 곳: ${up.map((x) => `${x.name} ${signed(x.krw)}`).join(", ")}` : ""}`;
 }
 
 /** 어제 한도의 70% 넘게 쓴 API */

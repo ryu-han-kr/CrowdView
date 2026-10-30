@@ -33,6 +33,7 @@ import { HourTable } from "@/components/place/HourTable";
 import { YearOverview } from "@/components/place/YearOverview";
 import { AlertFab } from "@/components/place/AlertFab";
 import { WeekHeatmap } from "@/components/WeekHeatmap";
+import { splitInfoNote } from "@/lib/info-note";
 import { PLACES, placeHref } from "@/lib/places";
 import { daysUntil, formatClock, kst } from "@/lib/time";
 import type { Lang } from "@/i18n/config";
@@ -179,6 +180,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const flat = (x?: string) => x?.replace(/\s*\n+\s*/g, " / ").trim();
   const infoTr = await translateNames([flat(place.info?.hoursText), flat(place.info?.restText)], lang);
   const trInfo = (x?: string) => (x ? (infoTr.get(flat(x)!) ?? x) : x);
+  // '※' 안내는 따로 줄로, 위 줄과 같은 운영 시간은 빼고 (lib/info-note)
+  const hoursNote = place.info?.hoursText ? splitInfoNote(trInfo(place.info.hoursText)!, place.hours) : null;
+  const restNote = place.info?.restText ? splitInfoNote(trInfo(place.info.restText)!) : null;
   // 주소도 외국어 화면에서는 번역 (외부 점검: en 화면 한국어 노출)
   const address = (await translateNames([place.address], lang)).get(place.address) ?? place.address;
   // 주변 서울 실시간 지역 이름도 외국어로 (자체 QA 10/22: en·ja에 '잠실 관광특구'가 한글로)
@@ -401,7 +405,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   min: compactNumber(crowd.area.range[0], lang),
                   max: compactNumber(crowd.area.range[1], lang),
                 })}
-                <span className="ml-2 text-[11px] text-gray-400">{t("서울시 실측")}</span>
+                <span className="ml-2 text-[11px] text-gray-600">{t("서울시 실측")}</span>
               </p>
             )}
             {crowd.parking && isOpen && !beforeEvent && (
@@ -411,7 +415,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   n: crowd.parking.occupied.toLocaleString(),
                   total: crowd.parking.total.toLocaleString(),
                 })}
-                <span className="ml-2 text-[11px] text-gray-400">{t("공공데이터 실측")}</span>
+                <span className="ml-2 text-[11px] text-gray-600">{t("공공데이터 실측")}</span>
               </p>
             )}
             {band && isOpen && !beforeEvent && (
@@ -421,7 +425,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               </p>
             )}
             {/* 갱신·출처·자료 등급: 흐리고 작게 (경수님 10/30: 흰 상자가 위의 중요한 정보보다 먼저 눈에 들어왔다) */}
-            <p className={`mt-3 text-[11px] leading-relaxed ${crowd.stale ? "font-semibold text-amber-700" : "text-gray-400"}`}>
+            <p className={`mt-3 text-[11px] leading-relaxed ${crowd.stale ? "font-semibold text-amber-700" : "text-gray-600"}`}>
               {t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}
               {crowd.stale && <> · {t("갱신 지연")}</>} · {t(SOURCE_LABEL[crowd.source])} ·{" "}
               <span className="rounded bg-gray-200 px-1 py-px text-[10px] font-bold text-gray-500">{dataGrade(crowd)}</span> {t(GRADE_LABEL[dataGrade(crowd)])}
@@ -860,15 +864,19 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   </span>
                   {!place.info?.hoursVerified && <DataTag kind="임의" />}
                 </p>
-                {place.info?.hoursText && (
-                  <p className="mt-1 text-xs leading-relaxed whitespace-pre-line text-gray-500">{trInfo(place.info.hoursText)}</p>
+                {hoursNote && (hoursNote.main || hoursNote.notes.length > 0) && (
+                  <p className="mt-1 text-xs leading-relaxed whitespace-pre-line text-gray-500">{[hoursNote.main, ...hoursNote.notes].filter(Boolean).join("\n")}</p>
                 )}
               </div>
             </div>
-            {place.info?.restText && (
+            {restNote && (
               <div className="flex gap-3">
                 <span className="w-14 shrink-0 text-gray-500">{t("휴무")}</span>
-                <span className="text-xs leading-relaxed text-gray-600">{trInfo(place.info.restText)}</span>
+                {/* 휴무 본문은 문의·주소와 같은 크기, ※ 안내는 아래 작은 회색 줄 (지인 QA 10/30) */}
+                <div className="min-w-0">
+                  {restNote.main && <p className="whitespace-pre-line">{restNote.main}</p>}
+                  {restNote.notes.length > 0 && <p className="mt-1 text-xs leading-relaxed whitespace-pre-line text-gray-500">{restNote.notes.join("\n")}</p>}
+                </div>
               </div>
             )}
             {place.info?.infocenter && (
