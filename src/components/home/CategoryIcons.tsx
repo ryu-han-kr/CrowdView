@@ -9,6 +9,8 @@ import { seasonSort, type Season } from "@/lib/season-order";
 // 그림은 Solar 채운 아이콘 + 연한 색 원 (10/27 홈 2차: 입체 이모지(3D)는 탭·본문의 평면 Solar 와 그림 언어가 섞여 통일)
 const ITEMS: { key: string; href: string; label: string; icon: SolarName; tone: string; badge?: string }[] = [
   { key: "airport", href: "/airport", label: "공항", icon: "plane", tone: "bg-sky-50 text-sky-600", badge: "실시간" },
+  // 해외 테마파크 지금 혼잡도 (경수님 10/30: 공항 아래 칸)
+  { key: "overseas", href: "/overseas", label: "해외", icon: "globe", tone: "bg-indigo-50 text-indigo-600" },
   { key: "themepark", href: "/?cat=themepark#places", label: "테마파크", icon: "ferris-wheel", tone: "bg-violet-50 text-violet-600" },
   { key: "waterpark", href: "/?cat=waterpark#places", label: "워터파크", icon: "waterdrops", tone: "bg-cyan-50 text-cyan-600" },
   { key: "ski", href: "/?cat=ski#places", label: "스키장", icon: "snowflake", tone: "bg-blue-50 text-blue-600" },
@@ -31,9 +33,9 @@ const TILE = "group flex w-[72px] flex-col items-center gap-1.5 pt-3 md:w-[88px]
  * 태블릿·PC: 한 줄에 전부
  */
 export function CategoryIcons({ t, lang, season }: { t: T; lang: Lang; season?: Season }) {
-  // 계절에 맞춰 순서를 바꾼다. 앞 두 칸(공항·테마파크) 고정: 휴대폰 두 줄 격자는 세로로 채워서
-  // 세 번째 칸이 첫 줄 공항 바로 옆에 온다 (PC 한 줄에서도 세 번째)
-  const items = season ? seasonSort(ITEMS, (it) => it.key, season, 2) : ITEMS;
+  // 계절에 맞춰 순서를 바꾼다. 앞 세 칸(공항·해외·테마파크) 고정: 휴대폰 두 줄 격자는 세로로 채워서
+  // 해외가 공항 바로 아래, 테마파크가 첫 줄 공항 옆에 온다
+  const items = season ? seasonSort(ITEMS, (it) => it.key, season, 3) : ITEMS;
   return (
     <nav aria-label={t("바로가기")} className="no-scrollbar -mx-5 mt-5 overflow-x-auto px-5 md:mx-0 md:mt-8 md:px-0">
       <ul className="grid grid-flow-col grid-rows-2 gap-x-1 gap-y-2 md:flex md:justify-between">

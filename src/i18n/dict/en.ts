@@ -1489,6 +1489,8 @@ const dict: Dict = {
   "중국 상하이": "Shanghai, China",
   "중국 베이징": "Beijing, China",
   "홍콩": "Hong Kong",
+  "해외": "Overseas",
+  "도쿄 디즈니·유니버설 재팬·홍콩 디즈니 등 7곳 대기시간": "Wait times at 7 parks incl. Tokyo Disney, USJ and Hong Kong Disneyland",
   "한국민속촌": "Korean Folk Village",
   "서울대공원": "Seoul Grand Park",
   "롯데월드 아쿠아리움": "Lotte World Aquarium",

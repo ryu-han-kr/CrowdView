@@ -2918,4 +2918,6 @@ export default {
   "중국 상하이": ["Shanghai, China", "上海", "中国上海", "中國上海"],
   "중국 베이징": ["Beijing, China", "北京", "中国北京", "中國北京"],
   "홍콩": ["Hong Kong", "香港", "香港", "香港"],
+  "해외": ["Overseas", "海外", "海外", "海外"],
+  "도쿄 디즈니·유니버설 재팬·홍콩 디즈니 등 7곳 대기시간": ["Wait times at 7 parks incl. Tokyo Disney, USJ and Hong Kong Disneyland", "東京ディズニー・USJ・香港ディズニーなど7か所の待ち時間", "东京迪士尼·日本环球影城·香港迪士尼等7处排队时间", "東京迪士尼·日本環球影城·香港迪士尼等7處排隊時間"],
 };

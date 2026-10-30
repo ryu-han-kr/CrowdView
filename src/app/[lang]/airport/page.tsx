@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { pageMeta } from "@/lib/seo";
 import { getT as getMetaT } from "@/i18n/server";
 import { LevelBadge } from "@/components/Level";
+import { SolarIcon } from "@/components/icons/SolarIcon";
 import { PlaceThumb } from "@/components/PlaceRow";
 import { getParking } from "@/lib/airport";
 import { getAllCrowd } from "@/lib/crowd/service";
@@ -85,6 +86,16 @@ export default async function AirportListPage({ params }: { params: Promise<{ la
           );
         })}
       </ul>
+
+      {/* 해외 테마파크 지금 혼잡도 (경수님 10/30: 공항 탭 아래 카드) */}
+      <Link href="/overseas" className="mt-4 flex items-center gap-3 rounded-3xl bg-gradient-to-br from-indigo-50 to-sky-50 p-4 active:scale-[0.99]">
+        <SolarIcon name="globe" className="h-8 w-8 shrink-0 text-indigo-600" />
+        <span className="min-w-0 flex-1">
+          <b className="block text-[16px]">{t("해외 테마파크 지금 혼잡도")}</b>
+          <span className="text-xs text-gray-600">{t("도쿄 디즈니·유니버설 재팬·홍콩 디즈니 등 7곳 대기시간")}</span>
+        </span>
+        <span aria-hidden className="font-bold text-indigo-600">›</span>
+      </Link>
       <p className="mt-4 mb-6 text-center text-[11px] text-gray-500">
         {t("출처: 인천국제공항공사, 한국공항공사 (공공데이터포털)")}
       </p>
