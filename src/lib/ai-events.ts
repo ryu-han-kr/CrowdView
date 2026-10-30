@@ -63,18 +63,18 @@ export function parseAiEvents(text: string): AiEvent[] {
 }
 
 /** 웹 검색 한 번으로 오늘의 화제 행사 목록. 키가 없으면 [] */
-export async function fetchAiEvents(): Promise<AiEvent[]> {
+export async function fetchAiEvents(model: "claude-opus-5-5" | "claude-sonnet-5-5" = "claude-opus-5-5", test = false): Promise<AiEvent[]> {
   if (!aiEventsEnabled()) return [];
   const client = new Anthropic({ timeout: 5 * 60_000 });
   const today = kst().date;
   // 하루 2번까지만 (10/30: 결과가 비면 trending이 저장하지 않아 매시간 다시 부르던 것)
-  const tries = await kv.incr(`ai-events:tries:${today}`, 2 * 86_400).catch(() => 1);
+  const tries = test ? 1 : await kv.incr(`ai-events:tries:${today}`, 2 * 86_400).catch(() => 1);
   if (tries > 2) return [];
   const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: "user", content: prompt(today) }];
   // 웹 검색이 길어지면 pause_turn 으로 멈춘다 → 받은 내용을 붙여 다시 보내면 이어서 한다 (최대 3번)
   for (let turn = 0; turn < 4; turn++) {
     const res = await aiCreate(client, {
-      model: "claude-opus-5-5",
+      model,
       max_tokens: 16000,
       system: SYSTEM,
       output_config: { effort: "medium" },
