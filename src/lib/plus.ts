@@ -96,6 +96,13 @@ export async function getPlus(userId: string): Promise<PlusState> {
 
 export const isPlus = async (userId: string) => (await getPlus(userId)).active;
 
+/** 지금 기간에 실제로 돈을 낸 결제가 있나 (이용 코드는 0원 기록이라 빠진다 — 토스·Paddle·Play) */
+export async function hasPaidPeriod(userId: string): Promise<boolean> {
+  if (!pool) return false;
+  const rows = await sql("select 1 from payment where user_id = $1 and status = 'paid' and amount > 0 and period_end > now() limit 1", [userId]);
+  return rows.length > 0;
+}
+
 /** 지금 이용 중인 Plus 회원 수 (구독·이용권, 기간 안). SK 실측 하루 한도를 회원 수만큼 늘리는 데 쓴다 */
 export async function activePlusCount(): Promise<number> {
   if (!pool) return 0;

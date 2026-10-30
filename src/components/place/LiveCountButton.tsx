@@ -7,18 +7,21 @@ import { levelOf, inkOf } from "@/lib/levels";
 import { usePlus } from "@/lib/plus-client";
 import { useSession } from "@/lib/auth-client";
 import type { PlanId } from "@/lib/business";
+import { LIVE_PAID_ONLY } from "@/lib/live-flags";
 
 interface Res {
   data?: { level: number; score: number; time: string; poiName: string };
   shared?: boolean;
   left?: { day: number; month: number };
   plan?: PlanId;
+  unlimited?: boolean;
   error?: string;
 }
 
 /**
  * 유료 '지금 실제 인원 보기' (SK텔레콤 장소 혼잡도, 경수님 10/28). 누를 때만 불러온다.
  * 비회원·무료는 잠긴 버튼 → 요금 안내. 회원은 결과 카드 + 남은 횟수 (다른 회원이 10분 안에 본 곳은 횟수 그대로)
+ * 지금은 실제로 결제한 회원·운영자만 (lib/live-flags): 쿠키 대신 서버에 물어 열고, 아니면 잠긴 버튼
  */
 export function LiveCountButton({ placeId }: { placeId: string }) {
   const { t } = useI18n();
@@ -29,7 +32,7 @@ export function LiveCountButton({ placeId }: { placeId: string }) {
   // Plus 표시 쿠키가 없어도 로그인했으면 서버에 한 번 물어본다 (운영자 시험·다른 기기에서 결제한 회원)
   const [allowed, setAllowed] = useState(false);
   useEffect(() => {
-    if (plusCookie || !data?.user) return;
+    if ((plusCookie && !LIVE_PAID_ONLY) || !data?.user) return;
     fetch(`/api/plus/live/${placeId}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((j: Res | null) => {
@@ -40,7 +43,7 @@ export function LiveCountButton({ placeId }: { placeId: string }) {
       })
       .catch(() => {});
   }, [plusCookie, data?.user, placeId]);
-  const plus = plusCookie || allowed;
+  const plus = (plusCookie && !LIVE_PAID_ONLY) || allowed;
 
   if (!plus)
     return (

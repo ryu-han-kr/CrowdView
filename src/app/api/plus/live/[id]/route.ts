@@ -2,9 +2,10 @@
 import { NextResponse } from "next/server";
 import { rateLimit } from "@/lib/ratelimit";
 import { getPlace } from "@/lib/places";
-import { getPlus, markPlusUsed } from "@/lib/plus";
+import { getPlus, hasPaidPeriod, markPlusUsed } from "@/lib/plus";
 import { errorJson, requireUser, unauthorized } from "@/lib/plus-http";
 import { liveCount, liveLeft } from "@/lib/live-count";
+import { LIVE_PAID_ONLY } from "@/lib/live-flags";
 import { isUnlimited } from "@/lib/redeem";
 import { asPlan } from "@/lib/business";
 
@@ -17,13 +18,14 @@ async function member(req: Request) {
   if (await isUnlimited(user)) return { user, plan: "max" as const, unlimited: true };
   const plus = await getPlus(user.id);
   if (!plus.active) return { res: NextResponse.json({ error: "유료 회원 전용이에요" }, { status: 403 }) };
+  if (LIVE_PAID_ONLY && !(await hasPaidPeriod(user.id))) return { res: NextResponse.json({ error: "결제한 회원 전용이에요" }, { status: 403 }) };
   return { user, plan: asPlan(plus.plan), unlimited: false };
 }
 
 export async function GET(req: Request) {
   const m = await member(req);
   if ("res" in m) return m.res;
-  return NextResponse.json({ plan: m.plan, left: await liveLeft(m.user.id, m.plan, m.unlimited) }, noStore);
+  return NextResponse.json({ plan: m.plan, unlimited: m.unlimited, left: await liveLeft(m.user.id, m.plan, m.unlimited) }, noStore);
 }
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {

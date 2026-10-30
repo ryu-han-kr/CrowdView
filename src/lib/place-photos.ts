@@ -40,7 +40,6 @@ const HERO: Record<string, PlacePhoto> = {
   // UI QA 13차: 홍대는 낮 거리 → 밤 네온, 서울대공원은 케이블카 → 장미정원 항공
   "hongdae": { src: "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5e/Hongdae%2C_Seoul-_Part_II_-_Hongdae2237.jpg/1920px-Hongdae%2C_Seoul-_Part_II_-_Hongdae2237.jpg", credit: "lumoplank / Wikimedia Commons", license: "CC0", page: "https://commons.wikimedia.org/wiki/File:Hongdae,_Seoul-_Part_II_-_Hongdae2237.jpg" },
   "seoul-grand-park": { src: "https://tong.visitkorea.or.kr/cms2/website/12/3539212.jpg", credit: "한국관광공사 · 김지연", license: "공공누리 제1유형" },
-  "gwangju-familyland": { src: "https://tong.visitkorea.or.kr/cms/resource/01/3351301_image2_1.jpg", credit: "한국관광공사", license: "공공누리 제1유형", alt: "꽃밭과 대관람차가 보이는 광주패밀리랜드" },
 };
 
 // Claude가 후보 사진을 보고 고른 순서 (경수님 10/29, scripts/korea-data/photo-pick.mts): 흐림·안내도·글자 이미지는 빼고 점수 순, 첫 장이 대표.
