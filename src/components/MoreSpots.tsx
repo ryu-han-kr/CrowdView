@@ -8,6 +8,7 @@ import { distanceKm } from "@/lib/geo";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
 import { Glyph } from "@/components/Glyph";
+import { ScrollRow } from "./ScrollRow";
 
 /** [contentid, 종류, 지역, 이름, 위도, 경도, 작은 사진, 시군구] */
 export type SpotRow = [string, "attraction" | "culture" | "leisure", string, string, number, number, string, string];
@@ -107,7 +108,7 @@ export function MoreSpots({ region, initial, counts }: { region: string; initial
         <span className="ml-2 text-sm font-normal text-gray-500">{t("한국관광공사 등록 {n}곳", { n: counts?.[region] ?? inRegion.length })}</span>
       </h2>
       {lang !== "ko" && <p className="mt-0.5 text-xs text-gray-500">{t("이 목록의 이름은 한국어로 보여요. 누르면 지도에서 위치를 볼 수 있어요.")}</p>}
-      <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
+      <ScrollRow className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
         <button onClick={() => (setKind("all"), setShown(PAGE))} className={chip(kind === "all")}>
           {t("전체")}
         </button>
@@ -116,7 +117,7 @@ export function MoreSpots({ region, initial, counts }: { region: string; initial
             <Glyph e={k.emoji} /> {t(k.label)}
           </button>
         ))}
-      </div>
+      </ScrollRow>
       {!rows ? (
         <p className="mt-4 text-sm text-gray-500">{t("불러오는 중…")}</p>
       ) : (

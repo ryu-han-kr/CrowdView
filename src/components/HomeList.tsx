@@ -19,6 +19,7 @@ import { SUBS_OF, SUB_EMOJI, SUB_LABEL, subOf, type SubCategory } from "@/lib/su
 import { useSpots, type SpotRow } from "./MoreSpots";
 import { EmptyState } from "@/components/EmptyState";
 import { RoundChips } from "@/components/RoundChips";
+import { ScrollRow } from "./ScrollRow";
 
 /** 홈 통합 검색의 다른 탭 항목 (서버에서 만든 명소·축제·서울 지역) */
 export interface SearchItem {
@@ -326,7 +327,7 @@ export function HomeList({
           </div>
         )}
         {regionChips.length > 0 && (
-          <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
+          <ScrollRow className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
             {["all", ...regionChips].map((r) => (
               <button
                 key={r}
@@ -339,7 +340,7 @@ export function HomeList({
                 {r === "all" ? t("전국") : t(r)}
               </button>
             ))}
-          </div>
+          </ScrollRow>
         )}
       </StickyBar>
         {/* 전체 탭에서도 보여, 분류를 고르면 실시간 장소 탭의 그 분류로 */}
@@ -356,7 +357,7 @@ export function HomeList({
         )}
         {/* 세부 분류 (예: 테마파크 → 놀이공원·아쿠아리움·동물원·민속촌) */}
         {(tab === "live" || !withSearch) && subs.length > 0 && (
-          <div className="no-scrollbar mt-2 flex gap-1.5 overflow-x-auto">
+          <ScrollRow className="no-scrollbar mt-2 flex gap-1.5 overflow-x-auto">
             {(["all", ...subs] as const).map((x) => (
               <button
                 key={x}
@@ -370,7 +371,7 @@ export function HomeList({
                 {x === "all" ? t("전체") : t(SUB_LABEL[x])}
               </button>
             ))}
-          </div>
+          </ScrollRow>
         )}
 
       {tab !== "all" && tab !== "live" && (
@@ -410,7 +411,7 @@ export function HomeList({
 
       {(tab === "all" || tab === "live") && (
       <section className="mt-8">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           {/* '실내 액티비티'처럼 긴 이름은 두 줄로 (10/27: 휴대폰에서 '실내 …'로 잘렸다) */}
           <h2 className="line-clamp-2 min-w-0 text-lg leading-tight font-bold break-keep md:text-xl">
             {q
@@ -421,7 +422,7 @@ export function HomeList({
                   ? t("찜한 곳")
                   : t(CATEGORY_LABEL[filter])}
           </h2>
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="ml-auto flex shrink-0 items-center gap-2">
             {view === "list" && (
               <div className="flex rounded-full bg-gray-100 p-0.5 text-xs font-semibold">
                 {(["calm", "busy"] as const).map((s) => (

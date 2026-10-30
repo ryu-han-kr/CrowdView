@@ -7,6 +7,7 @@ import { useI18n } from "@/i18n/client";
 import { currentPosition, distanceKm, type LatLng } from "@/lib/geo";
 import { Glyph } from "@/components/Glyph";
 import { EmptyState } from "@/components/EmptyState";
+import { ScrollRow } from "./ScrollRow";
 
 type Tab = "toilet" | "wifi" | "guide" | "culture" | "reservation";
 const TABS: { id: Tab; label: string; emoji: string; file: (lang: string) => string }[] = [
@@ -143,13 +144,13 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
 
   return (
     <div>
-      <div className="no-scrollbar flex gap-2 overflow-x-auto">
+      <ScrollRow className="no-scrollbar flex gap-2 overflow-x-auto">
         {TABS.map((x) => (
           <button key={x.id} onClick={() => setTab(x.id)} className={chip(tab === x.id)}>
             <Glyph e={x.emoji} /> {t(x.label)}
           </button>
         ))}
-      </div>
+      </ScrollRow>
 
       <button
         onClick={locate}
@@ -159,13 +160,13 @@ export function NearbyFinder({ hubs, names = {}, initialTab = "toilet" }: { hubs
       >
         <Glyph e="📍" /> {at?.name === t("내 위치") ? t("내 위치 기준") : t("내 위치 사용하기")}
       </button>
-      <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
+      <ScrollRow className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
         {hubs.map((h) => (
           <button key={h.id} onClick={() => setAt({ lat: h.lat, lng: h.lng, name: h.name })} className={chip(at?.name === h.name)}>
             {names[h.name] ?? h.name}
           </button>
         ))}
-      </div>
+      </ScrollRow>
 
       {tab === "toilet" && (
         <div className="mt-3 flex flex-wrap gap-2">

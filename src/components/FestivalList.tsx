@@ -18,6 +18,7 @@ import { Glyph } from "@/components/Glyph";
 
 import { dateRange, shortDate } from "@/lib/time";
 import { EmptyState } from "@/components/EmptyState";
+import { ScrollRow } from "./ScrollRow";
 
 const EMOJI = Object.fromEntries(FESTIVAL_CATEGORIES.map((c) => [c.id, c.emoji])) as Record<FestivalCategory, string>;
 
@@ -66,7 +67,7 @@ export function FestivalList({
 
   return (
     <>
-      <div className="no-scrollbar mt-4 flex gap-2 overflow-x-auto">
+      <ScrollRow className="no-scrollbar mt-4 flex gap-2 overflow-x-auto">
         {sidos.map((s) => (
           <button
             key={s}
@@ -81,8 +82,8 @@ export function FestivalList({
             </span>
           </button>
         ))}
-      </div>
-      <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
+      </ScrollRow>
+      <ScrollRow className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
         {[{ id: "all" as const, label: "전체 종류", emoji: "" }, ...cats].map((c) => (
           <button
             key={c.id}
@@ -96,7 +97,7 @@ export function FestivalList({
             <span className="ml-1 text-xs opacity-90">{c.id === "all" ? inRegion.length : inRegion.filter((f) => f.category === c.id).length}</span>
           </button>
         ))}
-      </div>
+      </ScrollRow>
       {/* 배치 다양화 (사용자 10/22): 지금 진행 중 대표 축제 — 왼쪽 큰 사진 + 오른쪽 작은 카드 3 */}
       {(() => {
         const withImg = ongoing

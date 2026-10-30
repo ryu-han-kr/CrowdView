@@ -10,6 +10,7 @@ import { MoreSpots, spotCard, useSpots, type SpotRow } from "./MoreSpots";
 import { StickyBar } from "./StickyBar";
 import { Glyph } from "@/components/Glyph";
 import { EmptyState } from "@/components/EmptyState";
+import { ScrollRow } from "./ScrollRow";
 
 export interface ExploreRegion {
   id: string;
@@ -58,19 +59,19 @@ export function ExploreView({
   return (
     <div>
       <StickyBar className="-mx-5 px-5 py-3 md:mx-0 md:px-0">
-        <div className="no-scrollbar flex gap-2 overflow-x-auto">
+        <ScrollRow className="no-scrollbar flex gap-2 overflow-x-auto">
           {regions.map((r) => (
             <button key={r.id} onClick={() => choose(r.id)} className={chip(r.id === region)}>
               {t(r.id)}
               <span className="ml-1 text-xs opacity-90">{r.landmarks.length + r.festivals.length}</span>
             </button>
           ))}
-        </div>
+        </ScrollRow>
       </StickyBar>
 
       {cur && view === "map" && (
         <section className="mt-4">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-lg font-bold md:text-xl">{t("{region} 명소·축제 지도", { region: t(cur.id) })}</h2>
             <ViewToggle view={view} onChange={setView} />
           </div>
@@ -112,7 +113,7 @@ export function ExploreView({
                 <ViewToggle view={view} onChange={setView} />
               </div>
             </div>
-            <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
+            <ScrollRow className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
               <button onClick={() => setKind("all")} className={chip(kind === "all")}>
                 {t("전체")}
               </button>
@@ -123,7 +124,7 @@ export function ExploreView({
                     <Glyph e={k.emoji} /> {t(k.label)}
                   </button>
                 ))}
-            </div>
+            </ScrollRow>
             {landmarks.length ? (
               <>
               {landmarks.length >= 5 && <FeatureGrid items={landmarks.slice(0, 5)} className="mt-4" />}

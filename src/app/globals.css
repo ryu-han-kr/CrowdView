@@ -496,6 +496,11 @@ html[data-font="l"] body {
 html[data-font="xl"] body {
   zoom: 1.25;
 }
+/* 글자를 키워도 화면이 옆으로 밀리지 않게 (경수님 10/30: 아주 크게에서 페이지가 옆으로 움직였다). 넘치는 줄은 각 화면에서 줄바꿈하고, 이건 마지막 안전장치 */
+html,
+body {
+  overflow-x: clip;
+}
 
 /* 차트 (Bklit UI, src/components/charts): 우리 색(인디고)에 맞춘 토큰. 다크 모드는 dark.css가 회색 변수를 뒤집어 따라온다 */
 :root {
