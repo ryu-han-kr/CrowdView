@@ -533,9 +533,10 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
           <HomeSearchInput />
           <LangSwitcher iconOnly />
         </div>
-        <h1 className="sr-only md:hidden">{ko ? t("지금 어디가 한산할까?") : t("한산할 때 즐기는 한국 여행")}</h1>
+        {/* 제목 h1은 하나만: 화면 읽기·검색용 숨은 제목, PC에 보이는 제목은 같은 글자를 그림으로 (총점검 10/30: h1이 둘이었다) */}
+        <h1 className="sr-only">{ko ? t("지금 어디가 한산할까?") : t("한산할 때 즐기는 한국 여행")}</h1>
         {/* PC 제목: 다른 탭 화면과 같은 머리(색 막대·크기·위 여백 pt-10) — 경수님 10/27: 홈 제목만 거리가 달랐다 */}
-        <PageHeader title={ko ? t("지금 어디가 한산할까?") : t("한산할 때 즐기는 한국 여행")} className="hidden md:flex">
+        <PageHeader title={ko ? t("지금 어디가 한산할까?") : t("한산할 때 즐기는 한국 여행")} heading={false} className="hidden md:flex">
           <p className="mt-1 text-sm text-gray-500">
             {ko ? t("공항·놀이공원·명소·축제의 실시간 혼잡도와 AI 예측을 한눈에") : t("명소·축제 안내와 실시간 혼잡도를 한 곳에서")}
           </p>
