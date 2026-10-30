@@ -3063,5 +3063,415 @@
     ]
    }
   ]
+ },
+ "lotteworld": {
+  "nameEn": "Lotte World Adventure",
+  "spots": [
+   {
+    "label": "매직캐슬",
+    "why": "어드벤처의 상징인 핑크빛 성으로, 입구 앞에서 가장 많이 인증샷을 찍는 대표 포토 스폿",
+    "queries": [
+     "Lotte World Magic Castle",
+     "Lotte World Adventure castle Seoul",
+     "Lotte World Adventure entrance"
+    ]
+   },
+   {
+    "label": "매직아일랜드",
+    "why": "석촌호수 위 섬 속 테마파크로, 성과 놀이기구를 한 컷에 담는 호수 풍경이 유명",
+    "queries": [
+     "Lotte World Magic Island",
+     "Lotte World Magic Island Seokchon Lake",
+     "Lotte World Magic Island castle"
+    ]
+   },
+   {
+    "label": "퍼레이드",
+    "why": "실내 중앙 아트리움에서 열리는 화려한 퍼레이드와 캐릭터 공연은 대표 볼거리",
+    "queries": [
+     "Lotte World Adventure parade",
+     "Lotte World Seoul parade float",
+     "Lotte World Adventure atrium"
+    ]
+   },
+   {
+    "label": "자이로드롭",
+    "why": "실내 파크에서 가장 눈에 띄는 대형 놀이기구로, 높이 솟은 모습이 랜드마크로 꼽힘",
+    "queries": [
+     "Lotte World Gyro Drop",
+     "Lotte World Adventure Gyro Drop Seoul",
+     "Lotte World Adventure ride"
+    ]
+   },
+   {
+    "label": "성 야경",
+    "why": "해가 진 뒤 조명 켜진 매직캐슬과 석촌호수에 비친 불빛, 불꽃 공연으로 유명",
+    "queries": [
+     "Lotte World Magic Island night",
+     "Lotte World Adventure night illumination",
+     "Lotte World Seoul castle fireworks"
+    ]
+   },
+   {
+    "label": "할로윈 축제",
+    "why": "가을마다 파크 전체를 호러 콘셉트로 꾸미고 분장한 방문객이 몰리는 대표 시즌 행사",
+    "queries": [
+     "Lotte World Halloween",
+     "Lotte World Adventure Halloween festival",
+     "Lotte World Adventure seasonal event"
+    ]
+   }
+  ]
+ },
+ "seoulland": {
+  "nameEn": "Seoul Land",
+  "spots": [
+   {
+    "label": "지구별",
+    "why": "서울랜드 정문 앞의 상징 돔 조형물이고, 빛축제 때는 3D 맵핑 공연과 대형 미러볼 무대가 됩니다.",
+    "queries": [
+     "Seoul Land Gwacheon entrance",
+     "Seoul Land Jigubyeol globe",
+     "Seoul Land theme park Korea"
+    ]
+   },
+   {
+    "label": "빅회전목마",
+    "why": "캐릭터타운의 고풍스러운 회전목마입니다. 밤에 조명이 켜지면 화려해져서 포토스팟으로 알려져 있습니다.",
+    "queries": [
+     "Seoul Land merry-go-round",
+     "Seoul Land carousel night",
+     "Seoul Land Character Town"
+    ]
+   },
+   {
+    "label": "루나파크",
+    "why": "서울에서 가장 가까운 빛축제로 꼽히며, 일루미네이션, 레이저쇼, 달 모양 포토존이 있습니다. 야경으로 실제 유명한 행사입니다.",
+    "queries": [
+     "Seoul Land Luna Park light festival",
+     "Seoul Land night illumination",
+     "Seoul Land lights festival Gwacheon"
+    ]
+   },
+   {
+    "label": "루나레이크 벚꽃",
+    "why": "봄에 호수 둘레로 벚꽃이 피고, 지구별 LED 폭포와 어우러져 서울랜드 벚꽃 코스로 홍보됩니다.",
+    "queries": [
+     "Seoul Land cherry blossom",
+     "Seoul Land Luna Lake",
+     "Seoul Grand Park cherry blossom Gwacheon"
+    ]
+   },
+   {
+    "label": "쥬라기랜드",
+    "why": "움직이는 공룡 수십 마리가 모여 있는 인기 콘텐츠입니다. 벚꽃철에는 공룡과 벚꽃을 함께 담는 인증샷 코스로 소개됩니다.",
+    "queries": [
+     "Seoul Land Jurassic Land dinosaur",
+     "Seoul Land dinosaur animatronic",
+     "Seoul Land Jurassic"
+    ]
+   },
+   {
+    "label": "스카이엑스",
+    "why": "미래의 나라 구역의 대표 스릴 놀이기구입니다. 블랙홀2000, 은하열차888과 함께 스릴 라이드로 꼽힙니다.",
+    "queries": [
+     "Seoul Land Sky X",
+     "Seoul Land roller coaster",
+     "Seoul Land Galaxy Train 888"
+    ]
+   }
+  ]
+ },
+ "legoland": {
+  "nameEn": "Legoland Korea Resort",
+  "spots": [
+   {
+    "label": "미니랜드",
+    "why": "국내 주요 도시·관광지를 레고 브릭으로 재현한 구역으로, 리조트 전체 브릭 3,000만 개 중 700만 개 이상이 쓰인 대표 볼거리",
+    "queries": [
+     "Legoland Korea Miniland",
+     "Legoland Korea Chuncheon Miniland Lego",
+     "Legoland Korea Resort Miniland Seoul"
+    ]
+   },
+   {
+    "label": "레고 캐슬",
+    "why": "파크 중심에 있는 랜드마크 성으로, 시즌 행사 때 장식의 중심이 되어 입장객이 많이 찍는 배경",
+    "queries": [
+     "Legoland Korea Lego Castle",
+     "Legoland Korea Resort castle Chuncheon",
+     "Legoland Korea Chuncheon entrance"
+    ]
+   },
+   {
+    "label": "닌자고 월드",
+    "why": "7개 구역 중 하나인 닌자고 테마존으로, 캐릭터와 놀이기구가 모여 있는 인기 구역",
+    "queries": [
+     "Legoland Korea Ninjago World",
+     "Legoland Korea Ninjago ride",
+     "Legoland Chuncheon Ninjago"
+    ]
+   },
+   {
+    "label": "브릭스트릿",
+    "why": "입구 쪽 상점가로, 방문객이 들어서며 처음 사진을 찍는 거리",
+    "queries": [
+     "Legoland Korea Brick Street",
+     "Legoland Korea Resort entrance Brick Street",
+     "Legoland Chuncheon Hajungdo"
+    ]
+   },
+   {
+    "label": "가을 브릭 오어 트릿",
+    "why": "가을 시즌 축제로, 레고 브릭 6만여 개로 만든 대형 호박 포토존과 마법 솥 포토존이 주요 촬영 지점",
+    "queries": [
+     "Legoland Korea Brick-or-Treat",
+     "Legoland Korea Halloween pumpkin Lego",
+     "Legoland Korea Resort autumn festival"
+    ]
+   },
+   {
+    "label": "레고 캐릭터",
+    "why": "파크 곳곳에 레고 캐릭터가 있어 함께 찍는 사진이 후기에서 자주 언급됨",
+    "queries": [
+     "Legoland Korea Lego character statue",
+     "Legoland Korea minifigure statue",
+     "Legoland Korea Resort Lego figure"
+    ]
+   }
+  ]
+ },
+ "oworld": {
+  "nameEn": "Daejeon O-World",
+  "spots": [
+   {
+    "label": "나이트 유니버스",
+    "why": "밤이 되면 공원 곳곳에 조명이 켜지는 빛의 축제로, 대전시 관광 안내에서도 빼놓을 수 없는 볼거리로 꼽힘",
+    "queries": [
+     "Daejeon O-World night",
+     "Daejeon O-World Night Universe",
+     "Oworld Daejeon light festival"
+    ]
+   },
+   {
+    "label": "플라워랜드",
+    "why": "장미원, 트레비 분수, 이벤트 광장 등 꽃과 테마 정원으로 꾸민 구역",
+    "queries": [
+     "Daejeon O-World Flower Land",
+     "Daejeon O-World rose garden",
+     "Oworld Daejeon flower garden"
+    ]
+   },
+   {
+    "label": "버드랜드",
+    "why": "새에게 먹이를 주고 함께 사진을 찍을 수 있는 체험형 구역",
+    "queries": [
+     "Daejeon O-World Bird Land",
+     "Daejeon O-World bird",
+     "Oworld Daejeon aviary"
+    ]
+   },
+   {
+    "label": "주랜드·사파리",
+    "why": "야생동물과 한국늑대를 볼 수 있는 사파리가 있어 아이들에게 인기 많은 동물원 구역",
+    "queries": [
+     "Daejeon O-World zoo",
+     "Daejeon O-World safari",
+     "Oworld Daejeon Korean wolf"
+    ]
+   },
+   {
+    "label": "조이랜드",
+    "why": "다양한 놀이기구가 모여 있는 놀이공원 구역",
+    "queries": [
+     "Daejeon O-World Joy Land",
+     "Daejeon O-World amusement park",
+     "Oworld Daejeon rides"
+    ]
+   },
+   {
+    "label": "할로윈 행사",
+    "why": "오월드 공식 사이트에 올라오는 할로윈 체험 등 계절 행사",
+    "queries": [
+     "Daejeon O-World Halloween",
+     "Oworld Daejeon festival",
+     "Daejeon O-World event"
+    ]
+   }
+  ]
+ },
+ "yongpyong": {
+  "nameEn": "Mona Yongpyong",
+  "spots": [
+   {
+    "label": "발왕산 케이블카",
+    "why": "모나용평 드래곤프라자에서 출발해 해발 1,458m 정상까지 편도 약 18분, 왕복 7.4km를 오르는 국내 최장급 케이블카",
+    "queries": [
+     "Balwangsan cable car",
+     "Yongpyong Balwangsan gondola",
+     "Mona Yongpyong cable car"
+    ]
+   },
+   {
+    "label": "기 스카이워크",
+    "why": "정상부 해발 1,458m에 있는 360도 원형 전망대로, 백두대간과 산 능선 조망이 대표적인 인증샷 장소",
+    "queries": [
+     "Balwangsan Sky Walk",
+     "Balwangsan summit observatory",
+     "Yongpyong Balwangsan skywalk"
+    ]
+   },
+   {
+    "label": "천년주목숲길",
+    "why": "정상부의 무장애 데크 산책로이며 2023 한국관광의 별 무장애 관광지 부문에 선정됨",
+    "queries": [
+     "Balwangsan yew forest trail",
+     "Balwangsan Thousand-year-old yew tree",
+     "Balwangsan Pyeongchang yew"
+    ]
+   },
+   {
+    "label": "발왕산 정상석",
+    "why": "정상 포토존으로 소개되며 케이블카 탑승 후 스카이워크와 함께 기념촬영 코스로 꼽힘",
+    "queries": [
+     "Balwangsan summit stone",
+     "Balwangsan peak Pyeongchang",
+     "Balwangsan mountain Daegwallyeong"
+    ]
+   },
+   {
+    "label": "발왕산 단풍",
+    "why": "10월 초 정상부부터 단풍이 절정을 맞고 중순까지 산자락으로 이어져 케이블카에서 가을 풍경을 감상할 수 있음",
+    "queries": [
+     "Balwangsan autumn",
+     "Balwangsan autumn foliage",
+     "Yongpyong autumn leaves"
+    ]
+   },
+   {
+    "label": "용평 스키슬로프",
+    "why": "총 28면 슬로프와 14기 리프트를 갖춘 국내 대표 스키장으로 겨울 설경 촬영지",
+    "queries": [
+     "Yongpyong Resort ski slope",
+     "Yongpyong Alpine Centre",
+     "Yongpyong Resort winter"
+    ]
+   }
+  ]
+ },
+ "high1": {
+  "nameEn": "High1 Resort",
+  "spots": [
+   {
+    "label": "하이원탑 전망대",
+    "why": "스키장의 랜드마크 전망대로, 겨울이 아닌 계절에도 올라갈 수 있다. 3층에는 'Top of the Top' 전망카페가 있다.",
+    "queries": [
+     "High1 Top observatory",
+     "High1 Resort summit",
+     "High1 Resort Top of the Top",
+     "하이원탑"
+    ]
+   },
+   {
+    "label": "스카이1340 곤돌라",
+    "why": "스키를 타지 않는 사람도 곤돌라로 올라가 겨울 설경과 봄 야생화를 볼 수 있다. 반려견과 함께 탈 수 있다.",
+    "queries": [
+     "High1 Resort gondola",
+     "High1 Resort Sky 1340 gondola",
+     "High1 Jeongseon gondola winter",
+     "하이원 곤돌라"
+    ]
+   },
+   {
+    "label": "설경 슬로프",
+    "why": "백운산 정상 일대를 덮은 눈밭이 하이원 스키장의 대표 이미지다. 15개의 슬로프가 국제스키연맹(FIS) 공인이다.",
+    "queries": [
+     "High1 Resort ski slope snow",
+     "High1 Resort Jeongseon winter",
+     "High1 ski resort Gangwon",
+     "하이원 스키장 슬로프"
+    ]
+   },
+   {
+    "label": "스노우월드",
+    "why": "하이원탑에서 마운틴 허브까지 이어지는 구간에 만든 겨울 놀이터다. 래프팅썰매, 얼음 미끄럼틀, 튜브썰매가 있다.",
+    "queries": [
+     "High1 Resort snow world",
+     "High1 Resort snow sledding",
+     "High1 Resort winter playground",
+     "하이원 스노우월드"
+    ]
+   },
+   {
+    "label": "마운틴 허브",
+    "why": "곤돌라 중간 스테이션이자 산 위의 휴식 공간이다. 식사와 휴식, 곤돌라 환승이 이곳에서 이뤄진다.",
+    "queries": [
+     "High1 Resort Mountain Herb",
+     "High1 Mountain Herb gondola station",
+     "High1 Resort ski house",
+     "하이원 마운틴 허브"
+    ]
+   },
+   {
+    "label": "슬로워 가든",
+    "why": "힐콘도 슬로프에 8,000㎡ 규모로 만든 야생화 단지다. 백일홍과 메리골드 등 12만 송이가 심겨 있다. 하이원에는 샤스타데이지 군락지도 있다.",
+    "queries": [
+     "High1 Resort Slower Garden",
+     "High1 Resort wildflower slope",
+     "High1 Resort flowers summer",
+     "하이원 슬로워 가든"
+    ]
+   }
+  ]
+ },
+ "vivaldi": {
+  "nameEn": "Vivaldi Park Ski World",
+  "spots": [
+   {
+    "label": "스키월드 슬로프",
+    "why": "수도권 최대급 스키장으로, 초중상급 슬로프를 배경으로 스키·보드 인증샷을 가장 많이 찍는 곳",
+    "queries": [
+     "Vivaldi Park Ski World",
+     "Vivaldi Park ski slope Hongcheon",
+     "비발디파크 스키월드"
+    ]
+   },
+   {
+    "label": "야간 스키",
+    "why": "조명이 켜진 슬로프에서 밤까지 스키를 타는 야간 스키 풍경을 많이 공유함",
+    "queries": [
+     "Vivaldi Park night skiing",
+     "Vivaldi Park Ski World night",
+     "비발디파크 야간 스키"
+    ]
+   },
+   {
+    "label": "눈썰매장",
+    "why": "가족 여행객이 겨울마다 눈썰매 타는 모습을 찍는 대표 겨울 체험 시설",
+    "queries": [
+     "Vivaldi Park snow sledding",
+     "Vivaldi Park snow park Hongcheon",
+     "비발디파크 눈썰매장"
+    ]
+   },
+   {
+    "label": "오션월드",
+    "why": "리조트에 붙은 대형 워터파크로 실내외 슬라이드와 파도풀 사진이 많음",
+    "queries": [
+     "Vivaldi Park Ocean World",
+     "Ocean World Hongcheon water park",
+     "비발디파크 오션월드"
+    ]
+   },
+   {
+    "label": "소노펠리체",
+    "why": "비발디파크 단지 안 고급 리조트 건물로, 설경과 함께 찍는 숙소 외관 사진이 많음",
+    "queries": [
+     "Sono Felice Vivaldi Park",
+     "Vivaldi Park resort Hongcheon",
+     "소노펠리체 비발디파크"
+    ]
+   }
+  ]
  }
 }
