@@ -132,7 +132,7 @@ export function DailyTable({ rows, lang, t, unit }: { rows: DailyRow[]; lang: La
                   </span>
                 </div>
                 <span className="mt-2.5 grid grid-cols-24 gap-0.5">{strip(r, "h-4")}</span>
-                <span className="relative mt-1 block h-3.5 text-[11px] text-gray-400">
+                <span className="relative mt-1 block h-3.5 text-[11px] text-gray-500">
                   {[0, 6, 12, 18].map((h) => (
                     <span key={h} className="absolute" style={{ left: `${(h / 24) * 100}%` }}>
                       {h}

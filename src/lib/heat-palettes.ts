@@ -1,4 +1,4 @@
-// 지난 기록 히트맵 색 (경수님 10/30: 설정에서 원할 때 바꿀 수 있게, 기본은 사람들에게 익숙한 파·초·노·주·빨)
+// 지난 기록 히트맵 색 (경수님 10/30: 설정에서 원할 때 바꿀 수 있게, 기본은 사람들에게 익숙한 파·초·노·주·빨을 부드러운 톤으로)
 // 칸 색은 CSS 변수 --heat-0~4 (혼잡 5단계 순서). html[data-heat]와 localStorage(cv:heat), 그리기 전에 layout 스크립트가 붙인다
 import { LEVELS } from "./levels";
 
@@ -11,7 +11,11 @@ export interface HeatPalette {
 }
 
 export const HEAT_PALETTES: HeatPalette[] = [
-  { id: "traffic", name: "파·초·노·주·빨", colors: ["#3b82f6", "#22c55e", "#eab308", "#f97316", "#ef4444"] },
+  // 기본: 한 단계 부드러운 파·초·노·주·빨, 노랑은 맑은 개나리색 (지인 QA 10/30: 원색은 너무 강하고 노랑이 칙칙했다)
+  { id: "traffic", name: "파·초·노·주·빨", colors: ["#60a5fa", "#4ade80", "#ffe45c", "#fb923c", "#f87171"] },
+  { id: "traffic-vivid", name: "파·초·노·주·빨 (선명)", colors: ["#3b82f6", "#22c55e", "#eab308", "#f97316", "#ef4444"] },
+  { id: "traffic-muted", name: "파·초·노·주·빨 (차분하게)", colors: ["#7ba7e0", "#7fc79a", "#ecc94b", "#ef9f6b", "#e47c7c"] },
+  { id: "traffic-pastel", name: "파·초·노·주·빨 (파스텔)", colors: ["#93c5fd", "#86efac", "#fde047", "#fdba74", "#fca5a5"] },
   { id: "coral", name: "코랄", colors: ["#ffedd5", "#fdba74", "#fb7185", "#dc2626", "#7f1d1d"] },
   { id: "level", name: "혼잡도 단계 색", colors: LEVELS.map((l) => l.color) as HeatPalette["colors"] },
   { id: "green", name: "초록", colors: ["#ecfccb", "#d9f99d", "#a3e635", "#65a30d", "#3f6212"] },

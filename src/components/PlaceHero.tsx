@@ -33,12 +33,18 @@ export function PlaceHero({
   photos: given,
   chips = [],
   favorite = true,
+  height = HERO_HEIGHT,
+  desktop = true,
 }: {
   place: Place;
   gallery?: string[];
   photos?: ViewerPhoto[];
   chips?: HeroChip[];
   favorite?: boolean;
+  /** 휴대폰 사진 높이 (공항은 사진이 덜 중요해 낮게, 지인 QA 10/30) */
+  height?: number;
+  /** PC 큰 사진 격자까지 그릴지 (공항은 PC에서 왼쪽 칸 사진을 따로 쓴다) */
+  desktop?: boolean;
 }) {
   const router = useRouter();
   const { isFavorite, toggle } = useFavorites();
@@ -58,7 +64,7 @@ export function PlaceHero({
     given && given.length
       ? given
       : [...new Set([...(place.image ? [place.image] : []), ...gallery])].map((src) => ({ src, credit: photoCreditText(src, place, t) }));
-  const progress = Math.min(1, y / (HERO_HEIGHT - 64));
+  const progress = Math.min(1, y / (height - 64));
   const fav = isFavorite(place.id);
   const name = t(place.name);
 
@@ -122,7 +128,7 @@ export function PlaceHero({
       {/* 휴대폰: 넘겨 보는 사진 */}
       <div
         className="relative overflow-hidden md:hidden"
-        style={{ height: HERO_HEIGHT, background: `linear-gradient(160deg, hsl(${place.hue} 70% 62%), hsl(${place.hue + 50} 65% 40%))` }}
+        style={{ height, background: `linear-gradient(160deg, hsl(${place.hue} 70% 62%), hsl(${place.hue + 50} 65% 40%))` }}
       >
         {photos.length ? (
           <>
@@ -158,7 +164,7 @@ export function PlaceHero({
       </div>
 
       {/* PC: 큰 사진 + 2×2 */}
-      <div className="hidden md:mt-6 md:block">
+      <div className={desktop ? "hidden md:mt-6 md:block" : "hidden"}>
         {photos.length ? (
           <div
             className={`grid h-[440px] gap-2 overflow-hidden rounded-3xl ${photos.length >= 5 ? "grid-cols-4 grid-rows-2" : photos.length >= 3 ? "grid-cols-3 grid-rows-2" : "grid-cols-1"}`}

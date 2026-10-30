@@ -20,6 +20,7 @@ import { getHistory } from "@/lib/crowd/history";
 import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
 import { PLACES, getPlace, photoCreditText } from "@/lib/places";
+import { PlaceHero } from "@/components/PlaceHero";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import placeImages from "@/data/korea/place-images.json";
 import { kst } from "@/lib/time";
@@ -42,6 +43,9 @@ export function generateStaticParams({ params }: { params: { lang: string } }) {
     id: p.id,
   }));
 }
+
+// 휴대폰 위 사진 높이: 장소(300)보다 낮게 — 공항은 사진이 공간 소개 역할이 작고, 얇은 띠(시안 B)를 좋아한 의견과 사진이 잘린다는 의견의 중간 (지인 QA 10/30)
+const AIRPORT_HERO = 220;
 
 const SOURCE_LABEL = {
   "incheon-airport": "인천국제공항공사 출국장 혼잡도 (1분 주기)",
@@ -91,23 +95,28 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
   const zoneLabels = Object.fromEntries(zones.map((z) => [z.id, z.label]));
 
   return (
-    <main className="px-5 pt-4 pb-8 md:px-0 md:pt-8">
-      <Link href="/airport" className="text-sm text-gray-500">
+    <main className="px-5 pb-8 md:px-0 md:pt-8">
+      {/* 휴대폰: 장소 상세와 같은 꽉 찬 사진 + 위 뒤로 가기 (레퍼런스 여기어때·트립닷컴). 공항은 사진이 덜 중요해 낮게 (지인 QA 10/30) */}
+      {photos.length > 0 && (
+        <div className="-mx-5 md:hidden">
+          <PlaceHero place={place} photos={photos.map((src) => ({ src, credit: photoCreditText(src, place, t) }))} height={AIRPORT_HERO} desktop={false} />
+        </div>
+      )}
+      <Link href="/airport" className={`text-sm text-gray-500 ${photos.length > 0 ? "hidden md:inline" : "mt-4 inline-block"}`}>
         ← {t("공항 목록")}
       </Link>
 
       {/* PC: 왼쪽(사진·지금·날씨) 고정 + 오른쪽(파트 탭) */}
       <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-10">
         <div className="lg:sticky lg:top-24 lg:self-start">
-          {/* 사진 여러 장 옆으로 넘겨 보기 — 얇은 띠로 (지인 QA 10/30 시안 B: 사진이 커서 제목·혼잡도가 묻혔다) */}
+          {/* PC: 왼쪽 칸 사진 넘겨 보기 */}
           {photos.length > 0 && (
             <PhotoGallery
               photos={photos}
               alt={t(place.name)}
               credits={photos.map((src) => photoCreditText(src, place, t))}
-              sizes="(max-width: 448px) 100vw, 448px"
-              className="mt-3 h-28 rounded-3xl bg-gray-100 md:h-40"
-              counterClassName="hidden"
+              sizes="448px"
+              className="mt-3 hidden h-56 rounded-3xl bg-gray-100 md:block"
             />
           )}
 

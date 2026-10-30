@@ -98,7 +98,7 @@ function LevelLines() {
   return (
     <g pointerEvents="none">
       {LEVELS.slice(1).map((l) => (
-        <line key={l.key} x1={0} x2={innerWidth} y1={yScale(l.min)} y2={yScale(l.min)} stroke="#eef0f3" strokeWidth="1" />
+        <line key={l.key} x1={0} x2={innerWidth} y1={yScale(l.min)} y2={yScale(l.min)} stroke="var(--color-gray-100)" strokeWidth="1" />
       ))}
     </g>
   );
@@ -121,8 +121,9 @@ function HourAxis({ hours, nowIdx, nowLabel }: { hours: number[]; nowIdx: number
       )}
       {nowX !== null && (
         <g>
-          <rect x={nowX - 22} y={y - 15} width="44" height="21" rx="10.5" fill="#111827" />
-          <text x={nowX} y={y} textAnchor="middle" fontSize="13" fontWeight="700" fill="#fff">
+          {/* 차트 색 변수라 다크 모드에서 밝은 알약 + 어두운 글씨로 뒤집힌다 */}
+          <rect x={nowX - 22} y={y - 15} width="44" height="21" rx="10.5" fill="var(--chart-foreground)" />
+          <text x={nowX} y={y} textAnchor="middle" fontSize="13" fontWeight="700" fill="var(--chart-background)">
             {nowLabel}
           </text>
         </g>
