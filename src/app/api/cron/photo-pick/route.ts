@@ -2,6 +2,8 @@
 // Claude가 사진마다 점수·뺄지·어느 대표 명소인지·설명(alt)을 매긴다. 키(ANTHROPIC_API_KEY)가 Vercel 비밀 값이라 운영 서버에서 돌린다 — CRON_SECRET이 있어야 부를 수 있다
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
+import { aiCreate, aiEnabled } from "@/lib/ai-quota";
+import { QuotaError } from "@/lib/api-quota";
 
 export const maxDuration = 300;
 
@@ -50,9 +52,18 @@ spot: 그 사진이 보여 주는 대표 명소 이름을 위 목록에서 그�
 reason은 한국어 한 문장, alt는 화면 읽기용 한국어 설명(40자 안). hero는 맨 위 큰 칸에 쓸, 가장 매력적인 사진 번호.`;
 
 export async function POST(req: Request) {
+  try {
+    return await handle(req);
+  } catch (e) {
+    if (e instanceof QuotaError) return NextResponse.json({ error: e.message }, { status: 429 });
+    throw e;
+  }
+}
+
+async function handle(req: Request) {
   const secret = process.env.CRON_SECRET;
   if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  if (!process.env.ANTHROPIC_API_KEY) return NextResponse.json({ error: "no key" }, { status: 503 });
+  if (!aiEnabled()) return NextResponse.json({ error: "no key" }, { status: 503 });
   const body = (await req.json().catch(() => null)) as { name?: string; category?: string; model?: string; spots?: string[]; images?: string[] } | null;
   const images = (body?.images ?? []).filter((x) => typeof x === "string").slice(0, 40);
   if (!body?.name || !images.length) return NextResponse.json({ error: "bad request" }, { status: 400 });
@@ -66,7 +77,7 @@ export async function POST(req: Request) {
   content.push({ type: "text", text: prompt(body.name, body.category ?? "", images.length, spots) });
 
   const client = new Anthropic({ timeout: 240_000 });
-  const res = await client.beta.messages.create({
+  const res = await aiCreate(client, {
     model,
     max_tokens: 12000,
     // Haiku는 서버 쪽 대체 모델이 없다
