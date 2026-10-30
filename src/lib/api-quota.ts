@@ -117,6 +117,13 @@ export async function beforeCall(api: ApiInfo | undefined, amount = 1): Promise<
   }
 }
 
+/** 한도로 막지 않고 세기만 한다 (이미 고른 사진을 보여 주는 호출처럼 꼭 필요하고 양이 정해진 것, 10/30 구글 지도 사진) */
+export async function countCall(api: ApiInfo | undefined, amount = 1): Promise<void> {
+  if (!api) return;
+  await kv.incr(quotaKey(api.id), KEEP_DAYS * 86_400, amount).catch(() => 0);
+  if (api.monthlyLimit) await kv.incr(monthKey(api.id), KEEP_MONTH, amount).catch(() => 0);
+}
+
 /** 미리 잡아 둔 양 중 안 쓴 만큼 돌려준다 (Claude 웹 검색처럼 끝나 봐야 아는 것) */
 export async function refundCall(api: ApiInfo | undefined, amount: number): Promise<void> {
   if (!api || amount <= 0) return;
