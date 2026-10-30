@@ -57,6 +57,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...GUIDE.filter((p) => p.img || p.kind === "attraction").map((p) => entry(`/guide/${p.id}`, "weekly", 0.5, synced)),
     entry("/events", "daily", 0.9),
     entry("/airport", "hourly", 0.8),
+    entry("/overseas", "hourly", 0.7),
     entry("/map", "hourly", 0.7),
     ...PLACES.map((p) => entry(placeHref(p), "hourly", 0.8)),
     ...SEOUL_AREAS.map((a) => entry(`/seoul/${a.code}`, "hourly", 0.7)),
