@@ -835,6 +835,12 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
           {news && news.hits.length > 0 && (
             <section className="mt-8">
               <h2 className="text-xl font-extrabold tracking-tight">{t("최근 소식")}</h2>
+              {news.summary?.[lang] && (
+                <p className="mt-3 rounded-2xl bg-indigo-50 px-4 py-3 text-[15px] leading-snug font-bold text-indigo-950">
+                  <span className="mr-1.5 text-xs font-extrabold text-indigo-600">{t("지금 이슈")}</span>
+                  {news.summary[lang]}
+                </p>
+              )}
               <ul className="sector mt-3 space-y-2 p-3">
                 {news.hits.map((h) => (
                   <li key={h.url}>
@@ -847,7 +853,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                   </li>
                 ))}
               </ul>
-              <p className="mt-1.5 text-[11px] text-gray-500">{t("뉴스 검색으로 하루 한 번 모아요. 내용은 각 기사에서 확인하세요.")}</p>
+              <p className="mt-1.5 text-[11px] text-gray-500">{t(news.summary?.[lang] ? "뉴스 검색으로 하루 한 번 모으고, '지금 이슈'는 AI가 기사를 요약했어요. 내용은 각 기사에서 확인하세요." : "뉴스 검색으로 하루 한 번 모아요. 내용은 각 기사에서 확인하세요.")}</p>
             </section>
           )}
 

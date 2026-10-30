@@ -7,6 +7,7 @@ import { APIS, beforeCall } from "./api-quota";
 import { kv } from "./cache";
 import { naverDatalabKeys, SEARCH_TREND_URL, searchTrendHeaders } from "./crowd/extra-signals";
 import { festivalHref, getFestivals, isLongRunning } from "./festivals";
+import { summarizeNews } from "./news-summary";
 import { heroImage } from "./place-photos";
 import { PLACES, placeHref } from "./places";
 import { addDays, kst } from "./time";
@@ -40,6 +41,8 @@ export interface Trending {
 export interface PlaceNews {
   date: string;
   hits: NewsHit[];
+  /** AI가 기사로 정리한 '지금 이슈' 한 줄 (언어별). 방문과 상관없는 기사뿐이면 없다 */
+  summary?: Record<string, string>;
 }
 const newsKey = (placeId: string) => `news:v1:${placeId}`;
 export async function getPlaceNews(placeId: string): Promise<PlaceNews | undefined> {
@@ -87,7 +90,11 @@ async function refreshPlaceNews(today: string): Promise<TrendItem[]> {
       .filter((h, i, arr) => h.title.includes(short) && arr.findIndex((x) => x.url === h.url) === i)
       .slice(0, 3);
     if (!hits.length) continue;
-    await kv.set(newsKey(p.id), JSON.stringify({ date: today, hits } satisfies PlaceNews), 3 * 86_400).catch(() => {});
+    // 기사가 그대로면 지난 요약을 다시 쓰고, 바뀐 날에만 AI를 부른다
+    const prev = await getPlaceNews(p.id);
+    const same = prev?.hits.map((h) => h.url).join() === hits.map((h) => h.url).join();
+    const summary = same ? prev?.summary : await summarizeNews(p.name, hits).catch(() => undefined);
+    await kv.set(newsKey(p.id), JSON.stringify({ date: today, hits, summary } satisfies PlaceNews), 3 * 86_400).catch(() => {});
     const ev = hits.find(isEvent);
     if (ev) events.push(newsEvent(p, ev));
   }
