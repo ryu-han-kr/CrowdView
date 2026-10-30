@@ -7,6 +7,7 @@
 //   비교·확인 시트: BEFORE_AFTER 폴더(기본 현재 폴더)에 photo-pick-compare.png, photo-pick-pending.png
 // 실행: npx tsx scripts/korea-data/photo-pick.mts   (CRON_SECRET, ONLY=everland,high1, MODEL=claude-sonnet-5-5|claude-haiku-5-5|claude-opus-5-5, RESEARCH=1 다시 조사)
 //       APPROVE=everland:3,7 → 확인 시트 번호를 photos 로 옮긴다 (Claude는 다시 부르지 않음)
+import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import sharp from "sharp";
@@ -39,7 +40,9 @@ const PER_SPOT = 5;
 const UA = { "User-Agent": "CrowdView/1.0 (https://crowdview.app; photo curation)" };
 
 type Pick = { n: number; score: number; reject: boolean; spot: string; reason: string; alt: string };
-type Saved = PlacePhoto & { score: number; label?: string; reason?: string };
+type Saved = PlacePhoto & { score: number; label?: string; reason?: string; gname?: string };
+// 구글 지도 사진 후보 (GOOGLE=1): 받아 보는 주소(src)와 저장할 사진 이름(gname)
+type Cand = PlacePhoto & { gname?: string };
 type Entry = { model: string; date: string; photos: Saved[]; pending: Saved[] };
 type Spots = { nameEn?: string; spots: { label: string; why: string; queries: string[] }[] };
 
@@ -91,6 +94,15 @@ async function commons(q: string): Promise<PlacePhoto[]> {
     .filter((x) => x.src && Math.max(x.w, x.h) >= 1200 && /CC0|CC BY|Public domain/i.test(x.lic) && !/NC|ND/.test(x.lic))
     .map((x) => ({ src: x.src, w: x.w, h: x.h, credit: `${x.who} / Wikimedia Commons`, license: x.lic, page: x.page }));
 }
+
+// 구글 지도 방문자 사진 (GOOGLE=1, 경수님 10/30: 관광공사·위키미디어에 밝은 사진이 없는 곳). 키가 운영에만 있어 /api/cron/photo-google 로 받는다
+async function google(id: string): Promise<Cand[]> {
+  const r = await post<{ photos?: { name: string; uri: string; w: number; h: number; author: string; authorUri?: string }[] }>("photo-google", { id, max: 10 });
+  if (!r.photos) console.log(`  구글 사진 실패 ${r.error ?? ""}`);
+  return (r.photos ?? []).map((x) => ({ src: x.uri, w: x.w, h: x.h, credit: `Google 지도 · ${x.author || "방문자"}`, license: "Google 지도 사용자 사진", page: x.authorUri, gname: x.name }));
+}
+/** 구글 사진을 보낼 우리 주소 (api/gphoto/[id]/[k]) — 사진 이름의 짧은 해시 */
+const gsrc = (id: string, gname: string) => `/api/gphoto/${id}/${createHash("sha1").update(gname).digest("hex").slice(0, 12)}`;
 
 // 관광공사 관광사진 갤러리 (전문 사진가 촬영, 공공누리 제1유형) — 장소 이름으로 찾아 제목·검색어에 그 이름이 있는 것만 (10/30: 키워드 검색이 다시 된다)
 async function kto(name: string): Promise<PlacePhoto[]> {
@@ -160,7 +172,8 @@ for (const id of ONLY.length ? ONLY : PILOT) {
     found.push(...per);
   }
   const pro = (await kto(place.name.replace(/\(.*?\)/g, "").trim()).catch(() => [])).slice(0, 12);
-  const all = [...current.slice(0, 8), ...pro, ...found].filter((p, i, a) => a.findIndex((x) => x.src === p.src) === i);
+  const goo = process.env.GOOGLE ? await google(id).catch(() => []) : [];
+  const all: Cand[] = [...current.slice(0, 8), ...pro, ...goo, ...found].filter((p, i, a) => a.findIndex((x) => x.src === p.src) === i);
   const loaded = (await Promise.all(all.slice(0, MAX + 8).map(load))).filter((x): x is NonNullable<typeof x> => !!x).slice(0, MAX);
   if (loaded.length < 3) {
     console.log(`${place.name}: 후보 ${loaded.length}장 — 건너뜀`);
@@ -193,6 +206,7 @@ for (const id of ONLY.length ? ONLY : PILOT) {
   const unsure = scored.filter((x) => x.pick.score >= 5 && x.pick.score < 7);
   const toSaved = (x: (typeof scored)[number]): Saved => ({
     ...x.p,
+    ...((x.p as Cand).gname ? { src: gsrc(id, (x.p as Cand).gname!) } : {}),
     alt: x.pick.alt || x.p.alt,
     score: x.pick.score,
     label: x.pick.spot && x.pick.spot !== "전경" ? x.pick.spot : undefined,
