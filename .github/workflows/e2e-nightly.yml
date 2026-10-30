@@ -14,7 +14,8 @@ defaults:
 
 jobs:
   e2e-prod:
-    runs-on: [self-hosted, crowdview]
+    # 새벽에 도는 일은 노트북에서만 (경수님 10/30: 밤엔 데스크탑을 게임에 쓴다)
+    runs-on: [self-hosted, crowdview, laptop]
     timeout-minutes: 30
     env:
       E2E_BASE_URL: https://crowdview.app
