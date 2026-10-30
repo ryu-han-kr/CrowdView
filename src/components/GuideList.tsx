@@ -180,9 +180,9 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
       ) : (
         <>
           {failed && <p className="mt-4 text-xs font-semibold text-red-600 md:mt-0">{t("데이터를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.")}</p>}
-          <div className="mt-4 flex items-center justify-between md:mt-0">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-2 md:mt-0">
             <p className="text-sm text-gray-500">{t("{n}곳", { n: list.length })}</p>
-            <div className="flex items-center gap-2">
+            <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
               {view === "list" && !me && (
                 <div className="flex rounded-full bg-gray-100 p-0.5 text-xs font-semibold">
                   {[false, true].map((c) => (

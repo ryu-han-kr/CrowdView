@@ -14,6 +14,7 @@ import { INTERESTS, type Interest, type RoutePlan } from "@/lib/route";
 import { LevelBadge } from "./Level";
 import { Glyph } from "@/components/Glyph";
 import { EmptyState } from "@/components/EmptyState";
+import { ScrollRow } from "./ScrollRow";
 
 interface Hub {
   id: string;
@@ -250,13 +251,13 @@ export function RoutePlanner({ hubs, names = {}, kakao = false }: { hubs: Hub[];
           >
             <Glyph e="📍" /> {locating ? t("위치 찾는 중…") : start?.name === t("내 위치") ? t("내 위치에서 출발") : t("내 위치 사용하기")}
           </button>
-          <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
+          <ScrollRow className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
             {hubs.map((h) => (
               <button key={h.id} onClick={() => setStart({ lat: h.lat, lng: h.lng, name: h.name })} className={chip(start?.name === h.name)}>
                 {tr(h.name)}
               </button>
             ))}
-          </div>
+          </ScrollRow>
         </div>
 
         <div>
@@ -313,7 +314,7 @@ export function RoutePlanner({ hubs, names = {}, kakao = false }: { hubs: Hub[];
 
         <div>
           <p className="text-sm font-bold">{t("출발 날짜")}</p>
-          <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
+          <ScrollRow className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
             {[0, 1, 2, 3, 4, 5, 6].map((d) => (
               <button
                 key={d}
@@ -328,9 +329,9 @@ export function RoutePlanner({ hubs, names = {}, kakao = false }: { hubs: Hub[];
                 {d > 1 && now !== null && [0, 6].includes(kstDay(d, now)) && <span className="ml-1 text-[10px] text-rose-400">●</span>}
               </button>
             ))}
-          </div>
+          </ScrollRow>
           <p className="mt-3 text-sm font-bold">{t("출발 시각")}</p>
-          <div className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
+          <ScrollRow className="no-scrollbar mt-2 flex gap-2 overflow-x-auto">
             {day === 0 && (
               <button onClick={() => setHour(null)} className={chip(hour === null)}>
                 {t("지금")}
@@ -341,7 +342,7 @@ export function RoutePlanner({ hubs, names = {}, kakao = false }: { hubs: Hub[];
                 {t("{h}시", { h })}
               </button>
             ))}
-          </div>
+          </ScrollRow>
           {(day > 0 || (hour !== null && now !== null && hour - hourNow > 10)) && (
             <p className="mt-2 text-[11px] text-gray-500">{t("12시간 뒤부터는 지하철 승하차로 본 요일·시간대 패턴으로 예측해요")}</p>
           )}
@@ -385,7 +386,7 @@ export function RoutePlanner({ hubs, names = {}, kakao = false }: { hubs: Hub[];
 
         <div>
           <p className="text-sm font-bold">{t("이동")}</p>
-          <div className="mt-2 flex gap-2">
+          <div className="mt-2 flex flex-wrap gap-2">
             {(["transit", "walk", "car"] as const).map((m) => (
               <button key={m} onClick={() => setTransport(m)} className={chip(transport === m)}>
                 <Glyph e={m === "transit" ? "🚇" : m === "walk" ? "🚶" : "🚗"} /> {m === "transit" ? t("대중교통") : m === "walk" ? t("걷기 위주") : t("자동차")}
