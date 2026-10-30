@@ -19,6 +19,8 @@ export interface SktCongestion {
   score: number;
   /** YYYY-MM-DD HH:mm */
   time: string;
+  /** ㎡당 추정 방문자 수 (SK congestion = 추정 방문자 수 ÷ 면적). 넓이를 곱하면 인원 (lib/live-count) */
+  density?: number;
 }
 
 // 서울시 4단계 점수와 맞춘다 (lib/seoul-live.ts SEOUL_LEVEL_SCORE)
@@ -85,6 +87,7 @@ export async function getSktCongestion(name: string, lat: number, lng: number, k
         level,
         score: LEVEL_SCORE[level],
         time: dt.length >= 12 ? `${dt.slice(0, 4)}-${dt.slice(4, 6)}-${dt.slice(6, 8)} ${dt.slice(8, 10)}:${dt.slice(10, 12)}` : "",
+        density: Number.isFinite(Number(row.congestion)) ? Number(row.congestion) : undefined,
       };
     });
   } catch (e) {

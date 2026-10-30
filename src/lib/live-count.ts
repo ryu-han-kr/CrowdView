@@ -6,16 +6,33 @@ import { kv } from "./cache";
 import { planOf, type PlanId } from "./business";
 import { getSktCongestion, type SktCongestion } from "./skt";
 import { kst } from "./time";
+import sktAreas from "@/data/skt-areas.json";
 import sktPois from "@/data/skt-pois.json";
 
 // SK 퍼즐이 실제 인원을 주는 장소 (10/30: 퍼즐은 정해진 3만여 곳만 — scripts/korea-data/skt-pois.mts 로 맞춤)
 const SKT_POIS = sktPois as Record<string, { poiId: string; poiName: string }>;
 export const hasLiveCount = (placeId: string) => placeId in SKT_POIS;
 
+// 장소 넓이(㎡, OpenStreetMap 경계 — scripts/korea-data/skt-areas.mts). ㎡당 인원 × 넓이 = 약 몇 명 (경수님 10/30: 단계 말고 인원으로)
+const AREAS = sktAreas as Record<string, { m2: number }>;
+
+/** 보기 좋게 반올림: 100 미만은 그대로, 1천 미만은 10명, 그 위는 100명 단위 */
+export function roundPeople(n: number): number {
+  if (n < 100) return Math.round(n);
+  if (n < 1000) return Math.round(n / 10) * 10;
+  return Math.round(n / 100) * 100;
+}
+
+/** SK 결과에 '약 몇 명'을 붙인다. 넓이를 모르거나 SK가 ㎡당 값을 안 주면 그대로 (단계만) */
+export function withPeople(placeId: string, data: SktCongestion): SktCongestion & { people?: number } {
+  const m2 = AREAS[placeId]?.m2;
+  return m2 && data.density !== undefined ? { ...data, people: roundPeople(data.density * m2) } : data;
+}
+
 const SHARE_SECONDS = 600;
 
 export interface LiveCountResult {
-  data?: SktCongestion;
+  data?: SktCongestion & { people?: number };
   /** 다른 회원이 10분 안에 본 결과라 횟수가 줄지 않았다 */
   shared: boolean;
   left: { day: number; month: number };
@@ -50,7 +67,7 @@ export async function liveCount(
   const P = unlimited ? { liveDaily: Infinity, liveMonthly: Infinity } : planOf(plan);
   const cacheKey = `live:place:${place.id}`;
   const hit = await kv.get(cacheKey).catch(() => null);
-  if (hit) return { data: JSON.parse(String(hit)) as SktCongestion, shared: true, left: await liveLeft(uid, plan, unlimited) };
+  if (hit) return { data: withPeople(place.id, JSON.parse(String(hit)) as SktCongestion), shared: true, left: await liveLeft(uid, plan, unlimited) };
 
   const u = await used(uid);
   if (u.day >= P.liveDaily) return { shared: false, left: { day: 0, month: Math.max(0, P.liveMonthly - u.month) }, error: "오늘 횟수를 다 썼어요" };
@@ -67,5 +84,5 @@ export async function liveCount(
     kv.incr(monthKey(uid), 40 * 86_400, 1).catch(() => 0),
     kv.set(cacheKey, JSON.stringify(data), SHARE_SECONDS).catch(() => {}),
   ]);
-  return { data, shared: false, left: unlimited ? UNLIMITED : { day: P.liveDaily - u.day - 1, month: P.liveMonthly - u.month - 1 } };
+  return { data: withPeople(place.id, data), shared: false, left: unlimited ? UNLIMITED : { day: P.liveDaily - u.day - 1, month: P.liveMonthly - u.month - 1 } };
 }
