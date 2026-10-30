@@ -149,12 +149,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return pageMeta({
     lang,
     path: placeHref(place),
-    // 실측 데이터가 없는 곳은 제목에도 '예측'이라고 쓴다
+    // 실측 데이터가 없는 곳은 제목에도 '예측'이라고 쓴다.
+    // 사람들이 실제로 치는 말('오늘 에버랜드 사람 많나요')을 제목·설명에 (총점검 10/30: 서치콘솔에 '혼잡도' 검색어로만 노출, '사람'으로는 거의 없었다)
     title:
       place.seoulArea || place.themeparksId || place.airport
-        ? t("{name} 실시간 혼잡도", { name: t(place.name) })
-        : t("{name} 혼잡 예측·방문 추천 시간", { name: t(place.name) }),
-    description: t("{name} 지금 혼잡도와 오늘 시간대별 예측, 언제 가면 한산한지 알려드려요", { name: t(place.name) }),
+        ? t("{name} 혼잡도 · 오늘 사람 많나요? 실시간 확인", { name: t(place.name) })
+        : t("{name} 혼잡도 예측 · 오늘 사람 많을까? 한산한 시간", { name: t(place.name) }),
+    description: t("{name} 오늘 사람 얼마나 많은지 지금 혼잡도와 시간대별 예측으로 확인하고, 한산한 시간에 가세요", { name: t(place.name) }),
     // 공유 미리보기: 대표 사진 (직접 고른 사진·관광사진 갤러리가 있으면 그것)
     image: heroImage(place),
   });
