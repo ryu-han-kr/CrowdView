@@ -5,6 +5,7 @@ import { getPlace } from "@/lib/places";
 import { getPlus, markPlusUsed } from "@/lib/plus";
 import { errorJson, requireUser, unauthorized } from "@/lib/plus-http";
 import { liveCount, liveLeft } from "@/lib/live-count";
+import { LIVE_PAUSED } from "@/lib/live-flags";
 import { isUnlimited } from "@/lib/redeem";
 import { asPlan } from "@/lib/business";
 
@@ -15,6 +16,7 @@ async function member(req: Request) {
   if (!user) return { res: unauthorized() };
   // 운영자(ADMIN_EMAILS·운영자 코드)는 결제 없이 Max, 횟수 제한 없음 (경수님 10/28 '버튼 잘 작동하나 확인', 10/29 운영자 코드)
   if (await isUnlimited(user)) return { user, plan: "max" as const, unlimited: true };
+  if (LIVE_PAUSED) return { res: NextResponse.json({ error: "지금은 실제 인원 보기를 잠시 쉬고 있어요" }, { status: 403 }) };
   const plus = await getPlus(user.id);
   if (!plus.active) return { res: NextResponse.json({ error: "유료 회원 전용이에요" }, { status: 403 }) };
   return { user, plan: asPlan(plus.plan), unlimited: false };
@@ -23,7 +25,7 @@ async function member(req: Request) {
 export async function GET(req: Request) {
   const m = await member(req);
   if ("res" in m) return m.res;
-  return NextResponse.json({ plan: m.plan, left: await liveLeft(m.user.id, m.plan, m.unlimited) }, noStore);
+  return NextResponse.json({ plan: m.plan, unlimited: m.unlimited, left: await liveLeft(m.user.id, m.plan, m.unlimited) }, noStore);
 }
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
