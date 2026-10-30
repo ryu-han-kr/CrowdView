@@ -142,6 +142,7 @@ const label = (s: string, w: number, h = 28, size = 16) =>
 const compare: { name: string; before: (Buffer | undefined)[]; after: { buf: Buffer; tag: string }[] }[] = [];
 const pendingRows: { name: string; items: { buf: Buffer; tag: string }[] }[] = [];
 let tokens = 0;
+const lacking: string[] = [];
 
 for (const id of ONLY.length ? ONLY : PILOT) {
   const place = PLACES.find((p) => p.id === id);
@@ -212,6 +213,12 @@ for (const id of ONLY.length ? ONLY : PILOT) {
     label: x.pick.spot && x.pick.spot !== "전경" ? x.pick.spot : undefined,
     reason: x.pick.reason,
   });
+  // 좋은 사진이 4장도 안 되면 덮어쓰지 않는다 (10/30: 김해·인천 T2가 2장만 남아 갤러리가 비었다) → GOOGLE=1로 다시
+  if (ordered.length < 4) {
+    console.log(`  ${place.name}: 좋은 사진 ${ordered.length}장뿐 — 그대로 두고 구글 지도 사진으로 다시 (GOOGLE=1)`);
+    lacking.push(id);
+    continue;
+  }
   picks[id] = { model: MODEL, date: new Date().toISOString().slice(0, 10), photos: ordered.map(toSaved), pending: unsure.map(toSaved) };
   save();
   console.log(`  후보 ${loaded.length} → 사용 ${ordered.length} · 애매 ${unsure.length} · 제외 ${loaded.length - scored.length + scored.filter((x) => x.pick.score < 5).length}`);
@@ -225,6 +232,7 @@ for (const id of ONLY.length ? ONLY : PILOT) {
   if (unsure.length) pendingRows.push({ name: place.name, items: unsure.map((x, i) => ({ buf: x.small, tag: `${i + 1}번 · ${x.pick.score}점 ${x.pick.spot}` })) });
 }
 console.log(`→ ${OUT} · 토큰 ${tokens.toLocaleString()} (${MODEL})`);
+if (lacking.length) console.log(`좋은 사진이 모자란 곳 (GOOGLE=1로 다시): ONLY=${lacking.join(",")}`);
 
 // 전후 비교: 장소마다 [지금 5장] 아래 [새 5장 + 점수·명소]
 const W = 280;

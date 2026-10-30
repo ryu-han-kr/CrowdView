@@ -67,57 +67,65 @@
   "nameEn": "Korean Folk Village",
   "spots": [
    {
-    "label": "초가 마을",
-    "why": "초가집과 기와집이 늘어선 조선시대 마을 풍경이 민속촌의 대표 사진 배경이다.",
+    "label": "초가·기와마을",
+    "why": "전국 각지의 실제 가옥을 옮겨 복원한 조선시대 마을로, 초가와 기와집 골목이 민속촌 사진의 기본 컷이다.",
     "queries": [
      "Korean Folk Village thatched houses",
-     "Korean Folk Village Yongin",
-     "Korean Folk Village hanok village"
-    ]
-   },
-   {
-    "label": "저잣거리",
-    "why": "주막과 장터 가게가 모인 거리에서 조선 시대 분위기의 인물 사진과 먹거리 사진을 찍는다.",
-    "queries": [
-     "Korean Folk Village market street",
-     "Korean Folk Village Joseon marketplace",
-     "Korean Folk Village tavern"
-    ]
-   },
-   {
-    "label": "양반가 고택",
-    "why": "전국의 전통 가옥을 옮겨 지은 양반가 고택으로, 마당과 처마선이 한복 사진 배경으로 자주 쓰인다.",
-    "queries": [
-     "Korean Folk Village yangban house",
-     "Korean Folk Village traditional house courtyard",
-     "Korean Folk Village hanok"
+     "Korean Folk Village Yongin hanok",
+     "Korean Folk Village traditional village"
     ]
    },
    {
     "label": "농악·줄타기",
-    "why": "농악, 줄타기, 마상무예 같은 전통 공연이 매일 열려 역동적인 사진 소재가 된다.",
+    "why": "농악놀이, 줄타기, 마상무예, 전통혼례 같은 상설 전통 공연이 대표 볼거리다.",
     "queries": [
-     "Korean Folk Village performance",
-     "Korean Folk Village tightrope walking jultagi",
-     "Korean Folk Village nongak farmers music"
+     "Korean Folk Village tightrope walking",
+     "Korean Folk Village farmers' dance",
+     "Korean Folk Village performance"
     ]
    },
    {
-    "label": "전통 혼례",
-    "why": "전통 혼례 공연과 혼례복 장면이 외국인과 내국인 모두에게 인기 있는 볼거리다.",
+    "label": "장터 저잣거리",
+    "why": "조선시대 저잣거리를 재현한 민속 장터로, 사극 촬영지로도 알려져 있다.",
     "queries": [
-     "Korean Folk Village traditional wedding",
-     "Korean Folk Village wedding ceremony",
-     "Korean traditional wedding Yongin folk village"
+     "Korean Folk Village market",
+     "Korean Folk Village marketplace Yongin",
+     "Korean Folk Village street"
     ]
    },
    {
-    "label": "계절 풍경",
-    "why": "봄 꽃, 가을 단풍, 겨울 눈 덮인 초가지붕이 전통 건물과 어우러져 계절별 사진 명소가 된다.",
+    "label": "양반집",
+    "why": "99칸 양반집을 비롯한 고택이 있어 한옥 건축과 마당 풍경을 담기 좋다.",
     "queries": [
-     "Korean Folk Village autumn",
-     "Korean Folk Village snow winter",
-     "Korean Folk Village cherry blossom"
+     "Korean Folk Village yangban house",
+     "Korean Folk Village noble house",
+     "Korean Folk Village Yongin tile-roofed house"
+    ]
+   },
+   {
+    "label": "회전목마",
+    "why": "공식 포토존으로 소개되는 놀이마을 회전목마다. 야간개장 때 조명이 켜지면 분위기가 더 좋다.",
+    "queries": [
+     "Korean Folk Village carousel",
+     "Korean Folk Village amusement rides"
+    ]
+   },
+   {
+    "label": "야간개장",
+    "why": "금·토·일과 공휴일에 야간개장을 하고, 청사초롱 불빛이 켜진 한옥 골목과 목교 야경이 후기에 자주 나온다.",
+    "queries": [
+     "Korean Folk Village night",
+     "Korean Folk Village lanterns night",
+     "Korean Folk Village evening"
+    ]
+   },
+   {
+    "label": "귀신 축제",
+    "why": "야외 공포 체험인 귀신 축제와 심야공포촌을 여는 계절 행사다. 마을 전체가 공포 세트로 바뀐다.",
+    "queries": [
+     "Korean Folk Village ghost festival",
+     "Korean Folk Village Halloween",
+     "Korean Folk Village horror"
     ]
    }
   ]
@@ -661,48 +669,57 @@
   "nameEn": "Seongsu-dong Cafe Street",
   "spots": [
    {
+    "label": "디올 성수",
+    "why": "유럽 저택 같은 외관 앞에서 다들 인증샷을 찍는 성수동 대표 포토 스폿",
+    "queries": [
+     "Dior Seongsu",
+     "Seongsu-dong Dior building Seoul",
+     "디올 성수"
+    ]
+   },
+   {
     "label": "대림창고",
-    "why": "옛 정미소와 물류창고를 고친 붉은 벽돌 갤러리 카페로, 성수 카페거리의 터줏대감이자 대표 랜드마크",
+    "why": "옛 창고를 개조한 갤러리 카페로, 성수동 대형 카페의 원조 격이다",
     "queries": [
      "Daelim Changgo Seongsu",
      "Daelim Warehouse Seongsu-dong cafe",
-     "Seongsu-dong Daelim Changgo gallery"
+     "대림창고 성수"
     ]
    },
    {
     "label": "어니언 성수",
-    "why": "1970년대 금속 부품 공장을 개조한 베이커리 카페로, 철골 구조와 옥상 테라스가 유명",
+    "why": "폐공장을 살린 세련된 인테리어와 소금빵으로 사진이 잘 나오는 카페",
     "queries": [
      "Onion Seongsu cafe",
      "Cafe Onion Seongsu-dong Seoul",
-     "Seongsu-dong industrial cafe"
-    ]
-   },
-   {
-    "label": "디올 성수",
-    "why": "메탈 메쉬 외관의 랜드마크 콘셉트 스토어로, 외관 앞과 시즌 장식 포토존이 인기",
-    "queries": [
-     "Dior Seongsu",
-     "Christian Dior Seongsu-dong Seoul",
-     "Dior Seongsu facade"
+     "어니언 성수"
     ]
    },
    {
     "label": "성수연방",
-    "why": "화학공장을 개조한 ㄷ자 복합문화공간으로, 중앙의 투명 파빌리온이 핵심 포토존",
+    "why": "1970년대 공장을 고친 복합문화공간으로, 3층 실내 조경과 팝업이 인기",
     "queries": [
      "Seongsu Yeonbang",
-     "Seongsu Yeonbang Seoul",
-     "Seongsu-dong Yeonbang cultural complex"
+     "Seongsu Federation complex cultural space Seoul",
+     "성수연방"
     ]
    },
    {
-    "label": "연무장길 팝업",
-    "why": "브랜드 팝업스토어와 편집숍이 모인 성수 트렌드 거리로, 사진 찍으러 오는 방문객이 많음",
+    "label": "연무장길",
+    "why": "붉은 벽돌 공장과 창고 건물 사이로 팝업스토어와 카페가 늘어선 성수동의 중심 거리",
     "queries": [
      "Seongsu-dong Yeonmujang-gil",
-     "Seongsu-dong pop-up store street",
-     "Seongsu-dong cafe street Seoul"
+     "Seongsu-dong cafe street brick factory",
+     "성수동 연무장길"
+    ]
+   },
+   {
+    "label": "서울숲",
+    "why": "서울숲길 카페거리와 이어지는 산책 코스로, 성수동 나들이에서 빠지지 않는다",
+    "queries": [
+     "Seoul Forest Seongsu-dong",
+     "Seoul Forest park Seongdong",
+     "서울숲"
     ]
    }
   ]
@@ -945,63 +962,63 @@
   "spots": [
    {
     "label": "로리 캐슬",
-    "why": "파크의 상징인 성이며, 꽃으로 꾸민 로리와 성 앞은 줄 서서 찍는 대표 포토존이다.",
+    "why": "파크의 상징인 성이다. 꽃으로 만든 로리와 성 앞에서 줄 서서 찍는 대표 포토존이고, 2층에는 전망대와 포토존이 있다.",
     "queries": [
      "Lotte World Adventure Busan Lorry Castle",
-     "Lotte World Adventure Busan castle",
-     "Lotte World Busan Royal Garden"
-    ],
-    "ko": "롯데월드 어드벤처 부산 로리캐슬"
-   },
-   {
-    "label": "토킹트리",
-    "why": "눈과 입이 움직이며 말하는 큰 나무로, 사람들이 모이는 곳에 있는 인기 포토 스폿이다.",
-    "queries": [
-     "Lotte World Adventure Busan Talking Tree",
-     "Lotte World Busan Tinker Falls",
-     "Lotte World Adventure Busan Magic Forest"
-    ],
-    "ko": "롯데월드 부산 토킹트리"
-   },
-   {
-    "label": "자이언트 디거",
-    "why": "최고 시속 105km로 달리는 발사형 롤러코스터로, 부산 롯데월드의 대표 놀이기구다.",
-    "queries": [
-     "Giant Digger Lotte World Adventure Busan",
-     "Lotte World Adventure Busan roller coaster",
-     "Giant Digger roller coaster Busan"
-    ],
-    "ko": "롯데월드 부산 자이언트 디거"
+     "Lotte World Busan castle",
+     "Lotte World Adventure Busan",
+     " 롯데월드 어드벤처 부산 로리캐슬"
+    ]
    },
    {
     "label": "자이언트 스윙",
-    "why": "최대 120도까지 오르는 스윙 라이드로, 자이언트 삼형제 중 하나이며 후기에서 자주 추천된다.",
+    "why": "언더랜드 구역의 대표 놀이기구다. 공중에 솟은 모습이 멀리서도 눈에 띄고, 밤 조명 사진도 많이 찍는다.",
     "queries": [
      "Lotte World Adventure Busan Giant Swing",
-     "Lotte World Adventure Busan Giant Drop",
-     "Lotte World Adventure Busan rides"
-    ],
-    "ko": "롯데월드 부산 자이언트 스윙"
+     "Lotte World Busan Giant Swing night",
+     "Giant Swing Busan Gijang",
+     " 롯데월드 어드벤처 부산 자이언트 스윙"
+    ]
+   },
+   {
+    "label": "자이언트 디거",
+    "why": "언더랜드 구역의 아시아 최초급 시그니처 롤러코스터다. 광산 마을 콘셉트 풍경과 함께 인증샷을 찍는다.",
+    "queries": [
+     "Lotte World Adventure Busan Giant Digger",
+     "Lotte World Busan Underland roller coaster",
+     "Giant Digger Busan",
+     " 롯데월드 어드벤처 부산 자이언트 디거"
+    ]
+   },
+   {
+    "label": "자이언트 스플래쉬",
+    "why": "원더우즈 구역의 워터 어트랙션이다. 물이 크게 튀는 장면과 숲속 요정 마을 풍경을 함께 담는다.",
+    "queries": [
+     "Lotte World Adventure Busan Giant Splash",
+     "Lotte World Busan Wonder Woods",
+     "Giant Splash Busan",
+     " 롯데월드 어드벤처 부산 자이언트 스플래쉬"
+    ]
    },
    {
     "label": "매직포레스트 퍼레이드",
-    "why": "로티스 매직 포레스트 퍼레이드는 상설 공연이며, 플로트카와 조명이 분위기를 살린다는 후기가 많다.",
+    "why": "로티스 매직 포레스트 퍼레이드는 시즌마다 테마가 바뀌는 대표 퍼레이드다. 저녁 나이트 퍼레이드 사진도 많이 올라온다.",
     "queries": [
      "Lotte World Adventure Busan parade",
-     "Lotte World Adventure Busan Lotty's Magic Forest Parade",
-     "Lotte World Busan night parade"
-    ],
-    "ko": "롯데월드 어드벤처 부산 퍼레이드"
+     "Lotte World Busan night parade",
+     "Lotte World Busan Lotty Magic Forest Parade",
+     " 롯데월드 어드벤처 부산 퍼레이드"
+    ]
    },
    {
-    "label": "캐슬 불꽃쇼",
-    "why": "로리캐슬에 3D 맵핑쇼 '글로리 라이츠'와 불꽃놀이를 함께 선보이는 이곳의 대표 야간 콘텐츠다.",
+    "label": "불꽃놀이 야경",
+    "why": "로리캐슬 뒤로 터지는 불꽃놀이가 나이트 퍼레이드와 함께 열린다. 야외 파크의 강점을 보여주는 장면이라 야경 사진이 많다.",
     "queries": [
      "Lotte World Adventure Busan fireworks",
+     "Lotte World Busan night",
      "Lotte World Adventure Busan Lorry Castle night",
-     "Lotte World Busan Glorry Lights"
-    ],
-    "ko": "롯데월드 부산 불꽃놀이 로리캐슬 야경"
+     " 롯데월드 어드벤처 부산 불꽃놀이"
+    ]
    }
   ]
  },
@@ -1009,59 +1026,57 @@
   "nameEn": "Gwangju Family Land",
   "spots": [
    {
-    "label": "빅아이 관람차",
-    "why": "국내 최대 높이를 내세운 대관람차로, 정상에서 놀이공원 전경이 보이고 밤에는 조명이 켜져 관람차 야경 후기도 많다.",
+    "label": "대관람차",
+    "why": "65m 높이의 랜드마크 대관람차로, 관람차를 등지고 찍는 인생샷 포인트로 후기에 자주 나옴",
     "queries": [
      "Gwangju Family Land Ferris wheel",
-     "Gwangju Family Land Big Eye",
      "Uchi Park Gwangju Ferris wheel",
      "광주패밀리랜드 대관람차"
     ]
    },
    {
-    "label": "포토존",
-    "why": "샤이닝웨이, 키싱스완, 슈팅하트 같은 포토존이 사진 맛집으로 소개된다.",
+    "label": "스타워즈",
+    "why": "30년 넘게 운영 중인 대표 놀이기구로, 방문객이 추억 사진을 남기는 곳",
     "queries": [
-     "Gwangju Family Land photo zone",
-     "Gwangju Family Land entrance",
-     "광주패밀리랜드 포토존"
+     "Gwangju Family Land Star Wars ride",
+     "Gwangju Family Land amusement ride",
+     "광주패밀리랜드 스타워즈"
+    ]
+   },
+   {
+    "label": "회전목마",
+    "why": "회전목마와 바이킹 등 낡았지만 정감 있는 레트로 놀이공원 풍경",
+    "queries": [
+     "Gwangju Family Land carousel",
+     "Gwangju Family Land Viking ship ride",
+     "광주패밀리랜드 회전목마"
+    ]
+   },
+   {
+    "label": "벚꽃길",
+    "why": "매표소 오른쪽에서 대관람차까지 이어지는 동물원 나들이길이 봄 벚꽃 명소",
+    "queries": [
+     "Uchi Park Gwangju cherry blossom",
+     "Gwangju Family Land cherry blossom",
+     "우치공원 벚꽃길"
+    ]
+   },
+   {
+    "label": "우치동물원",
+    "why": "놀이공원 옆 무료 입장 동물원으로, 놀이기구와 함께 도는 코스",
+    "queries": [
+     "Uchi Park Zoo Gwangju",
+     "Gwangju Uchi Zoo animals",
+     "광주 우치동물원"
     ]
    },
    {
     "label": "눈썰매장",
-    "why": "호남 최장 슬로프를 내세운 사계절 썰매장이다. 겨울에는 눈썰매장, 그 밖의 계절에는 물썰매장으로 운영한다.",
+    "why": "호남 최장 슬로프를 갖춘 겨울 눈썰매장",
     "queries": [
      "Gwangju Family Land snow sledding",
-     "Gwangju Family Land sledding slope",
+     "Gwangju Family Land sled slope",
      "광주패밀리랜드 눈썰매장"
-    ]
-   },
-   {
-    "label": "동물원",
-    "why": "놀이공원 옆 동물원에서 먹이 체험을 할 수 있어 가족 방문객이 많이 찾는다.",
-    "queries": [
-     "Gwangju Family Land zoo",
-     "Uchi Park Gwangju zoo",
-     "광주패밀리랜드 동물원"
-    ]
-   },
-   {
-    "label": "벚꽃 나들이길",
-    "why": "매표소 오른쪽에서 대관람차까지 이어지는 동물원 나들이길이 봄 벚꽃 명소로 알려져 있다.",
-    "queries": [
-     "Uchi Park Gwangju cherry blossom",
-     "Gwangju Family Land cherry blossom",
-     "우치공원 벚꽃"
-    ]
-   },
-   {
-    "label": "레트로 놀이기구",
-    "why": "청룡열차, 바이킹, 스타워즈 같은 오래된 놀이기구가 레트로 감성 놀이공원의 분위기를 만든다.",
-    "queries": [
-     "Gwangju Family Land roller coaster",
-     "Gwangju Family Land rides",
-     "Gwangju Family Land Viking ship",
-     "광주패밀리랜드 놀이기구"
     ]
    }
   ]
@@ -1070,49 +1085,54 @@
   "nameEn": "Caribbean Bay",
   "spots": [
    {
-    "label": "웨이브풀",
-    "why": "대형 인공 파도가 밀려오는 캐리비안 베이의 대표 시설로, 방문객이 가장 많이 사진을 찍는 곳입니다.",
+    "label": "파도풀",
+    "why": "인공 파도가 밀려오는 대형 웨이브풀로, 캐리비안 베이를 대표하는 장면이다. 방문객 사진도 가장 많이 나오는 곳이다.",
     "queries": [
      "Caribbean Bay wave pool",
      "Caribbean Bay Everland water park",
-     "Everland Caribbean Bay Yongin"
-    ]
+     "Caribbean Bay Yongin"
+    ],
+    "queryKo": "캐리비안 베이 파도풀"
    },
    {
-    "label": "아쿠아루프",
-    "why": "수직에 가까운 낙하 뒤 360도 루프를 도는 슬라이드로, 스릴 어트랙션으로 자주 소개됩니다.",
+    "label": "아쿠아 루프",
+    "why": "몸이 거의 수직으로 떨어진 뒤 360도 루프를 도는 슬라이드다. 스릴 있는 어트랙션으로 알려져 있다.",
     "queries": [
      "Caribbean Bay Aqua Loop",
-     "Everland Aqua Loop water slide",
-     "Caribbean Bay water slide"
-    ]
+     "Everland Caribbean Bay water slide",
+     "Caribbean Bay slide"
+    ],
+    "queryKo": "캐리비안 베이 아쿠아 루프"
    },
    {
     "label": "메가스톰",
-    "why": "여럿이 한 보트를 타고 내려오는 대형 워터슬라이드로, 단체 인증샷 장소로 알려져 있습니다.",
+    "why": "여러 명이 한 보트를 타고 내려오는 대형 워터슬라이드다. 단체 방문객이 즐겨 찾는다.",
     "queries": [
      "Caribbean Bay Mega Storm",
-     "Everland Mega Storm water slide",
-     "Caribbean Bay slide"
-    ]
+     "Caribbean Bay raft slide",
+     "Everland Caribbean Bay attraction"
+    ],
+    "queryKo": "캐리비안 베이 메가스톰"
    },
    {
-    "label": "유수풀",
-    "why": "튜브를 타고 천천히 떠다니는 풀로, 가족과 커플이 많이 찾는 휴식 코스입니다.",
+    "label": "와일드 리버",
+    "why": "튜브를 타고 천천히 떠다니는 유수풀이다. 가족과 연인이 함께 찍는 사진이 많다.",
     "queries": [
      "Caribbean Bay lazy river",
-     "Everland Caribbean Bay pool tube",
-     "Caribbean Bay Korea water park"
-    ]
+     "Caribbean Bay Wild River",
+     "Everland Caribbean Bay pool"
+    ],
+    "queryKo": "캐리비안 베이 유수풀"
    },
    {
-    "label": "어드벤처풀",
-    "why": "물놀이 구조물과 슬라이드가 모인 어린이·가족 놀이 구역으로 가족 사진이 많습니다.",
+    "label": "야외 스파",
+    "why": "한겨울에도 따뜻한 물에 몸을 담그고 즐기는 온천형 스파다. 겨울철 대표 포토 스폿이다.",
     "queries": [
-     "Caribbean Bay adventure pool",
-     "Everland Caribbean Bay family pool",
-     "Caribbean Bay Korea kids water park"
-    ]
+     "Caribbean Bay outdoor spa",
+     "Caribbean Bay winter spa",
+     "Everland Caribbean Bay winter"
+    ],
+    "queryKo": "캐리비안 베이 스파"
    }
   ]
  },
@@ -1401,6 +1421,799 @@
      "Splash Resom water slide",
      "Resom Spa Castle water slide"
     ]
+   }
+  ]
+ },
+ "icn-t1": {
+  "nameEn": "Incheon International Airport Terminal 1",
+  "spots": [
+   {
+    "label": "만경정 한국문화거리",
+    "why": "T1 면세구역 4층 중앙에 한옥 정자 형태로 꾸민 한국문화거리와 전망대로, 외국인 여행자들이 한옥 배경 사진을 많이 찍는다.",
+    "queries": [
+     "Incheon Airport Terminal 1 Korean Culture Street",
+     "Incheon International Airport Mangyeongjeong",
+     "Incheon Airport Terminal 1 hanok pavilion"
+    ]
+   },
+   {
+    "label": "왕가의 산책",
+    "why": "조선시대 왕·왕비 행렬을 재현하는 공연으로, 관람 후 기념사진을 함께 찍을 수 있어 여행자 후기에 자주 나온다.",
+    "queries": [
+     "Incheon Airport royal procession Terminal 1",
+     "Incheon Airport Joseon royal guard ceremony",
+     "Incheon International Airport Korean traditional performance"
+    ]
+   },
+   {
+    "label": "한국전통문화센터",
+    "why": "T1 동관·서관에서 한복 입기, 전통공예, 전통놀이를 무료로 체험하고 사진을 남길 수 있다.",
+    "queries": [
+     "Incheon Airport Korean Traditional Culture Center",
+     "Incheon Airport Terminal 1 hanbok experience",
+     "Incheon International Airport K-Culture Zone"
+    ]
+   },
+   {
+    "label": "출국장 체크인홀",
+    "why": "3층 출국장은 여행 출발 분위기를 담는 대표 인증샷 장소로, 대형 천장 구조와 체크인 카운터가 배경이 된다.",
+    "queries": [
+     "Incheon International Airport Terminal 1 departure hall",
+     "Incheon Airport Terminal 1 check-in hall interior",
+     "Incheon Airport Terminal 1 interior"
+    ]
+   },
+   {
+    "label": "터미널 외관",
+    "why": "유리 곡면 지붕의 터미널 건물과 교통센터는 공항 도착·출발 때 외관 사진으로 많이 찍는다.",
+    "queries": [
+     "Incheon International Airport Terminal 1 exterior",
+     "Incheon Airport Transport Center",
+     "Incheon Airport Terminal 1 building"
+    ]
+   },
+   {
+    "label": "크리스마스 장식",
+    "why": "연말이면 T1 출국장에 대형 크리스마스 장식이 설치되고, 여행객들이 휴대폰으로 많이 찍는다.",
+    "queries": [
+     "Incheon Airport Terminal 1 Christmas decoration",
+     "Incheon International Airport Christmas tree",
+     "Incheon Airport Christmas"
+    ]
+   }
+  ]
+ },
+ "icn-t2": {
+  "nameEn": "Incheon Airport Terminal 2",
+  "spots": [
+   {
+    "label": "램프 베어",
+    "why": "우어스 피셔의 높이 7m 대형 곰 조각 '램프 베어'로, T2 아트포트 컨셉을 대표하는 작품이라 인증샷 줄이 이어진다.",
+    "queries": [
+     "Incheon Airport Terminal 2 Lamp Bear",
+     "Incheon International Airport Urs Fischer Lamp Bear",
+     "Incheon Airport Terminal 2 art sculpture",
+     "인천공항 램프 베어"
+    ]
+   },
+   {
+    "label": "그레이트 모빌",
+    "why": "자비에 베이앙의 약 18.5m 높이 대형 모빌로, T2 3층 출국장 동·서편 천장에 걸려 있다.",
+    "queries": [
+     "Incheon Airport Terminal 2 Great Mobile",
+     "Incheon Airport Terminal 2 Xavier Veilhan mobile",
+     "Incheon Airport Terminal 2 departure hall",
+     "인천공항 제2터미널 그레이트 모빌"
+    ]
+   },
+   {
+    "label": "키네틱 조형물",
+    "why": "T2 확장지역의 움직이는 천장 조형물로, 2024 레드닷 디자인 어워드 본상을 받아 화제가 됐다.",
+    "queries": [
+     "Incheon Airport Terminal 2 kinetic sculpture",
+     "Incheon International Airport Terminal 2 interior ceiling",
+     "인천공항 키네틱 조형물"
+    ]
+   },
+   {
+    "label": "하늘을 걷다",
+    "why": "T2 진입로의 높이 18m 여행객 조각상으로, 출발의 설렘을 담은 터미널 입구 상징물이다.",
+    "queries": [
+     "Incheon Airport Terminal 2 Walking in the Sky sculpture",
+     "Incheon Airport Terminal 2 entrance sculpture",
+     "Incheon International Airport Terminal 2 exterior",
+     "인천공항 제2터미널 하늘을 걷다"
+    ]
+   },
+   {
+    "label": "하늘길 전망대",
+    "why": "T2 5층의 강동석관(하늘길을 열다)은 계류장과 비행기를 내려다보는 전망대로, 제2여객터미널의 대표명소로 소개된다.",
+    "queries": [
+     "Incheon Airport Terminal 2 observation deck",
+     "Incheon Airport Terminal 2 apron view",
+     "Incheon International Airport Terminal 2 5th floor",
+     "인천공항 제2터미널 홍보전망대"
+    ]
+   },
+   {
+    "label": "크리스마스 트리",
+    "why": "연말마다 3층 출국장에 핑크빛 대형 트리와 포토존이 설치되어, 여행 전 인증샷 장소로 공유된다.",
+    "queries": [
+     "Incheon Airport Terminal 2 Christmas tree",
+     "Incheon International Airport Christmas decoration",
+     "Incheon Airport Terminal 2 departure hall winter",
+     "인천공항 제2터미널 크리스마스 트리"
+    ]
+   },
+   {
+    "label": "전통문화센터",
+    "why": "출국장 동·서편의 한국전통문화센터에서는 한복 입기, 한지·매듭·나전 공예를 무료로 체험하고 사진도 찍을 수 있다.",
+    "queries": [
+     "Incheon Airport Terminal 2 Korean Traditional Culture Center",
+     "Incheon Airport hanbok experience",
+     "Incheon International Airport traditional culture",
+     "인천공항 한국전통문화센터"
+    ]
+   }
+  ]
+ },
+ "gimpo": {
+  "nameEn": "Gimpo International Airport",
+  "spots": [
+   {
+    "label": "국내선 4층 전망대",
+    "why": "국내선 4층 푸드코트에서 바로 나가는 야외 전망대로, 이착륙하는 비행기를 가까이서 볼 수 있어 항공 스포터와 가족 여행객이 많이 찾는다.",
+    "queries": [
+     "Gimpo International Airport observation deck",
+     "Gimpo Airport domestic terminal rooftop",
+     "Gimpo Airport airplane takeoff",
+     " 김포공항 전망대"
+    ]
+   },
+   {
+    "label": "6층 공항 전망대",
+    "why": "한국공항공사 6층에 있는 무료 전망대로, 실내외에서 활주로와 항공기를 내려다볼 수 있고 항공 전시도 함께 있다.",
+    "queries": [
+     "Gimpo International Airport observatory",
+     "Gimpo Airport runway view",
+     "Gimpo Airport apron",
+     " 김포공항 6층 전망대"
+    ]
+   },
+   {
+    "label": "롯데몰 스카이파크",
+    "why": "국내선 청사 옆 롯데몰 김포공항 주변의 녹지 공원이다. 백화점 6층 꼭대기에도 비행기 이착륙을 볼 수 있는 전망대가 있다.",
+    "queries": [
+     "Lotte Mall Gimpo Airport",
+     "Lotte Mall Gimpo Airport Skypark",
+     "Gimpo Airport Lotte Mall exterior",
+     " 롯데몰 김포공항"
+    ]
+   },
+   {
+    "label": "국내선 청사 외관",
+    "why": "제주 등으로 가는 여행객이 출발하는 국내선 청사 출발층 입구와 외관이다. 여행 출발 인증샷을 많이 찍는다.",
+    "queries": [
+     "Gimpo International Airport domestic terminal",
+     "Gimpo Airport departure hall",
+     "Gimpo Airport terminal building",
+     " 김포공항 국내선 청사"
+    ]
+   },
+   {
+    "label": "활주로 스포팅",
+    "why": "청사 밖 활주로 주변 스포팅 포인트(상야동 일대 등)에서 착륙하는 항공기를 촬영하는 항공 사진가들이 자주 찾는다.",
+    "queries": [
+     "Gimpo Airport runway aircraft landing",
+     "Gimpo International Airport aircraft",
+     "Gimpo Airport planes parked",
+     " 김포공항 활주로 비행기"
+    ]
+   }
+  ]
+ },
+ "jeju-airport": {
+  "nameEn": "Jeju International Airport",
+  "spots": [
+   {
+    "label": "HELLO JEJU존",
+    "why": "공항 3층 출발장 3번 게이트 근처에 있는 포토존입니다. 돌하르방, 귤, 야자수와 계절 꽃으로 꾸며 여행객 사진 명소로 알려졌습니다.",
+    "queries": [
+     "Jeju International Airport departure hall",
+     "Jeju Airport Dol hareubang",
+     "제주공항 출발장 돌하르방"
+    ]
+   },
+   {
+    "label": "공항 야자수길",
+    "why": "공항을 나서자마자 보이는 야자수 가로수입니다. 제주 도착 인증샷의 단골 배경입니다.",
+    "queries": [
+     "Jeju International Airport palm trees",
+     "Jeju Airport entrance palm tree",
+     "제주공항 야자수"
+    ]
+   },
+   {
+    "label": "용마마을 비행기샷",
+    "why": "용담 해안도로 쪽 버스 정류장입니다. 낮게 이착륙하는 비행기와 바다를 함께 찍는 비행기샷 명소로 꼽힙니다.",
+    "queries": [
+     "Jeju International Airport airplane landing Yongdam",
+     "Yongdam coastal road Jeju airplane",
+     "제주공항 비행기 착륙 용담해안도로"
+    ]
+   },
+   {
+    "label": "무지개해안도로",
+    "why": "도두동의 알록달록한 방호벽 해안도로입니다. 바다 풍경과 비행기 이착륙을 함께 담기 좋습니다.",
+    "queries": [
+     "Dodu Rainbow Coastal Road Jeju",
+     "Dodudong rainbow seawall Jeju",
+     "도두동 무지개 해안도로"
+    ]
+   },
+   {
+    "label": "도두봉",
+    "why": "공항에서 차로 약 10분 거리의 낮은 오름입니다. 정상에서 바다와 이착륙하는 비행기를 함께 볼 수 있고, 키세스존은 낮 포토존과 밤 야경으로 유명합니다.",
+    "queries": [
+     "Dodubong Jeju",
+     "Dodubong Oreum Jeju airport view",
+     "도두봉 키세스존"
+    ]
+   },
+   {
+    "label": "이호테우 말등대",
+    "why": "빨강·하양 말 모양 등대가 서 있는 해변입니다. 노을 명소로도 소개되며 공항에서 가깝습니다.",
+    "queries": [
+     "Iho Tewoo Beach horse lighthouse",
+     "Iho Tewoo Beach sunset Jeju",
+     "이호테우해변 말등대"
+    ]
+   }
+  ]
+ },
+ "gimhae": {
+  "nameEn": "Gimhae International Airport",
+  "spots": [
+   {
+    "label": "경전철 포토존",
+    "why": "김해시가 국내선 도착장 2번 게이트 옆에 경전철 객실을 본떠 만든 포토존이다. 다만 10월 한 달만 운영했다.",
+    "queries": [
+     "Gimhae International Airport domestic terminal",
+     "Busan-Gimhae Light Rail interior",
+     "Gimhae International Airport arrivals"
+    ]
+   },
+   {
+    "label": "국내선 청사",
+    "why": "부산 관문 공항의 국내선 청사다. 1층은 도착, 2층은 출발, 3층은 식당가이고, 외관과 출발장이 대표 컷으로 많이 쓰인다.",
+    "queries": [
+     "Gimhae International Airport domestic terminal",
+     "Gimhae Airport terminal building exterior",
+     "Gimhae International Airport departure hall"
+    ]
+   },
+   {
+    "label": "경전철 공항역",
+    "why": "부산김해경전철 공항역은 공항과 별도 건물이다. 도착 후 사상·대저 방면으로 갈아타는 길목이라 이동 중 사진이 많다.",
+    "queries": [
+     "Gimhae International Airport station Busan-Gimhae Light Rail",
+     "Busan Gimhae Light Rail Airport station",
+     "Gimhae Airport light rail platform"
+    ]
+   },
+   {
+    "label": "활주로 비행기",
+    "why": "국내선 청사 창가와 식당가에서 계류장과 활주로의 비행기를 볼 수 있다. 여행자들이 출발 전에 비행기 사진을 찍는 곳이다.",
+    "queries": [
+     "Gimhae International Airport apron aircraft",
+     "Gimhae Airport runway airplane",
+     "Gimhae International Airport aircraft"
+    ]
+   }
+  ]
+ },
+ "seoul-fireworks": {
+  "nameEn": "Seoul International Fireworks Festival",
+  "spots": [
+   {
+    "label": "불꽃쇼+63빌딩",
+    "why": "한화 불꽃이 63빌딩·한강과 함께 터지는 축제의 대표 장면이고, 사진 후기마다 63빌딩을 같이 담는 구도가 가장 많이 나온다.",
+    "queries": [
+     "Seoul International Fireworks Festival",
+     "Seoul Fireworks Festival 63 Building",
+     "Yeouido fireworks 63 Building"
+    ],
+    "ko": "서울세계불꽃축제 63빌딩 불꽃"
+   },
+   {
+    "label": "여의도한강공원",
+    "why": "축제 메인 행사장으로, 원효대교와 마포대교 사이 잔디밭에서 불꽃을 가장 가까이 본다. 매년 인파가 가장 많이 몰린다.",
+    "queries": [
+     "Yeouido Hangang Park",
+     "Yeouido Hangang Park fireworks",
+     "Yeouido Han River Park Seoul"
+    ],
+    "ko": "여의도한강공원"
+   },
+   {
+    "label": "사육신공원",
+    "why": "노량진 고지대 조망 명당이다. 한강철교와 63빌딩, 여의도 스카이라인을 불꽃과 함께 찍을 수 있어 사진가들이 즐겨 찾는다.",
+    "queries": [
+     "Saeyuksin Park Noryangjin",
+     "Noryangjin Saryuksin Historic Park",
+     "Saeng Yuksin Park Seoul"
+    ],
+    "ko": "노량진 사육신공원"
+   },
+   {
+    "label": "노들섬",
+    "why": "한강대교 가운데에서 여의도 쪽을 바라보는 대표적인 불꽃 관람 명소다. 강물에 비친 불꽃을 찍을 수 있다.",
+    "queries": [
+     "Nodeul Island Seoul",
+     "Nodeul Island Han River",
+     "Nodeul Island lawn"
+    ],
+    "ko": "노들섬"
+   },
+   {
+    "label": "마포대교",
+    "why": "여의도 건너편 다리와 강변에서 원효대교 쪽 불꽃이 시야에 막힘없이 보여 인증샷 명소로 꼽힌다.",
+    "queries": [
+     "Mapo Bridge Seoul",
+     "Mapo Bridge Wonhyo Bridge Han River",
+     "Wonhyo Bridge Seoul night"
+    ],
+    "ko": "마포대교 야경"
+   },
+   {
+    "label": "이촌한강공원",
+    "why": "63빌딩과 불꽃을 정면으로 마주 보는 건너편 공원이다. 전체 구도를 담기 좋아 사진 명당으로 자주 소개된다.",
+    "queries": [
+     "Ichon Hangang Park",
+     "Ichon Han River Park Seoul",
+     "Ichon Hangang Park 63 Building"
+    ],
+    "ko": "이촌한강공원"
+   }
+  ]
+ },
+ "busan-fireworks": {
+  "nameEn": "Busan Fireworks Festival",
+  "spots": [
+   {
+    "label": "광안대교 불꽃",
+    "why": "광안대교를 배경으로 해상에서 터지는 멀티 불꽃쇼가 축제의 핵심 장면이다.",
+    "queries": [
+     "Busan Fireworks Festival Gwangandaegyo",
+     "Gwangan Bridge fireworks",
+     "Busan International Fireworks Festival"
+    ]
+   },
+   {
+    "label": "광안리해변",
+    "why": "불꽃쇼를 가장 가까이에서 볼 수 있는 주무대다. 모래사장과 해안도로에 100만 명 안팎이 몰린다.",
+    "queries": [
+     "Gwangalli Beach fireworks",
+     "Gwangalli Beach Busan night",
+     "Gwangalli Beach Gwangandaegyo"
+    ]
+   },
+   {
+    "label": "민락수변공원",
+    "why": "광안대교를 정면으로 보는 대표 관람·촬영 지점이다.",
+    "queries": [
+     "Millak Waterside Park Busan",
+     "Millak Waterfront Park Gwangan Bridge",
+     "Millak Waterside Park fireworks"
+    ]
+   },
+   {
+    "label": "황령산 봉수대",
+    "why": "불꽃과 광안대교, 부산 도심 야경을 한 화면에 담을 수 있는 고지대 명당으로 꼽힌다.",
+    "queries": [
+     "Hwangnyeongsan Busan night view",
+     "Hwangnyeongsan Beacon Mound Busan",
+     "Busan Hwangnyeongsan fireworks"
+    ]
+   },
+   {
+    "label": "이기대 해안",
+    "why": "광안대교와 마린시티, 해운대까지 넓게 보이는 해안 산책로 명당이다. 상대적으로 덜 붐빈다.",
+    "queries": [
+     "Igidae Coastal Walkway Busan",
+     "Igidae Park Busan Gwangan Bridge",
+     "Igidae Busan night view"
+    ]
+   },
+   {
+    "label": "달맞이길",
+    "why": "광안대교와 해운대 야경을 함께 내려다보는 전망대 명당이다. 동백섬 쪽 불꽃도 볼 수 있다.",
+    "queries": [
+     "Dalmaji Hill Busan",
+     "Haeundae Dalmaji-gil view",
+     "Dongbaekseom Busan Haeundae"
+    ]
+   }
+  ]
+ },
+ "lantern-festival": {
+  "nameEn": "Seoul Lantern Festival",
+  "spots": [
+   {
+    "label": "청계광장 트리",
+    "why": "축제 시작점인 청계광장에 대형 크리스마스 트리와 '겨울, 청계천의 빛' 조형물이 서고, 인증샷 줄이 가장 길다.",
+    "queries": [
+     "Seoul Lantern Festival Cheonggye Plaza",
+     "Cheonggyecheon Plaza Christmas tree",
+     "Cheonggye Plaza Spring sculpture",
+     "청계광장 빛초롱축제"
+    ]
+   },
+   {
+    "label": "어가행렬·산대희",
+    "why": "1구역에서 조선시대 왕의 행렬 등(燈)과 8m 높이 산대희 등이 이어지며 대표 볼거리로 꼽힌다.",
+    "queries": [
+     "Seoul Lantern Festival royal procession lanterns",
+     "Seoul Lantern Festival Cheonggyecheon lantern",
+     "Seoul Lantern Festival Gwanghwamun lantern",
+     "서울빛초롱축제 어가행렬"
+    ]
+   },
+   {
+    "label": "모전교 광화문",
+    "why": "모전교에 '청계천에 세워진 광화문' 등이 설치되어 어가행렬이 향하는 포토 스폿이 된다.",
+    "queries": [
+     "Mojeongyo Bridge Cheonggyecheon",
+     "Mojeongyo Bridge Seoul Lantern Festival",
+     "Cheonggyecheon Gwanghwamun lantern",
+     "모전교 빛초롱축제"
+    ]
+   },
+   {
+    "label": "광통교 빅벤",
+    "why": "2구역 광통교 일대에 빅벤·에펠탑 같은 세계 랜드마크 등이 서서 인기 포토존이다.",
+    "queries": [
+     "Gwangtonggyo Bridge Seoul Lantern Festival",
+     "Gwanggyo Bridge Cheonggyecheon night",
+     "Seoul Lantern Festival Big Ben lantern",
+     "광통교 빛초롱축제"
+    ]
+   },
+   {
+    "label": "잉어킹 등",
+    "why": "2025년 포켓몬 코리아 협업작으로, 잉어킹 등이 청계천 수면 위로 뛰어오르는 모습이 포토존이 되었다.",
+    "queries": [
+     "Seoul Lantern Festival Magikarp",
+     "Seoul Lantern Festival Pokemon lantern",
+     "Cheonggyecheon lantern festival Magikarp",
+     "서울빛초롱축제 잉어킹"
+    ]
+   },
+   {
+    "label": "물길 야경",
+    "why": "청계천 물길을 따라 등불이 이어지고 수면에 빛이 비친다. 이 축제는 18시 점등 후 야경이 핵심이다.",
+    "queries": [
+     "Cheonggyecheon Seoul Lantern Festival night",
+     "Seoul Lantern Festival Cheonggyecheon stream",
+     "Seoul Lantern Festival lanterns night",
+     "청계천 빛초롱축제 야경"
+    ]
+   }
+  ]
+ },
+ "phoenix": {
+  "nameEn": "Phoenix Snow Park",
+  "spots": [
+   {
+    "label": "스키 슬로프",
+    "why": "평창 대표 스키 리조트로, 겨울이면 설원 슬로프에서 스키·보드 인증샷을 가장 많이 찍는다.",
+    "queries": [
+     "Phoenix Snow Park ski slope",
+     "Phoenix Pyeongchang ski resort",
+     "휘닉스 스노우파크 슬로프"
+    ]
+   },
+   {
+    "label": "올림픽 경기장",
+    "why": "2018 평창 동계올림픽 스노보드·프리스타일 스키 경기가 열린 곳이다.",
+    "queries": [
+     "Phoenix Snow Park 2018 Winter Olympics",
+     "Phoenix Snow Park snowboard halfpipe Pyeongchang",
+     "휘닉스 스노우파크 올림픽 경기장"
+    ]
+   },
+   {
+    "label": "곤돌라",
+    "why": "곤돌라를 타고 산 위로 올라가며 슬로프와 산 풍경을 찍는 코스다.",
+    "queries": [
+     "Phoenix Snow Park gondola",
+     "Phoenix Pyeongchang gondola",
+     "휘닉스 평창 곤돌라"
+    ]
+   },
+   {
+    "label": "블루캐니언",
+    "why": "리조트 안 워터파크로, 여름 물놀이 사진을 찍는 가족 여행객이 많다.",
+    "queries": [
+     "Phoenix Pyeongchang Blue Canyon water park",
+     "Phoenix Hotel Pyeongchang Blue Canyon",
+     "휘닉스 평창 블루캐니언"
+    ]
+   },
+   {
+    "label": "설경",
+    "why": "산 전체가 눈으로 덮이는 겨울 풍경이 리조트 안에서 가장 흔한 사진 소재다.",
+    "queries": [
+     "Phoenix Snow Park winter snow",
+     "Phoenix Pyeongchang snow landscape",
+     "휘닉스 스노우파크 설경"
+    ]
+   }
+  ]
+ },
+ "konjiam": {
+  "nameEn": "Konjiam Resort",
+  "spots": [
+   {
+    "label": "스키 슬로프",
+    "why": "최대폭 154m의 광폭 슬로프와 정상까지 이어지는 긴 초·중급 코스가 대표 풍경",
+    "queries": [
+     "Konjiam Resort ski slope",
+     "Gonjiam Resort ski",
+     "Konjiam ski resort Gwangju"
+    ]
+   },
+   {
+    "label": "360 펀슬로프",
+    "why": "국내 최초 360도 회전 구간과 터널이 있는 펀 슬로프로, 스키어가 가장 많이 몰리는 곳",
+    "queries": [
+     "Konjiam Resort fun slope",
+     "Gonjiam ski resort snowboard"
+    ]
+   },
+   {
+    "label": "화담숲 모노레일",
+    "why": "리조트 바로 옆 화담숲을 도는 1,213m 모노레일이 하이라이트로 꼽힘",
+    "queries": [
+     "Hwadamsup monorail",
+     "Hwadam Botanic Garden monorail",
+     "Hwadam Forest Gwangju"
+    ]
+   },
+   {
+    "label": "화담숲 단풍",
+    "why": "400여 품종 단풍과 약속의 다리 포토존으로 수도권 대표 가을 명소",
+    "queries": [
+     "Hwadam Botanic Garden autumn",
+     "Hwadamsup maple Gwangju",
+     "Hwadam Forest autumn leaves"
+    ]
+   },
+   {
+    "label": "이끼원",
+    "why": "계곡과 30여 종 이끼, 단풍·소나무가 어우러진 화담숲 대표 정원",
+    "queries": [
+     "Hwadam Botanic Garden moss garden",
+     "Hwadamsup moss garden"
+    ]
+   },
+   {
+    "label": "자작나무숲",
+    "why": "1,000여 그루 하얀 자작나무와 소망 돌탑이 어우러진 인생 사진 명당",
+    "queries": [
+     "Hwadam Botanic Garden birch forest",
+     "Hwadamsup birch trees"
+    ]
+   }
+  ]
+ },
+ "welli-hilli": {
+  "nameEn": "Wellihilli Park",
+  "spots": [
+   {
+    "label": "슬로프 설경",
+    "why": "강원도 횡성 고원 지대에 있어 눈이 쌓인 하얀 슬로프와 겨울 산 풍경을 찍으러 오는 사람이 많다.",
+    "queries": [
+     "Wellihilli Park ski slope",
+     "Wellihilli Park snow",
+     "Welli Hilli Park Hoengseong winter"
+    ]
+   },
+   {
+    "label": "슈퍼파이프",
+    "why": "공식 사이트가 스노우파크의 대표 시설로 소개하는 국제 수준의 슈퍼파이프다. 스노보더가 점프하는 장면을 찍는 곳으로 알려져 있다.",
+    "queries": [
+     "Wellihilli Park superpipe",
+     "Wellihilli Park snowboard park",
+     "Welli Hilli snow park halfpipe"
+    ]
+   },
+   {
+    "label": "곤돌라",
+    "why": "곤돌라를 타고 올라가며 슬로프와 주변 산세를 내려다보는 풍경을 찍는다.",
+    "queries": [
+     "Wellihilli Park gondola",
+     "Welli Hilli Park cable car Hoengseong",
+     "Wellihilli Park mountain view"
+    ]
+   },
+   {
+    "label": "눈썰매장",
+    "why": "가족 단위 방문객이 눈썰매와 튜빙을 타며 찍는 겨울 대표 체험 장소다.",
+    "queries": [
+     "Wellihilli Park snow sled",
+     "Welli Hilli Park snow tubing",
+     "Wellihilli Park snow park family"
+    ]
+   },
+   {
+    "label": "스키 라이딩",
+    "why": "초보자도 탈 수 있는 여유로운 슬로프에서 스키와 보드를 타는 모습이 많이 공유된다.",
+    "queries": [
+     "Wellihilli Park skiing",
+     "Welli Hilli Park skier",
+     "Wellihilli Resort Hoengseong ski resort"
+    ]
+   }
+  ]
+ },
+ "oakvalley": {
+  "nameEn": "Oak Valley Resort",
+  "spots": [
+   {
+    "label": "뮤지엄산",
+    "why": "오크밸리 단지 안에 있는 안도 다다오 설계 미술관으로, 노출콘크리트 건축과 수공간이 대표적인 촬영 포인트다.",
+    "queries": [
+     "Museum SAN Wonju",
+     "Museum SAN Tadao Ando Oak Valley",
+     "Museum SAN water garden"
+    ]
+   },
+   {
+    "label": "워터가든",
+    "why": "뮤지엄산 입구의 얕은 연못과 붉은 조형물이 건물 외관과 어우러져 인증샷이 많이 나온다.",
+    "queries": [
+     "Museum SAN Water Garden Wonju",
+     "Museum SAN Wonju Alexander Liberman",
+     "Museum SAN Wonju pond"
+    ]
+   },
+   {
+    "label": "제임스터렐관",
+    "why": "뮤지엄산 안의 빛 설치 전시관으로, 빛과 공간을 활용한 독특한 사진이 올라온다.",
+    "queries": [
+     "Museum SAN James Turrell",
+     "James Turrell Wonju Museum SAN",
+     "Oak Valley Wonju Turrell"
+    ]
+   },
+   {
+    "label": "스키 슬로프",
+    "why": "오크밸리 스키장은 겨울 대표 시설로, 설원 슬로프와 리프트에서 찍은 사진이 많다.",
+    "queries": [
+     "Oak Valley ski resort Wonju",
+     "Oak Valley Resort ski slope",
+     "Wonju ski resort Korea"
+    ]
+   },
+   {
+    "label": "설경 산책",
+    "why": "겨울에 눈 덮인 리조트와 산자락 풍경이 이곳의 시즌 포토 포인트다.",
+    "queries": [
+     "Oak Valley Wonju snow",
+     "Oak Valley Resort winter Wonju",
+     "Wonju Jijeong-myeon winter landscape"
+    ]
+   }
+  ]
+ },
+ "alpensia": {
+  "nameEn": "Alpensia Ski Resort",
+  "spots": [
+   {
+    "label": "스키점프타워",
+    "why": "2018 평창올림픽 스키점프 경기장으로 쓰인 알펜시아의 상징 구조물이다. 리조트 어디서나 보이는 랜드마크로 꼽힌다.",
+    "queries": [
+     "Alpensia Ski Jumping Centre",
+     "Alpensia ski jump tower Pyeongchang",
+     "Alpensia Resort ski jump"
+    ],
+    "ko": "알펜시아 스키점프대"
+   },
+   {
+    "label": "스키 슬로프",
+    "why": "해발 약 700m에 있는 슬로프에서 설경 속 스키·스노보드 장면을 찍는다. 겨울 시즌에 가장 많이 올라오는 사진이다.",
+    "queries": [
+     "Alpensia Ski Resort slope",
+     "Alpensia ski resort Pyeongchang winter",
+     "Alpensia skiing Daegwallyeong"
+    ],
+    "ko": "알펜시아 스키장 슬로프"
+   },
+   {
+    "label": "스키점프 전망대",
+    "why": "스키점프대 위 전망대에서 알펜시아 리조트와 대관령 일대를 내려다볼 수 있다. 올림픽 시설 견학 코스로 알려져 있다.",
+    "queries": [
+     "Alpensia Ski Jumping Centre observation deck",
+     "Alpensia Resort aerial view",
+     "Alpensia Pyeongchang panorama"
+    ],
+    "ko": "알펜시아 스키점프 전망대"
+   },
+   {
+    "label": "리조트 전경",
+    "why": "스키장, 호텔, 올림픽 시설이 모여 있는 알펜시아 리조트 단지를 한 번에 담는 구도다. 눈 덮인 겨울 풍경과 올림픽 유산 사진으로 자주 쓰인다.",
+    "queries": [
+     "Alpensia Resort Pyeongchang",
+     "Alpensia Resort panorama",
+     "Alpensia Resort 2018 Winter Olympics venue"
+    ],
+    "ko": "평창 알펜시아 리조트"
+   },
+   {
+    "label": "인터컨티넨탈",
+    "why": "단지 안에 있는 호텔로, 스키장 앞 숙박 후기에서 외관 사진이 자주 나온다.",
+    "queries": [
+     "InterContinental Alpensia Pyeongchang Resort",
+     "Alpensia InterContinental hotel",
+     "Alpensia Pyeongchang hotel exterior"
+    ],
+    "ko": "인터컨티넨탈 알펜시아 평창"
+   }
+  ]
+ },
+ "muju": {
+  "nameEn": "Muju Deogyusan Resort",
+  "spots": [
+   {
+    "label": "덕유산 곤돌라",
+    "why": "베이스에서 설천봉까지 약 15분 동안 설경과 능선을 내려다보며 올라가는 리조트 대표 시설이다.",
+    "queries": [
+     "Muju Deogyusan Resort gondola",
+     "Deogyusan gondola Seolcheonbong",
+     "Muju Deogyusan Resort ski"
+    ],
+    "ko": "무주 덕유산리조트 곤돌라"
+   },
+   {
+    "label": "설천봉 상제루",
+    "why": "곤돌라 정상역 옆의 전통 누각이다. 눈 덮인 능선을 배경으로 한 기념사진 장소로 꼽힌다.",
+    "queries": [
+     "Seolcheonbong Sangjeru Deogyusan",
+     "Deogyusan Seolcheonbong pavilion",
+     "Muju Deogyusan Seolcheonbong"
+    ],
+    "ko": "덕유산 설천봉 상제루"
+   },
+   {
+    "label": "향적봉 상고대",
+    "why": "설천봉에서 걸어 올라가는 덕유산 최고봉이다. 겨울 눈꽃과 상고대, 구름바다 사진으로 자주 소개된다.",
+    "queries": [
+     "Hyangjeokbong Deogyusan snow",
+     "Deogyusan winter rime ice",
+     "Deogyusan Hyangjeokbong summit"
+    ],
+    "ko": "덕유산 향적봉 상고대 눈꽃"
+   },
+   {
+    "label": "리조트 슬로프",
+    "why": "덕유산 자락을 따라 펼쳐진 설원 슬로프에서 스키·스노보드 인증샷을 많이 찍는다.",
+    "queries": [
+     "Muju Deogyusan Resort ski slope",
+     "Deogyusan Resort snow slope",
+     "Muju ski resort winter"
+    ],
+    "ko": "무주 덕유산리조트 스키장 슬로프"
+   },
+   {
+    "label": "티롤호텔",
+    "why": "유럽 알프스풍 외관의 리조트 숙소 단지다. 설경과 어우러진 베이스 풍경 촬영지로 알려져 있다.",
+    "queries": [
+     "Muju Deogyusan Resort Tirol hotel",
+     "Deogyusan Resort hotel Muju",
+     "Muju Deogyusan Resort building"
+    ],
+    "ko": "무주 덕유산리조트 티롤호텔"
    }
   ]
  }
