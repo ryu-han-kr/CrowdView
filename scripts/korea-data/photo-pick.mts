@@ -31,6 +31,8 @@ const SPOTS_OUT = "src/data/korea/photo-spots.json";
 const SHEET_DIR = process.env.BEFORE_AFTER ?? ".";
 // 시험 9곳 (테마파크 5 · 스키장 4). 대표를 직접 고른 곳(HERO)·기존 대표를 지킨 곳(KEEP_HERO)은 뺐다
 const PILOT = ["everland", "lotteworld", "seoulland", "legoland", "oworld", "yongpyong", "high1", "vivaldi", "muju"];
+// 장소 종류 → 채점 프롬프트에 쓰는 이름
+const KIND: Record<string, string> = { ski: "스키장", themepark: "테마파크", waterpark: "워터파크", landmark: "관광지", street: "거리", beach: "해수욕장", indoor: "실내 놀거리", event: "축제" };
 const ONLY = (process.env.ONLY ?? "").split(",").filter(Boolean);
 const MAX = 36;
 const PER_SPOT = 5;
@@ -152,7 +154,7 @@ for (const id of ONLY.length ? ONLY : PILOT) {
   // ③ 채점
   const j = await post<{ photos?: Pick[]; hero?: number }>("photo-pick", {
     name: place.name,
-    category: place.category === "ski" ? "스키장" : "테마파크",
+    category: KIND[place.category] ?? "관광지",
     model: MODEL,
     spots: spots.map((s) => s.label),
     images: loaded.map((x) => x.small.toString("base64")),
