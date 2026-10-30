@@ -92,6 +92,21 @@ async function commons(q: string): Promise<PlacePhoto[]> {
     .map((x) => ({ src: x.src, w: x.w, h: x.h, credit: `${x.who} / Wikimedia Commons`, license: x.lic, page: x.page }));
 }
 
+// 관광공사 관광사진 갤러리 (전문 사진가 촬영, 공공누리 제1유형) — 장소 이름으로 찾아 제목·검색어에 그 이름이 있는 것만 (10/30: 키워드 검색이 다시 된다)
+async function kto(name: string): Promise<PlacePhoto[]> {
+  const key = process.env.DATA_GO_KR_KEY;
+  if (!key) return [];
+  const qs = new URLSearchParams({ serviceKey: key, MobileOS: "ETC", MobileApp: "CrowdView", _type: "json", numOfRows: "30", pageNo: "1", arrange: "A", keyword: name });
+  const j = (await (await fetch(`https://apis.data.go.kr/B551011/PhotoGalleryService1/gallerySearchList1?${qs}`, { signal: AbortSignal.timeout(20_000) })).json().catch(() => ({}))) as {
+    response?: { body?: { items?: { item?: Record<string, string> | Record<string, string>[] } } };
+  };
+  const squash = (x: string) => x.replace(/\s/g, "");
+  return [j.response?.body?.items?.item ?? []]
+    .flat()
+    .filter((x) => x.galWebImageUrl && squash(`${x.galTitle} ${x.galSearchKeyword}`).includes(squash(name)))
+    .map((x) => ({ src: x.galWebImageUrl, credit: `한국관광공사 · ${x.galPhotographer || "관광사진 갤러리"}`, license: "공공누리 제1유형", alt: x.galTitle }));
+}
+
 async function load(p: PlacePhoto): Promise<{ p: PlacePhoto; small: Buffer } | null> {
   try {
     const res = await fetch(p.src, { signal: AbortSignal.timeout(30_000), headers: UA });
@@ -144,7 +159,8 @@ for (const id of ONLY.length ? ONLY : PILOT) {
     }
     found.push(...per);
   }
-  const all = [...current.slice(0, 8), ...found].filter((p, i, a) => a.findIndex((x) => x.src === p.src) === i);
+  const pro = (await kto(place.name.replace(/\(.*?\)/g, "").trim()).catch(() => [])).slice(0, 12);
+  const all = [...current.slice(0, 8), ...pro, ...found].filter((p, i, a) => a.findIndex((x) => x.src === p.src) === i);
   const loaded = (await Promise.all(all.slice(0, MAX + 8).map(load))).filter((x): x is NonNullable<typeof x> => !!x).slice(0, MAX);
   if (loaded.length < 3) {
     console.log(`${place.name}: 후보 ${loaded.length}장 — 건너뜀`);
