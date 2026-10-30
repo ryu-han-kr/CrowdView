@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { useSession } from "@/lib/auth-client";
+import { buyWithPlay, isTwa, playService } from "@/lib/play-billing-client";
 import { checkoutEnabled, startCardRegistration, startPassPayment } from "@/lib/plus-browser";
 import { planOf, SALES_OPEN, type PlanId } from "@/lib/business";
 import { usePlus } from "@/lib/plus-client";
@@ -46,6 +47,66 @@ export function PlusCheckoutButton({ className = "", plan = "plus", tone = "ligh
   return <Checkout className={className} plan={plan} solid={solid} />;
 }
 
+/**
+ * Play 스토어 앱(TWA) 안에서는 토스 대신 Google Play 결제만 (Play 정책, 경수님 10/30). 1개월 이용권만 판다.
+ * Play 결제를 못 쓰는 앱 버전이면 결제 버튼 없이 안내만
+ */
+function useApp(): { app: boolean; play: boolean } {
+  const [state, setState] = useState({ app: false, play: false });
+  useEffect(() => {
+    if (!isTwa()) return;
+    setState({ app: true, play: false });
+    playService().then((s) => setState({ app: true, play: !!s }));
+  }, []);
+  return state;
+}
+
+function PlayCheckout({ className, plan, cls }: { className: string; plan: PlanId; cls: string }) {
+  const { t, lp } = useI18n();
+  const [busy, setBusy] = useState(false);
+  const [asking, setAsking] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const P = planOf(plan);
+  const price = P.priceKrw.toLocaleString();
+  const go = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      await buyWithPlay(plan);
+      location.href = lp("/me");
+    } catch (e) {
+      // 결제창을 닫으면 AbortError
+      if ((e as { name?: string })?.name !== "AbortError") setError(e instanceof Error ? e.message : String(e));
+      setBusy(false);
+      setAsking(false);
+    }
+  };
+  return (
+    <div>
+      <button disabled={busy} onClick={() => setAsking(true)} className={`${cls} disabled:cursor-not-allowed`}>
+        {busy ? t("결제 진행 중…") : t("Google Play로 1개월 이용권 결제 ({price}원)", { price })}
+      </button>
+      {asking && (
+        <ConfirmSheet
+          title={t("{name} 1개월 이용권", { name: P.name })}
+          lines={[
+            t("{price}원 (부가세 포함), 한 번만 결제돼요", { price }),
+            t("이용 기간: 결제한 날부터 1개월"),
+            t("자동으로 다시 결제되지 않아요. 끝날 때 마이페이지에서 1개월 더 이어서 결제할 수 있어요"),
+            t("Google Play로 결제되고, 환불은 Google Play 환불 정책을 따라요"),
+          ]}
+          agree={t("위 내용을 확인했고, 결제에 동의해요")}
+          confirmLabel={t("결제하기")}
+          busy={busy}
+          onClose={() => setAsking(false)}
+          onConfirm={go}
+        />
+      )}
+      {error && <p className={`mt-2 text-xs font-semibold text-red-100 ${className}`}>{error}</p>}
+    </div>
+  );
+}
+
 function Checkout({ className, plan, solid }: { className: string; plan: PlanId; solid: string }) {
   const { t, lp } = useI18n();
   const { data, isPending } = useSession();
@@ -60,6 +121,7 @@ function Checkout({ className, plan, solid }: { className: string; plan: PlanId;
   // 이용권으로 이용 중인 회원이 마이페이지 '1개월 더 이어서 결제'로 오면(?extend=1) 이용권 버튼을 보여 준다 (남은 기간 뒤로 이어 붙음)
   const [extend, setExtend] = useState(false);
   useEffect(() => setExtend(new URLSearchParams(location.search).get("extend") === "1"), []);
+  const app = useApp();
 
   if (plus && !extend)
     return (
@@ -72,6 +134,17 @@ function Checkout({ className, plan, solid }: { className: string; plan: PlanId;
       <a href={`${lp("/login")}?next=${encodeURIComponent(lp("/pricing"))}`} className={`block text-center ${cls}`}>
         {t("로그인하고 시작하기")}
       </a>
+    );
+
+  if (app.app)
+    return app.play ? (
+      <PlayCheckout className={className} plan={plan} cls={cls} />
+    ) : (
+      <div className={className}>
+        <button disabled className={`w-full ${cls} opacity-80`}>
+          {t("앱 결제 준비 중")}
+        </button>
+      </div>
     );
 
   const go = async (kind: "pass" | "billing") => {

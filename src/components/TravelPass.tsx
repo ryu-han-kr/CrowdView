@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { useSession } from "@/lib/auth-client";
 import { PLANS, type PlanId } from "@/lib/business";
 import { PASSES } from "@/lib/passes";
+import { isTwa } from "@/lib/play-billing-client";
 
 /** Paddle 클라이언트 토큰 (live_… / test_…). 없으면 결제 버튼은 '준비 중' */
 const TOKEN = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN;
@@ -71,6 +72,9 @@ export function TravelPass() {
   const { data } = useSession();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Play 스토어 앱 안에서는 다른 결제사(Paddle)를 보여 주지 않는다 (Play 정책, 경수님 10/30)
+  const [app, setApp] = useState(false);
+  useEffect(() => setApp(isTwa()), []);
 
   const buy = async (priceId: string) => {
     if (!data?.user) {
@@ -93,6 +97,7 @@ export function TravelPass() {
     setBusy(null);
   };
 
+  if (app) return null;
   return (
     <section className="mt-6 overflow-hidden rounded-3xl bg-gray-950 p-5 text-white ring-1 ring-white/10 md:p-6">
       <p className="w-fit bg-gradient-to-r from-amber-200 via-fuchsia-200 to-cyan-200 bg-clip-text text-sm font-bold text-transparent">CrowdView Travel Pass</p>
