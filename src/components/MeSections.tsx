@@ -7,6 +7,7 @@ import { usePicks, usePlans } from "@/lib/prefs";
 import { Glyph } from "@/components/Glyph";
 import { shareUrl } from "./ShareListButtons";
 import { EmptyState } from "@/components/EmptyState";
+import { DEFAULT_HEAT, HEAT_PALETTES } from "@/lib/heat-palettes";
 
 /** 공유 코스는 30일 보관 (lib/route-share) */
 const KEEP_DAYS = 30;
@@ -129,6 +130,11 @@ export function MySettings() {
           <span>{t("글자 크기")}</span>
           <FontSizePicker />
         </li>
+        <li className="px-4 py-3">
+          <span>{t("히트맵 색")}</span>
+          <span className="block text-[11px] text-gray-500">{t("지난 기록 표의 칸 색이에요")}</span>
+          <HeatPalettePicker />
+        </li>
         <li className="flex items-center justify-between px-4 py-3">
           <span>{t("혼잡 알림")}</span>
           <a href="#alerts" className="text-xs font-semibold text-indigo-600">
@@ -185,6 +191,46 @@ function FontSizePicker() {
           className={`min-h-8 rounded-full px-3 py-1 ${v === "m" ? "text-xs" : v === "l" ? "text-sm" : "text-base"} ${size === v ? "bg-white text-gray-900 shadow-sm" : "text-gray-600"}`}
         >
           {t("가")}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+/** 지난 기록 히트맵 색 (경수님 10/30: 원할 때 바꿀 수 있게). html[data-heat]와 localStorage(cv:heat), 칸은 CSS 변수 --heat-0~4 */
+function HeatPalettePicker() {
+  const { t } = useI18n();
+  const [heat, setHeat] = useState(DEFAULT_HEAT);
+  useEffect(() => {
+    try {
+      const v = localStorage.getItem("cv:heat");
+      if (v && HEAT_PALETTES.some((p) => p.id === v)) setHeat(v);
+    } catch {}
+  }, []);
+  const pick = (v: string) => {
+    setHeat(v);
+    try {
+      if (v === DEFAULT_HEAT) localStorage.removeItem("cv:heat");
+      else localStorage.setItem("cv:heat", v);
+    } catch {}
+    if (v === DEFAULT_HEAT) delete document.documentElement.dataset.heat;
+    else document.documentElement.dataset.heat = v;
+  };
+  return (
+    <div className="mt-2 grid grid-cols-2 gap-1.5 sm:grid-cols-3" suppressHydrationWarning>
+      {HEAT_PALETTES.map((p) => (
+        <button
+          key={p.id}
+          onClick={() => pick(p.id)}
+          aria-pressed={heat === p.id}
+          className={`flex min-h-9 items-center gap-2 rounded-xl px-2 py-1.5 text-left text-xs ${heat === p.id ? "bg-indigo-50 font-semibold text-gray-900 ring-2 ring-indigo-500" : "bg-gray-50 text-gray-700"}`}
+        >
+          <span className="flex shrink-0 gap-px" aria-hidden>
+            {p.colors.map((c) => (
+              <span key={c} className="h-3.5 w-2.5 first:rounded-l last:rounded-r" style={{ background: c }} />
+            ))}
+          </span>
+          <span className="min-w-0 truncate">{t(p.name)}</span>
         </button>
       ))}
     </div>

@@ -2,17 +2,34 @@
 import type { Lang } from "@/i18n/config";
 import type { T } from "@/i18n/translate";
 import type { DailyRow } from "@/lib/archive-daily";
-import { inkOf, levelOf } from "@/lib/levels";
+import { heatVar } from "@/lib/heat-palettes";
+import { LEVELS, inkOf, levelOf } from "@/lib/levels";
 
 const DOW_BASE = Date.UTC(2026, 0, 4); // 일요일
 export const dowName = (w: number, lang: Lang) => new Intl.DateTimeFormat(lang, { weekday: "short", timeZone: "UTC" }).format(new Date(DOW_BASE + w * 86_400_000));
 const dowOf = (date: string) => new Date(`${date}T00:00:00Z`).getUTCDay();
 const fmtNum = (n: number, lang: Lang) => n.toLocaleString(lang);
 
-/** 칸 하나: 점수 → 단계 색 (자료 없음은 옅은 회색) */
+/** 칸 하나: 점수 → 단계 색 (설정에서 고른 히트맵 색, lib/heat-palettes). 자료 없음은 옅은 회색 */
 function Cell({ score, title, className = "" }: { score: number; title?: string; className?: string }) {
-  const bg = score < 0 ? "#f3f4f6" : levelOf(score).color;
-  return <span title={title} className={`block rounded-[3px] ${className}`} style={{ background: bg, opacity: score < 0 ? 1 : 0.35 + (score / 100) * 0.65 }} />;
+  return <span title={title} className={`block rounded-[3px] ${className}`} style={{ background: heatVar(score) }} />;
+}
+
+/** 색 예시: 쾌적 ■■■■■ 매우 혼잡 (지인 QA 10/30: '옅을수록 한산'은 추상적이었다) */
+export function HeatLegend({ t, className = "" }: { t: T; className?: string }) {
+  return (
+    <div className={`flex flex-wrap items-center gap-1.5 text-xs text-gray-600 ${className}`}>
+      {t(LEVELS[0].label)}
+      {LEVELS.map((l, i) => (
+        <span key={l.key} title={t(l.label)} className="h-3 w-5 rounded" style={{ background: `var(--heat-${i})` }} />
+      ))}
+      {t(LEVELS[4].label)}
+      <span className="ml-2 inline-flex items-center gap-1">
+        <span className="h-3 w-3 rounded border border-gray-200" style={{ background: "var(--heat-none)" }} />
+        {t("기록 없음")}
+      </span>
+    </div>
+  );
 }
 
 /** 요일 × 시간 평균 (쌓인 날들로 본 '가기 좋은 시간') */
@@ -39,7 +56,7 @@ export function WeekdayHourHeatmap({ rows, lang, t }: { rows: DailyRow[]; lang: 
   return (
     <section className="mt-6 rounded-3xl border border-gray-100 p-4">
       <h2 className="text-lg font-bold">{t("요일·시간대별 평균")}</h2>
-      <p className="mt-0.5 text-sm text-gray-600">{t("지금까지 쌓인 실제 기록의 평균이에요. 옅을수록 한산해요.")}</p>
+      <p className="mt-0.5 text-sm text-gray-600">{t("지금까지 쌓인 실제 기록의 평균이에요.")}</p>
       {best && (
         <p className="mt-2 text-[15px] font-semibold">
           {t("가장 한산했던 때: {day} {hour}시쯤", { day: dowName(best.w, lang), hour: best.h })}{" "}
@@ -72,58 +89,102 @@ export function WeekdayHourHeatmap({ rows, lang, t }: { rows: DailyRow[]; lang: 
           </tbody>
         </table>
       </div>
+      <HeatLegend t={t} className="mt-3" />
     </section>
   );
 }
 
-/** 날마다 한 줄: 날짜 · 0~23시 띠 · 평균 단계 · 가장 붐빈 시각 · 사람 수 */
+/**
+ * 날마다 한 장: 날짜 · 0~23시 띠 · 하루 평균 · 가장 붐빈 시각 · 사람 수.
+ * 접어 두고 '더보기'를 눌러야 펼친다 (경수님 10/30: 길면 아래 정보가 너무 내려간다). 휴대폰은 카드, PC는 표
+ */
 export function DailyTable({ rows, lang, t, unit }: { rows: DailyRow[]; lang: Lang; t: T; unit?: string }) {
+  const ppl = (r: DailyRow) => (r.avgPeople != null ? (unit === "분" ? t("{n}분", { n: r.avgPeople }) : fmtNum(r.avgPeople, lang)) : "-");
+  const date = (r: DailyRow) => (
+    <>
+      {Number(r.date.slice(5, 7))}/{Number(r.date.slice(8, 10))} <span className="text-gray-500">({dowName(dowOf(r.date), lang)})</span>
+    </>
+  );
+  const strip = (r: DailyRow, cls: string) => (r.hourly ?? Array(24).fill(-1)).map((v, h) => <Cell key={h} score={v} title={`${h}:00`} className={cls} />);
   return (
     <section className="mt-6">
-      <h2 className="text-lg font-bold">{t("날짜별 기록")}</h2>
-      <p className="mt-0.5 text-sm text-gray-600">{t("띠는 0시부터 23시까지 시간대별 평균이에요.")}</p>
-      <div className="mt-3 overflow-x-auto rounded-2xl border border-gray-100 bg-white">
-        <table className="w-full text-sm whitespace-nowrap">
-          <thead className="bg-gray-50 text-xs text-gray-500">
-            <tr>
-              <th className="px-3 py-2 text-left">{t("날짜")}</th>
-              <th className="px-3 py-2 text-left">{t("시간대별")}</th>
-              <th className="px-3 py-2 text-left">{t("하루 평균")}</th>
-              <th className="px-3 py-2 text-left">{t("가장 붐빈 때")}</th>
-              <th className="px-3 py-2 text-right">{unit === "분" ? t("평균 대기") : t("평균 인원")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r) => {
-              const lv = levelOf(r.avg);
-              const pk = levelOf(r.max);
-              return (
-                <tr key={r.date} className="border-t border-gray-100">
-                  <td className="px-3 py-2 font-semibold">
-                    {Number(r.date.slice(5, 7))}/{Number(r.date.slice(8, 10))} <span className="text-gray-500">({dowName(dowOf(r.date), lang)})</span>
-                  </td>
-                  <td className="px-3 py-2">
-                    <span className="grid w-[168px] grid-cols-24 gap-px">
-                      {(r.hourly ?? Array(24).fill(-1)).map((v, h) => (
-                        <Cell key={h} score={v} title={`${h}:00`} className="h-4" />
-                      ))}
+      <details className="group">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
+          <h2 className="text-lg font-bold">{t("날짜별 기록")}</h2>
+          <span className="shrink-0 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700">
+            <span className="group-open:hidden">{t("더보기 ({n}일)", { n: rows.length })} ▾</span>
+            <span className="hidden group-open:inline">{t("접기")} ▴</span>
+          </span>
+        </summary>
+        <HeatLegend t={t} className="mt-2" />
+
+        {/* 휴대폰: 날짜마다 카드 (옆으로 밀던 표 대신) */}
+        <ul className="mt-3 space-y-2.5 md:hidden">
+          {rows.map((r) => {
+            const lv = levelOf(r.avg);
+            return (
+              <li key={r.date} className="rounded-2xl border border-gray-100 bg-white px-3.5 py-3">
+                <div className="flex items-baseline justify-between gap-2">
+                  <b className="text-[15px]">{date(r)}</b>
+                  <span className="text-[13px] text-gray-600">
+                    {t("하루 평균")}{" "}
+                    <b style={{ color: inkOf(lv.color) }}>{t(lv.label)}</b>
+                  </span>
+                </div>
+                <span className="mt-2.5 grid grid-cols-24 gap-0.5">{strip(r, "h-4")}</span>
+                <span className="relative mt-1 block h-3.5 text-[11px] text-gray-400">
+                  {[0, 6, 12, 18].map((h) => (
+                    <span key={h} className="absolute" style={{ left: `${(h / 24) * 100}%` }}>
+                      {h}
                     </span>
-                  </td>
-                  <td className="px-3 py-2 font-semibold" style={{ color: inkOf(lv.color) }}>
-                    {t(lv.label)}
-                  </td>
-                  <td className="px-3 py-2">
-                    {r.maxAt} <span className="font-semibold" style={{ color: inkOf(pk.color) }}>{t(pk.label)}</span>
-                  </td>
-                  <td className="px-3 py-2 text-right tabular-nums">
-                    {r.avgPeople != null ? (unit === "분" ? t("{n}분", { n: r.avgPeople }) : fmtNum(r.avgPeople, lang)) : "-"}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+                  ))}
+                </span>
+                <p className="mt-1.5 flex gap-3.5 text-[13px] text-gray-600">
+                  <span>
+                    {t("가장 붐빈 때")} <b className="text-gray-900">{r.maxAt || "-"}</b>
+                  </span>
+                  <span>
+                    {unit === "분" ? t("평균 대기") : t("평균 인원")} <b className="text-gray-900">{ppl(r)}</b>
+                  </span>
+                </p>
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* PC: 표 (가장 붐빈 때는 시각만) */}
+        <div className="mt-3 hidden overflow-x-auto rounded-2xl border border-gray-100 bg-white md:block">
+          <table className="w-full text-sm whitespace-nowrap">
+            <thead className="bg-gray-50 text-xs text-gray-500">
+              <tr>
+                <th className="px-3 py-2 text-left">{t("날짜")}</th>
+                <th className="px-3 py-2 text-left">{t("시간대별")}</th>
+                <th className="px-3 py-2 text-left">{t("하루 평균")}</th>
+                <th className="px-3 py-2 text-left">{t("가장 붐빈 때")}</th>
+                <th className="px-3 py-2 text-right">{unit === "분" ? t("평균 대기") : t("평균 인원")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => {
+                const lv = levelOf(r.avg);
+                return (
+                  <tr key={r.date} className="border-t border-gray-100">
+                    <td className="px-3 py-2 font-semibold">{date(r)}</td>
+                    <td className="px-3 py-2">
+                      <span className="grid w-[216px] grid-cols-24 gap-0.5">{strip(r, "h-4")}</span>
+                    </td>
+                    <td className="px-3 py-2 font-semibold" style={{ color: inkOf(lv.color) }}>
+                      {t(lv.label)}
+                    </td>
+                    <td className="px-3 py-2 tabular-nums">{r.maxAt || "-"}</td>
+                    <td className="px-3 py-2 text-right tabular-nums">{ppl(r)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </details>
     </section>
   );
 }

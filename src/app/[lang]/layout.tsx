@@ -15,6 +15,7 @@ import { LazyI18nProvider } from "@/i18n/lazy-provider";
 import { LANGS, isLang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { SITE, pageMeta } from "@/lib/seo";
+import { heatCss } from "@/lib/heat-palettes";
 import "../globals.css";
 import { TrafficBeacon } from "@/components/TrafficBeacon";
 import { AutoRefresh } from "@/components/AutoRefresh";
@@ -82,9 +83,11 @@ export default async function RootLayout({ children, params }: { children: React
         {/* 화면 테마(라이트·다크 고정)를 그리기 전에 적용해 깜빡이지 않게. 저장 값이 없으면 시스템 설정(자동) */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){function add(){["${FONT_CSS}","${HEAD_FONT_CSS}"].forEach(function(h){var l=document.createElement("link");l.rel="stylesheet";l.href=h;document.head.appendChild(l)})}function idle(){("requestIdleCallback"in window)?requestIdleCallback(add,{timeout:3000}):setTimeout(add,1500)}if(document.readyState==="complete")idle();else window.addEventListener("load",idle,{once:true})})();try{var t=localStorage.getItem("cv:theme");if(t==="dark"||t==="auto")document.documentElement.dataset.theme=t;var f=localStorage.getItem("cv:font");if(f==="l"||f==="xl")document.documentElement.dataset.font=f}catch(e){}if(/(?:^|; *)cv-plus=1(?:;|$)/.test(document.cookie))document.documentElement.dataset.plus="1"`,
+            __html: `(function(){function add(){["${FONT_CSS}","${HEAD_FONT_CSS}"].forEach(function(h){var l=document.createElement("link");l.rel="stylesheet";l.href=h;document.head.appendChild(l)})}function idle(){("requestIdleCallback"in window)?requestIdleCallback(add,{timeout:3000}):setTimeout(add,1500)}if(document.readyState==="complete")idle();else window.addEventListener("load",idle,{once:true})})();try{var t=localStorage.getItem("cv:theme");if(t==="dark"||t==="auto")document.documentElement.dataset.theme=t;var f=localStorage.getItem("cv:font");if(f==="l"||f==="xl")document.documentElement.dataset.font=f;var h=localStorage.getItem("cv:heat");if(h)document.documentElement.dataset.heat=h}catch(e){}if(/(?:^|; *)cv-plus=1(?:;|$)/.test(document.cookie))document.documentElement.dataset.plus="1"`,
           }}
         />
+        {/* 지난 기록 히트맵 색 (마이페이지 설정, lib/heat-palettes) */}
+        <style dangerouslySetInnerHTML={{ __html: heatCss() }} />
         {/* 관광공사 사진은 주소가 바뀌어 사라지기도 한다(10/20 3,047장 중 236장 404) → 깨진 사진은 숨겨 카드의 색 배경이 보이게 */}
         <script
           dangerouslySetInnerHTML={{
