@@ -193,17 +193,18 @@
   ]
  },
  "everland": {
-  "model": "claude-haiku-5-5",
-  "date": "2026-10-29",
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
   "photos": [
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/17/2943217_image2_1.jpg",
+    "src": "https://tong.visitkorea.or.kr/cms/resource/28/3095328_image2_1.jpg",
+    "w": 940,
+    "h": 627,
     "credit": "한국관광공사",
     "license": "공공누리 제1유형",
-    "w": 940,
-    "h": 626,
-    "alt": "에버랜드 유럽풍 거리와 롤러코스터 저녁 전경",
-    "score": 9
+    "alt": "붉은 탑과 이국적 건물이 있는 맑은 광장",
+    "score": 9,
+    "reason": "밝은 하늘과 붉은 벽돌 탑, 이국적인 건물이 어우러져 에버랜드의 분위기가 잘 전달됩니다."
    },
    {
     "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/240115_Everland_etc_02.jpg/1920px-240115_Everland_etc_02.jpg",
@@ -212,19 +213,56 @@
     "credit": "*Youngjin / Wikimedia Commons",
     "license": "CC BY-SA 4.0",
     "page": "https://commons.wikimedia.org/wiki/File:240115_Everland_etc_02.jpg",
-    "alt": "에버랜드 거대한 판다 조형물과 유럽풍 광장 전경",
-    "score": 8
+    "alt": "파란 하늘 아래 앉아 있는 대형 판다 조형물",
+    "score": 8,
+    "label": "판다월드",
+    "reason": "파란 하늘 아래 거대한 판다 조형물이 크게 강조되어 한눈에 눈길을 끕니다."
    },
    {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/T_Express_Everland_Resort.jpg/1920px-T_Express_Everland_Resort.jpg",
-    "w": 1600,
-    "h": 1200,
-    "credit": "Roller Coaster Philosophy, Jeremy Thompson / Wikimedia Commons",
-    "license": "Public domain",
-    "page": "https://commons.wikimedia.org/wiki/File:T_Express_Everland_Resort.jpg",
-    "alt": "에버랜드 T익스프레스 목재 롤러코스터와 유럽풍 거리",
-    "score": 8
+    "src": "https://tong.visitkorea.or.kr/cms/resource/59/3486459_image2_1.jpg",
+    "w": 940,
+    "h": 624,
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "하늘 아래 휘어지는 목조 롤러코스터",
+    "score": 8,
+    "label": "T 익스프레스",
+    "reason": "어안렌즈로 목조 코스터 구조물을 박진감 있게 강조한 사진입니다."
    },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/04/Everland_Moonlight_Magic_Parade.jpg/1920px-Everland_Moonlight_Magic_Parade.jpg",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Kanishk0001 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Everland_Moonlight_Magic_Parade.jpg",
+    "alt": "불빛으로 빛나는 야간 퍼레이드 차량",
+    "score": 7,
+    "label": "퍼레이드",
+    "reason": "화려한 조명의 퍼레이드 차량이 밤하늘에 선명하게 빛납니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/17/2943217_image2_1.jpg",
+    "w": 940,
+    "h": 626,
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "해질녘 가로등과 유럽풍 건물, 꽃밭 풍경",
+    "score": 8,
+    "reason": "노을빛 가로등과 유럽풍 건물, 꽃밭, 뒤편 롤러코스터가 한 장에 담겨 분위기가 좋습니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/88/3096488_image2_1.jpg",
+    "w": 940,
+    "h": 627,
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "푸른 하늘 아래 동화풍 건물이 늘어선 광장",
+    "score": 8,
+    "reason": "푸른 하늘과 동화 같은 건물이 선명하게 담긴 시원한 전경입니다."
+   }
+  ],
+  "pending": [
    {
     "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/240115_Everland_etc_07.jpg/1920px-240115_Everland_etc_07.jpg",
     "w": 1600,
@@ -232,8 +270,9 @@
     "credit": "*Youngjin / Wikimedia Commons",
     "license": "CC BY-SA 4.0",
     "page": "https://commons.wikimedia.org/wiki/File:240115_Everland_etc_07.jpg",
-    "alt": "에버랜드 시계탑과 조명이 켜진 저녁 광장",
-    "score": 7
+    "alt": "해질녘 시계탑이 보이는 광장",
+    "score": 6,
+    "reason": "시계탑과 크리스마스 장식이 있는 해질녘 광장이지만 다소 어둡고 한산합니다."
    },
    {
     "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Everland_Magic_tree.jpg/1920px-Everland_Magic_tree.jpg",
@@ -242,119 +281,114 @@
     "credit": "Wikiwater2020 / Wikimedia Commons",
     "license": "CC BY-SA 3.0",
     "page": "https://commons.wikimedia.org/wiki/File:Everland_Magic_tree.jpg",
-    "alt": "에버랜드 대형 장식 나무와 방문객",
-    "score": 7
+    "alt": "장식된 대형 나무가 있는 광장",
+    "score": 6,
+    "reason": "화려하게 장식된 큰 나무가 눈에 띄지만 모자이크 처리된 인물과 안내판이 있습니다."
    },
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/28/3095328_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "w": 940,
-    "h": 627,
-    "alt": "에버랜드 이국적 건물과 탑이 있는 광장",
-    "score": 7
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/Four_Seasons_Garden_%28%ED%8F%AC%EC%8B%9C%EC%A6%8C_%EA%B0%80%EB%93%A0%29_-_panoramio_%281%29.jpg/1920px-Four_Seasons_Garden_%28%ED%8F%AC%EC%8B%9C%EC%A6%8C_%EA%B0%80%EB%93%A0%29_-_panoramio_%281%29.jpg",
+    "w": 2048,
+    "h": 609,
+    "credit": "골뱅이 / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Four_Seasons_Garden_(%ED%8F%AC%EC%8B%9C%EC%A6%8C_%EA%B0%80%EB%93%A0)_-_panoramio_(1).jpg",
+    "alt": "국화 꽃밭과 연못이 보이는 가을 파노라마",
+    "score": 6,
+    "reason": "국화 꽃밭과 연못이 이어지는 파노라마지만 해상도가 낮고 작은 워터마크가 있습니다."
    },
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/88/3096488_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "w": 940,
-    "h": 627,
-    "alt": "에버랜드 러시아풍 건물이 있는 광장",
-    "score": 7
+    "src": "https://upload.wikimedia.org/wikipedia/commons/3/3e/T_Express_%28Everland%29.jpg",
+    "w": 1572,
+    "h": 1748,
+    "credit": "milst1 (Martin Lewison) / Wikimedia Commons",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:T_Express_(Everland).jpg",
+    "alt": "빨간 파라솔 너머 목조 롤러코스터",
+    "score": 6,
+    "label": "T 익스프레스",
+    "reason": "빨간 파라솔 너머 목조 코스터가 보이는 구도가 좋지만 날씨가 뿌옇습니다."
    },
    {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/59/3486459_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "w": 940,
-    "h": 624,
-    "alt": "에버랜드 노란 목재 롤러코스터 구조물",
-    "score": 7
-   },
-   {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/08/2943208_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "w": 940,
-    "h": 626,
-    "alt": "에버랜드 장미 아치가 있는 정원",
-    "score": 7
-   },
-   {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/62/3486462_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "w": 940,
-    "h": 640,
-    "alt": "에버랜드 사파리 버스와 곰 무리",
-    "score": 7
-   },
-   {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Everland_%2813%29.JPG/1920px-Everland_%2813%29.JPG",
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/T_Express_Everland_Resort.jpg/1920px-T_Express_Everland_Resort.jpg",
     "w": 1600,
     "h": 1200,
-    "credit": "콩가루 / Wikimedia Commons",
+    "credit": "Roller Coaster Philosophy, Jeremy Thompson / Wikimedia Commons",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:T_Express_Everland_Resort.jpg",
+    "alt": "꽃밭 너머로 보이는 T 익스프레스",
+    "score": 5,
+    "label": "T 익스프레스",
+    "reason": "꽃밭과 T 익스프레스가 보이지만 날씨가 흐리고 색감이 오래된 느낌입니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d1/20240115_%EC%97%90%EB%B2%84%EB%9E%9C%EB%93%9C_%ED%8F%AC%EC%8B%9C%EC%A6%8C%EC%8A%A4_%EA%B0%80%EB%93%A0_%EB%AC%B4%EB%8C%80_%EC%A0%84%EA%B2%BD.jpg/1920px-20240115_%EC%97%90%EB%B2%84%EB%9E%9C%EB%93%9C_%ED%8F%AC%EC%8B%9C%EC%A6%8C%EC%8A%A4_%EA%B0%80%EB%93%A0_%EB%AC%B4%EB%8C%80_%EC%A0%84%EA%B2%BD.jpg",
+    "w": 3024,
+    "h": 3024,
+    "credit": "YellowTurtle9 / Wikimedia Commons",
+    "license": "CC BY 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:20240115_%EC%97%90%EB%B2%84%EB%9E%9C%EB%93%9C_%ED%8F%AC%EC%8B%9C%EC%A6%8C%EC%8A%A4_%EA%B0%80%EB%93%A0_%EB%AC%B4%EB%8C%80_%EC%A0%84%EA%B2%BD.jpg",
+    "alt": "눈 장식이 있는 야외 공연 무대",
+    "score": 5,
+    "reason": "눈 장식 무대와 파란 하늘은 깔끔하지만 이곳의 대표 명소가 뚜렷하지 않습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/20240115_%EC%97%90%EB%B2%84%EB%9E%9C%EB%93%9C_%ED%8F%AC%EC%8B%9C%EC%A6%8C%EC%8A%A4_%EA%B0%80%EB%93%A0_%EC%95%9E_%EC%A0%95%EC%9B%90_%EC%A0%84%EA%B2%BD.jpg/1920px-20240115_%EC%97%90%EB%B2%84%EB%9E%9C%EB%93%9C_%ED%8F%AC%EC%8B%9C%EC%A6%8C%EC%8A%A4_%EA%B0%80%EB%93%A0_%EC%95%9E_%EC%A0%95%EC%9B%90_%EC%A0%84%EA%B2%BD.jpg",
+    "w": 3024,
+    "h": 3024,
+    "credit": "YellowTurtle9 / Wikimedia Commons",
+    "license": "CC BY 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:20240115_%EC%97%90%EB%B2%84%EB%9E%9C%EB%93%9C_%ED%8F%AC%EC%8B%9C%EC%A6%8C%EC%8A%A4_%EA%B0%80%EB%93%A0_%EC%95%9E_%EC%A0%95%EC%9B%90_%EC%A0%84%EA%B2%BD.jpg",
+    "alt": "겨울 무대와 멀리 보이는 롤러코스터",
+    "score": 5,
+    "reason": "겨울 무대와 T 익스프레스가 함께 보이지만 구도가 평범합니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/T_Express_downhill.jpg/1920px-T_Express_downhill.jpg",
+    "w": 2112,
+    "h": 2816,
+    "credit": "Roller Coaster Philosophy, Jeremy Thompson / Wikimedia Commons",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:T_Express_downhill.jpg",
+    "alt": "정상에 오른 목조 롤러코스터 열차",
+    "score": 5,
+    "label": "T 익스프레스",
+    "reason": "코스터 정상의 열차를 담았지만 흐린 하늘과 어두운 색감이 아쉽습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/T_Express_lift_hill.jpg/1920px-T_Express_lift_hill.jpg",
+    "w": 2112,
+    "h": 2816,
+    "credit": "Roller Coaster Philosophy, Jeremy Thompson / Wikimedia Commons",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:T_Express_lift_hill.jpg",
+    "alt": "오르막을 오르는 빨간 롤러코스터 열차",
+    "score": 5,
+    "label": "T 익스프레스",
+    "reason": "빨간 열차가 오르막을 오르는 모습이 보이지만 흐리고 색감이 오래됐습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/93/Safari_in_Everland.jpg/1920px-Safari_in_Everland.jpg",
+    "w": 3264,
+    "h": 1836,
+    "credit": "Ji-soo Seo / Wikimedia Commons",
     "license": "CC BY-SA 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:Everland_(13).JPG",
-    "alt": "에버랜드 철쭉 정원과 분수 풍경",
-    "score": 6
+    "page": "https://commons.wikimedia.org/wiki/File:Safari_in_Everland.jpg",
+    "alt": "폭포 앞 통나무에서 쉬는 호랑이",
+    "score": 5,
+    "label": "사파리월드",
+    "reason": "폭포 앞에서 쉬는 호랑이를 담았지만 해상도가 낮고 다소 평범합니다."
    },
    {
     "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/Entrance_of_Everland.jpg/1920px-Entrance_of_Everland.jpg",
-    "w": 1600,
-    "h": 1033,
+    "w": 3633,
+    "h": 2346,
     "credit": "Christophe95 / Wikimedia Commons",
     "license": "CC BY-SA 4.0",
     "page": "https://commons.wikimedia.org/wiki/File:Entrance_of_Everland.jpg",
-    "alt": "에버랜드 정문 아치와 입장객들",
-    "score": 6
-   },
-   {
-    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/240115_Everland_etc_06.jpg/1920px-240115_Everland_etc_06.jpg",
-    "w": 1600,
-    "h": 1200,
-    "credit": "*Youngjin / Wikimedia Commons",
-    "license": "CC BY-SA 4.0",
-    "page": "https://commons.wikimedia.org/wiki/File:240115_Everland_etc_06.jpg",
-    "alt": "에버랜드 겨울 크리스마스 장식과 트리",
-    "score": 6
-   },
-   {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/44/3095444_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "w": 940,
-    "h": 627,
-    "alt": "에버랜드 노란 외벽의 대형 건물 정면",
-    "score": 6
-   },
-   {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/74/3096774_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "w": 940,
-    "h": 627,
-    "alt": "에버랜드 돔 건물이 있는 넓은 광장",
-    "score": 6
-   },
-   {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/24/2943224_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "w": 940,
-    "h": 627,
-    "alt": "푸른 하늘 아래 놀이공원 대관람차",
-    "score": 5
-   },
-   {
-    "src": "https://tong.visitkorea.or.kr/cms/resource/63/3096563_image2_1.jpg",
-    "credit": "한국관광공사",
-    "license": "공공누리 제1유형",
-    "w": 940,
-    "h": 627,
-    "alt": "에버랜드 성 아래 광장과 기념 기둥",
-    "score": 5
+    "alt": "사람들이 모인 에버랜드 정문",
+    "score": 5,
+    "label": "에버랜드 정문",
+    "reason": "정문이 보이지만 흐린 하늘과 인파로 인상이 평범합니다."
    }
   ]
  },
@@ -1151,6 +1185,2538 @@
     "page": "https://commons.wikimedia.org/wiki/File:MJ-Deogyusan.jpg",
     "alt": "여름 푸른 하늘 아래 산 능선과 숲이 보이는 풍경",
     "score": 3
+   }
+  ]
+ },
+ "korean-folk-village": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/65/3473365.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 김주원",
+    "license": "공공누리 제1유형",
+    "alt": "문틀 너머로 보이는 가을 초가집",
+    "score": 8,
+    "label": "초가 마을",
+    "reason": "문틀 안쪽으로 초가집이 보이는 액자 구도에 따뜻한 빛과 낙엽이 어우러진다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/67/3473367.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 김주원",
+    "license": "공공누리 제1유형",
+    "alt": "문 너머로 보이는 초가 마을 마당",
+    "score": 7,
+    "label": "초가 마을",
+    "reason": "문 너머로 초가 담장과 마당이 보여 마을 분위기가 잘 드러난다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/68/3473368.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 김주원",
+    "license": "공공누리 제1유형",
+    "alt": "볏짚 수레와 기와집 담장",
+    "score": 7,
+    "label": "양반가 고택",
+    "reason": "볏짚 실은 수레와 기와집 담장이 어우러져 옛 마을 느낌이 난다."
+   },
+   {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/2/26/Korean.Folk.Village-Minsokchon-12.jpg",
+    "w": 1414,
+    "h": 1032,
+    "credit": "bzo / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korean.Folk.Village-Minsokchon-12.jpg",
+    "alt": "야외 무대에서 펼쳐지는 농악 공연",
+    "score": 7,
+    "label": "농악·줄타기",
+    "reason": "상모를 돌리며 춤추는 농악 공연의 역동성이 한눈에 보인다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/66/3473366.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 김주원",
+    "license": "공공누리 제1유형",
+    "alt": "은행잎이 내려앉은 초가 담장",
+    "score": 8,
+    "label": "계절 풍경",
+    "reason": "은행잎이 쌓인 초가 담장과 노란 나무가 계절감을 잘 살린다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/63/3473363.jpg",
+    "w": 853,
+    "h": 1280,
+    "credit": "한국관광공사 · 김주원",
+    "license": "공공누리 제1유형",
+    "alt": "단풍 숲 앞에 줄지어 놓인 옹기들",
+    "score": 7,
+    "label": "계절 풍경",
+    "reason": "단풍 숲을 배경으로 늘어선 옹기들이 선명하고 구도도 안정적이다."
+   },
+   {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/d/d9/Korean_Folk_Village-Rooftops-01.jpg",
+    "w": 853,
+    "h": 1280,
+    "credit": "Matt Scott / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korean_Folk_Village-Rooftops-01.jpg",
+    "alt": "은행나무 길 옆 한옥 건물",
+    "score": 7,
+    "label": "양반가 고택",
+    "reason": "노란 은행나무 길과 한옥이 어우러진 가을 분위기가 좋다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Korea-Andong-Hahoe_Folk_Village-19.jpg/1920px-Korea-Andong-Hahoe_Folk_Village-19.jpg",
+    "w": 2048,
+    "h": 1536,
+    "credit": "by david&amp;alina at Flickr / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korea-Andong-Hahoe_Folk_Village-19.jpg",
+    "alt": "단풍 산 아래 초가 마을과 누각",
+    "score": 7,
+    "label": "초가 마을",
+    "reason": "기와 누각과 초가 마을, 단풍 산이 함께 보여 민속촌의 전경이 잘 설명된다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/64/3473364.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 김주원",
+    "license": "공공누리 제1유형",
+    "alt": "초가 처마 아래 농기구가 걸린 흙벽",
+    "score": 6,
+    "label": "초가 마을",
+    "reason": "초가 처마 아래 농기구가 걸린 흙벽이 정감 있지만 한눈에 보이는 장면은 아니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Korea-Gyeongju-Folkcraft_Village-Hanok_sytle_store-01.jpg/1920px-Korea-Gyeongju-Folkcraft_Village-Hanok_sytle_store-01.jpg",
+    "w": 2592,
+    "h": 1944,
+    "credit": "Alain Seguin from Ottawa, Canada / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korea-Gyeongju-Folkcraft_Village-Hanok_sytle_store-01.jpg",
+    "alt": "도자기를 늘어놓은 저잣거리 가게",
+    "score": 6,
+    "label": "저잣거리",
+    "reason": "도자기 가게가 늘어선 저잣거리 모습이 보이지만 흐리고 평범하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/Horseback_martial_arts_at_Korean_Folk_Village.jpg/1920px-Horseback_martial_arts_at_Korean_Folk_Village.jpg",
+    "w": 2448,
+    "h": 3264,
+    "credit": "Misokkkim / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Horseback_martial_arts_at_Korean_Folk_Village.jpg",
+    "alt": "단풍 아래 말 위에서 펼치는 마상 공연",
+    "score": 6,
+    "reason": "단풍 속 마상 공연이 눈길을 끌지만 화질이 다소 떨어지고 대표 명소 목록과는 다르다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Korean_Folk_Village_IMG_2114.jpg/1920px-Korean_Folk_Village_IMG_2114.jpg",
+    "w": 4416,
+    "h": 3312,
+    "credit": "G41rn8 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korean_Folk_Village_IMG_2114.jpg",
+    "alt": "관객 앞에서 펼쳐지는 농악 공연",
+    "score": 6,
+    "label": "농악·줄타기",
+    "reason": "농악 공연이 한창인 분위기는 좋지만 앞쪽 관객 뒷모습이 크게 가린다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Korean_Folk_Village_IMG_2118.jpg/1920px-Korean_Folk_Village_IMG_2118.jpg",
+    "w": 4416,
+    "h": 3312,
+    "credit": "G41rn8 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korean_Folk_Village_IMG_2118.jpg",
+    "alt": "말 위에서 묘기를 펼치는 마상 공연",
+    "score": 6,
+    "reason": "말 위에서 묘기를 부리는 마상 공연이 선명하게 담겼다."
+   },
+   {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/a/ad/Korean.Folk.Village.Misokchon-14.jpg",
+    "w": 1536,
+    "h": 2048,
+    "credit": "bzo / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korean.Folk.Village.Misokchon-14.jpg",
+    "alt": "천막 아래 진행되는 전통 혼례",
+    "score": 6,
+    "label": "전통 혼례",
+    "reason": "붉은 예복 신부와 혼례상이 보여 전통 혼례임을 알 수 있다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f8/KoreanFolkVillage_InWinter1.JPG/1920px-KoreanFolkVillage_InWinter1.JPG",
+    "w": 2048,
+    "h": 1536,
+    "credit": "DolphinL / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:KoreanFolkVillage_InWinter1.JPG",
+    "alt": "눈 덮인 초가집과 담장",
+    "score": 6,
+    "label": "초가 마을",
+    "reason": "눈 덮인 초가집이 겨울 정취를 주지만 색감이 오래되어 보인다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Korea-Andong-Hahoe_Folk_Village-10.jpg/1920px-Korea-Andong-Hahoe_Folk_Village-10.jpg",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Julie / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korea-Andong-Hahoe_Folk_Village-10.jpg",
+    "alt": "밭 너머 산을 배경으로 한 초가집",
+    "score": 5,
+    "label": "초가 마을",
+    "reason": "초가와 밭, 산이 보이지만 하늘이 흐리고 화질이 낮다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Korean.Folk.Village-Minsokchon-06.jpg/1920px-Korean.Folk.Village-Minsokchon-06.jpg",
+    "w": 2048,
+    "h": 1536,
+    "credit": "bzo / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korean.Folk.Village-Minsokchon-06.jpg",
+    "alt": "초가집이 둘러싼 마을 마당",
+    "score": 5,
+    "label": "초가 마을",
+    "reason": "초가가 둘러싼 마당이 보이지만 흐리고 색감이 오래된 느낌이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Korean.Folk.Village-Minsokchon-07.jpg/1920px-Korean.Folk.Village-Minsokchon-07.jpg",
+    "w": 2048,
+    "h": 1536,
+    "credit": "bzo / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korean.Folk.Village-Minsokchon-07.jpg",
+    "alt": "처마 밑에 매달린 옥수수와 고추",
+    "score": 5,
+    "label": "초가 마을",
+    "reason": "처마 밑 옥수수와 고추, 박이 정겹지만 어둡고 화질이 낮다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Korean.Folk.Village-Minsokchon-08.jpg/1920px-Korean.Folk.Village-Minsokchon-08.jpg",
+    "w": 2048,
+    "h": 1536,
+    "credit": "bzo / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korean.Folk.Village-Minsokchon-08.jpg",
+    "alt": "가마를 따라 걷는 전통 혼례 행렬",
+    "score": 5,
+    "label": "전통 혼례",
+    "reason": "혼례 행렬이 이어지는 장면이지만 구도가 산만하고 색감이 오래되어 보인다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Korean.Folk.Village-Minsokchon-15.jpg/1920px-Korean.Folk.Village-Minsokchon-15.jpg",
+    "w": 2048,
+    "h": 1536,
+    "credit": "bzo / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korean.Folk.Village-Minsokchon-15.jpg",
+    "alt": "숲속에 늘어선 장승들",
+    "score": 5,
+    "reason": "장승이 빼곡히 서 있어 독특하지만 어수선하고 대표 명소와는 거리가 있다."
+   },
+   {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Korean_Folk_Village-Rooftops.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "Matt Scott / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korean_Folk_Village-Rooftops.jpg",
+    "alt": "기와 지붕 처마 근접 사진",
+    "score": 5,
+    "label": "양반가 고택",
+    "reason": "기와 지붕 디테일은 보이지만 한쪽만 확대한 기록 사진 느낌이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7e/Korea-Gyeongju_Folk_Craft_Village-Hanok-01.jpg/1920px-Korea-Gyeongju_Folk_Craft_Village-Hanok-01.jpg",
+    "w": 2592,
+    "h": 1944,
+    "credit": "Alain Seguin at Flickr from Ottawa, Canada / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korea-Gyeongju_Folk_Craft_Village-Hanok-01.jpg",
+    "alt": "정원 너머로 보이는 한옥 기와집",
+    "score": 5,
+    "label": "양반가 고택",
+    "reason": "한옥과 정원이 평화롭지만 색감이 밋밋하고 기록 사진 같다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Korean.Folk.Village-Minsokchon-18.jpg/1920px-Korean.Folk.Village-Minsokchon-18.jpg",
+    "w": 2048,
+    "h": 1536,
+    "credit": "bzo / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korean.Folk.Village-Minsokchon-18.jpg",
+    "alt": "깃발이 걸린 고택의 나무 대문",
+    "score": 5,
+    "label": "양반가 고택",
+    "reason": "고풍스러운 대문과 깃발이 있지만 어둡고 평범한 구도다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/Korean_traditional_wedding_ceremony-02.jpg/1920px-Korean_traditional_wedding_ceremony-02.jpg",
+    "w": 3648,
+    "h": 2736,
+    "credit": "Matt and Nayoung Wilson from Atlanta and surrounding, US / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korean_traditional_wedding_ceremony-02.jpg",
+    "alt": "닭과 떡이 놓인 혼례상",
+    "score": 5,
+    "label": "전통 혼례",
+    "reason": "혼례상의 소품이 흥미롭지만 사람 몸이 잘려 나와 산만하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/Korean_Folk_Village%27s_Creek_20091017.jpg/1920px-Korean_Folk_Village%27s_Creek_20091017.jpg",
+    "w": 3264,
+    "h": 2448,
+    "credit": "玄史生 / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korean_Folk_Village%27s_Creek_20091017.jpg",
+    "alt": "단풍이 물든 호숫가 풍경",
+    "score": 5,
+    "label": "계절 풍경",
+    "reason": "단풍 물든 호수가 고요하지만 하늘이 흐려 인상이 약하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/Korean_Folk_Village%27s_Creek_and_Sailing_Yacht_20091017.jpg/1920px-Korean_Folk_Village%27s_Creek_and_Sailing_Yacht_20091017.jpg",
+    "w": 3264,
+    "h": 2448,
+    "credit": "玄史生 / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korean_Folk_Village%27s_Creek_and_Sailing_Yacht_20091017.jpg",
+    "alt": "단풍 숲 앞 호수 위 황포돛배",
+    "score": 5,
+    "label": "계절 풍경",
+    "reason": "단풍 숲과 황포돛배가 있지만 흐린 날씨와 앞쪽 잎이 시선을 분산시킨다."
+   }
+  ]
+ },
+ "seoul-grand-park": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/11/3539211.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 김지연",
+    "license": "공공누리 제1유형",
+    "alt": "호수를 배경으로 한 장미원 전경",
+    "score": 9,
+    "label": "장미원",
+    "reason": "호수와 산을 배경으로 장미 아치와 꽃길이 넓게 펼쳐져 이곳을 한눈에 설명한다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/14/3539214.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 김지연",
+    "license": "공공누리 제1유형",
+    "alt": "호수 위를 지나는 스카이리프트",
+    "score": 8,
+    "label": "스카이리프트",
+    "reason": "푸른 호수 위로 줄무늬 지붕의 리프트가 이어져 스카이리프트의 분위기가 선명하다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/12/3539212.jpg",
+    "credit": "한국관광공사 · 김지연",
+    "license": "공공누리 제1유형",
+    "w": 1280,
+    "h": 853,
+    "alt": "장미 아치와 꽃밭이 펼쳐진 장미원 전경",
+    "score": 9,
+    "label": "장미원",
+    "reason": "맑은 하늘 아래 장미 아치와 꽃밭이 한눈에 내려다보여 장미원의 매력이 잘 전달된다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Western_white_stork_in_Seoul_Zoo%2C_2022_%281%29.jpg/1920px-Western_white_stork_in_Seoul_Zoo%2C_2022_%281%29.jpg",
+    "w": 4608,
+    "h": 3456,
+    "credit": "Drcbrothephotographer / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:Western_white_stork_in_Seoul_Zoo,_2022_(1).jpg",
+    "alt": "풀밭을 걷는 황새 클로즈업",
+    "score": 7,
+    "label": "서울동물원",
+    "reason": "황새를 크게 선명하게 담아 동물원의 매력을 보여 주는 클로즈업이다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/23/3539123.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 김지연",
+    "license": "공공누리 제1유형",
+    "alt": "장미 아치 터널이 이어진 꽃길",
+    "score": 9,
+    "label": "장미원",
+    "reason": "장미 아치 터널이 중앙 대칭 구도로 이어져 색감이 좋고 사진이 잘 나올 것 같다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/15/3539215.jpg",
+    "w": 803,
+    "h": 1280,
+    "credit": "한국관광공사 · 김지연",
+    "license": "공공누리 제1유형",
+    "alt": "노을빛 소나무 아래 만개한 장미",
+    "score": 8,
+    "label": "장미원",
+    "reason": "노을빛이 비치는 소나무와 장미꽃을 세로 구도로 담아 감성이 살아 있다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/13/3539213.jpg",
+    "w": 1280,
+    "h": 856,
+    "credit": "한국관광공사 · 김지연",
+    "license": "공공누리 제1유형",
+    "alt": "스카이리프트에서 본 장미원과 산",
+    "score": 8,
+    "label": "스카이리프트",
+    "reason": "리프트에서 장미원과 산을 내려다보는 시점이라 탑승 경험이 잘 느껴진다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/Cherry_Blossoms_along_path.jpg/1920px-Cherry_Blossoms_along_path.jpg",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Peachy1234 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Cherry_Blossoms_along_path.jpg",
+    "alt": "벚꽃이 핀 길과 푸른 하늘",
+    "score": 6,
+    "label": "벚꽃길",
+    "reason": "벚꽃길의 분위기는 보이지만 강한 햇빛과 앙상한 가지 때문에 구도와 색감이 아쉽다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Sky_Lift_at_Seoul_Grand_Park%2C_South_Korea.jpg/1920px-Sky_Lift_at_Seoul_Grand_Park%2C_South_Korea.jpg",
+    "w": 3024,
+    "h": 4032,
+    "credit": "Lyujinshuo / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Sky_Lift_at_Seoul_Grand_Park,_South_Korea.jpg",
+    "alt": "줄지어 오르는 빨강 노랑 스카이리프트",
+    "score": 6,
+    "label": "스카이리프트",
+    "reason": "빨강 노랑 리프트 행렬이 눈에 띄지만 뒷모습 위주의 평범한 구도다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Western_white_stork_in_Seoul_Zoo%2C_2022_%282%29.jpg/1920px-Western_white_stork_in_Seoul_Zoo%2C_2022_%282%29.jpg",
+    "w": 4608,
+    "h": 3456,
+    "credit": "Drcbrothephotographer / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:Western_white_stork_in_Seoul_Zoo,_2022_(2).jpg",
+    "alt": "잔디밭에 서 있는 황새",
+    "score": 5,
+    "label": "서울동물원",
+    "reason": "황새가 보이지만 모서리의 얼룩과 평범한 구도가 아쉽다."
+   }
+  ]
+ },
+ "lotteworld-aquarium": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Beluga_Whale_02.jpg/1920px-Beluga_Whale_02.jpg",
+    "w": 1600,
+    "h": 2133,
+    "credit": "Versions111 / Wikimedia Commons",
+    "license": "CC BY 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Beluga_Whale_02.jpg",
+    "alt": "푸른 수조에서 다가오는 벨루가",
+    "score": 9,
+    "label": "벨루가",
+    "reason": "푸른 물속에서 벨루가가 카메라를 향해 다가오는 귀엽고 인상적인 장면입니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Spotted_Eagle_Ray.jpg/1920px-Spotted_Eagle_Ray.jpg",
+    "w": 1600,
+    "h": 2133,
+    "credit": "Versions111 / Wikimedia Commons",
+    "license": "CC BY 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Spotted_Eagle_Ray.jpg",
+    "alt": "수조 수면 가까이 떠오른 가오리",
+    "score": 8,
+    "label": "대형 수조",
+    "reason": "넓은 수조에서 가오리가 정면으로 떠오른 독특하고 선명한 구도입니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Aurelia_Aurita_02.jpg/1920px-Aurelia_Aurita_02.jpg",
+    "w": 1600,
+    "h": 2133,
+    "credit": "Versions111 / Wikimedia Commons",
+    "license": "CC BY 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Aurelia_Aurita_02.jpg",
+    "alt": "분홍빛으로 빛나는 해파리",
+    "score": 9,
+    "label": "해파리",
+    "reason": "핑크빛으로 빛나는 해파리가 크게 선명하게 담겨 색감과 감성이 뛰어납니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/Beluga_in_Lotte_World_Aquarium.jpg/1920px-Beluga_in_Lotte_World_Aquarium.jpg",
+    "w": 1600,
+    "h": 900,
+    "credit": "Handan99 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Beluga_in_Lotte_World_Aquarium.jpg",
+    "alt": "대형 수조 수면 아래를 헤엄치는 벨루가",
+    "score": 6,
+    "label": "벨루가",
+    "reason": "수조 속 벨루가의 전체 몸이 보이지만 조명 반사와 유리 때문에 다소 평범한 기록 사진 느낌입니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/Medusas_Acuario.jpg/1920px-Medusas_Acuario.jpg",
+    "w": 4000,
+    "h": 3000,
+    "credit": "MmMmJim / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Medusas_Acuario.jpg",
+    "alt": "어두운 수조에 떠다니는 여러 해파리",
+    "score": 6,
+    "label": "해파리",
+    "reason": "색색의 해파리가 분위기 있게 떠 있지만 작고 흩어져 있어 강조가 약합니다."
+   }
+  ]
+ },
+ "aquaplanet-ilsan": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/80/3361880_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "푸른 대형 수조에서 헤엄치는 가오리와 물고기 떼",
+    "w": 940,
+    "h": 627,
+    "score": 9,
+    "label": "대형 수족관",
+    "reason": "큰 가오리와 물고기 떼가 푸른 대형 수조를 가득 채워 아쿠아리움의 규모와 매력이 한눈에 전해집니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/92/3584392_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "어두운 수조 속을 헤엄치는 모래뱀상어",
+    "w": 940,
+    "h": 680,
+    "score": 7,
+    "label": "대형 수족관",
+    "reason": "상어를 크게 강조해 인상적이지만 전체적으로 어둡고 색감이 다소 차분합니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/Hanwha_Aqua_Planet_Ilsan_02_%2816312736056%29.jpg/1920px-Hanwha_Aqua_Planet_Ilsan_02_%2816312736056%29.jpg",
+    "w": 4944,
+    "h": 2400,
+    "credit": "Republic of  Korea from Seoul, Republic of Korea / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Hanwha_Aqua_Planet_Ilsan_02_(16312736056).jpg",
+    "alt": "해파리가 떠다니는 푸른 원형 터널",
+    "score": 8,
+    "label": "해저터널",
+    "reason": "해파리가 떠다니는 푸른 원형 터널이 감성적이고 독특한 분위기를 보여 줍니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/82/3361882_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "바위 위에 모여 선 훔볼트펭귄들",
+    "w": 940,
+    "h": 627,
+    "score": 8,
+    "label": "펭귄 전시",
+    "reason": "훔볼트펭귄이 바위 위에 모여 선 모습이 귀엽고 선명하며 색감도 좋습니다."
+   }
+  ],
+  "pending": []
+ },
+ "aquaplanet-gwanggyo": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/09/3515009_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "가오리와 상어가 헤엄치는 푸른 해저터널",
+    "w": 940,
+    "h": 626,
+    "score": 9,
+    "label": "메인 수조",
+    "reason": "푸른 빛의 해저터널 안에서 가오리와 상어가 머리 위로 지나가 아쿠아리움의 매력이 한눈에 전해지는 선명한 사진입니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/11/3515011_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "원통 수조에 해파리가 떠 있는 젤리피시랩",
+    "w": 940,
+    "h": 626,
+    "score": 8,
+    "label": "젤리피시랩",
+    "reason": "원통형 수조들이 줄지어 서 있고 바닥과 천장에 빛이 반사되어 몽환적인 분위기가 살아 있는 사진입니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/10/3515010_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "주황색 물고기가 가득한 원형 수조",
+    "w": 940,
+    "h": 626,
+    "score": 7,
+    "reason": "주황빛 물고기 떼가 보라색 조명 속에서 선명하게 돋보이지만 대표 명소 목록에는 해당하지 않습니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/12/3515012_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "대형 수조 앞 무대에서 공연하는 모습",
+    "w": 940,
+    "h": 626,
+    "score": 6,
+    "label": "머메이드쇼",
+    "reason": "큰 수조 앞 공연 무대 분위기는 전해지지만 전체적으로 어둡고 공연자가 작게 나왔으며 머메이드쇼 장면은 아닙니다."
+   }
+  ]
+ },
+ "aquaplanet-jeju": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/88/2587388.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 라이브스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "대형 수조 속 가오리와 물고기 떼",
+    "score": 9,
+    "label": "가오리 식사",
+    "reason": "큰 가오리와 해초, 물고기 떼가 선명하고 색감이 좋아 가장 매력적입니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/77/2986977_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "빛이 내리는 수조 속 상어와 물고기",
+    "w": 940,
+    "h": 627,
+    "score": 9,
+    "label": "제주의 바다",
+    "reason": "햇살 같은 빛 아래 상어와 가오리, 물고기 떼가 담겨 감성적이고 선명합니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/89/2587389.jpg",
+    "w": 1280,
+    "h": 854,
+    "credit": "한국관광공사 · 라이브스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "수조 앞에서 노는 아이들 실루엣",
+    "score": 7,
+    "label": "오션아레나",
+    "reason": "수조 앞에서 팔을 벌린 아이들의 모습이 생동감 있고 푸른 색감이 좋습니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/92/2587392.jpg",
+    "w": 1280,
+    "h": 854,
+    "credit": "한국관광공사 · 라이브스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "대형 수조 앞에서 관람하는 사람들",
+    "score": 6,
+    "label": "제주의 바다",
+    "reason": "대형 수조와 관람객 실루엣이 어우러졌지만 어둡고 다소 평범한 구도입니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/91/2587391.jpg",
+    "w": 1280,
+    "h": 854,
+    "credit": "한국관광공사 · 라이브스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "대형 수조 앞 넓은 관람 공간",
+    "score": 6,
+    "label": "오션아레나",
+    "reason": "넓은 수조와 가오리가 보여 장소 설명은 되지만 실내가 어두워 인상이 약합니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/90/2587390.jpg",
+    "w": 1280,
+    "h": 854,
+    "credit": "한국관광공사 · 라이브스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "객석에서 바라본 대형 수조",
+    "score": 5,
+    "label": "오션아레나",
+    "reason": "계단형 객석과 수조가 보이나 전체적으로 어둡고 산만합니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/86/2587386.jpg",
+    "w": 1280,
+    "h": 854,
+    "credit": "한국관광공사 · 라이브스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "어두운 관람석에서 본 대형 수조",
+    "score": 5,
+    "label": "오션아레나",
+    "reason": "수조 전경은 보이지만 어둡고 관람객 뒷모습이 많아 밋밋합니다."
+   }
+  ]
+ },
+ "aquaplanet-yeosu": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/63/4100863_image2_1.png",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "빛이 일렁이는 수중터널과 가오리",
+    "w": 940,
+    "h": 627,
+    "score": 10,
+    "label": "수중터널",
+    "reason": "빛이 일렁이는 터널 위로 가오리가 지나가는 대표 명소로 색감과 구도가 뛰어나다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/41/4100841_image2_1.JPG",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "물고기 떼와 헤엄치는 바다거북",
+    "w": 940,
+    "h": 627,
+    "score": 8,
+    "label": "오션라이프 메인수조",
+    "reason": "바다거북과 줄무늬 물고기 떼가 선명한 푸른 수조에서 생동감 있게 담겼다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/43/4100843_image2_1.JPG",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "바위 앞에 모여 선 펭귄들",
+    "w": 940,
+    "h": 627,
+    "score": 8,
+    "label": "펭귄·물범",
+    "reason": "바위 앞에 선 펭귄들이 귀엽게 담겼지만 색감이 다소 흐리다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/61/4100861_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "노을 속 아쿠아플라넷 여수 외관",
+    "w": 940,
+    "h": 626,
+    "score": 7,
+    "reason": "노을빛 하늘 아래 건물 외관이 감성적이지만 건물 외벽 위주라 대표 명소는 담기지 않았다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/64/4100864_image2_1.JPG",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "수조 속 가오리와 상어",
+    "w": 940,
+    "h": 700,
+    "score": 7,
+    "label": "오션라이프 메인수조",
+    "reason": "가오리가 정면으로 크게 잡혀 귀엽고 선명하며 상어도 함께 보여 인상적이다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/60/4100860_image2_1.JPG",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "해질녘 도시와 아쿠아플라넷 전경",
+    "w": 940,
+    "h": 528,
+    "score": 7,
+    "reason": "야경 항공 전경으로 위치 파악은 좋지만 야경이 대표 매력은 아니라 낮 사진보다 낮게 평가했다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/62/4100862_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "푸른 수조 속 헤엄치는 상어",
+    "w": 940,
+    "h": 627,
+    "score": 7,
+    "label": "오션라이프 메인수조",
+    "reason": "푸른 수조에서 상어가 크게 보여 분위기는 좋으나 다소 어둡고 구도가 평범하다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/69/4100869_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "숲 영상이 펼쳐진 전시 공간",
+    "w": 940,
+    "h": 627,
+    "score": 6,
+    "reason": "숲 영상 연출이 몽환적이지만 대표 명소가 아니고 무엇을 하는 곳인지 모호하다."
+   }
+  ]
+ },
+ "sealife-busan": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/10/3020610_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "푸른 수조가 감싸는 해저터널 통로",
+    "w": 940,
+    "h": 705,
+    "score": 9,
+    "label": "해저터널",
+    "reason": "푸른 아치형 해저터널이 한눈에 들어와 이곳이 어떤 곳인지 바로 설명해 줍니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/09/3020609_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "큰 수조 앞 관람석과 헤엄치는 물고기",
+    "w": 940,
+    "h": 705,
+    "score": 7,
+    "label": "대형 수조",
+    "reason": "대형 수조 속 물고기들이 시원하게 보여 규모가 느껴지지만 다소 어둡습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Sea_Life_Busan_Aquarium_18.jpg/1920px-Sea_Life_Busan_Aquarium_18.jpg",
+    "w": 1600,
+    "h": 1067,
+    "credit": "Joamm Tall / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Sea_Life_Busan_Aquarium_18.jpg",
+    "alt": "모래 위 푸른 점박이 가오리 눈",
+    "score": 7,
+    "reason": "모래 속에 몸을 묻은 푸른 점박이 가오리의 색감과 근접 구도가 인상적입니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/92/4120592_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "형광 조명으로 빛나는 산호 전시관",
+    "w": 940,
+    "h": 627,
+    "score": 6,
+    "reason": "형광빛 산호 전시관이 독특하지만 어두워서 선명도가 떨어집니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Sea_Life_Busan_Aquarium_17.jpg/1920px-Sea_Life_Busan_Aquarium_17.jpg",
+    "w": 1600,
+    "h": 1067,
+    "credit": "Ryan Bodenstein / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Sea_Life_Busan_Aquarium_17.jpg",
+    "alt": "푸른 물속을 헤엄치는 가오리 두 마리",
+    "score": 6,
+    "reason": "푸른 물속을 날 듯 헤엄치는 가오리 두 마리의 색감이 좋습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Sea_Life_Busan_Aquarium_01.jpg/1920px-Sea_Life_Busan_Aquarium_01.jpg",
+    "w": 5472,
+    "h": 3648,
+    "credit": "Ryan Bodenstein / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Sea_Life_Busan_Aquarium_01.jpg",
+    "alt": "수초 옆을 지나는 가오리",
+    "score": 6,
+    "reason": "수초 사이로 지나가는 가오리가 부드러운 색감으로 담겼습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Sea_Life_Busan_Aquarium_11.jpg/1920px-Sea_Life_Busan_Aquarium_11.jpg",
+    "w": 1600,
+    "h": 1067,
+    "credit": "Ryan Bodenstein / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Sea_Life_Busan_Aquarium_11.jpg",
+    "alt": "정면으로 헤엄쳐 오는 가오리",
+    "score": 5,
+    "reason": "가오리가 정면으로 다가오는 장면이 재미있지만 초점이 흐립니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Sea_Life_Busan_Aquarium_04.jpg/1920px-Sea_Life_Busan_Aquarium_04.jpg",
+    "w": 5472,
+    "h": 3648,
+    "credit": "Ryan Bodenstein / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Sea_Life_Busan_Aquarium_04.jpg",
+    "alt": "가까이서 본 가오리 얼굴",
+    "score": 5,
+    "reason": "가오리 얼굴을 가까이 담았지만 색이 칙칙하고 초점이 아쉽습니다."
+   }
+  ]
+ },
+ "gyeongbokgung": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/%EC%95%84%EB%A6%84%EB%8B%A4%EC%9A%B4_%EA%B2%BD%ED%9A%8C%EB%A3%A8.jpg/1920px-%EC%95%84%EB%A6%84%EB%8B%A4%EC%9A%B4_%EA%B2%BD%ED%9A%8C%EB%A3%A8.jpg",
+    "w": 2000,
+    "h": 1333,
+    "credit": "Yoonj / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:%EC%95%84%EB%A6%84%EB%8B%A4%EC%9A%B4_%EA%B2%BD%ED%9A%8C%EB%A3%A8.jpg",
+    "alt": "벚꽃 사이로 보이는 경회루",
+    "score": 10,
+    "label": "경회루",
+    "reason": "벚꽃 가지와 파란 하늘, 연못 반영이 어우러진 가장 감성적인 장면이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Gwanghwamun_%28Main_gate_of_Gyeongbokgung_Palace%29.jpg/1920px-Gwanghwamun_%28Main_gate_of_Gyeongbokgung_Palace%29.jpg",
+    "w": 5184,
+    "h": 3456,
+    "credit": "이창로 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gwanghwamun_(Main_gate_of_Gyeongbokgung_Palace).jpg",
+    "alt": "노을 하늘 아래 조명 켜진 광화문",
+    "score": 8,
+    "label": "광화문",
+    "reason": "노을빛 하늘과 조명 받은 광화문 처마의 단청이 아름답다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/Seoul-Gyeongbokgung-Geunjeongjeon-02.jpg/1920px-Seoul-Gyeongbokgung-Geunjeongjeon-02.jpg",
+    "w": 3644,
+    "h": 2574,
+    "credit": "Richard Fisher from London, UK / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Seoul-Gyeongbokgung-Geunjeongjeon-02.jpg",
+    "alt": "근정전 처마와 화려한 단청",
+    "score": 7,
+    "label": "근정전",
+    "reason": "로우 앵글로 담은 화려한 단청과 겹처마가 인상적이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Gyeonghoeru_%28Royal_Banquet_Hall%29_at_Gyeongbokgung_Palace%2C_Seoul.jpg/1920px-Gyeonghoeru_%28Royal_Banquet_Hall%29_at_Gyeongbokgung_Palace%2C_Seoul.jpg",
+    "w": 1600,
+    "h": 1067,
+    "credit": "Frank Schulenburg / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gyeonghoeru_(Royal_Banquet_Hall)_at_Gyeongbokgung_Palace,_Seoul.jpg",
+    "alt": "연못에 비친 경회루",
+    "score": 9,
+    "label": "경회루",
+    "reason": "맑은 하늘과 연못에 비친 경회루 반영이 선명하고 아름답다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/Hyangwonjeong_Pavilion.jpg/1920px-Hyangwonjeong_Pavilion.jpg",
+    "w": 4114,
+    "h": 2736,
+    "credit": "Joseph Park / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Hyangwonjeong_Pavilion.jpg",
+    "alt": "연잎 가득한 연못과 향원정",
+    "score": 10,
+    "label": "향원정",
+    "reason": "연잎 가득한 연못과 붉은 단풍, 푸른 하늘의 색감이 매우 뛰어나다."
+   },
+   {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/c/cd/Korea-Gyeongbokgung-Jagyeongjeon-02.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "by abex / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korea-Gyeongbokgung-Jagyeongjeon-02.jpg",
+    "alt": "자경전 꽃담의 문양 벽",
+    "score": 7,
+    "label": "자경전 꽃담",
+    "reason": "자경전 꽃담의 섬세한 문양이 잘 보이지만 구도는 기록 사진에 가깝다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Korea_Gyeongbokgung_Palace.jpg/1920px-Korea_Gyeongbokgung_Palace.jpg",
+    "w": 3716,
+    "h": 2448,
+    "credit": "Yunzin0115 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korea_Gyeongbokgung_Palace.jpg",
+    "alt": "야경 속 경회루와 물 반영",
+    "score": 8,
+    "label": "경복궁 야간개장",
+    "reason": "조명 켜진 경회루와 물에 비친 반영이 화려하다."
+   },
+   {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Gyeongbokgung-HyangWonJeong-02.jpg",
+    "w": 1662,
+    "h": 1512,
+    "credit": "by Nagyman / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gyeongbokgung-HyangWonJeong-02.jpg",
+    "alt": "신록 속 향원정과 북악산",
+    "score": 9,
+    "label": "향원정",
+    "reason": "봄 신록과 산을 배경으로 향원정이 선명하게 담겼다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/Hyangwonjeong-001.jpg/1920px-Hyangwonjeong-001.jpg",
+    "w": 2816,
+    "h": 2112,
+    "credit": "Craig Wyzik / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Hyangwonjeong-001.jpg",
+    "alt": "단풍 든 향원정과 취향교",
+    "score": 9,
+    "label": "향원정",
+    "reason": "취향교와 단풍, 맑은 하늘이 어우러진 구도가 좋다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Hyangwonjeong_photo_Don_Ramey_Logan.jpg/1920px-Hyangwonjeong_photo_Don_Ramey_Logan.jpg",
+    "w": 3008,
+    "h": 2000,
+    "credit": "Don Ramey Logan / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Hyangwonjeong_photo_Don_Ramey_Logan.jpg",
+    "alt": "연못에 비친 가을 향원정",
+    "score": 9,
+    "label": "향원정",
+    "reason": "가을 단풍과 연못 반영이 대칭으로 아름답게 담겼다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/Hyangwonjeong_1.jpg/1920px-Hyangwonjeong_1.jpg",
+    "w": 5760,
+    "h": 3840,
+    "credit": "Kim Dae Jeung / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:Hyangwonjeong_1.jpg",
+    "alt": "단풍 사이로 보이는 향원정",
+    "score": 9,
+    "label": "향원정",
+    "reason": "붉은 단풍나무 프레임 너머 향원정이 보이는 감성적인 가을 사진이다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/04/3551004.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 서문교",
+    "license": "공공누리 제1유형",
+    "alt": "푸른 하늘 아래 경복궁과 도심",
+    "score": 8,
+    "reason": "파란 하늘과 구름, 산과 도시가 어우러진 시원한 전경이다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/05/3551005.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 서문교",
+    "license": "공공누리 제1유형",
+    "alt": "북악산과 경복궁 전경",
+    "score": 8,
+    "reason": "맑은 하늘과 북악산을 배경으로 궁궐 전체가 선명하게 담겼다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/15/3551015.jpg",
+    "w": 853,
+    "h": 1280,
+    "credit": "한국관광공사 · 서문교",
+    "license": "공공누리 제1유형",
+    "alt": "푸른 산을 배경으로 한 경복궁 전경",
+    "score": 8,
+    "reason": "세로 구도로 궁궐 중심축과 푸른 산, 구름이 시원하게 담겼다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Gyeongbokgung-Gyeonghoeru-02.jpg/1920px-Gyeongbokgung-Gyeonghoeru-02.jpg",
+    "w": 2272,
+    "h": 1704,
+    "credit": "eimoberg (a flickr user) / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gyeongbokgung-Gyeonghoeru-02.jpg",
+    "alt": "가을 하늘 아래 경회루",
+    "score": 8,
+    "label": "경회루",
+    "reason": "파란 하늘과 단풍, 연못 반영이 어우러진 가을 경회루다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/Geunjeongjeon_Hall_in_Gyeongbokgung_Palace.jpg/1920px-Geunjeongjeon_Hall_in_Gyeongbokgung_Palace.jpg",
+    "w": 2870,
+    "h": 2048,
+    "credit": "Hhk1201 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Geunjeongjeon_Hall_in_Gyeongbokgung_Palace.jpg",
+    "alt": "조명이 켜진 근정전 정면",
+    "score": 8,
+    "label": "경복궁 야간개장",
+    "reason": "근정전 정면이 화려하게 밝혀진 야간개장의 대표 장면이다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/03/3551003.jpg",
+    "credit": "한국관광공사 · 서문교",
+    "license": "공공누리 제1유형",
+    "alt": "항공에서 본 경복궁 전경",
+    "w": 1280,
+    "h": 853,
+    "score": 7,
+    "reason": "경복궁 전체 배치가 한눈에 보이는 항공 사진이지만 하늘이 다소 밋밋하다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/01/3551001.jpg",
+    "w": 910,
+    "h": 1280,
+    "credit": "한국관광공사 · 서문교",
+    "license": "공공누리 제1유형",
+    "alt": "광화문 위에서 내려다본 경복궁",
+    "score": 7,
+    "reason": "광화문에서 근정전까지 이어지는 구도가 좋지만 흐린 하늘이 아쉽다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Gwanghwamun_Plaza_-_Gwanghwamun_gate_-_Gyeongbokgung_Palace_2016_-_hschrijver.jpg/1920px-Gwanghwamun_Plaza_-_Gwanghwamun_gate_-_Gyeongbokgung_Palace_2016_-_hschrijver.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "Hschrijver / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gwanghwamun_Plaza_-_Gwanghwamun_gate_-_Gyeongbokgung_Palace_2016_-_hschrijver.jpg",
+    "alt": "파란 하늘 아래 광화문",
+    "score": 7,
+    "label": "광화문",
+    "reason": "파란 하늘 아래 광화문이 또렷하게 보이나 인파가 많아 기록 사진 느낌이 있다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Gyeongbokgung_Palace_Main_Gate.jpg/1920px-Gyeongbokgung_Palace_Main_Gate.jpg",
+    "w": 5184,
+    "h": 3456,
+    "credit": "Adam Duckett / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gyeongbokgung_Palace_Main_Gate.jpg",
+    "alt": "노을 속 광화문과 차량 궤적",
+    "score": 7,
+    "label": "광화문",
+    "reason": "노을빛 하늘과 달리는 차량의 잔상이 분위기 있지만 다소 어수선하다."
+   },
+   {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Opening_at_night_of_Gyeongbokgung_Palace.JPG",
+    "w": 1440,
+    "h": 1080,
+    "credit": "Shinae Hyun / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Opening_at_night_of_Gyeongbokgung_Palace.JPG",
+    "alt": "야간 조명을 받은 근정전",
+    "score": 7,
+    "label": "경복궁 야간개장",
+    "reason": "야간 조명을 받은 근정전이 선명하나 하단이 어둡다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/02/3551002.jpg",
+    "w": 1280,
+    "h": 1280,
+    "credit": "한국관광공사 · 서문교",
+    "license": "공공누리 제1유형",
+    "alt": "흐린 하늘 아래 광화문과 궁궐",
+    "score": 6,
+    "label": "광화문",
+    "reason": "광화문과 뒤편 전각이 보이나 구름이 짙어 색감이 칙칙하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/Seoul-Gyeongbokgung-Geunjeongjeon-01.jpg/1920px-Seoul-Gyeongbokgung-Geunjeongjeon-01.jpg",
+    "w": 3872,
+    "h": 2592,
+    "credit": "Richard Fisher from London, UK / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Seoul-Gyeongbokgung-Geunjeongjeon-01.jpg",
+    "alt": "근정전 옆면의 단청과 처마",
+    "score": 6,
+    "label": "근정전",
+    "reason": "단청과 처마 디테일은 좋지만 하늘이 하얗게 날아갔다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c0/Gyeongbokgung_-_Geunjeongjeon_inside_2.jpg/1920px-Gyeongbokgung_-_Geunjeongjeon_inside_2.jpg",
+    "w": 5184,
+    "h": 3456,
+    "credit": "Yuliya Boda / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gyeongbokgung_-_Geunjeongjeon_inside_2.jpg",
+    "alt": "단청과 용 장식이 있는 천장",
+    "score": 6,
+    "label": "근정전",
+    "reason": "붉은 기둥과 단청, 용 장식이 색감은 좋으나 장소 설명이 약하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Gyeonghoeru_Pavilion_in_Gyeongbokgung.jpg/1920px-Gyeonghoeru_Pavilion_in_Gyeongbokgung.jpg",
+    "w": 3072,
+    "h": 2048,
+    "credit": "Hhk1201 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gyeonghoeru_Pavilion_in_Gyeongbokgung.jpg",
+    "alt": "야간 조명이 켜진 경회루",
+    "score": 6,
+    "label": "경복궁 야간개장",
+    "reason": "조명 켜진 경회루의 반영이 예쁘지만 전체적으로 어둡다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/90/Gyeonghoeru_Pavilion_in_Gyeongbokgung_Palace.jpg/1920px-Gyeonghoeru_Pavilion_in_Gyeongbokgung_Palace.jpg",
+    "w": 3072,
+    "h": 2048,
+    "credit": "Hhk1201 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gyeonghoeru_Pavilion_in_Gyeongbokgung_Palace.jpg",
+    "alt": "밤의 경회루와 조명 받은 나무",
+    "score": 6,
+    "label": "경복궁 야간개장",
+    "reason": "조명 속 경회루와 나무가 분위기 있으나 화면이 많이 어둡다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/26/Gyeonghoeru_%28%EA%B2%BD%ED%9A%8C%EB%A3%A8%29.jpg/1920px-Gyeonghoeru_%28%EA%B2%BD%ED%9A%8C%EB%A3%A8%29.jpg",
+    "w": 2048,
+    "h": 1171,
+    "credit": "Seongbin Im / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gyeonghoeru_(%EA%B2%BD%ED%9A%8C%EB%A3%A8).jpg",
+    "alt": "연못 위의 경회루",
+    "score": 5,
+    "label": "경회루",
+    "reason": "경회루가 보이지만 하늘이 흐리고 워터마크가 있어 평범하다."
+   }
+  ]
+ },
+ "namsan": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/N_Seoul_Tower_%2813952097192%29.jpg/1920px-N_Seoul_Tower_%2813952097192%29.jpg",
+    "w": 1600,
+    "h": 1067,
+    "credit": "Eugene Lim from Hong Kong / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:N_Seoul_Tower_(13952097192).jpg",
+    "alt": "저녁 하늘 아래 정자와 남산서울타워",
+    "score": 9,
+    "label": "타워 전경",
+    "reason": "푸른 저녁 하늘 아래 화려한 정자와 조명 켜진 타워가 어우러진 인상적인 구도입니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Relationships_are_complicated_%282527256358%29.jpg/1920px-Relationships_are_complicated_%282527256358%29.jpg",
+    "w": 3456,
+    "h": 2304,
+    "credit": "hojusaram / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Relationships_are_complicated_(2527256358).jpg",
+    "alt": "난간에 걸린 하트 자물쇠와 배경 타워",
+    "score": 8,
+    "label": "사랑의 자물쇠",
+    "reason": "하트 자물쇠를 크게 담고 뒤로 타워를 흐리게 처리해 감성적입니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Namsan_Tower_sunset%2C_Seoul.jpg/1920px-Namsan_Tower_sunset%2C_Seoul.jpg",
+    "w": 1600,
+    "h": 1195,
+    "credit": "Rtflakfizer / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Namsan_Tower_sunset,_Seoul.jpg",
+    "alt": "노을 속 남산서울타워와 정자 실루엣",
+    "score": 8,
+    "label": "타워 전경",
+    "reason": "노을 구름 사이로 타워와 정자가 실루엣으로 드러나 분위기가 극적입니다."
+   },
+   {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/4/43/Seoul_Tower_View.jpg",
+    "w": 1280,
+    "h": 850,
+    "credit": "Larry Koester / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Seoul_Tower_View.jpg",
+    "alt": "해 질 녘 도심 위로 보이는 남산타워",
+    "score": 8,
+    "label": "서울 야경",
+    "reason": "푸른 해 질 녘 하늘 아래 산 위 타워와 도심 불빛이 조화롭습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Seongsu_Bridge_and_N_Seoul_Tower.jpg/1920px-Seongsu_Bridge_and_N_Seoul_Tower.jpg",
+    "w": 1600,
+    "h": 1067,
+    "credit": "travel oriented from Seoul, South Korea / Wikimedia Commons",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:Seongsu_Bridge_and_N_Seoul_Tower.jpg",
+    "alt": "한강 다리 야경과 멀리 보이는 타워",
+    "score": 7,
+    "label": "서울 야경",
+    "reason": "붉은 다리와 한강 반영 위로 멀리 타워가 보이는 차분한 야경입니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Locks_atop_Namsan_-_Seoul%2C_Korea.jpg/1920px-Locks_atop_Namsan_-_Seoul%2C_Korea.jpg",
+    "w": 3264,
+    "h": 2448,
+    "credit": "Daderot / Wikimedia Commons",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:Locks_atop_Namsan_-_Seoul,_Korea.jpg",
+    "alt": "자물쇠 울타리에 기대어 선 여행자",
+    "score": 7,
+    "label": "사랑의 자물쇠",
+    "reason": "자물쇠 가득한 울타리에 기대 선 모습이 낭만적인 분위기를 전합니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Heart-Shaped_Love_Locks_on_the_N_Seoul_Tower.jpg/1920px-Heart-Shaped_Love_Locks_on_the_N_Seoul_Tower.jpg",
+    "w": 3264,
+    "h": 4896,
+    "credit": "Ethan Doyle White / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Heart-Shaped_Love_Locks_on_the_N_Seoul_Tower.jpg",
+    "alt": "노란색과 분홍색 하트 모양 자물쇠",
+    "score": 7,
+    "label": "사랑의 자물쇠",
+    "reason": "노랑·분홍 하트 자물쇠가 선명하고 귀여워 사랑의 자물쇠 분위기가 잘 납니다."
+   },
+   {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/4/47/View_from_N_Seoul_Tower_at_night.jpg",
+    "w": 1208,
+    "h": 514,
+    "credit": "Evilbish / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:View_from_N_Seoul_Tower_at_night.jpg",
+    "alt": "고층 빌딩 불빛 가득한 서울 야경",
+    "score": 7,
+    "label": "서울 야경",
+    "reason": "빌딩 불빛이 가득한 도심 야경이 선명하게 담겼습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c9/Maebongsan_Observatory_1.jpg/1920px-Maebongsan_Observatory_1.jpg",
+    "w": 5300,
+    "h": 3355,
+    "credit": "kallerna / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Maebongsan_Observatory_1.jpg",
+    "alt": "맑은 날 산 위의 남산서울타워",
+    "score": 7,
+    "label": "타워 전경",
+    "reason": "맑은 낮 하늘 아래 산 위 타워와 도시가 깔끔하게 보입니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Seoul_Tower_from_Namsan_Park_%289595146693%29.jpg/1920px-Seoul_Tower_from_Namsan_Park_%289595146693%29.jpg",
+    "w": 1600,
+    "h": 1068,
+    "credit": "travel oriented from Manila, Philippines / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Seoul_Tower_from_Namsan_Park_(9595146693).jpg",
+    "alt": "밤 성곽길 너머 푸른 조명의 타워",
+    "score": 6,
+    "label": "타워 전경",
+    "reason": "성곽길 너머로 푸른 조명의 타워가 보이지만 전체적으로 어둡습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/N_Seoul_Tower_view_2.jpg/1920px-N_Seoul_Tower_view_2.jpg",
+    "w": 1600,
+    "h": 870,
+    "credit": "kallerna / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:N_Seoul_Tower_view_2.jpg",
+    "alt": "해 질 녘 서울 도심 야경",
+    "score": 6,
+    "label": "서울 야경",
+    "reason": "해 질 녘 도시 불빛이 넓게 펼쳐지지만 해상도가 다소 아쉽습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Love_locks_%285065592012%29.jpg/1920px-Love_locks_%285065592012%29.jpg",
+    "w": 2592,
+    "h": 1456,
+    "credit": "Col Ford and Natasha de Vere from living in Wales / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Love_locks_(5065592012).jpg",
+    "alt": "빼곡히 걸린 알록달록한 자물쇠",
+    "score": 6,
+    "label": "사랑의 자물쇠",
+    "reason": "알록달록한 자물쇠가 빼곡해 규모는 느껴지나 단조로운 질감 사진입니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/N_Seoul_Tower_complex_staircase.jpg/1920px-N_Seoul_Tower_complex_staircase.jpg",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Kanishk0001 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:N_Seoul_Tower_complex_staircase.jpg",
+    "alt": "조명이 반짝이는 터널 계단",
+    "score": 6,
+    "reason": "반짝이는 조명 터널이 예쁘지만 남산을 대표하는 장소인지는 모호합니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/City_of_Seoul_View_From_N_Seoul_Tower.JPG/1920px-City_of_Seoul_View_From_N_Seoul_Tower.JPG",
+    "w": 4752,
+    "h": 3168,
+    "credit": "Penmerahpenbiru / Wikimedia Commons",
+    "license": "CC BY 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:City_of_Seoul_View_From_N_Seoul_Tower.JPG",
+    "alt": "차량 불빛이 흐르는 도심 야경",
+    "score": 6,
+    "label": "서울 야경",
+    "reason": "차량 불빛 궤적이 살아 있으나 구도가 복잡합니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/%EB%82%A8%EC%82%B0_%EC%BC%80%EC%9D%B4%EB%B8%94%EC%B9%B4.JPG/1920px-%EB%82%A8%EC%82%B0_%EC%BC%80%EC%9D%B4%EB%B8%94%EC%B9%B4.JPG",
+    "w": 4320,
+    "h": 2432,
+    "credit": "Korail2012 / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:%EB%82%A8%EC%82%B0_%EC%BC%80%EC%9D%B4%EB%B8%94%EC%B9%B4.JPG",
+    "alt": "케이블카와 남산서울타워",
+    "score": 6,
+    "label": "남산 케이블카",
+    "reason": "케이블카와 타워를 함께 담았으나 하늘이 흐립니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Namsan_cable_car_in_Seoul_Korea.png/1920px-Namsan_cable_car_in_Seoul_Korea.png",
+    "w": 2180,
+    "h": 1804,
+    "credit": "Tim Adams / Wikimedia Commons",
+    "license": "CC BY 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Namsan_cable_car_in_Seoul_Korea.png",
+    "alt": "도심 위를 지나는 남산 케이블카",
+    "score": 6,
+    "label": "남산 케이블카",
+    "reason": "케이블카와 도심 고층 빌딩이 선명하게 보입니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Seongsu_Bridge_and_N_Seoul_Tower_2.jpg/1920px-Seongsu_Bridge_and_N_Seoul_Tower_2.jpg",
+    "w": 3232,
+    "h": 2160,
+    "credit": "travel oriented from Seoul, South Korea / Wikimedia Commons",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:Seongsu_Bridge_and_N_Seoul_Tower_2.jpg",
+    "alt": "어두운 밤 한강 다리와 먼 타워",
+    "score": 5,
+    "label": "서울 야경",
+    "reason": "다리 불빛은 예쁘나 하늘이 너무 어둡고 타워가 작습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/N_Seoul_Tower_view_south_wide.jpg/1920px-N_Seoul_Tower_view_south_wide.jpg",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Sam-son / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:N_Seoul_Tower_view_south_wide.jpg",
+    "alt": "전망대에서 내려다본 흐린 날 도시",
+    "score": 5,
+    "label": "전망대",
+    "reason": "전망대에서 내려다본 도시이나 하늘이 흐려 선명함이 부족합니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/N_Seoul_Tower_view_north.jpg/1920px-N_Seoul_Tower_view_north.jpg",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Sam-son / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:N_Seoul_Tower_view_north.jpg",
+    "alt": "전망대에서 본 숲과 서울 도심",
+    "score": 5,
+    "label": "전망대",
+    "reason": "숲과 도심이 보이지만 날씨가 흐리고 특징이 약합니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/N_Seoul_Tower_view_southwest.jpg/1920px-N_Seoul_Tower_view_southwest.jpg",
+    "w": 3000,
+    "h": 4000,
+    "credit": "Sam-son / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:N_Seoul_Tower_view_southwest.jpg",
+    "alt": "전망대에서 내려다본 송신탑",
+    "score": 5,
+    "label": "전망대",
+    "reason": "송신탑을 내려다본 독특한 시점이지만 하늘이 뿌옇습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/Korea-Seoul_Fortress_in_Spring-01.jpg/1920px-Korea-Seoul_Fortress_in_Spring-01.jpg",
+    "w": 3456,
+    "h": 2304,
+    "credit": "Shiwon Cho / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korea-Seoul_Fortress_in_Spring-01.jpg",
+    "alt": "성곽 너머 산 위의 남산타워",
+    "score": 5,
+    "label": "타워 전경",
+    "reason": "성곽과 함께 타워가 보이지만 대기가 뿌옇고 타워가 작습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Korea-Seoul-Namsan_Cable_Car-01.jpg/1920px-Korea-Seoul-Namsan_Cable_Car-01.jpg",
+    "w": 2816,
+    "h": 2112,
+    "credit": "Andrew Bell / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korea-Seoul-Namsan_Cable_Car-01.jpg",
+    "alt": "단풍 위를 오르는 붉은 케이블카",
+    "score": 5,
+    "label": "남산 케이블카",
+    "reason": "단풍 든 산과 케이블카가 보이나 기울어지고 색감이 바랬습니다."
+   },
+   {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Korea-Seoul-Namsan_Cable_Car-02.jpg",
+    "w": 1224,
+    "h": 852,
+    "credit": "UNC - CFC - USFK from Seoul, Republic of Korea / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korea-Seoul-Namsan_Cable_Car-02.jpg",
+    "alt": "숲과 도심 위의 케이블카",
+    "score": 5,
+    "label": "남산 케이블카",
+    "reason": "케이블카와 도심이 담겼지만 오래된 색감입니다."
+   }
+  ]
+ },
+ "seongsu": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/07/4095807_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "푸른 하늘 아래 붉은 벽돌의 대림창고 외관",
+    "w": 940,
+    "h": 627,
+    "score": 9,
+    "label": "대림창고",
+    "reason": "붉은 벽돌 건물과 푸른 하늘, 가로수가 어우러져 성수동의 공장 개조 감성을 한눈에 보여 주는 대표 사진이다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/08/4095808_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "햇살 아래 성수연방 앞 테라스와 거리",
+    "w": 940,
+    "h": 627,
+    "score": 8,
+    "label": "성수연방",
+    "reason": "유리 건물과 벽돌 건물, 야외 테라스가 밝은 햇살 속에 어우러져 거리 분위기가 잘 전해진다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/09/4095809_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "나무와 파라솔이 있는 성수연방 안뜰",
+    "w": 940,
+    "h": 627,
+    "score": 7,
+    "label": "성수연방",
+    "reason": "초록 나무와 파라솔이 있는 안뜰이 싱그럽지만 워터마크와 가림이 있어 점수를 조금 낮췄다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0b/Graffiti_art_in_Seongsu-dong.jpg/1920px-Graffiti_art_in_Seongsu-dong.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "CartoonChess / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Graffiti_art_in_Seongsu-dong.jpg",
+    "alt": "주차장 옆 건물의 알록달록한 벽화",
+    "score": 6,
+    "reason": "컬러풀한 벽화가 눈에 띄지만 주차장과 건물 벽이 많아 다소 평범하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Flowery_cafe_in_Seongsu-dong.jpg/1920px-Flowery_cafe_in_Seongsu-dong.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "CartoonChess / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Flowery_cafe_in_Seongsu-dong.jpg",
+    "alt": "꽃과 식물로 꾸며진 벽돌 골목 카페 입구",
+    "score": 6,
+    "reason": "꽃과 초록 식물이 있는 아기자기한 골목 카페지만 대표 명소는 아니고 로고와 광고 이미지가 보인다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/KakaoTalk_Photo_2023-04-24-16-53-05.jpg/1920px-KakaoTalk_Photo_2023-04-24-16-53-05.jpg",
+    "w": 4032,
+    "h": 3024,
+    "credit": "GeonwooLee / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:KakaoTalk_Photo_2023-04-24-16-53-05.jpg",
+    "alt": "나뭇가지 너머 햇빛 비치는 디올 성수 건물",
+    "score": 6,
+    "label": "디올 성수",
+    "reason": "나뭇가지 사이로 햇빛이 비치는 디올 성수 건물이 보이지만 나무에 가려 건물이 뚜렷하지 않다."
+   }
+  ]
+ },
+ "hongdae": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/61/2553361.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "사람들로 붐비는 홍대 낮 거리",
+    "score": 8,
+    "reason": "간판과 사람들로 북적이는 낮의 번화가가 한눈에 홍대의 활기를 설명해 줍니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5e/Hongdae%2C_Seoul-_Part_II_-_Hongdae2237.jpg/1920px-Hongdae%2C_Seoul-_Part_II_-_Hongdae2237.jpg",
+    "credit": "lumoplank / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:Hongdae,_Seoul-_Part_II_-_Hongdae2237.jpg",
+    "w": 1920,
+    "h": 1280,
+    "alt": "네온 간판이 빛나는 홍대 저녁 거리",
+    "score": 8,
+    "label": "홍대 네온거리",
+    "reason": "핑크빛 네온 간판이 가득한 해질녘 거리가 홍대의 활기찬 밤 분위기를 잘 보여 줍니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/63/2553363.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "나무와 알록달록한 가게가 있는 낮 거리",
+    "score": 7,
+    "reason": "화사한 노란 건물과 초록 나무가 어우러진 맑은 낮 거리 풍경입니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/62/2553362.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "가로수가 우거진 한적한 거리",
+    "score": 7,
+    "reason": "싱그러운 가로수가 터널처럼 이어진 감성적인 거리 구도입니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/59/2553359.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "옷가게가 늘어선 활기찬 쇼핑 거리",
+    "score": 7,
+    "reason": "옷가게 앞을 걷는 사람들로 쇼핑 거리의 생동감이 잘 전해집니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/58/2553358.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "상점이 이어진 낮의 골목 거리",
+    "score": 6,
+    "reason": "아기자기한 상점과 어닝이 이어진 거리 모습이지만 구도가 평범합니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/57/2553357.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "간판이 빽빽한 홍대 골목길",
+    "score": 6,
+    "reason": "간판이 빽빽한 골목의 일상적인 분위기를 담았으나 전선이 복잡합니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dd/20260829_%EB%A7%88%ED%8F%AC%EA%B5%AC_%ED%99%8D%EB%8C%80%EB%A1%9C%EB%93%9C4.jpg/1920px-20260829_%EB%A7%88%ED%8F%AC%EA%B5%AC_%ED%99%8D%EB%8C%80%EB%A1%9C%EB%93%9C4.jpg",
+    "w": 1600,
+    "h": 900,
+    "credit": "Striker9498 / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:20260829_%EB%A7%88%ED%8F%AC%EA%B5%AC_%ED%99%8D%EB%8C%80%EB%A1%9C%EB%93%9C4.jpg",
+    "alt": "해질녘 간판이 켜진 번화가",
+    "score": 6,
+    "label": "홍대 네온거리",
+    "reason": "해질녘 불 켜진 간판이 보이지만 화질과 색감이 다소 아쉽습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/79/Streets_of_Seoul_-_Flickr_-_Sergiy_Galyonkin.jpg/1920px-Streets_of_Seoul_-_Flickr_-_Sergiy_Galyonkin.jpg",
+    "w": 9207,
+    "h": 6336,
+    "credit": "Sergiy Galyonkin from Raleigh, USA / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Streets_of_Seoul_-_Flickr_-_Sergiy_Galyonkin.jpg",
+    "alt": "간판 불빛이 있는 저녁 골목",
+    "score": 6,
+    "reason": "불 켜진 간판이 있는 저녁 골목의 분위기는 좋지만 다소 어둡습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Hongdae_Party_District_at_Night%2C_Seoul.jpg/1920px-Hongdae_Party_District_at_Night%2C_Seoul.jpg",
+    "w": 2000,
+    "h": 1126,
+    "credit": "Ken Eckert / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Hongdae_Party_District_at_Night,_Seoul.jpg",
+    "alt": "네온 간판이 켜진 밤 거리",
+    "score": 5,
+    "label": "홍대 네온거리",
+    "reason": "야경 거리 분위기는 있으나 화질이 낮고 구도가 산만합니다."
+   }
+  ]
+ },
+ "haeundae": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/98/2928098.jpg",
+    "w": 1280,
+    "h": 603,
+    "credit": "한국관광공사 · 부산관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "푸른 바다와 해변, 고층 빌딩 항공 전경",
+    "score": 9,
+    "label": "해변 스카이라인",
+    "reason": "맑은 하늘과 푸른 바다, 백사장, 고층 빌딩이 한눈에 들어오는 대표 전경이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Haeundae_Beach_in_Busan.jpg/1920px-Haeundae_Beach_in_Busan.jpg",
+    "w": 1600,
+    "h": 925,
+    "credit": "StephNurnberg / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Haeundae_Beach_in_Busan.jpg",
+    "alt": "붉은 파라솔이 늘어선 여름 해변",
+    "score": 8,
+    "label": "여름 파라솔",
+    "reason": "붉은 파라솔이 가득한 여름 해변의 대표 모습이 잘 드러난다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/59/3414759.jpg",
+    "credit": "한국관광공사 · 이명재",
+    "license": "공공누리 제1유형",
+    "alt": "노을 하늘이 비친 해변과 도시 스카이라인",
+    "w": 1280,
+    "h": 960,
+    "score": 9,
+    "label": "해변 스카이라인",
+    "reason": "노을빛 구름과 물에 비친 반영이 감성적이고 해변 스카이라인이 함께 담긴 사진이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b2/Haeundae%2C_Busan_-_Haeundae2739.jpg/1920px-Haeundae%2C_Busan_-_Haeundae2739.jpg",
+    "w": 4970,
+    "h": 3314,
+    "credit": "lumoplank / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:Haeundae,_Busan_-_Haeundae2739.jpg",
+    "alt": "돔 건축물을 닮은 대형 모래 조각",
+    "score": 8,
+    "label": "모래축제",
+    "reason": "돔 건축을 정교하게 표현한 모래 조각이 크게 담겨 눈길을 끈다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8e/Busan_Polar_Bear_Swimming_Contest.jpg/1920px-Busan_Polar_Bear_Swimming_Contest.jpg",
+    "w": 3747,
+    "h": 2129,
+    "credit": "Busan Metropolitan city / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Busan_Polar_Bear_Swimming_Contest.jpg",
+    "alt": "바다로 뛰어드는 북극곰축제 인파",
+    "score": 8,
+    "label": "북극곰축제",
+    "reason": "수많은 사람이 바다로 뛰어드는 축제의 열기가 생생히 전달된다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8e/Sky_Capsule_train_at_Haeundae_Blueline_Park%2C_Busan.jpg/1920px-Sky_Capsule_train_at_Haeundae_Blueline_Park%2C_Busan.jpg",
+    "w": 5712,
+    "h": 4284,
+    "credit": "VN.NguyenDucDuy / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Sky_Capsule_train_at_Haeundae_Blueline_Park,_Busan.jpg",
+    "alt": "노란 해변열차와 해운대 스카이라인",
+    "score": 7,
+    "label": "해변열차",
+    "reason": "노란 해변열차 캡슐이 도시 전경과 함께 눈에 띄게 담겼으나 하늘이 흐리다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/04/2928104.jpg",
+    "w": 1280,
+    "h": 743,
+    "credit": "한국관광공사 · 부산관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "바위 해변 너머 일출과 고층 건물",
+    "score": 8,
+    "label": "해변 스카이라인",
+    "reason": "일출 하늘과 바위, 고층 건물이 어우러져 색감이 좋다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/08/2953208.jpg",
+    "w": 1280,
+    "h": 855,
+    "credit": "한국관광공사 · 부산관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "밤의 해운대 해변 산책로와 도심 불빛",
+    "score": 6,
+    "reason": "푸른 밤하늘 아래 해변 산책로 분위기는 좋지만 야경 비중이 크다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/Haeundae_District_and_Beach.jpg/1920px-Haeundae_District_and_Beach.jpg",
+    "w": 4431,
+    "h": 3215,
+    "credit": "Masterhatch / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Haeundae_District_and_Beach.jpg",
+    "alt": "반짝이는 바다와 해안 고층 건물",
+    "score": 6,
+    "label": "해변 스카이라인",
+    "reason": "햇살에 반짝이는 바다와 해안 스카이라인이 시원하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Dongbaek_island_Busan.jpg/1920px-Dongbaek_island_Busan.jpg",
+    "w": 3264,
+    "h": 2448,
+    "credit": "Michiel1972 / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Dongbaek_island_Busan.jpg",
+    "alt": "소나무 숲과 바위 해안 산책로",
+    "score": 6,
+    "label": "동백섬·누리마루",
+    "reason": "소나무 숲과 바위 해안 산책로가 푸른 바다와 어울려 시원하다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/02/2928102.jpg",
+    "w": 1280,
+    "h": 724,
+    "credit": "한국관광공사 · 부산관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "푸른 조명이 가득한 야간 빛 축제",
+    "score": 5,
+    "reason": "푸른 조명 바다와 달 조형이 인상적이지만 대표 명소가 아니고 야간 사진이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Haeundae_Beach_and_Haeundae_LCT_The_Sharp.jpg/1920px-Haeundae_Beach_and_Haeundae_LCT_The_Sharp.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "A Fun Couple / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Haeundae_Beach_and_Haeundae_LCT_The_Sharp.jpg",
+    "alt": "해질녘 넓은 백사장과 고층 건물",
+    "score": 5,
+    "label": "해변 스카이라인",
+    "reason": "황혼빛과 고층 건물은 좋지만 구도가 밋밋하고 선명도가 낮다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Korea-Busan-Haeundae-Beach-03.jpg/1920px-Korea-Busan-Haeundae-Beach-03.jpg",
+    "w": 3008,
+    "h": 2000,
+    "credit": "by frakorea / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korea-Busan-Haeundae-Beach-03.jpg",
+    "alt": "역광 속 해변을 걷는 사람들",
+    "score": 5,
+    "reason": "역광 분위기는 있으나 다소 어둡고 색감이 오래된 느낌이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/49/Korea-Busan-Haeundae-Beach-04.jpg/1920px-Korea-Busan-Haeundae-Beach-04.jpg",
+    "w": 3008,
+    "h": 2000,
+    "credit": "by frakorea / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Korea-Busan-Haeundae-Beach-04.jpg",
+    "alt": "파도 너머 언덕 위 건물이 보이는 해변",
+    "score": 5,
+    "reason": "파도와 언덕 위 건물이 보이는 평범한 해변 기록 사진이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Silica_%28228495591%29.jpeg/1920px-Silica_%28228495591%29.jpeg",
+    "w": 2048,
+    "h": 1087,
+    "credit": "Michael Mommert / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Silica_(228495591).jpeg",
+    "alt": "밤의 해변과 빛나는 고층 건물",
+    "score": 5,
+    "label": "해변 스카이라인",
+    "reason": "야경 스카이라인이 보이지만 어둡고 노이즈가 있다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Avatar_The_Way_of_Water_sand_art_on_Haeundae_Beach.jpg/1920px-Avatar_The_Way_of_Water_sand_art_on_Haeundae_Beach.jpg",
+    "w": 4032,
+    "h": 3024,
+    "credit": "RonanHoogmoed / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Avatar_The_Way_of_Water_sand_art_on_Haeundae_Beach.jpg",
+    "alt": "밤의 해변 모래 조각 작품",
+    "score": 5,
+    "label": "모래축제",
+    "reason": "모래 조각 디테일은 좋지만 밤이라 어둡고 전체 모습이 모호하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Dongbaek_Island_Chulleong_Bridge_20200522_002.jpg/1920px-Dongbaek_Island_Chulleong_Bridge_20200522_002.jpg",
+    "w": 6000,
+    "h": 4000,
+    "credit": "Mobius6 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Dongbaek_Island_Chulleong_Bridge_20200522_002.jpg",
+    "alt": "숲 속의 붉은 현수교",
+    "score": 5,
+    "reason": "붉은 다리와 숲의 대비는 좋지만 명소 정체가 불분명하다."
+   }
+  ]
+ },
+ "gyeongjuworld": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/96/2585696.jpg",
+    "w": 1280,
+    "h": 854,
+    "credit": "한국관광공사 · 라이브스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "주황 롤러코스터와 공원이 보이는 전경",
+    "score": 9,
+    "label": "피닉스",
+    "reason": "피닉스 코스터와 이국적인 건물, 단풍 든 공원이 화사한 색감으로 한 장에 담긴 대표 사진입니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/94/2585694.jpg",
+    "w": 1280,
+    "h": 854,
+    "credit": "한국관광공사 · 라이브스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "가을 산을 배경으로 한 주황색 롤러코스터",
+    "score": 8,
+    "label": "피닉스",
+    "reason": "피닉스 코스터를 크게 강조하고 뒤로 산과 탑이 보여 박진감이 느껴집니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Draken_%28Gyeongju_World%29.jpg/1920px-Draken_%28Gyeongju_World%29.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "Christophe95 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Draken_(Gyeongju_World).jpg",
+    "alt": "푸른 하늘 아래 우뚝 선 주황색 롤러코스터",
+    "score": 7,
+    "label": "피닉스",
+    "reason": "파란 하늘 아래 주황색 피닉스 코스터가 선명하게 보이지만 구도와 해상도는 5번보다 약합니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/95/2585695.jpg",
+    "w": 1280,
+    "h": 854,
+    "credit": "한국관광공사 · 라이브스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "단풍 물든 테마파크 알록달록한 전경",
+    "score": 7,
+    "reason": "단풍과 알록달록한 건물이 어우러진 풍경이 화사하고 파크 분위기가 잘 전해집니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/99/2585699.jpg",
+    "w": 1280,
+    "h": 854,
+    "credit": "한국관광공사 · 라이브스튜디오",
+    "license": "공공누리 제1유형",
+    "alt": "노을 하늘 아래 불 켜진 테마파크 입구",
+    "score": 5,
+    "reason": "노을빛 입구 야경은 분위기 있지만 이곳을 대표하는 모습은 아닙니다."
+   }
+  ]
+ },
+ "eworld": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/47/2951647.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 앙지뉴 필름",
+    "license": "공공누리 제1유형",
+    "alt": "푸른 하늘 아래 83타워와 이월드 전경",
+    "score": 10,
+    "label": "83타워 전망대",
+    "reason": "파란 하늘과 구름, 83타워, 도시와 놀이공원이 선명하게 담긴 대표 사진이다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/29/2951629.jpg",
+    "w": 1280,
+    "h": 960,
+    "credit": "한국관광공사 · 앙지뉴 필름",
+    "license": "공공누리 제1유형",
+    "alt": "초록 숲길 끝에 보이는 83타워",
+    "score": 9,
+    "label": "83타워 전망대",
+    "reason": "푸른 숲 사이 계단 끝에 83타워가 보이고 색감과 구도가 인스타 감성이다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/02/2951602.jpg",
+    "credit": "한국관광공사 · 앙지뉴 필름",
+    "license": "공공누리 제1유형",
+    "alt": "불빛으로 빛나는 이월드 야경 전경",
+    "w": 1280,
+    "h": 960,
+    "score": 9,
+    "label": "이월드 야경",
+    "reason": "어안렌즈로 담은 이월드 전체가 불빛으로 반짝이는 압도적인 야경이다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/49/2951649.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 앙지뉴 필름",
+    "license": "공공누리 제1유형",
+    "alt": "83타워와 롤러코스터가 보이는 전경",
+    "score": 9,
+    "label": "83타워 전망대",
+    "reason": "83타워와 도시, 롤러코스터가 한 화면에 담겨 이곳이 어떤 곳인지 바로 보인다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/70/2951670.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 앙지뉴 필름",
+    "license": "공공누리 제1유형",
+    "alt": "동화풍 건물 뒤로 보이는 83타워",
+    "score": 8,
+    "label": "83타워 전망대",
+    "reason": "파란 하늘과 날아오르는 새, 동화 같은 건물 뒤로 83타워가 보여 매력적이다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/48/2951648.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 앙지뉴 필름",
+    "license": "공공누리 제1유형",
+    "alt": "놀이기구와 광장을 내려다본 모습",
+    "score": 7,
+    "reason": "놀이기구와 광장을 선명하게 내려다봤지만 83타워가 없어 대표성이 조금 떨어진다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/71/2951671.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 앙지뉴 필름",
+    "license": "공공누리 제1유형",
+    "alt": "붉은 지붕 건물이 있는 이월드 항공 사진",
+    "score": 6,
+    "reason": "성 모양 건물과 공원을 내려다본 사진으로 분위기는 좋지만 대표 명소 느낌은 약하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/Daegu_Banner_Lantern_Festival.jpg/1920px-Daegu_Banner_Lantern_Festival.jpg",
+    "w": 5484,
+    "h": 1674,
+    "credit": "Daegucity.kr / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Daegu_Banner_Lantern_Festival.jpg",
+    "alt": "천등이 떠오른 밤하늘의 83타워",
+    "score": 6,
+    "label": "83타워 전망대",
+    "reason": "천등이 떠오른 밤하늘의 83타워가 감성적이지만 가로로 너무 길고 작다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7f/Duryu_Park_Cherry_Blossoms.jpg/1920px-Duryu_Park_Cherry_Blossoms.jpg",
+    "w": 2000,
+    "h": 1500,
+    "credit": "Ken Eckert\n\n This photo was taken with Canon PowerShot G10 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Duryu_Park_Cherry_Blossoms.jpg",
+    "alt": "벚꽃 핀 길을 걷는 사람들",
+    "score": 6,
+    "label": "벚꽃길",
+    "reason": "벚꽃이 핀 길을 걷는 모습이 봄 분위기를 주지만 흐릿하고 사람들이 많다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Merry-go-round_in_E_WORLD%2C_Daegu.jpg/1920px-Merry-go-round_in_E_WORLD%2C_Daegu.jpg",
+    "w": 1600,
+    "h": 900,
+    "credit": "Choi2451 / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Merry-go-round_in_E_WORLD,_Daegu.jpg",
+    "alt": "밤에 불 켜진 회전목마와 관람객",
+    "score": 5,
+    "label": "이월드 야경",
+    "reason": "조명 켜진 회전목마 분위기는 좋지만 화질이 낮고 사람들이 크게 들어갔다."
+   }
+  ]
+ },
+ "gwangju-familyland": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/99/3351299_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "꽃과 회전목마가 어우러진 놀이공원 정원",
+    "w": 940,
+    "h": 626,
+    "score": 9,
+    "reason": "꽃길과 회전목마, 아치 정원이 어우러져 테마파크의 매력이 잘 드러나는 인스타 감성의 전경입니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/01/3351301_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "꽃밭 뒤로 관람차가 솟은 놀이공원 전경",
+    "w": 940,
+    "h": 626,
+    "score": 8,
+    "label": "빅아이 관람차",
+    "reason": "꽃밭과 아치 구조물 너머로 관람차가 보여 테마파크의 분위기가 한눈에 전해지고 색감도 화사합니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/03/3351303_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "흰 철골 루프의 롤러코스터",
+    "w": 940,
+    "h": 626,
+    "score": 7,
+    "label": "레트로 놀이기구",
+    "reason": "흰색 롤러코스터 루프를 선명하게 담아 놀이기구의 짜릿함이 전해집니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/94/3351294_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "은행나무길을 달리는 노란 트램",
+    "w": 940,
+    "h": 626,
+    "score": 6,
+    "reason": "노란 은행나무길을 달리는 트램이 가을 정취를 주지만 대표 명소와는 거리가 있습니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/98/3351298_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "알록달록한 곤돌라가 달린 대형 관람차",
+    "w": 940,
+    "h": 626,
+    "score": 6,
+    "label": "빅아이 관람차",
+    "reason": "관람차를 크게 담았지만 흐린 하늘과 낮은 앵글 때문에 색감이 다소 밋밋합니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/95/3351295_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "노란 트램 열차가 도로에 서 있는 모습",
+    "w": 940,
+    "h": 626,
+    "score": 5,
+    "reason": "귀여운 노란 트램이 또렷하지만 이곳의 대표 명소는 아니며 기록 사진 느낌이 있습니다."
+   }
+  ]
+ },
+ "caribbean-bay": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/50/%EC%BA%90%EB%A6%AC%EB%B9%84%EC%95%88_%EB%B2%A0%EC%9D%B4_%ED%8F%AC%ED%8A%B8%EB%A6%AC%EC%8A%A4_2.jpg/1920px-%EC%BA%90%EB%A6%AC%EB%B9%84%EC%95%88_%EB%B2%A0%EC%9D%B4_%ED%8F%AC%ED%8A%B8%EB%A6%AC%EC%8A%A4_2.jpg",
+    "w": 2000,
+    "h": 1123,
+    "credit": "박은영 / Wikimedia Commons",
+    "license": "CC BY 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:%EC%BA%90%EB%A6%AC%EB%B9%84%EC%95%88_%EB%B2%A0%EC%9D%B4_%ED%8F%AC%ED%8A%B8%EB%A6%AC%EC%8A%A4_2.jpg",
+    "alt": "소나무 사이로 흐르는 맑은 유수풀",
+    "score": 9,
+    "label": "유수풀",
+    "reason": "소나무와 전통 건물 사이로 맑은 물빛 유수풀이 이어져 색감과 구도가 뛰어나다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/%EC%BA%90%EB%A6%AC%EB%B9%84%EC%95%88_%EB%B2%A0%EC%9D%B4_%ED%8F%AC%ED%8A%B8%EB%A6%AC%EC%8A%A4_1.jpg/1920px-%EC%BA%90%EB%A6%AC%EB%B9%84%EC%95%88_%EB%B2%A0%EC%9D%B4_%ED%8F%AC%ED%8A%B8%EB%A6%AC%EC%8A%A4_1.jpg",
+    "w": 2000,
+    "h": 1123,
+    "credit": "박은영 / Wikimedia Commons",
+    "license": "CC BY 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:%EC%BA%90%EB%A6%AC%EB%B9%84%EC%95%88_%EB%B2%A0%EC%9D%B4_%ED%8F%AC%ED%8A%B8%EB%A6%AC%EC%8A%A4_1.jpg",
+    "alt": "돌담 옆으로 흐르는 푸른 유수풀",
+    "score": 6,
+    "label": "유수풀",
+    "reason": "돌담과 푸른 물길, 튜브를 탄 방문객이 보여 워터파크 분위기가 전달된다."
+   }
+  ]
+ },
+ "ocean-world": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/09/4078009_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "무지개색 슬라이드와 대형 튜브 워터슬라이드",
+    "w": 940,
+    "h": 627,
+    "score": 9,
+    "label": "메가스톰",
+    "reason": "무지개빛 슬라이드와 거대한 튜브 구조물이 화사한 색감과 맑은 하늘 아래 크게 강조되어 있어 스릴이 바로 느껴집니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/12/4078012_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "이집트풍 건물 앞 야외 파도풀의 물놀이 풍경",
+    "w": 940,
+    "h": 528,
+    "score": 8,
+    "label": "야외 파도풀",
+    "reason": "이집트풍 건축물 앞 파도풀에서 물놀이하는 사람들이 푸른 하늘과 숲과 어우러져 워터파크의 분위기가 한눈에 전해집니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/08/4078008_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "숲에 둘러싸인 워터파크 전경과 슬라이드 단지",
+    "w": 940,
+    "h": 528,
+    "score": 8,
+    "reason": "숲으로 둘러싸인 워터파크 전체와 물줄기, 슬라이드가 한눈에 보여 이곳이 어떤 곳인지 잘 설명해 줍니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/10/4078010_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "숲 속으로 이어진 파란색·빨간색 워터슬라이드",
+    "w": 940,
+    "h": 528,
+    "score": 7,
+    "reason": "푸른 숲 속에 파란색과 빨간색 워터슬라이드가 시원하게 뻗어 있어 역동적이지만 대표 명소가 뚜렷하지는 않습니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/13/4078013_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "산을 배경으로 한 오션월드 입구 게이트",
+    "w": 940,
+    "h": 528,
+    "score": 5,
+    "reason": "오션월드 입구 게이트가 산과 숲을 배경으로 담겨 있지만 물놀이 장면이 없어 설렘은 다소 부족합니다."
+   }
+  ]
+ },
+ "lotte-waterpark": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/35/4110435_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "붉은 부메랑고 슬라이드를 타고 내려오는 보트",
+    "w": 940,
+    "h": 627,
+    "score": 9,
+    "label": "자이언트 부메랑고",
+    "reason": "파란 하늘 아래 붉은 슬라이드를 타고 내려오는 보트가 선명하고 색감이 강렬하며 대표 명소가 잘 드러납니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/36/4110436_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "물이 쏟아지는 정글풍 워터 놀이 구조물",
+    "w": 940,
+    "h": 627,
+    "score": 8,
+    "label": "자이언트 볼케이노",
+    "reason": "거대한 물이 쏟아지는 순간과 정글풍 구조물이 역동적이지만 얼굴이 나올 만한 사람들이 앞쪽에 많습니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/34/4110434_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "큰 파도가 밀려오는 야외 파도풀",
+    "w": 940,
+    "h": 627,
+    "score": 7,
+    "label": "자이언트 웨이브",
+    "reason": "큰 파도가 밀려오는 활기찬 장면이지만 사람이 매우 많아 복잡하고 얼굴이 식별될 수 있습니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/32/4110432_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "슬라이드와 푸른 풀을 내려다본 모습",
+    "w": 940,
+    "h": 627,
+    "score": 7,
+    "label": "레이싱 슬라이드",
+    "reason": "위에서 내려다본 구도로 슬라이드와 푸른 풀이 시원하게 보이지만 사람이 작고 다소 분산되어 있습니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/29/4110429_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "야자수와 유리 지붕 아래 푸른 실내 파도풀",
+    "w": 940,
+    "h": 705,
+    "score": 9,
+    "label": "실내 워터파크",
+    "reason": "야자수와 큰 유리 지붕 아래 파도풀이 펼쳐져 실내 워터파크의 규모와 분위기가 한눈에 전달됩니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/31/4110431_image2_1.JPG",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "바위 슬라이드와 놀이 구조물이 있는 실내 풀",
+    "w": 940,
+    "h": 705,
+    "score": 8,
+    "label": "실내 워터파크",
+    "reason": "바위 슬라이드와 벽화, 놀이 구조물이 어우러져 실내 워터파크의 즐거운 분위기가 잘 보입니다."
+   }
+  ],
+  "pending": []
+ },
+ "seorak-waterpia": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/70/3588770_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "바위 사이 푸른빛 노천탕과 리조트 야경",
+    "w": 940,
+    "h": 626,
+    "score": 9,
+    "label": "스파밸리 노천탕",
+    "reason": "바위로 둘러싸인 푸른 노천탕이 석양빛 하늘과 어우러져 색감과 구도가 매우 뛰어납니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/69/3588769_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "폭포가 흐르는 청록빛 노천 스파",
+    "w": 940,
+    "h": 626,
+    "score": 8,
+    "label": "스파밸리 노천탕",
+    "reason": "청록빛 폭포와 계단, 노천탕이 어우러져 감성적인 분위기를 만들어 줍니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/67/3588767_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "밤하늘 아래 불 밝힌 대형 워터슬라이드",
+    "w": 940,
+    "h": 626,
+    "score": 8,
+    "label": "워터슬라이드",
+    "reason": "별이 총총한 밤하늘 아래 조명을 밝힌 대형 워터슬라이드가 한눈에 들어오는 인상적인 야경 전경 사진입니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/71/3588771_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "해질녘 바위로 둘러싸인 노천탕",
+    "w": 940,
+    "h": 626,
+    "score": 7,
+    "label": "스파밸리 노천탕",
+    "reason": "황혼 하늘 아래 바위로 둘러싼 노천탕이 차분하고 깔끔하게 담겼지만 임팩트는 조금 약합니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/68/3588768_image2_1.JPG",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "실내 대형 온수 풀장 전경",
+    "w": 940,
+    "h": 626,
+    "score": 6,
+    "reason": "실내 대형 온수 풀장 전체가 내려다보여 규모는 전달되지만 색감과 조명이 평범합니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/72/3588772_image2_1.JPG",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "물벼락이 쏟아지는 실내 워터플레이 존",
+    "w": 940,
+    "h": 626,
+    "score": 6,
+    "label": "스플래시 페스타",
+    "reason": "물이 쏟아지는 어린이 워터플레이 시설이 생동감 있게 보이나 실내 조명이 다소 밋밋합니다."
+   }
+  ]
+ },
+ "california-beach": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/09/3544409_image2_1.JPG",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "워터파크 전경과 파도풀, 슬라이드",
+    "w": 940,
+    "h": 626,
+    "score": 9,
+    "reason": "파도풀과 슬라이드, 멀리 롤러코스터까지 한눈에 보여 워터파크의 규모와 분위기가 바로 전달되는 선명한 항공 사진입니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/08/3544408_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "위에서 본 파도풀과 슬라이드",
+    "w": 940,
+    "h": 528,
+    "score": 9,
+    "label": "파도풀",
+    "reason": "위에서 내려다본 파도풀과 주변 슬라이드가 색감 좋게 담겨 대표 명소가 잘 드러납니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/06/3544406_image2_1.JPG",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "등대와 어린이 물놀이장",
+    "w": 940,
+    "h": 626,
+    "score": 8,
+    "label": "어린이 물놀이장",
+    "reason": "알록달록한 등대와 물놀이 시설이 파란 하늘 아래 귀엽게 담겼습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Draken_%28Gyeongju_World%29.jpg/1920px-Draken_%28Gyeongju_World%29.jpg",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Christophe95 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Draken_(Gyeongju_World).jpg",
+    "alt": "푸른 하늘 아래 롤러코스터",
+    "score": 7,
+    "label": "드라켄",
+    "reason": "하늘과 산을 배경으로 롤러코스터 전체 모습이 시원하게 나왔지만 워터파크 사진은 아닙니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/10/3544410_image2_1.JPG",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "등대가 보이는 청록빛 풀장",
+    "w": 940,
+    "h": 626,
+    "score": 8,
+    "reason": "청록빛 물과 등대, 파란 하늘이 어우러져 휴양지 느낌이 강한 감성 사진입니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/11/3544411_image2_1.JPG",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "컬러풀한 어린이 워터슬라이드 구조물",
+    "w": 940,
+    "h": 626,
+    "score": 8,
+    "label": "어린이 물놀이장",
+    "reason": "컬러풀한 대형 물놀이 구조물과 슬라이드가 선명하게 담겨 가족 여행객에게 매력적입니다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/12/3544412_image2_1.JPG",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "버섯 분수가 있는 어린이 물놀이장",
+    "w": 940,
+    "h": 626,
+    "score": 7,
+    "label": "어린이 물놀이장",
+    "reason": "버섯 분수와 작은 슬라이드로 아이들이 놀기 좋은 분위기가 잘 보입니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Phaethon_%28Gyeongju_World%29.jpg/1920px-Phaethon_%28Gyeongju_World%29.jpg",
+    "w": 3645,
+    "h": 2735,
+    "credit": "Christophe95 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Phaethon_(Gyeongju_World).jpg",
+    "alt": "롤러코스터 아래에서 본 탑승 장면",
+    "score": 6,
+    "label": "드라켄",
+    "reason": "탑승객이 매달린 롤러코스터의 박진감은 있지만 구도가 다소 복잡하고 해상도가 아쉽습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Draken_and_Klake.jpg/1920px-Draken_and_Klake.jpg",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Christophe95 / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Draken_and_Klake.jpg",
+    "alt": "롤러코스터와 회전 놀이기구",
+    "score": 6,
+    "label": "드라켄",
+    "reason": "롤러코스터와 회전 놀이기구가 파란 하늘과 대비되어 역동적이지만 워터파크와는 거리가 있습니다."
+   }
+  ]
+ },
+ "splas-resom": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-30",
+  "photos": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/20/2769520_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "산을 바라보는 목재 야외 온천 스파",
+    "w": 940,
+    "h": 627,
+    "score": 9,
+    "label": "야외 온천 스파",
+    "reason": "나무 지붕 아래 온천탕과 휴식 공간, 산 풍경이 한 장에 담겨 스파의 매력이 한눈에 전달된다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/07/2769507_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "산 능선이 보이는 야외 스파 테라스",
+    "w": 940,
+    "h": 626,
+    "score": 8,
+    "label": "야외 온천 스파",
+    "reason": "파란 하늘과 산 능선이 시원하게 펼쳐진 야외 테라스 스파 공간으로 색감과 구도가 뛰어나다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/15/2769515_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "숲이 비치는 야외 풀과 선베드",
+    "w": 940,
+    "h": 529,
+    "score": 7,
+    "label": "야외 온천 스파",
+    "reason": "푸른 숲을 비추는 야외 풀과 선베드가 맑고 청량하지만 구도는 다소 평범하다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/87/2769487_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "노을 무렵 숲으로 둘러싸인 리조트 전경",
+    "w": 940,
+    "h": 655,
+    "score": 6,
+    "reason": "노을 진 숲속 리조트 전체를 높은 곳에서 보여 주어 위치 설명은 좋지만 대표 명소는 잘 안 보인다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms/resource/90/2769490_image2_1.jpg",
+    "credit": "한국관광공사",
+    "license": "공공누리 제1유형",
+    "alt": "노을 속 산자락의 리조트 건물과 조형물",
+    "w": 940,
+    "h": 558,
+    "score": 5,
+    "reason": "노을 하늘과 산을 배경으로 리조트 건물과 조형물이 담겼지만 어둑하고 워터파크 명소는 보이지 않는다."
    }
   ]
  }
