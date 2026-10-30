@@ -18,7 +18,8 @@ defaults:
 
 jobs:
   sync:
-    runs-on: [self-hosted, crowdview]
+    # 새벽에 도는 일은 노트북에서만 (경수님 10/30: 밤엔 데스크탑을 게임에 쓴다)
+    runs-on: [self-hosted, crowdview, laptop]
     env:
       # 단계의 if 는 secrets를 직접 못 읽어서 job env로 넘긴다
       DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
