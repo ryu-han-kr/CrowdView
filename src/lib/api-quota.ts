@@ -74,6 +74,11 @@ export const APIS: ApiInfo[] = [
   // 구글 플레이스 (New) 사진 없는 장소 사진 (api/gphoto). 검색 1 + 사진 1을 2로 센다. 사진 월 1,000장 무료 → 월 1,800(사진 900장)에서 멈춘다
   { id: "google-places", name: "구글 플레이스 사진 (검색+사진)", limit: 120, monthlyLimit: 1800 },
   { id: "papago", name: "Papago 번역 (글자 수)", limit: 30000, monthlyLimit: Number(process.env.PAPAGO_MONTHLY_LIMIT) || 300_000, unit: "자" },
+  // Claude API (경수님 10/30: 횟수 상한). 토큰 요금은 호출 수로 묶고, 웹 검색은 따로 센다 (lib/ai-quota)
+  // 호출: 하루 200·월 3,000 (AI 여행 요약·화제 행사·사진 작업 합). 더 쓰려면 AI_DAILY_LIMIT·AI_MONTHLY_LIMIT
+  { id: "anthropic", name: "Claude API 호출", limit: Number(process.env.AI_DAILY_LIMIT) || 200, monthlyLimit: Number(process.env.AI_MONTHLY_LIMIT) || 3000 },
+  // 웹 검색: 1천 건당 $10 → 월 1,000건(약 $10)·하루 80건. 부르기 전에 max_uses만큼 잡아 두고, 안 쓴 만큼 돌려준다
+  { id: "anthropic-search", name: "Claude 웹 검색 (1천 건당 $10)", limit: Number(process.env.AI_SEARCH_DAILY_LIMIT) || 80, monthlyLimit: Number(process.env.AI_SEARCH_MONTHLY_LIMIT) || 1000, unit: "건" },
 ];
 
 const SAFETY = 0.9;
@@ -108,6 +113,13 @@ export async function beforeCall(api: ApiInfo | undefined, amount = 1): Promise<
     if (api.monthlyLimit) await kv.decr(monthKey(api.id), amount).catch(() => {});
     throw new QuotaError(`${api.name}: ${over ?? overMonth}의 ${SAFETY * 100}% 도달`);
   }
+}
+
+/** 미리 잡아 둔 양 중 안 쓴 만큼 돌려준다 (Claude 웹 검색처럼 끝나 봐야 아는 것) */
+export async function refundCall(api: ApiInfo | undefined, amount: number): Promise<void> {
+  if (!api || amount <= 0) return;
+  await kv.decr(quotaKey(api.id), amount).catch(() => {});
+  if (api.monthlyLimit) await kv.decr(monthKey(api.id), amount).catch(() => {});
 }
 
 /** 이달 누적 (월 한도가 있는 API만 의미 있다) */

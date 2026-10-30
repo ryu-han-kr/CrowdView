@@ -3,6 +3,8 @@
 // 장소·언어마다 한 번 만들어 14일 보관 (유료 회원이 처음 열 때만 만든다). ANTHROPIC_API_KEY가 없으면 우리 자료만으로 짧은 요약
 import Anthropic from "@anthropic-ai/sdk";
 import type { Lang } from "@/i18n/config";
+import { aiCreate, aiEnabled } from "./ai-quota";
+import { QuotaError } from "./api-quota";
 import { kv } from "./cache";
 import { nearestStation } from "./subway";
 import type { Place } from "./types";
@@ -31,7 +33,7 @@ export interface TripBrief {
   updated: string;
 }
 
-export const tripBriefAi = () => !!process.env.ANTHROPIC_API_KEY;
+export const tripBriefAi = aiEnabled;
 const TTL = 14 * 86_400;
 const key = (id: string, lang: Lang) => `brief:v1:${id}:${lang}`;
 
@@ -131,7 +133,7 @@ async function generate(place: Place, lang: Lang, today: string): Promise<TripBr
   const client = new Anthropic({ timeout: 120_000 });
   const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: "user", content: prompt(place, lang, today) }];
   for (let turn = 0; turn < 3; turn++) {
-    const res = await client.beta.messages.create({
+    const res = await aiCreate(client, {
       model: "claude-sonnet-5-5",
       max_tokens: 4000,
       system: SYSTEM,
@@ -164,11 +166,19 @@ export async function getTripBrief(place: Place, lang: Lang, today: string): Pro
     } catch {}
   }
   if (!tripBriefAi()) return basicBrief(place, today);
+  // 방금 실패한 곳은 30분 동안 다시 부르지 않는다 (10/30: 실패하면 누를 때마다 Claude를 다시 불렀다)
+  if (await kv.get(`${k}:fail`).catch(() => null)) return basicBrief(place, today);
   const lock = await kv.setNX(`${k}:lock`, "1", 320).catch(() => true);
   if (!lock) throw new Error("요약을 만들고 있어요. 잠시 뒤 다시 눌러 주세요");
   try {
-    const brief = await generate(place, lang, today);
-    if (!brief) return basicBrief(place, today);
+    const brief = await generate(place, lang, today).catch((e) => {
+      if (e instanceof QuotaError) return undefined;
+      throw e;
+    });
+    if (!brief) {
+      await kv.set(`${k}:fail`, "1", 1800).catch(() => {});
+      return basicBrief(place, today);
+    }
     // 유료인데 요금에 숫자가 없으면(웹 검색이 빈손) 하루만 두고 다시 만든다 (10/29: 롯데월드가 '요금 확인 안 됨'으로 14일 묶일 뻔)
     const weak = (brief.ticket.need === "paid" || brief.ticket.need === "partly") && !/\d/.test(brief.ticket.price);
     await kv.set(k, JSON.stringify(brief), weak ? 86_400 : TTL).catch(() => {});

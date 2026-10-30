@@ -2,6 +2,8 @@
 // Claude가 웹 검색으로 대표 명소·포토 스폿과 위키미디어 공용 검색어를 정리한다. scripts/korea-data/photo-pick.mts 가 부른다 (CRON_SECRET 필요)
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
+import { aiCreate, aiEnabled } from "@/lib/ai-quota";
+import { QuotaError } from "@/lib/api-quota";
 
 export const maxDuration = 300;
 
@@ -14,16 +16,25 @@ const prompt = (name: string, address: string) => `장소: ${name} (${address})
 마지막 답은 다른 말 없이 JSON 하나만: {"nameEn":"장소 영어 이름","spots":[{"label":"화면에 쓸 짧은 한국어 이름(8자 안)","why":"왜 유명한지 한 줄","queries":["..."]}]}`;
 
 export async function POST(req: Request) {
+  try {
+    return await handle(req);
+  } catch (e) {
+    if (e instanceof QuotaError) return NextResponse.json({ error: e.message }, { status: 429 });
+    throw e;
+  }
+}
+
+async function handle(req: Request) {
   const secret = process.env.CRON_SECRET;
   if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  if (!process.env.ANTHROPIC_API_KEY) return NextResponse.json({ error: "no key" }, { status: 503 });
+  if (!aiEnabled()) return NextResponse.json({ error: "no key" }, { status: 503 });
   const body = (await req.json().catch(() => null)) as { name?: string; address?: string } | null;
   if (!body?.name) return NextResponse.json({ error: "bad request" }, { status: 400 });
 
   const client = new Anthropic({ timeout: 240_000 });
   const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: "user", content: prompt(body.name, body.address ?? "") }];
   for (let turn = 0; turn < 3; turn++) {
-    const res = await client.beta.messages.create({
+    const res = await aiCreate(client, {
       model: "claude-sonnet-5-5",
       max_tokens: 6000,
       system: SYSTEM,

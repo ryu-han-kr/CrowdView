@@ -2,6 +2,8 @@
 // ANTHROPIC_API_KEY가 있을 때만 돈다. 결과는 lib/trending 이 Redis에 저장해 홈 '요즘 뜨는 곳'에 섞는다.
 // 비용: 하루 1번(웹 검색 최대 6번) — Claude Opus 5.5 기준 한 달 몇 달러
 import Anthropic from "@anthropic-ai/sdk";
+import { aiCreate, aiEnabled } from "./ai-quota";
+import { kv } from "./cache";
 import { kst } from "./time";
 
 export interface AiEvent {
@@ -20,7 +22,7 @@ export interface AiEvent {
   why: string;
 }
 
-export const aiEventsEnabled = () => !!process.env.ANTHROPIC_API_KEY;
+export const aiEventsEnabled = aiEnabled;
 
 const SYSTEM = `너는 한국 여행 서비스 CrowdView의 편집자다. 웹 검색으로 지금 한국에서 사람들이 많이 찾는 축제·행사·테마파크 시즌 이벤트를 고른다.
 기준: 오늘 진행 중이거나 2주 안에 시작하는 것, 최근 뉴스·SNS에서 화제인 것(예: 테마파크 할로윈·크리스마스 시즌 이벤트, 지역 대표 축제, 큰 팝업·전시).
@@ -65,10 +67,13 @@ export async function fetchAiEvents(): Promise<AiEvent[]> {
   if (!aiEventsEnabled()) return [];
   const client = new Anthropic({ timeout: 5 * 60_000 });
   const today = kst().date;
+  // 하루 2번까지만 (10/30: 결과가 비면 trending이 저장하지 않아 매시간 다시 부르던 것)
+  const tries = await kv.incr(`ai-events:tries:${today}`, 2 * 86_400).catch(() => 1);
+  if (tries > 2) return [];
   const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: "user", content: prompt(today) }];
   // 웹 검색이 길어지면 pause_turn 으로 멈춘다 → 받은 내용을 붙여 다시 보내면 이어서 한다 (최대 3번)
   for (let turn = 0; turn < 4; turn++) {
-    const res = await client.beta.messages.create({
+    const res = await aiCreate(client, {
       model: "claude-opus-5-5",
       max_tokens: 16000,
       system: SYSTEM,
