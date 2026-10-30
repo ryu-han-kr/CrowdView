@@ -2,13 +2,15 @@
 // 키(GOOGLE_PLACES_API_KEY)가 Vercel 비밀 값이라 운영 서버에서 돌린다 — CRON_SECRET이 있어야 부를 수 있다. scripts/korea-data/photo-pick.mts (GOOGLE=1)가 부른다.
 // 구글 약관: 사진 파일은 저장하지 않고(사진 이름만 기록 → api/gphoto 가 그때그때 받아 보냄), 작성자 이름을 사진에 표시한다
 import { NextResponse } from "next/server";
-import { APIS, beforeCall, QuotaError } from "@/lib/api-quota";
+import { APIS, countCall, getMonthUsage, QuotaError } from "@/lib/api-quota";
 import { getPlace } from "@/lib/places";
 
 export const maxDuration = 60;
 
 const API = APIS.find((a) => a.id === "google-places");
 const MAX = 10;
+// 사진 고르기는 가끔 손으로 돌리는 일이라 하루 한도 대신 이달 누적으로 막는다: 구글 사진 무료 월 1,000장보다 여유 있게 (경수님 10/30 '무료분 안에서')
+const MONTH_CAP = 900;
 
 export async function POST(req: Request) {
   const secret = process.env.CRON_SECRET;
@@ -20,7 +22,9 @@ export async function POST(req: Request) {
   if (!p) return NextResponse.json({ error: "bad request" }, { status: 400 });
   const max = Math.min(MAX, Math.max(1, Number(body?.max) || MAX));
   try {
-    await beforeCall(API, 1 + max);
+    const used = await getMonthUsage("google-places");
+    if (used + 1 + max > MONTH_CAP) return NextResponse.json({ error: `이달 구글 사진 ${used}회 — 무료분 보호선(${MONTH_CAP}) 도달` }, { status: 429 });
+    await countCall(API, 1 + max);
     const search = await fetch("https://places.googleapis.com/v1/places:searchText", {
       method: "POST",
       headers: { "Content-Type": "application/json", "X-Goog-Api-Key": key, "X-Goog-FieldMask": "places.id,places.photos" },
