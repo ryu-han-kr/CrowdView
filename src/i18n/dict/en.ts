@@ -1848,6 +1848,13 @@ const dict: Dict = {
   "휠체어 좌석": "Wheelchair-accessible seating",
   "아이와 가기 좋음": "Good for kids",
   "반려견 동반": "Dogs allowed",
+  // 웹 조사 혼잡 정보 (components/ResearchFactsBlock)
+  "알려진 혼잡 정보": "Known crowd patterns",
+  "연간 방문": "Visitors/yr",
+  "붐비는 때": "Busy",
+  "한산한 때": "Quiet",
+  "팁": "Tips",
+  "언론·통계·방문 후기를 모아 정리한 경향이에요": "Trends compiled from news, statistics and visitor reviews",
 };
 
 export default dict;
