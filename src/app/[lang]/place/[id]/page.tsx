@@ -35,7 +35,7 @@ import { AlertFab } from "@/components/place/AlertFab";
 import { WeekHeatmap } from "@/components/WeekHeatmap";
 import { splitInfoNote } from "@/lib/info-note";
 import { PLACES, placeHref } from "@/lib/places";
-import { daysUntil, formatClock, kst } from "@/lib/time";
+import { addDays, daysUntil, formatClock, kst } from "@/lib/time";
 import type { Lang } from "@/i18n/config";
 import { DEFAULT_LANG, isLang, localePath } from "@/i18n/config";
 import { fmtAge, fmtMinutes, fmtPeople, trReason } from "@/i18n/patterns";
@@ -265,6 +265,32 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     reasons: d.reasons.map((r) => trReason(r, t)),
     people: peopleText(d.peakScore),
   }));
+  // 자주 묻는 질문 '○월엔 언제 가면 한산한가요?' (10/31 알리기 2번: '에버랜드 11월 혼잡도'처럼 날짜로 찾는 검색.
+  // 장소×월 페이지를 새로 만들면 비슷한 자동 페이지가 수백 개 늘어 색인에 역효과라, 이 화면의 질문·답(FAQPage)으로)
+  const monthAhead = long.slice(1, 31);
+  const monthName = new Intl.DateTimeFormat(lang === "ko" ? "ko-KR" : lang, { month: "long", timeZone: "Asia/Seoul" }).format(new Date(`${addDays(kst().date, 15)}T12:00:00+09:00`));
+  const dayLabel = (date: string) => calCells.find((c) => c.date === date)?.long ?? date;
+  const byScore = [...monthAhead].sort((a, b) => a.peakScore - b.peakScore);
+  const calmDays = byScore.slice(0, 3).sort((a, b) => a.date.localeCompare(b.date));
+  const busyDays = byScore.slice(-2).sort((a, b) => a.date.localeCompare(b.date));
+  const isWeekend = (d: string) => [0, 6].includes(new Date(`${d}T12:00:00+09:00`).getUTCDay());
+  const avgPeak = (xs: typeof monthAhead) => xs.reduce((n, x) => n + x.peakScore, 0) / Math.max(1, xs.length);
+  const weekendGap = avgPeak(monthAhead.filter((d) => isWeekend(d.date))) - avgPeak(monthAhead.filter((d) => !isWeekend(d.date)));
+  const monthFaq =
+    place.category !== "event" && monthAhead.length >= 20
+      ? {
+          q: t("{name} {month}엔 언제 가면 한산한가요?", { name: t(place.name), month: monthName }),
+          a: [
+            t("앞으로 한 달 예측으로는 {calm}이 가장 한산하고, {busy}이 가장 붐빌 것으로 보여요.", {
+              calm: calmDays.map((d) => dayLabel(d.date)).join(", "),
+              busy: busyDays.map((d) => dayLabel(d.date)).join(", "),
+            }),
+            weekendGap >= 8 ? t("주말이 평일보다 꽤 붐벼요. 평일에 가면 여유로워요.") : weekendGap <= -8 ? t("오히려 평일이 주말보다 붐비는 곳이에요.") : "",
+          ]
+            .filter(Boolean)
+            .join(" "),
+        }
+      : null;
   // 놀이기구 구역별 평균 대기 (구역을 아는 공원만)
   const areas = [...new Set((crowd.zones ?? []).map((z) => z.area).filter((a): a is string => !!a))]
     .map((name) => {
@@ -817,6 +843,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                     ? t("오늘은 입장 마감이 가까워요. 다음 방문은 아래 이번 주 예측을 참고하세요.")
                     : t("오늘 남은 운영 시간 중에는 지금이 가장 한산한 편이에요."),
               },
+              ...(monthFaq ? [monthFaq] : []),
               {
                 q: t("이 혼잡도 정보는 어디서 나오나요?"),
                 a: t("{source}를 바탕으로 CrowdView가 10분마다 갱신해요. 실제 현장과 다를 수 있어요.", { source: t(SOURCE_LABEL[crowd.source]) }),

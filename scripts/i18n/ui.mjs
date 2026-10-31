@@ -2929,4 +2929,9 @@ export default {
   "‘{q}’ 전체 결과 {n}곳 보기": ["See all {n} results for ‘{q}’", "「{q}」の全結果 {n}件を見る", "查看“{q}”全部 {n} 个结果", "查看「{q}」全部 {n} 個結果"],
   // ── 장소 공유 미리보기 카드 (10/31)
   "{m}/{d} {hh}:{mm} 기준": ["As of {m}/{d} {hh}:{mm}", "{m}/{d} {hh}:{mm} 時点", "截至 {m}/{d} {hh}:{mm}", "截至 {m}/{d} {hh}:{mm}"],
+  // ── 장소 FAQ '○월엔 언제 가면 한산' (10/31)
+  "{name} {month}엔 언제 가면 한산한가요?": ["When is {name} least crowded in {month}?", "{month}の{name}はいつ空いていますか？", "{month}什么时候去{name}人少？", "{month}什麼時候去{name}人少？"],
+  "앞으로 한 달 예측으로는 {calm}이 가장 한산하고, {busy}이 가장 붐빌 것으로 보여요.": ["For the coming month, {calm} look quietest and {busy} look busiest.", "今後1か月の予想では{calm}が最も空いていて、{busy}が最も混みそうです。", "根据未来一个月的预测，{calm}人最少，{busy}人最多。", "根據未來一個月的預測，{calm}人最少，{busy}人最多。"],
+  "주말이 평일보다 꽤 붐벼요. 평일에 가면 여유로워요.": ["Weekends are much busier than weekdays, so go on a weekday if you can.", "週末は平日よりかなり混みます。平日がおすすめです。", "周末比工作日拥挤得多，工作日去更从容。", "週末比平日擁擠得多，平日去更從容。"],
+  "오히려 평일이 주말보다 붐비는 곳이에요.": ["Unusually, weekdays here are busier than weekends.", "ここは平日のほうが週末より混みます。", "这里反而是工作日比周末更拥挤。", "這裡反而是平日比週末更擁擠。"],
 };
