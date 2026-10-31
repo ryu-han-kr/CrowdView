@@ -109,7 +109,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
       const last = raw.length - 1;
       return {
         ...w,
-        days: raw.map((d, i) => ({ ...d, score: Math.round(top * (i <= 1 ? 1 : i === last ? 0.72 : 0.86)) })),
+        days: raw.map((d, i) => ({ ...d, score: Math.round(top * (i <= 1 ? 1 : i === last ? 0.65 : 0.78)) })),
       };
     });
   const dayLabel = (date: string) =>
