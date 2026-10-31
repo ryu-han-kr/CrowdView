@@ -16,6 +16,7 @@ import {
   learnPredict,
   learnUpdate,
   rlsInit,
+  transitInputs,
   rlsPredict,
   rlsUpdate,
   snapSeoul,
@@ -55,8 +56,15 @@ test("RLS: 잊는 비율이 있으면 관계가 바뀐 뒤 새 관계로 옮겨 
 test("학습 모델 입력: 지난주가 없으면 지금 값, 중앙값이 없으면 지난주로 채우고, 바뀜·밤과 곱한다", () => {
   const x = learnFeatures([40, null, null, null, 1, 0]);
   assert.equal(x.length, LEARN_DIM);
-  assert.deepEqual(x, [1, 0.4, 0.4, 0.4, 0.4, 1, 0.4, 0.4, 0, 0]);
-  assert.deepEqual(learnFeatures([25, 68, 48, null, 0, 1]), [1, 0.25, 0.68, 0.48, 0.68, 0, 0, 0, 1, 0.25]);
+  assert.deepEqual(x, [1, 0.4, 0.4, 0.4, 0.4, 1, 0.4, 0.4, 0, 0, 0, 0]);
+  assert.deepEqual(learnFeatures([25, 68, 48, null, 0, 1, 0.2, -0.1]), [1, 0.25, 0.68, 0.48, 0.68, 0, 0, 0, 1, 0.25, 0.2, -0.1]);
+});
+
+test("승하차·주차 입력: 한 시간 사이 변화율(−1~1), 주차 (%−50)/100, 없으면 0", () => {
+  assert.deepEqual(transitInputs([600, 600, 0, 0, 80], [500, 500, 0, 0, 70]), [0.2, 0.3]);
+  assert.deepEqual(transitInputs([5000, 0, null, null, null], [100, 0, null, null, null]), [1, 0]);
+  assert.deepEqual(transitInputs(undefined, [1, 1, 1, 1, 1]), [0, 0]);
+  assert.deepEqual(transitInputs([null, null, null, null, 30], undefined), [0, -0.2]);
 });
 
 test("학습 모델: 처음 예측은 지난주 같은 시각, 지난주가 없던 예측은 배우지 않고, 지역 치우침을 고친다", () => {
@@ -127,6 +135,12 @@ test("상태 문자열: 모양이 다르면 버린다", () => {
   assert.equal(parseLearnState("{bad"), null);
   assert.equal(parseLearnState(JSON.stringify({ v: 1, rls: { w: [1, 2], P: [], n: 0 } })), null);
   assert.ok(parseLearnState(JSON.stringify(learnInit())));
+  // 특징 수가 바뀐 옛 상태: 학습 모델만 처음부터, 앙상블·단기 혼합은 그대로
+  const old = { ...learnInit(), rls: rlsInit(10), lb: { A: 3 }, ens: { A: [1, 2, null, null] } };
+  const st = parseLearnState(JSON.stringify(old))!;
+  assert.equal(st.rls.w.length, LEARN_DIM);
+  assert.deepEqual(st.lb, {});
+  assert.deepEqual(st.ens.A, [1, 2, null, null]);
 });
 
 const area = (time: string, score: number, forecast: { time: string; score: number }[] = []) => ({
