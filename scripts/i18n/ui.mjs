@@ -1255,6 +1255,18 @@ export default {
     "✈️ 已考慮機場各時段旅客數",
   ],
 
+  // ── 공항 '다가오는 연휴 출국장 예상' (10/31 '알리기' 7번, lib/holiday-windows)
+  새해: ["New Year", "新年", "新年", "新年"],
+  크리스마스: ["Christmas", "クリスマス", "圣诞节", "聖誕節"],
+  설: ["Seollal (Lunar New Year)", "ソルラル (旧正月)", "春节", "春節"],
+  공휴일: ["Public holiday", "祝日", "公休日", "國定假日"],
+  "{name} 연휴": ["{name} holiday", "{name}連休", "{name}假期", "{name}連假"],
+  "다가오는 연휴 출국장 예상": ["Upcoming holidays: departure crowd forecast", "今後の連休の出国場予測", "即将到来的假期出境大厅预测", "即將到來的連假出境大廳預測"],
+  "AI 예측 · 연휴가 가까워지면 공항 예고 승객 수로 더 정확해져요": ["AI forecast · gets more accurate with the airport's passenger forecast as the holiday nears", "AI予測・連休が近づくと空港の予告旅客数でより正確になります", "AI预测 · 临近假期时会根据机场预告旅客数更加准确", "AI預測 · 臨近連假時會依機場預告旅客數更加準確"],
+  "가장 붐빌 때: {day} {hour}쯤": ["Busiest: around {hour} on {day}", "最も混む時間: {day} {hour}ごろ", "最拥挤: {day} {hour}左右", "最擁擠: {day} {hour}左右"],
+  "{holiday} 연휴 {name} 언제 가장 붐비나요?": ["When is {name} busiest over the {holiday} holiday?", "{holiday}連休、{name}はいつ一番混みますか？", "{holiday}假期{name}什么时候最拥挤？", "{holiday}連假{name}什麼時候最擁擠？"],
+  "AI 예측으로는 {day} {hour}쯤 출국장이 가장 붐빌 것으로 보여요. 이 시간대 비행기라면 평소보다 일찍 도착하세요.": ["Our AI forecast expects departures to be busiest around {hour} on {day}. If your flight is around then, arrive earlier than usual.", "AI予測では{day} {hour}ごろ出国場が最も混む見込みです。この時間帯の便なら普段より早めに到着してください。", "AI预测{day} {hour}左右出境大厅最拥挤。如果航班在这个时段，请比平时更早到达。", "AI預測{day} {hour}左右出境大廳最擁擠。若航班在這個時段，請比平時更早抵達。"],
+
   // ── 공휴일 (한국천문연구원 이름)
   "1월1일": ["New Year's Day", "元日", "元旦", "元旦"],
   설날: ["Seollal (Lunar New Year)", "ソルラル (旧正月)", "春节", "春節"],

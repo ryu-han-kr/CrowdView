@@ -23,6 +23,9 @@ const LUNAR: Record<"seollal" | "chuseok", Record<number, string>> = {
   chuseok: { 2026: "09-25", 2027: "09-15", 2028: "10-03", 2029: "09-22", 2030: "09-12" },
 };
 
+/** 설·추석 당일 (YYYY-MM-DD). 표에 없는 해면 undefined */
+export const lunarDay = (kind: "seollal" | "chuseok", year: number) => LUNAR[kind][year] && `${year}-${LUNAR[kind][year]}`;
+
 const DAYS: Record<string, Omit<KrDay, "id">> = {
   newyear: {
     msg: "새해 복 많이 받으세요!",
