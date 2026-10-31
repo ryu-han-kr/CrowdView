@@ -5,6 +5,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { aiCreate } from "./ai-quota";
 import { kv } from "./cache";
+import landmarks from "../data/korea/landmarks.json";
 import { SEOUL_AREAS } from "./seoul-areas";
 import { PLACES } from "./places";
 
@@ -18,11 +19,12 @@ export interface ResearchTarget {
   address: string;
 }
 
-/** 모을 대상: 장소(행사 제외) + 서울시 실시간 121곳 */
+/** 모을 대상: 장소(행사 제외) + 서울시 실시간 121곳 + 전국 명소 (landmarks.json) */
 export function researchTargets(): ResearchTarget[] {
   const places = PLACES.filter((p) => p.category !== "event").map((p) => ({ id: p.id, name: p.name, kind: p.category, address: p.address }));
   const areas = SEOUL_AREAS.map((a) => ({ id: `seoul-${a.code}`, name: a.name, kind: "seoul-area", address: "서울" }));
-  return [...places, ...areas];
+  const lms = (landmarks as { id: string; region: string; kind: string; n: { ko: string } }[]).map((l) => ({ id: `lm-${l.id}`, name: l.n.ko, kind: l.kind, address: l.region }));
+  return [...places, ...areas, ...lms];
 }
 
 const SYSTEM = `너는 한국 관광지 혼잡도 데이터 조사원이다. 한 장소가 언제 얼마나 붐비는지에 대한 공개된 사실을 웹 검색으로 모은다.
