@@ -12,19 +12,22 @@ on:
     branches: [main]
     paths-ignore: ["docs/**", "**/*.md", "photo/**"]
 
-# 집 데스크탑(Windows) 러너: PowerShell 스크립트 실행 정책에 막히지 않게 명령 프롬프트(cmd)로 실행
-defaults:
-  run:
-    shell: cmd
-
 jobs:
   # 어느 러너에서 돌릴지 (2초짜리라 데스크탑에서 돌아도 부담 없음)
+  # 10/31 경수님 '산업체에 들어가도 이어갈 수 있게': 저장소 변수 CI_RUNNER=hosted 이면 GitHub 서버(우분투)에서 돈다 — 집 PC가 꺼져 있어도 검사가 멈추지 않게.
+  # 바꾸기: gh variable set CI_RUNNER --body hosted (되돌리기: --body home 또는 변수 삭제). 무료 월 2,000분이라 수정이 적은 유지 모드용
   where:
-    runs-on: [self-hosted, crowdview]
+    runs-on: ${{ vars.CI_RUNNER == 'hosted' && 'ubuntu-latest' || fromJSON('["self-hosted","crowdview"]') }}
     outputs:
-      labels: ${{ steps.t.outputs.labels }}
+      labels: ${{ steps.h.outputs.labels || steps.t.outputs.labels }}
+      shell: ${{ steps.h.outputs.labels && 'bash' || 'cmd' }}
     steps:
+      - id: h
+        if: vars.CI_RUNNER == 'hosted'
+        shell: bash
+        run: echo 'labels="ubuntu-latest"' >> "$GITHUB_OUTPUT"
       - id: t
+        if: vars.CI_RUNNER != 'hosted'
         # 러너 PC의 스크립트 실행 정책에 막히지 않게 (10/30 데스크탑에서 막혔다)
         shell: powershell -NoProfile -ExecutionPolicy Bypass -File {0}
         run: |
@@ -35,6 +38,10 @@ jobs:
   check:
     needs: where
     runs-on: ${{ fromJSON(needs.where.outputs.labels) }}
+    # 집 데스크탑(Windows): PowerShell 스크립트 실행 정책에 막히지 않게 cmd, GitHub 서버면 bash
+    defaults:
+      run:
+        shell: ${{ needs.where.outputs.shell }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -52,6 +59,9 @@ jobs:
     needs: where
     runs-on: ${{ fromJSON(needs.where.outputs.labels) }}
     timeout-minutes: 25
+    defaults:
+      run:
+        shell: ${{ needs.where.outputs.shell }}
     # 공공데이터 대신 tests/fixtures/normal 자료로 빌드·실행 → 화면 사이 숫자까지 비교 (e2e/fixtures.spec.ts)
     env:
       DATA_FIXTURES: normal
@@ -63,7 +73,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: npx playwright install chromium webkit
+      # 리눅스(GitHub 서버)는 브라우저가 쓰는 시스템 라이브러리도 함께 설치
+      - run: npx playwright install ${{ runner.os == 'Linux' && '--with-deps' || '' }} chromium webkit
       - run: npx playwright test
       - if: failure()
         uses: actions/upload-artifact@v4
