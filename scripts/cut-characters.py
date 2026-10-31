@@ -12,6 +12,8 @@ POSES = ["base", "calm", "normal", "busy", "packed", "explore", "pick", "wait", 
 W, H, FOOT = 300, 400, 392
 TOP, SIDE = 4, 4  # 칸 위·양옆 최소 여백
 GROW = 3
+PAD = 60  # 칸 양옆으로 더 잘라 보는 폭
+NO_PAD = {"raccoon-alert"}  # 크게 막는 컷(GROW_MORE)은 넓히면 옆 칸 꼬리가 묻어 나온다
 GROW_MORE = {"raccoon-alert": 25}  # 얼굴 윤곽선이 끊겨 배경이 새는 컷
 CUT_BOTTOM = {"raccoon-alert": 380}  # 크게 막으면 이름표와 붙어서 미리 잘라 둠
 
@@ -97,6 +99,28 @@ def drop_side_bits(pic: Image.Image, reach: int = 60) -> Image.Image:
             ImageDraw.floodfill(mi, (x, y), 30)
     return Image.fromarray(a)
 
+def keep_own(pic: Image.Image, x0: int, x1: int) -> Image.Image:
+    """넓혀 자른 칸에서 내 그림만 남긴다: 칸 밖(넓힌 부분)에 걸친 덩어리마다 가로 중심이 원래 칸(x0~x1) 안이면 둔다.
+    칸 경계를 넘어간 내 그림(지도·꼬리)은 몸통과 이어져 있어 살고, 옆 칸에서 넘어온 조각은 중심이 칸 밖이라 지워진다.
+    이어짐은 진한 부분(알파 200 초과)으로만 본다 — 반투명 발밑 그림자로 보면 옆 칸 그림과 이어져 버린다"""
+    a = np.array(pic)
+    al = a[..., 3]
+    work = Image.fromarray(np.where(al > 200, 255, 0).astype(np.uint8)).copy()  # copy: 배열을 빌린 이미지는 floodfill이 안 먹음
+    outside = np.zeros(al.shape, bool)
+    outside[:, :x0] = outside[:, x1:] = True
+    while True:
+        ys, xs = np.nonzero((np.asarray(work) == 255) & outside)
+        if not len(ys): break
+        ImageDraw.floodfill(work, (int(xs[0]), int(ys[0])), 100)
+        part = np.asarray(work) == 100
+        if not (x0 <= np.nonzero(part)[1].mean() < x1):
+            a[part, 3] = 0
+        ImageDraw.floodfill(work, (int(xs[0]), int(ys[0])), 1)
+    # 칸 밖의 반투명 픽셀(그림자·가장자리)은 남은 진한 그림 바로 옆(4px)만 둔다
+    solid = Image.fromarray(((a[..., 3] > 200) * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(9))
+    a[outside & (a[..., 3] <= 200) & (np.asarray(solid) == 0), 3] = 0
+    return Image.fromarray(a)
+
 def main(src, out):
     os.makedirs(out, exist_ok=True)
     for f in os.listdir(src):
@@ -108,21 +132,27 @@ def main(src, out):
         pics = {}
         for r, (y0, y1) in enumerate([(0, int(sh * 0.512)), (int(sh * 0.512), sh)]):
             for c in range(5):
-                cell = im.crop((int(c * cw) + 2, y0, int((c + 1) * cw) - 2, y1))
+                # 10/31 경수님 '캐릭터 오른쪽 잘렸어': 지도·꼬리가 칸 경계를 넘는 컷이 있어 양옆 PAD만큼 넓혀 자르고 keep_own으로 옆 칸 조각을 지운다
                 key = f"{name}-{POSES[r * 5 + c]}"
+                pad = 0 if key in NO_PAD else PAD
+                left = max(0, int(c * cw) + 2 - pad)
+                cell = im.crop((left, y0, min(sw, int((c + 1) * cw) - 2 + pad), y1))
                 if key in CUT_BOTTOM: cell = cell.crop((0, 0, cell.width, CUT_BOTTOM[key]))
                 pic = cut(cell, GROW_MORE.get(key, GROW), key not in CUT_BOTTOM)
                 if not pic.getchannel("A").getbbox(): print("  빈 칸", name, r, c); continue
-                pic = drop_side_bits(pic)
+                pic = keep_own(pic, int(c * cw) + 2 - left, int((c + 1) * cw) - 2 - left) if pad else drop_side_bits(pic)
                 pics[key] = pic.crop(pic.getchannel("A").getbbox())
         # 10/26: 키 큰 포즈(귀·말풍선)가 400px 칸 위로 잘리던 것 → 그 캐릭터 포즈 전체를 같은 비율로 줄여 가장 큰 컷도 다 들어가게
         # (포즈끼리 크기가 같아 화면에서 바뀌어도 튀지 않는다)
-        k = min(1.0, min((FOOT - TOP) / p.height for p in pics.values()), min((W - 2 * SIDE) / p.width for p in pics.values()))
+        # 10/31: 폭은 같이 맞추지 않는다 — 지도를 다 살린 '탐색'처럼 넓은 컷 하나 때문에 모든 포즈가 20% 작아졌다. 폭이 넘치는 컷만 따로 줄인다
+        k = min(1.0, min((FOOT - TOP) / p.height for p in pics.values()))
         for key, body in pics.items():
-            if k < 1: body = body.resize((round(body.width * k), round(body.height * k)), Image.LANCZOS)
+            kk = min(k, (W - 2 * SIDE) / body.width)
+            if kk < 1: body = body.resize((round(body.width * kk), round(body.height * kk)), Image.LANCZOS)
             canvas = Image.new("RGBA", (W, H))
             canvas.paste(body, ((W - body.width) // 2, FOOT - body.height), body)
             canvas.save(os.path.join(out, f"{key}.png"))
         print(name, f"x{k:.2f}")
 
-main(sys.argv[1], sys.argv[2])
+if __name__ == "__main__":
+    main(sys.argv[1], sys.argv[2])

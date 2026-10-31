@@ -7429,5 +7429,580 @@
     "reason": "지붕의 곡선이 독특하나 어둡고 흑백이라 첫인상으로는 약합니다."
    }
   ]
+ },
+ "vaunce-daegu": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-31",
+  "photos": [
+   {
+    "src": "/api/gphoto/vaunce-daegu/31af921ab418",
+    "w": 4800,
+    "h": 3200,
+    "credit": "Google 지도 · 바운스 어드벤처&트램폴린파크 동대구신세계백화점센터",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/115529191553828146456",
+    "gname": "places/ChIJ5btql-zhZTURnFQEfGL0OVU/photos/AV-0GLfo3e-TyBs83V3yDbd7T5-Mbjl_7r93VDdPNnow1mNKkFjyKfptt9i7ML5dJ0uMVuP7mUDnZp7x0WaQaxfHE9jwwFtcS418X9Uxz5nncH86eXPnIiJCuVPBQKsN3-DtxFbqzAS6eW6HhxZk4SIERP3Yqip1zhqtp4BeE2XrkgnkHO1yOfGunuKcErZDdqHnrrUgeULfsnekqICW2MwpBI6-KaFGKCp0rz63cIgxYBm6GmzcFGJdcp3OEOObqeOQYyD1uu9-VsHl2i3nYqP8IEuXpLhbBDQQdVAyXm48deoAlmfUX7GA--P_NEmmIq4TUOfuOIHglFH8LqcyL0sAM6M-vbhPWfLaOCX1yLtiSEsuzyNxuXFE4AlL3oTqS0ZTY8eCbKG_CfPuE4uc9WYFOf-48ZY1eNmsQXj_cIpbckRq8w",
+    "alt": "컬러 매트가 있는 넓은 트램폴린존",
+    "score": 9,
+    "label": "트램폴린존",
+    "reason": "선명한 트램폴린 라인과 컬러 매트가 시원한 구도로 담겨 어떤 곳인지 바로 알 수 있습니다."
+   },
+   {
+    "src": "/api/gphoto/vaunce-daegu/ce9d2f4a4915",
+    "w": 4800,
+    "h": 3200,
+    "credit": "Google 지도 · 바운스 어드벤처&트램폴린파크 동대구신세계백화점센터",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/115529191553828146456",
+    "gname": "places/ChIJ5btql-zhZTURnFQEfGL0OVU/photos/AV-0GLf4s5rf8MtHK3NLj0Qw99c2u5l_1F40cNvNzhfyA6NWlLxtGtAOWmoewBXYMBrxuE0TDvMs0oWObpWaJ4IHi1F4Wb42qhupzQLBB8LjFq8COxoOLFAkxI1yAcrU83OATnmQZbY_McwVmvmIc86Oi1CZAj0kINf0-su0ecvnKsV7cJp2g4YTyyubb-6o9DcqOxTXEexTuikAJfHkpREM39CDlAfy9tTvsTpksdZ7rmVFNYuKkzvDE8bbvj7SFcZTb-EVxVFkQD3TaaFe9QDyrbREtiAEzb_RD6SEGF9kG9NlsFE54Cx46yOsG0aLSxQhmj1V_WR2p75ph6P4hrRH0zQCHBu1FYSUZmz6LDHFWTs5Bt1hsLsiumfzPbOvfxGf2onFWjrPqsKcGBRmOunzeovYxB2u7znJJyWBqU5wjqvkzw",
+    "alt": "핑크색 볼풀존",
+    "score": 8,
+    "label": "볼풀존",
+    "reason": "핑크 볼풀이 화면을 가득 채워 감성적이고 인스타그램에 올릴 만합니다."
+   },
+   {
+    "src": "/api/gphoto/vaunce-daegu/f6985a3fbc21",
+    "w": 4800,
+    "h": 3200,
+    "credit": "Google 지도 · 바운스 어드벤처&트램폴린파크 동대구신세계백화점센터",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/115529191553828146456",
+    "gname": "places/ChIJ5btql-zhZTURnFQEfGL0OVU/photos/AV-0GLdsP-jlWXww8eFYVqgKQXvO2n9zASRMgfZs3VZ6LuoKZRI1s4ORdMaS6RVXUhbaCWXS3zGthWmOXbaAuYQXEEmMnwnoCGei4gelfKtNLZOFSCR2A9eRCiuBCR6bDf3ffs6KgAnNsw00fjrMvOWyhsKV-NTdb2LXcW9Db3I0MOCPbXi_Ba5rN-T9IIh6gBbH3TQAJA9c5NFm06sVv8Jzs1Wiu3k_yCmTPD0Bf3CA3x-ntvzoTEA00ZuTPj6yBClRbZ1PwW-CWoJSh1jn6bEWQM9Jii7RB4KOtWArdlUrSUCIbJG5QHNkwbtGhIkbzfQioK2-OETCogJy8dvyVcHJFBOgJrwIAe6ECJCpHYDAjH0uTebwSOZrTl8TUoXKYDk5zguer-f7QPwHNbugjoax4629pSSEpBT4djpaMdwMI7N7BQ",
+    "alt": "폼 블록과 네트가 있는 정글짐 코스",
+    "score": 7,
+    "label": "정글짐 코스",
+    "reason": "컬러풀한 폼 블록과 네트 코스가 밝게 담겨 체험 놀이 공간의 느낌이 잘 전달됩니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/Dongdaegu_Intermodal_Centre.jpg/1920px-Dongdaegu_Intermodal_Centre.jpg",
+    "w": 4680,
+    "h": 3100,
+    "credit": "Minseong Kim / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Dongdaegu_Intermodal_Centre.jpg",
+    "alt": "푸른 하늘 아래 대구신세계 전경",
+    "score": 7,
+    "label": "대구신세계",
+    "reason": "맑은 파란 하늘 아래 대구신세계 건물이 선명하게 담겼습니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/vaunce-daegu/4614f8f7612a",
+    "w": 3000,
+    "h": 4000,
+    "credit": "Google 지도 · rimrim rim",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/100665795581992891533",
+    "gname": "places/ChIJ5btql-zhZTURnFQEfGL0OVU/photos/AV-0GLe2-m5qIOYAE8EV13P5eHdq1KTb4DOuHL4R4IJsy-2c7CoixzkBOYTD0OAdGMeIzSE36jQSEXxylzoRMz55S60U42m7njkP6_DryHJX1TLjMaSUjjh-Q5bFsh0yZBVCvLwHHq1KXzf6Ha05aUXXFUzH_EPHbli0PQ1OLRD5RQ7_2Kk2uoRYcXQz0CbPzkcNLHTs_6DhtcH_Q9B0LS_RZCAiPOinpS9sdUs4UiJqLClSExZYfH4OHbqZ1FNa3mRnKQW_gsLLroP5TCaKF-WZEo4R5BbeNA3Luj2TyEgqwCUb8bcAxcPNIr3n6eSMjo5FP_zw95ZB-BmXWALh2-YLxbfmFqCz3hnO0Jh6gDAsO5KgebwSuoI_WXO1PM8MvzxkYQD3_KRyKkfb7juXbqewGPczJB8k6z9ZavG37xddJUE-LA",
+    "alt": "클라이밍 월과 LED 월",
+    "score": 6,
+    "label": "멀티스포츠존",
+    "reason": "클라이밍 월과 LED 벽이 색감 있게 담겼지만 구도가 단순합니다."
+   },
+   {
+    "src": "/api/gphoto/vaunce-daegu/b97201e13ecb",
+    "w": 4800,
+    "h": 3199,
+    "credit": "Google 지도 · 바운스 어드벤처&트램폴린파크 동대구신세계백화점센터",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/115529191553828146456",
+    "gname": "places/ChIJ5btql-zhZTURnFQEfGL0OVU/photos/AV-0GLcO-rRs5br6L0WRPngyAO8yRT6rKgFSdH9Wcb-8SAwhhdk5rcsfROJXad6wiMPPl4QDLGYORgU08gKG5ZBAN4uJPPtikU2EziAZeQYT8KarE_S3LxIFMqCeC8AJPWIjfdAULJztbk4anWc4T4Sbt9pjKKXrL7qAMIAQqSC9ut0Vg2YmkSo6XGqyUpWpWoIhqhR8XCiXyZumOpO-i2hU7GxIiwg3xFYQaw1pfZgg1hd91hDwF6ymzSBUM0usuJ_rikM4l6gJWYAGu1V5pK-P-TEXFh_YJk4c1wcsa9CVcAhkCBWNozGVCtoJNE0G90re66Srcg0l96Irl0R5t_QIamvw6d-6i-NeyTDaWarh3OwPJMP68wPEwtUcz4Z4076oeiCvohAjNhNc7o97Mi-dCeBJPfZMUGa3L4Su_A-oVKELEA",
+    "alt": "바운스 입구와 발권 게이트",
+    "score": 5,
+    "reason": "VAUNCE 간판과 입구 게이트가 보이는 기록용 사진이라 매력도는 보통입니다."
+   },
+   {
+    "src": "/api/gphoto/vaunce-daegu/aa31d45bf8d2",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 송진우",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/115757105045337884550",
+    "gname": "places/ChIJ5btql-zhZTURnFQEfGL0OVU/photos/AV-0GLcS-4dlYMS1i_e1LAK2H6Vi8Z-TSVirm0KvWrgs-Ooh5-VcMha1uTpb_1Yk9apnPzRc9a3fPVzOiZyfxHFsfeBCA5qwzJbKTCHJ-DxLM7sbhMT00257-UiBhLStsyql7UlflD6hG_Jk35Y0TxPSXq2c94X_UoQougT3OtTDmHpD8UOSoy6ifwMMcdz1AkNIoyKietqmL563Resoxt0MVb1WArtQTr91BpWOvEPRQcOMRG5hx1T8hQwIULrKOqfYeBehMK4fMK3588xfpHY-ckm6gdyjzn_3Bg33w2ehRj5DZFgDbeg3qhvL2Lauv8pVTpAWLjbruflu1763FrEECEH0xsxvoqeVlksAJcRAFIjrUXK_n72h0-6THF3uBrt89c-zgltIQkLCHs6aIDwRrriFkp8",
+    "alt": "높은 곳 로프 코스에 오른 아이",
+    "score": 5,
+    "label": "정글짐 코스",
+    "reason": "높은 로프 코스에 도전하는 모습이 보이지만 화질과 구도가 평범합니다."
+   }
+  ]
+ },
+ "gimhae": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-31",
+  "photos": [
+   {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Air_Busan_A321-200_HL7763_at_Gimhae_Int%27l_Airport.jpg",
+    "w": 1600,
+    "h": 1067,
+    "credit": "Howon P. Seo / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Air_Busan_A321-200_HL7763_at_Gimhae_Int%27l_Airport.jpg",
+    "alt": "산을 배경으로 착륙하는 에어부산 비행기",
+    "score": 9,
+    "label": "활주로 비행기",
+    "reason": "푸른 하늘과 산을 배경으로 착륙하는 비행기가 선명하고 멋지다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1b/Gimhae_International_Airport.jpg/1920px-Gimhae_International_Airport.jpg",
+    "w": 1600,
+    "h": 1200,
+    "credit": "螺钉 / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gimhae_International_Airport.jpg",
+    "alt": "맑은 하늘 아래 관제탑과 경전철 공항역 전경",
+    "score": 7,
+    "label": "경전철 공항역",
+    "reason": "맑은 파란 하늘 아래 관제탑과 경전철 고가, 공항역이 한눈에 들어오는 밝은 전경이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Light_Rail_Gimhae_Int%27l_Airport_01.JPG/1920px-Light_Rail_Gimhae_Int%27l_Airport_01.JPG",
+    "w": 5472,
+    "h": 3648,
+    "credit": "Asacyan / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Light_Rail_Gimhae_Int%27l_Airport_01.JPG",
+    "alt": "맑은 하늘 아래 공항역 출입구",
+    "score": 7,
+    "label": "경전철 공항역",
+    "reason": "맑은 파란 하늘 아래 역 출입구가 선명하고 구도가 좋다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/96/1805896.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "국내선 청사 앞에 줄지어 선 택시",
+    "score": 6,
+    "label": "국내선 청사",
+    "reason": "청사 입구와 택시가 보이는 선명한 사진이나 하늘이 하얗게 날아갔다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/95/1805895.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "소나무와 함께 보이는 국내선 청사",
+    "score": 6,
+    "label": "국내선 청사",
+    "reason": "소나무와 꽃밭이 어우러진 청사 풍경이지만 하늘이 흐리다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/93/1805893.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "국내선 청사와 관제탑, 택시들",
+    "score": 6,
+    "label": "국내선 청사",
+    "reason": "국내선 청사와 관제탑이 한 화면에 담겼으나 하늘이 흐리다."
+   },
+   {
+    "src": "/api/gphoto/gimhae/5073f4722023",
+    "w": 2992,
+    "h": 2992,
+    "credit": "Google 지도 · 박지영",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/100779497219547501146",
+    "gname": "places/ChIJNRgNkqDBaDUR0_sGfv6CIz0/photos/AV-0GLcQUnnwEq8QC5clneDS16fY48PQvRzA4OvloMyREngzvw5h2pAWA2425DRM5KTXVZfnbiBmO1V-mJsT_O5DGZQpZVl-SIpY9xVGijDamh8-dK-cHYDmPzpTRy0uVsZOg6vAQ-ddqBG0qaDChGsVvQQrcWZBw97Yvesp_qXjCveFI7WRizcYm9ssBpyE82f9gpPhBICHRRVUXpVonFPEGWGb01rSa8bn_PEOGUSFfTs3uURNk1r1B3z2Y3Ht0BRBHfdORi4VZjSK3h2AhhwQnZZhSx8kOQ91UYNbJsrm45hqjm-jPlLanDu_M0KmEk5hpmAWRMDxsFhJYTIYEbYhbQsBAS56KBC8nGHQDQ_mcHIUgPfjhB2iBVBgEXnSg259tlGl0xmwzx6lt2ywtN0HiHcvQS7s6mshTmiK1iVP5gpt6w",
+    "alt": "공항 천장의 나무 장식 조형물",
+    "score": 6,
+    "reason": "나무 막대 조형 샹들리에가 감성적인 실내 사진이다."
+   },
+   {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Gimhae_Int%27l_Airport_%28Busan%29_Domestic_Terminal_-_panoramio.jpg",
+    "w": 968,
+    "h": 1296,
+    "credit": "JiroS. / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gimhae_Int%27l_Airport_(Busan)_Domestic_Terminal_-_panoramio.jpg",
+    "alt": "비행기 날개 너머 활주로의 항공기",
+    "score": 6,
+    "label": "활주로 비행기",
+    "reason": "비행기 창밖으로 날개와 비행기가 보이는 맑은 날 사진이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Busan-Gimhae_Light_Rail_Transit_3.jpg/1920px-Busan-Gimhae_Light_Rail_Transit_3.jpg",
+    "w": 3648,
+    "h": 2432,
+    "credit": "Tom Page / Wikimedia Commons",
+    "license": "CC BY-SA 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Busan-Gimhae_Light_Rail_Transit_3.jpg",
+    "alt": "공항역에 들어선 경전철 열차",
+    "score": 6,
+    "label": "경전철 공항역",
+    "reason": "경전철 열차와 역사가 함께 담겼지만 하늘이 흐리다."
+   },
+   {
+    "src": "https://tong.visitkorea.or.kr/cms2/website/97/1805897.jpg",
+    "w": 1280,
+    "h": 853,
+    "credit": "한국관광공사 · 이범수",
+    "license": "공공누리 제1유형",
+    "alt": "김해공항 청사 외관과 셔틀버스",
+    "score": 5,
+    "label": "국내선 청사",
+    "reason": "김해 공항 간판이 보이지만 흐릿한 하늘과 평범한 구도가 아쉽다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Gimhae_International_Airport_Departure_Hall.jpg/1920px-Gimhae_International_Airport_Departure_Hall.jpg",
+    "w": 1600,
+    "h": 1067,
+    "credit": "Minseong Kim / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gimhae_International_Airport_Departure_Hall.jpg",
+    "alt": "사람들로 붐비는 공항 로비",
+    "score": 5,
+    "reason": "붐비는 활기는 있으나 사람이 많고 산만하다."
+   },
+   {
+    "src": "/api/gphoto/gimhae/711dd67f0e74",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Google 지도 · Chang-Yong, Park",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/101578857776130363626",
+    "gname": "places/ChIJNRgNkqDBaDUR0_sGfv6CIz0/photos/AV-0GLeRBL8DixhorDzR0KktFiGfW49EyaVpfyorTgI-ZXDwxhe5PQutltcou7K2gk0vDGguGj9ePgem1e-qphar-NS-lQ7vS5TTV204YmX4xr2bz9F7SXVG2cV60U5zPSpQ-LRrepcRXk6ra0WCEe2tFm_BV7m0caukN-hAGaJnH0rZElRQm5wk7FqMje4NTowU9gC2FKyQiX3E9hc3tJDBuz2Hn_tjQkja176t39PDc5VtWOOGfPo57-r1h22ARoa9UOFW1Iml0RHo2tWEBPjb3Nepj7AgrhJX6YKIW12Uonpeikk3KHTBvjyz-rL3J6SaZmUrDKQVPndS5ZNo6QRL5IepzhyTKVWVj56DGzzOUxOLS65yIfbbP61fcnd-KD0zPXF2fjAFKKx7337XyQAETm0XVlc",
+    "alt": "2030 부산엑스포 조형물과 마스코트",
+    "score": 5,
+    "reason": "부산엑스포 조형물과 마스코트가 귀엽지만 글자가 크다."
+   },
+   {
+    "src": "/api/gphoto/gimhae/c6f0b999cb5c",
+    "w": 2992,
+    "h": 2992,
+    "credit": "Google 지도 · 박지영",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/100779497219547501146",
+    "gname": "places/ChIJNRgNkqDBaDUR0_sGfv6CIz0/photos/AV-0GLfE6zpPiq6L0ebYca84Y_4EbjYmXkj4PzKfg_cJhPXXwzqCrDmJVvESKNu38-1zj3b4TRJiiSXIrRqlhU9PUmKT6n8-i-tYJSuAa1AmAuCEYkzmE5_EdNzgvulVbBgIcfu7XsjFxEswYsyPI4mI8rM-_ajh2SqgjgOTrP9-9G0SzKBH7FUZ69hslMeIrqhrgJtWkdlsm97n2ePFA21QHBvBKzSK147OeUzcKVlTqPNvOFyauci9XjJR3oWVtNRdUwqJLd94nLnvovb4u8hcweMZV878M1vSVzOLDnY8qRbYVsxIc-iNjQW5WAu4Vq6aDi0awTJpDbPhls-b9a3TZRRWYX6OyE22jJBJRsbbiRZVkM-490UFj0nc1LdCneUWCgBwP7rd6F57hPvYCfElLpTtzZvBvQg_V9Aqt11v-4UR",
+    "alt": "갈매기 캐릭터 상점 입구",
+    "score": 5,
+    "reason": "갈매기 상점이 귀엽지만 글자가 크다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Gimhae_international_airport_International_terminal_Departure_hall_20180403_121439.jpg/1920px-Gimhae_international_airport_International_terminal_Departure_hall_20180403_121439.jpg",
+    "w": 4032,
+    "h": 2268,
+    "credit": "LERK / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gimhae_international_airport_International_terminal_Departure_hall_20180403_121439.jpg",
+    "alt": "사람들이 오가는 공항 출발 홀",
+    "score": 5,
+    "reason": "넓은 출발 홀에 활기가 있지만 평범하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Gimhae_Airport_lightrail_terminal.jpg/1920px-Gimhae_Airport_lightrail_terminal.jpg",
+    "w": 3264,
+    "h": 2448,
+    "credit": "Michiel1972 / Wikimedia Commons",
+    "license": "CC BY-SA 3.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Gimhae_Airport_lightrail_terminal.jpg",
+    "alt": "경전철 공항역 외관",
+    "score": 5,
+    "label": "경전철 공항역",
+    "reason": "경전철 공항역 외관이 잘 보이지만 흐린 날이다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Airport_Gimhae_5.jpg/1920px-Airport_Gimhae_5.jpg",
+    "w": 3328,
+    "h": 1872,
+    "credit": "Brücke-Osteuropa / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:Airport_Gimhae_5.jpg",
+    "alt": "도로 너머 보이는 경전철 공항역",
+    "score": 5,
+    "label": "경전철 공항역",
+    "reason": "공항역 전체가 보이나 하늘이 뿌옇다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/Air_Busan_B737-58E_%28HL7233%29_taxiing_at_Gimhae_International_Airport.jpg/1920px-Air_Busan_B737-58E_%28HL7233%29_taxiing_at_Gimhae_International_Airport.jpg",
+    "w": 2540,
+    "h": 1364,
+    "credit": "Brücke-Osteuropa / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:Air_Busan_B737-58E_(HL7233)_taxiing_at_Gimhae_International_Airport.jpg",
+    "alt": "활주로의 에어부산 비행기",
+    "score": 5,
+    "label": "활주로 비행기",
+    "reason": "에어부산 항공기가 선명하나 하늘이 흐리다."
+   }
+  ]
+ },
+ "smob-suwon": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-31",
+  "photos": [
+   {
+    "src": "/api/gphoto/smob-suwon/5fce8519b564",
+    "w": 1536,
+    "h": 2048,
+    "credit": "Google 지도 · Shin Chan 1990",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/118202006126301201065",
+    "gname": "places/ChIJYYkwXABDezURkToDh0TeYaw/photos/AV-0GLcJ9zqR3Mq_CXVmaInCHDj25WExTWvC_dFr5z16ZSaCdccNO9MRa3vQYbpN5CHHPKgW95DqCePmxxwws_siwE1rFXFuTICVjq9UxkFR6QPsUBiiCaHMFLvzopVcy36BgwNFfRRNIxTYZJx8AG9JWknZNY27-vxA-kkxBsjq5YiVBPQht5yiU4dUfXakwMZaV8UjUhMIBaIVGK1rx_Ph4t-_6ZOQidTgilAAXVOaansWTaX-Cs3IQU7lnZwDBqw3sTZPR9Gi-5XWmycur2woiO-tCCLGMtxL4fcjHpa6H8wW5OP9tfSn-R2Ou7uzD-fmYYaSU7x3cTpFBmNUa8VaXz6HsRmPqijAIyl3McEzq08hpqjp2BI71hCivsHhrZ8IeRmWpHt10ZIsx8O1tWdabzJGpgJEQkZkhqE6UNyhZkmE",
+    "alt": "핑크 벽과 슬라이드가 있는 스몹 실내",
+    "score": 9,
+    "label": "핑크 인테리어",
+    "reason": "핑크빛 벽면과 버티컬 슬라이드, 네온 조명 천장이 어우러져 이곳의 분위기가 한눈에 보이는 감각적인 사진이다."
+   },
+   {
+    "src": "/api/gphoto/smob-suwon/c57605bd2b1d",
+    "w": 2700,
+    "h": 4800,
+    "credit": "Google 지도 · 렛츠 (Lets)",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/105141676584788243099",
+    "gname": "places/ChIJYYkwXABDezURkToDh0TeYaw/photos/AV-0GLeSf0mjcKIpxx-AJqVQOIqzOk7TCH6AjHypFkO6qk8ZxNC72V3GPL_95QvaL2h-fCDtMLMFMUmG9TcBKwi19WZo7XGqHKxpVBcJNFXuf8iJavPQO2y9By-5_dH2vFE9AWQShsdSqKbV-8YfWPOD-vZC-ROePshFUFgPC-rpu5IbLMyO0jpZsDFn-ydKy-YFhGDLa3CB2Om6Mqs4W_pGRYzH086qszWo069NatM6eaoPGfU46xTP94hl_uvSLLt7KU5oAUkHp7XLAEo0pNfHMzbe5U3_XZvJe54tMr4SFqrNhTm9Jqtpuyog57AuJ2cRIs6motFvT38kRDXpgE6GT1Jp_zhhxLyLzJjGL_IwXyYvYL0_6cliXFnqreNHPcul06G_Twz2TyY4Kb8A-Jsw3-a54rhH7LUyPOprGhs9Q7ihoQ",
+    "alt": "핑크 벽에 둘러싸인 형광 트램폴린존",
+    "score": 8,
+    "label": "트램폴린",
+    "reason": "형광 초록 트램폴린과 핑크 벽, 캐릭터가 어우러져 이곳의 개성이 잘 드러나지만 사진이 다소 세로로 길고 날짜 워터마크가 있다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/smob-suwon/1238994a75ff",
+    "w": 800,
+    "h": 1067,
+    "credit": "Google 지도 · may",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/111968735297766294400",
+    "gname": "places/ChIJYYkwXABDezURkToDh0TeYaw/photos/AV-0GLfP4lz4IMgBav8CWbrAeUP_SR1kTHR4gFooVuXnl3JwG7X9vmv71QRzQ03UplaFSWF0iV7EPAR0luSwOtlINX5ULAqhhGcJUcrlJHurOsRf7nBw8fWwl1Rl2Qz5UGGN1jHV4feVZLSEHxaJPfpjQy_Ntc2-SAOqOOBqToJV5PUYF0e8QZ3GN97qxQm-IUEcF7lFM7H_Ryl788uJzbwJG8CpJKQMeXevjLWtuKL8Jeqdsg6qSLQ0RIuV-nHvmPHn3tz7WtWA9fwS_Yz_bGJQP2AYv0QjD2jhQfUFSEN7AQvYA9KvNuZq3GZfHIFpMSet1ImJyUDnu6Eq6CU5V7orhmOjIzvGCId_bwHqExen1slsjY_gL1vbtI4_J41qVkLg9b4JESUIPcyuq1TmFHVBVE5ogQcjdPWQMg2ujxToGK-F",
+    "alt": "빨강 파랑 벽의 농구 게임 코너",
+    "score": 6,
+    "reason": "빨강과 파랑 벽의 농구 골대가 색감은 강렬하지만 텅 비어 있고 상단 글자가 눈에 띈다."
+   },
+   {
+    "src": "/api/gphoto/smob-suwon/5b62404baa26",
+    "w": 2700,
+    "h": 4800,
+    "credit": "Google 지도 · 렛츠 (Lets)",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/105141676584788243099",
+    "gname": "places/ChIJYYkwXABDezURkToDh0TeYaw/photos/AV-0GLfjaIZyIhNhg9cnV9_WeVsT_uOzYbTUrDACbyjyix8ZSV85ECDS44rmrZKp2RioiIGhqaFdHd8i9ZWSb2I1zkicfwHA6osALte9xuPFAhUW-Ub4iwWwf0dGXytNR2NSy2AxzsJaOofBPv-5G13q5g6ajuxnWT5XfUw1CYe_Iajj5lYI_Zu36RadcAZ2Ha_DNPxiVlfUGzw7rbweOWjwwiQvEIWMgl-PWPXQY88AnO9IfvM2ufaFfnRYA2jCdyqDCCyG9PLBpJmj9uCiaXHMXOmKNNZPXwz-35Wl6U7q3Zz7GksilNjJaTpZjUk2tEy2UHuJqrYuLJbwQwBLOeTCzybJv5hvZmAdqEoVeca6caO5F7_Lv5oWKZJ9ncm1GoByTh8GgGHNHlTubCHDkRAmpUqPM-Mpkb4dA5qmAC_tkjCE_w",
+    "alt": "핑크팀 파랑팀 농구 점수판",
+    "score": 5,
+    "reason": "농구 게임 점수판이 보이지만 앵글이 기울고 어두워 활기가 부족하다."
+   }
+  ]
+ },
+ "mokdong-icerink": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-31",
+  "photos": [
+   {
+    "src": "/api/gphoto/mokdong-icerink/058e44b006b2",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 목동아이스링크",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/115021771919446284325",
+    "gname": "places/ChIJtYwkeB2ffDUR9LEZdklM5dQ/photos/AV-0GLcyedY0Klj5PaGPRd4WHHlCB6QomsNB5gnNGYeIjWr7I4q3bsk92KrpTHc46O6tRqX_ClTVnJCKUdHCTC5fDF8vfW8RF5yKpp4000v589H1qx7PN7FqgyfRVMn8N5T1-xhEAb6hrROjZDHMBsyu75QLdT-a1Rt7vkgXEYE9ywfFM6v5Cpe8Wh-0TWVq3spAAP998zHAg-jBupftF-58obvN06xnujxJOdgUYphFBRqIgXp_3Lq6pAIjfIU9AdkEbtTrc0hcIam0_PXDVQlrQhP5XROlQHcth5Fbq4z3qxAU0_GlF2sg3CW_Fh0LvOzbq2SC-qjRKGuP7i3KDr1TUgxvWdT2ZTk8eJur2H5F6s3qucNtLDxnvhiB5C7ee2pwxzSgSYpdFSdgGI8gG7KsOrU6HA",
+    "alt": "관중이 가득한 쇼트트랙 대회 빙상장 전경",
+    "score": 8,
+    "label": "쇼트트랙 대회",
+    "reason": "관중석에서 내려다본 빙상장 전경과 만국기 장식이 대회 열기를 한눈에 보여 줍니다."
+   },
+   {
+    "src": "/api/gphoto/mokdong-icerink/5f3da85dc981",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · Jaeho Kim",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/117059707380673740483",
+    "gname": "places/ChIJtYwkeB2ffDUR9LEZdklM5dQ/photos/AV-0GLdp1droYyIYSOfBehHAeaBGhA1EDJhU73Pm0kUV0gR5qHfUMhujz40oLuKytlatxU0zkew83aSaDG80vuS-gFL_x0wpF6COINQkesLqng2nmXrU8ZKK_unKbyYMXXRLwJERYKMM3qnvJ62R17dvLjlyyvKAcHrbSxepfxYy9NF3T74EPwkQ6UUE-Lhdd_0tIjGD4Q5eWz0XFOkKNhScU9OyD3Gge-tx9d0tcVLB-3IVFlH5SZa12RXT4u2Bt7ZulsSk7_sCmsjxur3VViZHLzR0uJTvdGISgdR1e3Vl2Zhyxex7RtZap7EHWGFcZZWvJiqGdlVI3zR-JVFNVTulAi8scA83ae4vTK0RcZk5ataX05kHwaJOpjfRDitA6tahM68H3rvuULIjJrPnjHR1ZD37HekY",
+    "alt": "조명 아래 빙판 위 아이스쇼 공연",
+    "score": 8,
+    "label": "피겨 스케이팅",
+    "reason": "푸른 조명과 불꽃 연출 속에서 스케이터들이 군무를 펼치는 감성적인 장면입니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/mokdong-icerink/2ce9771f74ee",
+    "w": 4032,
+    "h": 2268,
+    "credit": "Google 지도 · 이승엽",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/104449022886730214885",
+    "gname": "places/ChIJtYwkeB2ffDUR9LEZdklM5dQ/photos/AV-0GLfG_YgjNtxUJtC9MZRLiIdqUNzBH6ByvJkogJIRFI9h9KlGncXlyl6H3brO6x2qBwi___fGmSwakKyQiwTj8fKCiRXLXbwQXEQwB4cQtdGdgq_saIZDkK-qFo4pRGVq_fLPdGc2P32J1BZbJdfySgZFEqWUfk9MSBmZdCjdkBnWeBSzydjfiHIWGuV3yN3xapX8cX5CnzwDzkz8JzzrCVsD6N7jDTkdUhfxZj6rOI7X8zGqJ-4kvO0_4xnkvbz-Oiin_Q9tSiVy-XhyBskD2lJ7pbmtIBUt7jvteWpDq_AWUCvRzlSL27M6X48dRTuz7CT0TAEEKA4P-Ihn8wyrWWPsXXzvUXjm_mVf156iC_mgPK-l5mLzxkH3KNO2GVL2OZJc_Q2WEJRVeU0zwiZgZ5Lvoo-PVl4",
+    "alt": "빙판 옆 벤치의 아이스하키 선수들",
+    "score": 6,
+    "label": "아이스하키 경기",
+    "reason": "하키 선수들이 벤치에서 경기를 지켜보는 모습이 생생하지만 조금 어둡습니다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Mokdong_Stadium3.JPG/1920px-Mokdong_Stadium3.JPG",
+    "w": 3264,
+    "h": 2448,
+    "credit": "WAKA77 / Wikimedia Commons",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:Mokdong_Stadium3.JPG",
+    "alt": "뿌연 하늘 아래 목동운동장 전경",
+    "score": 5,
+    "label": "목동운동장 전경",
+    "reason": "운동장 전체가 보이지만 하늘이 뿌옇고 휑한 느낌입니다."
+   },
+   {
+    "src": "https://upload.wikimedia.org/wikipedia/commons/c/c4/Nexen_Heroes_Mokdong.jpg",
+    "w": 1600,
+    "h": 1063,
+    "credit": "UNC - CFC - USFK from Seoul, Republic of Korea / Wikimedia Commons",
+    "license": "CC BY 2.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Nexen_Heroes_Mokdong.jpg",
+    "alt": "낮 시간 야구장 전경",
+    "score": 5,
+    "label": "목동운동장 전경",
+    "reason": "낮 야구장이 선명하게 보이지만 하늘이 하얗게 날아가 아쉽습니다."
+   }
+  ]
+ },
+ "shooting-bowling-goyang": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-31",
+  "photos": [
+   {
+    "src": "/api/gphoto/shooting-bowling-goyang/51dfe9b4da13",
+    "w": 4800,
+    "h": 3600,
+    "credit": "Google 지도 · 슈팅볼링클럽 스타필드고양점",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/102389456675240846878",
+    "gname": "places/ChIJUfyc7DGXfDURPWWb0W4otr4/photos/AV-0GLdkeEGy2LwxPUFzoTkm1fZeFRkGDielvLoGl9xFyXLqq9Xh8mVl5vU1yem22nvWX5Q0QMnb9XPKDMyxOermLyvsPjSO1xi-k6n6TZ6KKc7VZOMzsSyjukGeXmsFA07bvxF13yir8RfoIvXpTCbWi2AnskSN5Bx0aeIwQDuEhBwqOoKA_t6x-BGv1u0oSdnXkaQAVsXrWMxp6WWgVICt-vI14UQd0nueUhz1Tmb952Uza83mNo-vSGJDH6t-xPkkt1YRvomYD3NI2OlRXTbFA7DvnCrd_3WNlYQmhCFKdyO1PtiR75eadSHJOvQIwIN0ocep7PZEqbxaurI1cBNte8FbW3DuhgPZtd46VvnfzeSmDRVVRZbiaBzt6ZuUilDBkPVG1iGnDbMR3drMNUSrjJlJC29qeHaTkpiSrI-wkbv4QQ",
+    "alt": "네온 간판과 VW 버스가 있는 입구",
+    "score": 9,
+    "reason": "네온 간판과 빈티지 VW 버스가 있어 어떤 곳인지 바로 설명되고 인스타 감성도 좋다."
+   },
+   {
+    "src": "/api/gphoto/shooting-bowling-goyang/7bc07262d786",
+    "w": 4800,
+    "h": 3599,
+    "credit": "Google 지도 · 슈팅볼링클럽 스타필드고양점",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/102389456675240846878",
+    "gname": "places/ChIJUfyc7DGXfDURPWWb0W4otr4/photos/AV-0GLftmsPSGLNuIfTlPf1qMrFSM5nPbItxE0FmOHw19Jk05Mo6ovOX2DsKPjaLq5RPXPE3YXOlBZQ0xgQ2nL-JR09g3d2xo1LGW3_B7-Uqsjd6FG3l6lutsIfPWlYv_8Vn2y_YFWj1T14t58J8PmtjdR-L5CJXhV1OEODgW22EV5U6YUJRBkrNDaLVF5KiRUir7jaEricMT5ph3JUi_j54Vah6o6GCUH1JApJqBhuNo4Wl8L_m6ygxiXJGpn-ut-jB4FktDXkJe4Xea9Ohi78-2teGEM8XYnzOtTF3DoNOpNgJMh3d8MZFpUiPpqgScduGFgOlpgB0tguJjV3xGsw6N-MB__YxEAKhRZk9M8RFh7kpfG9wS2Rivb0ad13l-7OMFKtB851hIo-PXTeJrpKeCu-eX2nmm-drs3iazuwM_aJDSA",
+    "alt": "컬러풀한 소파가 놓인 볼링 레인",
+    "score": 9,
+    "label": "볼링 레인",
+    "reason": "알록달록한 소파와 밝은 레인이 한눈에 들어와 감성적이고 놀거리가 바로 전달된다."
+   },
+   {
+    "src": "/api/gphoto/shooting-bowling-goyang/4b227a2da948",
+    "w": 4800,
+    "h": 3600,
+    "credit": "Google 지도 · 슈팅볼링클럽 스타필드고양점",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/102389456675240846878",
+    "gname": "places/ChIJUfyc7DGXfDURPWWb0W4otr4/photos/AV-0GLe0YNxVToVjvAtCjLAJ1M1-7jDOCde_5qCeH4BrvC6EuZvxh98UImfRtFuWKtcYVqmLc9LP7LW_ZE2L2yxKP02-CH9StKIR2pVvWkBq47FH-J9fcK1c5oZfQNaFOlzHc6TuYr27b-4mYDW-aHsekPHTAt0r5sCtHi5TNdOQXCpgOKxX7niNnf0dQx5dLKoYLb1_mzEtFI_clYiAjAU08C-Yevj8gC2bYGz7_DuabBPEuklk4ep72y0O6fPbJ-Yxmm02NbFQ3A1eYWvSN5myBdGgq-TSo24idP6jUpXWKcFWjy9YYbamk3j0Wf6v9fmBtcVkP286wCr2ThwtedGXkC9cnaoGOhyNFxvq49I69S_u-a8T7ZoBpGW-lPRjTf6TvLTMrVrXRwjRPWKu2PUP-lTsVbf_ombiZKChp9Q8mX2uXg",
+    "alt": "조명이 켜진 깔끔한 볼링 레인",
+    "score": 8,
+    "label": "볼링 레인",
+    "reason": "깨끗한 우드 레인이 정면 구도로 선명하게 담겼지만 사람이 없어 활기는 덜하다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/shooting-bowling-goyang/e24fbd3e5c89",
+    "w": 3600,
+    "h": 4800,
+    "credit": "Google 지도 · 슈팅볼링클럽 스타필드고양점",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/102389456675240846878",
+    "gname": "places/ChIJUfyc7DGXfDURPWWb0W4otr4/photos/AV-0GLeKvoK4bBUNSAJ9Gn8ZD72uQzsOW8OVAu23Aw_RdHz834SMNJNWg9dHjRZUbom55USN4XHcRlvcyx-3lRaBggsgdWF552a6Yb8Dh8TDeZazQPGek9gp0hsqwvg0oC7j2SIs3_Ue1YVkCB2nbRbFLMB3XXyxa7CPAQvMx4_WqlerDJnbML_plHsnpqhe6aPMuFKQQYoJvSAQdIpHOj3wwUfkmi169gPGYcVQeGb2nJU7QM1ml0lUwtMJNCUsQVKg_UbcH3htXyezbxNOP_zOo6Ya5T7BLKE5_qVQk-1bA3MysPnM0cMb13lbTfEHihlGsiNW4tTxgU5aHT7UE-_r97NMkkURZZT2IxJWDACA53GpTNxnlr0PUgq9n5eMcyUhAG-ESpZb9oC_VHKDvDQZu-iIyoNHNCIu_hr9sMKSSJks",
+    "alt": "사람들이 볼링을 즐기는 실내",
+    "score": 6,
+    "label": "볼링 레인",
+    "reason": "사람들이 즐기는 활기는 있으나 어둡고 다소 산만하다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/2025-09-17_13.34.52_%EC%8A%A4%ED%83%80%ED%95%84%EB%93%9C_%EA%B3%A0%EC%96%91.jpg/1920px-2025-09-17_13.34.52_%EC%8A%A4%ED%83%80%ED%95%84%EB%93%9C_%EA%B3%A0%EC%96%91.jpg",
+    "w": 5712,
+    "h": 4284,
+    "credit": "Choikwangmo25 / Wikimedia Commons",
+    "license": "CC0",
+    "page": "https://commons.wikimedia.org/wiki/File:2025-09-17_13.34.52_%EC%8A%A4%ED%83%80%ED%95%84%EB%93%9C_%EA%B3%A0%EC%96%91.jpg",
+    "alt": "스타필드 가구 아울렛 매장",
+    "score": 5,
+    "label": "스타필드 고양",
+    "reason": "밝고 넓은 쇼핑몰 내부가 보이지만 볼링클럽을 설명하지 못한다."
+   }
+  ]
+ },
+ "theclimb-magok": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-31",
+  "photos": [
+   {
+    "src": "/api/gphoto/theclimb-magok/a0beb77e93a6",
+    "w": 2362,
+    "h": 1875,
+    "credit": "Google 지도 · kang kang",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107641118937651317189",
+    "gname": "places/ChIJCfsfrmWcfDURzhXWbjiJAP4/photos/AV-0GLe8HAxSk-kllYSFDfcQxUtuH9fqi5rzxH5f1Lbb7J121Zb9wfl8y63Lj_dNI4ufjds6h3JrXqYHZPv98k5v5eZoK45E0UpMnDReNO16nAwqhTlaTD8V3CRzAYcwRdd1IiT_qX3J8xwln11Cloz4Or4mzU8LSAcFXRdPGoaCcEvNvxVz6u0gpe2NkOqUxdhrORgm8qT6nAbGXrSlaFoFU0-ZV_G_0T1bFB0VVQ-Qk7bAtXxJEbZ9T3P4c3jSzNuBFlKsdEXulvraI7KLDJDs20SF3kfbqXUrh5GZt8y-jLI8dvi-KoYvAs_FXSZgysOdZPRMN0vphXUJ9lvnIdVFW6R-RHga3OXxYMxq9C0Ie6dVLCKQKHVtqfEvhs9wAiWj8BGI7phIQsUxico_R85RPrqHRpk0eaJaXe8EAG84Eq28dA",
+    "alt": "컬러풀한 홀드가 가득한 볼더링 벽",
+    "score": 9,
+    "label": "안쪽 클라이밍 벽",
+    "reason": "알록달록한 홀드가 가득한 넓은 볼더링 벽과 활기찬 분위기가 한눈에 클라이밍장임을 보여 준다."
+   },
+   {
+    "src": "/api/gphoto/theclimb-magok/ebe9ae5e6f9a",
+    "w": 2500,
+    "h": 2621,
+    "credit": "Google 지도 · kang kang",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107641118937651317189",
+    "gname": "places/ChIJCfsfrmWcfDURzhXWbjiJAP4/photos/AV-0GLf2GaGNViXXAInk_5rAZQZFhOYYefqXOQBBFgXYOQoXSMVVtfD5UPtzA0Tm6nJs3ut5ncBvYFQ2-dta3zxrNM835sas4_y3L-NdSioi-3W1DGk1gI9zvl6rR2ljMssiogSYpRrHt6CZdz9ODlHHPPxsAjAFQzoZ6-bubNo4sF4wIwvL5_aLOeWgmtwxT0QS4d5OGRtYYvV8Zkm7udY1Ammm7nhmhkOftJIevoZOueNJVw5klNWkBsnctVewqp3ULIlrxY691Ip1Lb7cLhwUU8HJn4tey9_4YutIhTWek1ZqE_yVIK2SdIKEhLTJYgE0j5DZwJr3BlMK-0_y97hbOoMt2ZcfMH0sEGUZCMLWkrqwKZnW5gXf9WizKmc-9wHG3CdYGf7crTpjhZO-aqB-PVli9hz1GqILSdYY0DfjE5h1uA",
+    "alt": "다채로운 홀드의 클라이밍 벽 근접",
+    "score": 8,
+    "label": "안쪽 클라이밍 벽",
+    "reason": "다양한 색과 모양의 홀드를 선명하게 크게 담아 클라이밍 벽의 매력이 잘 전달된다."
+   },
+   {
+    "src": "/api/gphoto/theclimb-magok/2606bcce454c",
+    "w": 4000,
+    "h": 3000,
+    "credit": "Google 지도 · bruni",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/103285746237948973644",
+    "gname": "places/ChIJCfsfrmWcfDURzhXWbjiJAP4/photos/AV-0GLcNMsZxlrRAbaj8Vigk3YHd8_SMLi-GPSB5zo_VTcAwbExs-j8tCugYhnG_h2JbN8T_yTX4MGPVupb7ap1R0OdQlxokDDodJk9OZdqO1lDT8sp7GKLjUDMZmXkTRDia58DpJLwUhQCqXfqgB6ig91qI-yyuROlrrdUxERfYsetHorAOYAHUMKJGefn8DzBhTyScMA_uTMlRlgfMKzsyN7Kb28wBgqGNkFrFW-U9phKh5K_yoDrdcZDuksE35KIV15y9yTQpd2Tdoog0U2Zb5T9KpvZJ9Z1yIcX14_r2pYwEZ6IIkaNmSjGro7e5lMIhBPMfk5AbO4vE38xgcxsv70D6Xkt_N_tG85uRhd_N1yyho02H3NWCJSeOZsYPaP2l3rsyqXqTrHCcVD41mql5MxnGNVU",
+    "alt": "햇살 가득한 창가 휴게공간",
+    "score": 8,
+    "label": "휴게공간",
+    "reason": "큰 창으로 햇살이 들어오고 초록 식물이 걸린 따뜻한 감성의 휴게공간이다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/theclimb-magok/18f70a4f5d23",
+    "w": 1696,
+    "h": 1875,
+    "credit": "Google 지도 · kang kang",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107641118937651317189",
+    "gname": "places/ChIJCfsfrmWcfDURzhXWbjiJAP4/photos/AV-0GLeSOwqdNuTi2bvWV44Aaa5oDVC6_qJq81VV72bhqbpaVHUbMLNiB9O8uqfe6AZRLNT7Qj_yDdmuP220L2K4a2QKhH4XZFLAGk0UYfeOar_lHcKY4HdXpRyzqZrss3-SKC-1u49w3tMCV374QdmiOlJyXHzPeRD_EDkPgQauAS6DqxjTcdsXUB1mrcyRm_ZeqMIq2RhO7SIZNekja5U5-gXPjM7D9GnYqHqrOfDv8FM6O2_FTuz_u8YlgrlmC5TtQmSGpHV7mwrnltTAbDFdcTvUAHP3WCasnbEJII0TGeJ1AawAvcCRdoW6rjJTWpfIY3CC-4Mm0rjLQ1KrTy-iRJMoMm04hfM8dT0eTV5E5vZ_0oo1ircduSwWmJ5mr7c9qYuWivEF6CJdayoUryflKH0qtdZmnfmPsIK9c_W_aEsDhg",
+    "alt": "입구에서 보이는 볼더링 벽",
+    "score": 6,
+    "label": "입구 볼더링 벽",
+    "reason": "입구 너머로 볼더링 벽이 보이지만 안내 배너와 사물함이 시선을 분산시킨다."
+   },
+   {
+    "src": "/api/gphoto/theclimb-magok/b430dd45ad9c",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 소소한한라봉 (소소)",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/100118436895513635899",
+    "gname": "places/ChIJCfsfrmWcfDURzhXWbjiJAP4/photos/AV-0GLcfrupkb8qFvPZ9Da4ex5VRLsroodg1h8nSpMBpmBn3KxV4pRW5W7ZHeigM6V6pdCKowBBt_qsh-Higl6bAB7vMOltltMCu7i9-PwBr9p2TFtqiYlyxeuUqAifV_pEq9ohKRHY4OBal2HBiROdTSLlfR6Z1zhJxzhtW4ceFPzV_GobqaDlnH1ImvYqjH_BYWyCiTPJA-ngNXgp1lrrfbJjih0dWNvf53_Ps-kj6rrqYQ7bxh8jFd6PDF6RrOewy2k6AIKbQY2TSvoN7Eu7rp6KRYN0Lcu1ikJu_Q00jIfeY_uq4s-wbHKfuhS8Buu6QEHkn6bC7nfVFNQjIlbFsp4bkDXTnpPjX2dKwYwVlP-_EKjJdjqyVmJCNLkUJzC80m3W-Qyu3BA2wb3dsbX9VQzMinTY",
+    "alt": "클라이밍 슈즈가 진열된 매장",
+    "score": 6,
+    "reason": "클라이밍 슈즈 매장과 벽 일부가 보여 이용 이미지는 주지만 대표 명소는 아니다."
+   }
+  ]
  }
 }

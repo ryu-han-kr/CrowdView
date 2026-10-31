@@ -426,12 +426,20 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               </p>
             )}
             {/* 갱신·출처·자료 등급: 흐리고 작게 (경수님 10/30: 흰 상자가 위의 중요한 정보보다 먼저 눈에 들어왔다) */}
-            <p className={`mt-3 text-[11px] leading-relaxed ${crowd.stale ? "font-semibold text-amber-700" : "text-gray-600"}`}>
-              {t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}
-              {crowd.stale && <> · {t("갱신 지연")}</>} · {t(SOURCE_LABEL[crowd.source])} ·{" "}
-              <span className="rounded bg-gray-200 px-1 py-px text-[10px] font-bold text-gray-500">{dataGrade(crowd)}</span> {t(GRADE_LABEL[dataGrade(crowd)])}
-              {dataGrade(crowd) !== "A" && ` · ${t("인원은 정원 기준으로 환산한 추정치예요")}`}
-            </p>
+            {/* 10/31 경수님 '줄내림이 나면 예쁘게': 한 줄에 몰아 쓰면 아무 데서나 끊겨서, 갱신·출처 한 줄 + 등급 한 줄(줄이 넘치면 글자 밑으로 맞춰 내림) */}
+            <div className={`mt-3 space-y-0.5 text-[11px] leading-relaxed ${crowd.stale ? "font-semibold text-amber-700" : "text-gray-600"}`}>
+              <p>
+                <span className="whitespace-nowrap">{t("{age} 갱신", { age: fmtAge(crowd.ageMinutes, t) })}</span>
+                {crowd.stale && <span className="whitespace-nowrap"> · {t("갱신 지연")}</span>} · <span className="whitespace-nowrap">{t(SOURCE_LABEL[crowd.source])}</span>
+              </p>
+              <p className="flex items-start gap-1.5">
+                <span className="mt-px shrink-0 rounded bg-gray-200 px-1 py-px text-[10px] leading-none font-bold text-gray-500">{dataGrade(crowd)}</span>
+                <span>
+                  <span className="whitespace-nowrap">{t(GRADE_LABEL[dataGrade(crowd)])}</span>
+                  {dataGrade(crowd) !== "A" && ` · ${t("인원은 정원 기준으로 환산한 추정치예요")}`}
+                </span>
+              </p>
+            </div>
               <AlertFab
                 placeId={place.id}
                 placeName={t(place.name)}

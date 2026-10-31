@@ -13,9 +13,12 @@ import { inkOf, levelOf } from "@/lib/levels";
 import { heroImage } from "@/lib/place-photos";
 import { PLACES, placeHref } from "@/lib/places";
 import { getAllSeoulLive } from "@/lib/seoul-live";
+import { subOf } from "@/lib/subcategory";
 
 /** 이 거리 안만 (지방은 명소 사이가 멀어 넉넉히) */
 const MAX_KM = 40;
+/** 같은 종류는 이만큼만 (10/31 경수님 '근처가 전부 클라이밍': 도심 1~3km 안에 클라이밍장이 몰려 있어 가까운 순이면 위가 다 클라이밍이었다) */
+const PER_KIND = 2;
 
 interface NearbyOpts {
   lat: number;
@@ -38,7 +41,7 @@ async function nearbyItems({ lat, lng, lang, exclude = [], limit = 10, maxKm = M
   const at = { lat, lng };
   const km = (p: { lat: number; lng: number }) => distanceKm(p, at);
   const places = PLACES.filter((p) => p.category !== "airport" && p.category !== "event" && heroImage(p) && crowd[p.id]).map(
-    (p): [number, PhotoCardItem] => [
+    (p): [number, PhotoCardItem & { kind?: string }] => [
       km(p),
       {
         id: p.id,
@@ -49,17 +52,24 @@ async function nearbyItems({ lat, lng, lang, exclude = [], limit = 10, maxKm = M
         score: crowd[p.id].open ? crowd[p.id].score : undefined,
         tag: placeTag(p, t),
         favId: p.id,
+        kind: subOf(p.id) ?? p.category,
       },
     ],
   );
-  const landmarks = LANDMARKS.map((l): [number, PhotoCardItem] => [km(l), landmarkCard(l, lang, t, crowd, seoul)]);
+  const landmarks = LANDMARKS.map((l): [number, PhotoCardItem & { kind?: string }] => [km(l), landmarkCard(l, lang, t, crowd, seoul)]);
   const seen = new Set(exclude);
+  const kinds = new Map<string, number>();
   const near = [...places, ...landmarks].filter(([d]) => d > 0.05 && d < maxKm).sort((a, b) => a[0] - b[0]);
   if (quiet) near.sort((a, b) => (a[1].score ?? 101) - (b[1].score ?? 101));
   return near
     .flatMap(([d, it]) => {
       // 명소가 우리 장소로 이어지면 같은 곳이 두 번 나오지 않게 주소로 거른다
       if (seen.has(it.href)) return [];
+      if (it.kind) {
+        const n = kinds.get(it.kind) ?? 0;
+        if (n >= PER_KIND) return [];
+        kinds.set(it.kind, n + 1);
+      }
       seen.add(it.href);
       return [{ ...it, sub: `${it.sub ? `${it.sub} · ` : ""}${t("{km}km", { km: d < 10 ? d.toFixed(1) : d.toFixed(0) })}`, km: d }];
     })
