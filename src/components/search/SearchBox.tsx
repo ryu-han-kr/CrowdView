@@ -159,8 +159,10 @@ export function SearchBox({ variant, className = "" }: { variant: "mobile" | "de
           aria-activedescendant={active >= 0 ? `${listId}-${active}` : undefined}
           enterKeyHint="search"
           autoComplete="off"
-          // 입력칸 자체의 포커스 테두리는 끈다 — 바깥 알약에 보라 빛 테두리가 대신 켜진다
-          className={`min-w-0 flex-1 bg-transparent outline-none focus-visible:outline-none placeholder:text-gray-500 [&::-webkit-search-cancel-button]:hidden ${mobile ? "text-[15px]" : "text-sm"}`}
+          // 입력칸 자체의 포커스 테두리는 끈다 — 바깥 알약에 보라 빛 테두리가 대신 켜진다.
+          // 인라인으로: globals.css의 공통 포커스 테두리는 레이어 밖이라 Tailwind outline-none보다 앞선다
+          style={{ outline: "none" }}
+          className={`min-w-0 flex-1 bg-transparent placeholder:text-gray-500 [&::-webkit-search-cancel-button]:hidden ${mobile ? "text-[15px]" : "text-sm"}`}
         />
         {text ? (
           <button
