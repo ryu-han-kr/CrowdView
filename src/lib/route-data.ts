@@ -1,6 +1,6 @@
 // 추천 루트 후보 장소: 우리 장소(오늘 시간대별 예측) + 서울시 실시간 지역(서울시 12시간 예측).
 // 역 주변(인구밀집 지역)은 목적지가 아니라서 뺀다. 식사 장소는 서울 여행 가이드 맛집(정확한 좌표가 있는 곳)
-import { getMedianProfile, getMethod24, type MedianProfile, type Method24 } from "./accuracy";
+import { getMedianProfile, getMethod24, getWeekProfile, isWeekendDay, type MedianProfile, type Method24 } from "./accuracy";
 import { forecastForDate } from "./crowd/model";
 import { getAllCrowd } from "./crowd/service";
 import { makePredictor, shapeNear } from "./forecast";
@@ -54,13 +54,14 @@ interface Beyond {
 }
 async function getBeyond(): Promise<Beyond> {
   const { method } = await getMethod24().catch(() => ({ method: "pattern-24h" as Method24 }));
-  return { method, profile: method === "median-24h" ? await getMedianProfile() : {} };
+  const profile = method === "median-24h" ? await getMedianProfile() : method === "weekly-24h" || method === "hybrid-24h" ? await getWeekProfile() : {};
+  return { method, profile };
 }
 
 /**
  * 서울시 실시간 지역의 지금 + 12시간 예측 → 후보 (관심사·머무는 시간은 부르는 쪽이 정한다).
  * 그 뒤(내일·주말)는 /accuracy 채점에서 고른 방법으로 예측한다: 기본은 가까운 지하철역의 요일·시간대 승하차 모양을 지금 점수에
- * 맞춘 패턴 예측(lib/forecast). 기준선이 더 나으면 '지금 값 그대로' 또는 '4주 같은 요일·시 중앙값'(칸이 비면 패턴)
+ * 맞춘 패턴 예측(lib/forecast). 기준선·혼합이 더 나으면 '지금 값 그대로'·'4주 같은 요일·시 중앙값'·'지난주 같은 시각'·혼합(칸이 비면 패턴)
  */
 function seoulCandidate(a: (typeof SEOUL_AREAS)[number], live: Omit<SeoulLive, "distance">, beyond: Beyond): Omit<Candidate, "interest" | "stay"> {
   const hourly: Record<number, number> = { [absHour(live.time)]: live.score };
@@ -69,12 +70,27 @@ function seoulCandidate(a: (typeof SEOUL_AREAS)[number], live: Omit<SeoulLive, "
   const today = kst().day;
   const pattern = shape && makePredictor(shape, hourly, today);
   const prof = beyond.profile[a.code];
+  // h: 오늘 0시부터 센 시간 → 요일×시 칸
+  const slotOf = (h: number) => ((today + Math.floor(h / 24)) % 7) * 24 + ((h % 24) + 24) % 24;
+  // 혼합(hybrid-24h, lib/accuracy): 같은 종류의 날(평일/주말)이면 가장 최근 같은 시각(오늘 지난 시각은 오늘, 아니면 어제), 종류가 바뀌면 지난주 같은 요일·시각
+  const nowHour = absHour(live.time);
+  const hybrid = (h: number) => {
+    if (!prof) return undefined;
+    const hod = ((h % 24) + 24) % 24;
+    const targetDay = (today + Math.floor(h / 24)) % 7;
+    if (isWeekendDay(targetDay) !== isWeekendDay(today)) return prof[slotOf(h)];
+    if (hod <= nowHour % 24) return prof[today * 24 + hod];
+    const yesterday = (today + 6) % 7;
+    return isWeekendDay(yesterday) === isWeekendDay(today) ? prof[yesterday * 24 + hod] : prof[slotOf(h)];
+  };
   const predict =
     beyond.method === "naive-24h"
       ? () => live.score
-      : beyond.method === "median-24h" && prof
-        ? (h: number) => prof[((today + Math.floor(h / 24)) % 7) * 24 + ((h % 24) + 24) % 24] ?? pattern?.(h) ?? live.score
-        : pattern;
+      : (beyond.method === "median-24h" || beyond.method === "weekly-24h") && prof
+        ? (h: number) => prof[slotOf(h)] ?? pattern?.(h) ?? live.score
+        : beyond.method === "hybrid-24h" && prof
+          ? (h: number) => hybrid(h) ?? pattern?.(h) ?? live.score
+          : pattern;
   const img = photoNear(a);
   return {
     id: `seoul-${a.code}`,
