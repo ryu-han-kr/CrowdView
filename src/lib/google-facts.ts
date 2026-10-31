@@ -160,7 +160,7 @@ const PRIOR_WEIGHT = 0.4;
 const PRIOR_MAX_SHIFT = 0.12;
 
 /**
- * 구글 리뷰 수(로그)·증가 속도의 카테고리 안 백분위 → 그 카테고리의 손으로 정한 popularity 범위 안 값(사전값) →
+ * 구글 리뷰 수(로그)·증가 속도의 카테고리 안 백분위 → 그 카테고리의 손으로 정한 popularity 분포의 같은 백분위 값(사전값) →
  * 손으로 정한 값을 그쪽으로 40%만, 최대 ±0.12 당긴다. 실측 원천이 있는 곳은 빼고 돌려준다
  */
 export function popularityPriors(places: Place[], facts: Record<string, GoogleFacts | undefined>): Map<string, number> {
@@ -174,14 +174,22 @@ export function popularityPriors(places: Place[], facts: Record<string, GoogleFa
     const vel = rated.map((p) => reviewVelocity(facts[p.id]!.hist));
     const withVel = rated.flatMap((p, i) => (vel[i] !== undefined ? [i] : []));
     const velPct = withVel.length >= MIN_PEERS ? percentiles(withVel.map((i) => vel[i]!)) : [];
-    const pops = all.map((p) => p.popularity);
-    let [lo, hi] = [Math.min(...pops), Math.max(...pops)];
-    if (hi - lo < 0.2) [lo, hi] = [Math.max(0.05, (lo + hi) / 2 - 0.1), Math.min(1, (lo + hi) / 2 + 0.1)];
+    // 백분위 → 그 카테고리 손으로 정한 값들의 같은 백분위 값 (분포는 그대로, 순서만 리뷰 수를 따르게 — 한쪽으로 쏠리지 않게).
+    // 손으로 정한 값이 거의 같으면(폭 0.2 미만) 가운데 ±0.1로 편다
+    const pops = all.map((p) => p.popularity).sort((a, b) => a - b);
+    const [lo, hi] = [pops[0], pops[pops.length - 1]];
+    const mid = (lo + hi) / 2;
+    const quantile = (q: number) => {
+      if (hi - lo < 0.2) return Math.max(0.05, mid - 0.1) + q * (Math.min(1, mid + 0.1) - Math.max(0.05, mid - 0.1));
+      const x = q * (pops.length - 1);
+      const k = Math.floor(x);
+      return pops[k] + (pops[Math.min(k + 1, pops.length - 1)] - pops[k]) * (x - k);
+    };
     rated.forEach((p, i) => {
       if (liveMeasured(p)) return;
       const vi = withVel.indexOf(i);
       const pct = vi >= 0 && velPct.length ? 0.6 * countPct[i] + 0.4 * velPct[vi] : countPct[i];
-      const prior = lo + (hi - lo) * pct;
+      const prior = quantile(pct);
       const shift = Math.max(-PRIOR_MAX_SHIFT, Math.min(PRIOR_MAX_SHIFT, PRIOR_WEIGHT * (prior - p.popularity)));
       out.set(p.id, Math.round((p.popularity + shift) * 1000) / 1000);
     });

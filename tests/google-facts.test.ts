@@ -74,15 +74,17 @@ const mk = (id: string, popularity: number, extra: Partial<Place> = {}): Place =
   ({ id, name: id, category: "indoor", popularity, hours: [10, 22], lat: 37.5, lng: 127, tags: [], ...extra }) as Place;
 const facts = (count: number, extra: Partial<GoogleFacts> = {}): GoogleFacts => ({ gid: "g", count, at: "2026-10-31T00:00:00Z", ...extra });
 
-test("인기도 사전값: 리뷰가 많은 곳은 올리고 적은 곳은 내리되, 최대 ±0.12, 카테고리 범위 안", () => {
-  const places = [mk("a", 0.5), mk("b", 0.5), mk("c", 0.5), mk("d", 0.5), mk("e", 0.3), mk("f", 0.65)];
-  const f = { a: facts(10), b: facts(100), c: facts(1000), d: facts(5000), e: facts(20), f: facts(30000) };
+test("인기도 사전값: 리뷰 수 순서를 따라 당기되(최대 ±0.12), 카테고리 분포는 그대로라 한쪽으로 쏠리지 않는다", () => {
+  // 손으로 정한 값과 리뷰 수 순서가 거꾸로인 다섯 곳
+  const places = [mk("a", 0.3), mk("b", 0.4), mk("c", 0.5), mk("d", 0.6), mk("e", 0.65)];
+  const f = { a: facts(30000), b: facts(5000), c: facts(1000), d: facts(100), e: facts(10) };
   const pr = popularityPriors(places, f);
-  assert.ok(pr.get("d")! > 0.5 && pr.get("d")! <= 0.62);
-  assert.ok(pr.get("a")! < 0.5 && pr.get("a")! >= 0.38);
-  for (const v of pr.values()) assert.ok(v >= 0.3 - 1e-9 && v <= 0.65 + 0.12);
-  // 리뷰 수 순서대로
-  assert.ok(pr.get("a")! < pr.get("b")! && pr.get("b")! < pr.get("c")! && pr.get("c")! < pr.get("d")!);
+  assert.equal(pr.size, 5);
+  assert.ok(pr.get("a")! > 0.3 && pr.get("a")! <= 0.42 + 1e-9);
+  assert.ok(pr.get("e")! < 0.65 && pr.get("e")! >= 0.53 - 1e-9);
+  assert.equal(pr.get("c"), 0.5);
+  const mean = (xs: number[]) => xs.reduce((x, y) => x + y, 0) / xs.length;
+  assert.ok(Math.abs(mean([...pr.values()]) - mean(places.map((p) => p.popularity))) < 0.01);
 });
 
 test("인기도 사전값: 비교할 곳이 5곳 미만이면 없음, 실측 원천이 있는 곳은 빼고, 못 찾은 곳은 계산에서 뺀다", () => {
