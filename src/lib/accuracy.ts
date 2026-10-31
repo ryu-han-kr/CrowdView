@@ -25,11 +25,14 @@ import {
   learnInit,
   learnPredict,
   learnUpdate,
+  rlsInit,
+  transitInputs,
   type EnsCand,
   type LearnRaw,
   type LearnState,
 } from "./accuracy-learn";
 import { kv } from "./cache";
+import { extraLogKey } from "./seoul-extra-log";
 import { makePredictor, shapeNear } from "./forecast";
 import { levelOf } from "./levels";
 import { SEOUL_AREAS } from "./seoul-areas";
@@ -153,7 +156,13 @@ export function parseLearnState(raw: string | null): LearnState | null {
   if (!raw) return null;
   try {
     const st = JSON.parse(raw) as LearnState;
-    return st.v === 1 && st.rls?.w?.length === LEARN_DIM && st.ens && st.lb && st.blend?.["1h"] && st.blend["3h"] ? st : null;
+    if (!(st.v === 1 && st.rls?.w?.length && st.ens && st.lb && st.blend?.["1h"] && st.blend["3h"])) return null;
+    // 특징 수가 바뀌었으면 (11/1 10 → 12) 학습 모델만 처음부터, 앙상블·단기 혼합은 그대로
+    if (st.rls.w.length !== LEARN_DIM) {
+      st.rls = rlsInit();
+      st.lb = {};
+    }
+    return st;
   } catch {
     return null;
   }
@@ -271,11 +280,19 @@ export async function trackAccuracy(live: Live, now = new Date()): Promise<numbe
   // ② 새 예측 저장
   const target = (hours: number) => hourKey(new Date(now.getTime() + hours * 3600_000));
   const t24 = target(24);
-  // 4주 중앙값 기준선: 목표 시각의 7·14·21·28일 전 실제 값 (2개 이상 있을 때만). 학습 모델용으로 지난주 같은 시각의 앞뒤 1시간도
+  // 4주 중앙값 기준선: 목표 시각의 7·14·21·28일 전 실제 값 (2개 이상 있을 때만). 학습 모델용으로 지난주 같은 시각의 앞뒤 1시간과
+  // 지난 두 시각의 승하차·주차 기록(lib/seoul-extra-log, 이번 시각 것은 이 다음에 기록된다)도
   const past = await kv
-    .mget([...[7, 14, 21, 28].map((d) => actualKey(hoursBefore(t24, d * 24))), actualKey(hoursBefore(t24, 169)), actualKey(hoursBefore(t24, 167))])
+    .mget([
+      ...[7, 14, 21, 28].map((d) => actualKey(hoursBefore(t24, d * 24))),
+      actualKey(hoursBefore(t24, 169)),
+      actualKey(hoursBefore(t24, 167)),
+      extraLogKey(hoursBefore(nowKey, 1)),
+      extraLogKey(hoursBefore(nowKey, 2)),
+    ])
     .catch(() => [] as (string | null)[]);
   const parsed = past.map((r) => (r ? (JSON.parse(r) as Record<string, number>) : undefined));
+  const [xNow, xPrev] = [past[6], past[7]].map((r) => (r ? (JSON.parse(r) as Record<string, (number | null)[]>) : undefined));
   const pastMaps = parsed.slice(0, 4).filter((m): m is Record<string, number> => !!m);
   // 지난주 같은 시각 (weekly·hybrid). parsed[0]이 7일 전
   const lastWeek = parsed[0];
@@ -326,6 +343,7 @@ export async function trackAccuracy(live: Live, now = new Date()): Promise<numbe
           made["median-24h"]?.[code] ?? null,
           sameKind ? 0 : 1,
           night,
+          ...transitInputs(xNow?.[code], xPrev?.[code]),
         ];
         feats[code] = raw;
         preds[code] = learnPredict(st.rls, raw, st.lb[code]);

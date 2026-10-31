@@ -2,9 +2,11 @@
 //   앙상블 ensemble-24h : 지역마다 후보(지금 값·지난주·혼합·4주 중앙값)의 최근 오차(EWMA)를 들고, 오차 제곱에 반비례하게 섞는다
 //   학습 모델 learned-24h: 실제 결과로 매시간 스스로 고치는 학습 모델. 지금 값·지난주 같은 시각(앞뒤 1시간 평균)·4주 중앙값에
 //                          평일↔주말이 바뀌는지·밤인지를 곱한 선형 모델을 RLS(오래된 결과는 조금씩 잊는 최소제곱)로 한 건씩 고치고,
-//                          지역별로 남는 치우침(EWMA)을 더한다
+//                          지역별로 남는 치우침(EWMA)을 더한다. 지하철·버스 승하차 변화·공영주차장 점유(acc:x, 10/31부터 기록) 칸도 둔다:
+//                          없으면 0이라 지금은 예측이 그대로고, 기록이 쌓이면 스스로 무게를 배운다.
+//                          (11/1 되짚기: 3.5년 생활인구 이력의 시간대 비·평소 인구를 넣어 봤지만 좋아지지 않아 넣지 않았다)
 //   단기 혼합 blend-1h/3h: 지역마다 서울시 공식 예측의 치우침(EWMA)을 빼고 지금 값과 섞는다. 섞는 비율은 둘의 최근 오차(제곱 EWMA)로
-// 서울 점수는 4값(25·48·68·88)뿐이라 섞은 값은 가장 가까운 값으로 붙인다 (되짚기: 단계 일치·오차 둘 다 좋아짐, 3시간 혼합 70.7→74.4%)
+// 서울 점수는 4값(25·48·68·88)뿐이라 섞은 값은 가장 가까운 값으로 붙인다 (되짚기: 평균 오차·단계 일치가 좋아짐)
 // 상수는 10/21~10/31 실제 값(121곳 × 243시간) 되짚기로 골랐다 (PR 본문 표)
 
 /** 서울시 단계 점수 (lib/seoul-live SEOUL_LEVEL_SCORE 와 같은 값) */
@@ -54,20 +56,23 @@ export function ensembleUpdate(err: EnsErr | undefined, cands: Partial<Record<En
 }
 
 // ── 학습 모델 (RLS) ──
-/** 예측 때 남겨 두는 입력: [지금 값, 지난주 같은 시각, 지난주 앞뒤 1시간 평균, 4주 중앙값, 평일↔주말 바뀜 0/1, 밤 0/1] (없는 값은 null) */
-export type LearnRaw = [number, number | null, number | null, number | null, 0 | 1, 0 | 1];
+/**
+ * 예측 때 남겨 두는 입력: [지금 값, 지난주 같은 시각, 지난주 앞뒤 1시간 평균, 4주 중앙값, 평일↔주말 바뀜 0/1, 밤 0/1,
+ *  승하차 변화율(−1~1), 주차 점유 (%−50)/100] (없는 값은 null, 뒤 2개는 없으면 0 — 11/1 전 입력엔 없다)
+ */
+export type LearnRaw = [number, number | null, number | null, number | null, 0 | 1, 0 | 1, number?, number?];
 /** 밤 = 목표 시각 0~6시 (서울은 거의 다 '원활') */
 export const isNight = (hour: number) => hour < 7;
 
 /** 입력 → 특징 (점수는 100으로 나눈다). 지난주가 없으면 지금 값, 중앙값이 없으면 지난주로 채운다 */
-export function learnFeatures([L, W0, S0, M0, k, n]: LearnRaw): number[] {
+export function learnFeatures([L, W0, S0, M0, k, n, tr = 0, pk = 0]: LearnRaw): number[] {
   const l = L / 100;
   const w = (W0 ?? L) / 100;
   const s = (S0 ?? W0 ?? L) / 100;
   const m = (M0 ?? W0 ?? L) / 100;
-  return [1, l, w, s, m, k, k * l, k * w, n, n * l];
+  return [1, l, w, s, m, k, k * l, k * w, n, n * l, tr, pk];
 }
-export const LEARN_DIM = 10;
+export const LEARN_DIM = 12;
 /** 한 건마다 잊는 비율 (121곳 × 24시간 ≈ 하루 2,900건 → 기억 약 2만 건 ≈ 1주) */
 export const RLS_LAMBDA = 0.99995;
 export const LEARN_BIAS_ALPHA = 0.05;
@@ -84,7 +89,7 @@ export interface Rls {
 /** 처음 상태: 지난주 같은 시각 그대로(되짚기에서 가장 잘 맞은 기준선)에서 출발. delta가 작을수록 증거가 쌓여야 움직인다 */
 export function rlsInit(d = LEARN_DIM, delta = 0.1): Rls {
   const w = Array(d).fill(0);
-  w[2] = 1;
+  if (d > 2) w[2] = 1;
   const P = Array(d * d).fill(0);
   for (let i = 0; i < d; i++) P[i * d + i] = delta;
   return { w, P, n: 0 };
@@ -109,6 +114,22 @@ export function rlsUpdate(m: Rls, x: number[], y: number, lambda = RLS_LAMBDA): 
 
 /** 학습 모델 예측 (점수): 공통 모델 + 지역 치우침 */
 export const learnPredict = (m: Rls, raw: LearnRaw, bias = 0) => snapSeoul(rlsPredict(m, learnFeatures(raw)) * 100 + bias);
+
+/**
+ * 승하차·주차 기록 두 시각(lib/seoul-extra-log 줄: [지하철 30분 승차, 하차, 버스 승차, 하차, 주차 %, …]) → [승하차 변화율, 주차].
+ * 변화율 = (지금 − 한 시간 전) ÷ max(한 시간 전, 100), −1~1. 주차 = (% − 50)/100. 없으면 0
+ */
+export function transitInputs(now?: (number | null)[], prev?: (number | null)[]): [number, number] {
+  const tot = (r?: (number | null)[]) => {
+    const xs = (r ?? []).slice(0, 4).filter((x): x is number => typeof x === "number");
+    return xs.length ? xs.reduce((a, b) => a + b, 0) : undefined;
+  };
+  const a = tot(now);
+  const b = tot(prev);
+  const tr = a !== undefined && b !== undefined ? Math.max(-1, Math.min(1, (a - b) / Math.max(b, 100))) : 0;
+  const pk = typeof now?.[4] === "number" ? (now[4] - 50) / 100 : 0;
+  return [r3(tr), r3(pk)];
+}
 
 // ── 단기 혼합 ──
 export interface BlendState {
