@@ -210,7 +210,8 @@ export function HeroCarousel({
               </button>
             ))}
           </div>
-          <div className="absolute right-[calc(var(--off)+12px)] bottom-2.5 z-[2] flex items-center gap-1 md:right-4 md:bottom-3">
+          {/* 휴대폰은 오른쪽 위로: 배너가 12장이면 아래 점 줄이 이 알약 밑으로 들어가 마지막 점을 누를 수 없었다 (10/31 라이트하우스 target-size) */}
+          <div className="absolute top-2.5 right-[calc(var(--off)+12px)] z-[2] flex items-center gap-1 md:top-auto md:right-4 md:bottom-3">
             {/* PC 넘기기 화살표: 배너 가운데에 두면 제목 글자를 가려서 번호 알약 옆으로 (QA #8, 10/27) */}
             {(["prev", "next"] as const).map((d) => (
               <button

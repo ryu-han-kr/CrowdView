@@ -89,7 +89,8 @@ export function InlineAd({ className = "" }: { className?: string }) {
   if (!ADSENSE_CLIENT || !AD_SLOTS.inline || plus) return null;
   return (
     <aside aria-label={t("광고")} className={className}>
-      <p className="mb-1 text-[10px] text-gray-400">{t("광고")}</p>
+      {/* gray-400은 흰 바탕 대비 2.6 → 라이트하우스 접근성 감점 (10/31), gray-500으로 */}
+      <p className="mb-1 text-[10px] text-gray-500">{t("광고")}</p>
       <AdUnit slot={AD_SLOTS.inline} name="inline" className="min-h-[100px]" />
     </aside>
   );
