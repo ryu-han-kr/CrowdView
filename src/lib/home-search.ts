@@ -12,6 +12,10 @@ import { getAllSeoulLive } from "./seoul-live";
 import { SEOUL_AREAS } from "./seoul-areas";
 import { areaPhoto } from "./seoul-guide";
 import { kst } from "./time";
+import { placeTag } from "./category-style";
+import { heroImage } from "./place-photos";
+import { PLACES, placeHref } from "./places";
+import { SUB_LABEL, subOf } from "./subcategory";
 
 export async function homeSearch(lang: Lang): Promise<SearchData> {
   const t = getT(lang);
@@ -28,6 +32,19 @@ export async function homeSearch(lang: Lang): Promise<SearchData> {
     ),
   ]);
   return {
+    places: PLACES.map((p) => {
+      const sc = subOf(p.id);
+      const c = crowd[p.id];
+      return {
+        id: p.id,
+        href: placeHref(p),
+        img: heroImage(p),
+        title: t(p.name),
+        sub: `${placeTag(p, t).label} · ${t(p.region)}`,
+        score: c?.open ? c.score : undefined,
+        keys: [p.name, p.region, ...p.tags, ...(sc ? [SUB_LABEL[sc]] : [])],
+      };
+    }),
     regions: REGIONS.map((r) => r.id).filter((id) => LANDMARKS.some((l) => l.region === id) || allFestivals.some((f) => inRegion(f.region, id))),
     landmarks: LANDMARKS.map((l) => {
       const c = landmarkCard(l, lang, t, crowd, seoul);

@@ -15,6 +15,7 @@ import type { PhotoCardItem } from "./home/PhotoRail";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
 import { StickyBar } from "./StickyBar";
 import { useUrlQuery } from "./useUrlQuery";
+import { useHomeSearch } from "./search/useSearchData";
 import { Glyph } from "@/components/Glyph";
 import { SUBS_OF, SUB_EMOJI, SUB_LABEL, subOf, type SubCategory } from "@/lib/subcategory";
 import { useSpots, type SpotRow } from "./MoreSpots";
@@ -39,6 +40,8 @@ export interface SearchItem {
   keys?: string[];
 }
 export interface SearchData {
+  /** 우리 장소(실시간·예측 혼잡도) — 맨 위 검색창 드롭다운용 (10/31) */
+  places?: SearchItem[];
   landmarks: SearchItem[];
   festivals: SearchItem[];
   seoul: SearchItem[];
@@ -56,20 +59,6 @@ const TABS: { id: Tab; label: string }[] = [
 ];
 const SPOT_PAGE = 12;
 
-// 언어별로 한 번만 받는다
-const searchPromise: Record<string, Promise<SearchData | undefined>> = {};
-function useHomeSearch(enabled: boolean): SearchData | undefined {
-  const { lang } = useI18n();
-  const [data, setData] = useState<SearchData>();
-  useEffect(() => {
-    if (!enabled) return;
-    searchPromise[lang] ??= fetch(`/api/home-search/${lang}`)
-      .then((r) => (r.ok ? r.json() : undefined))
-      .catch(() => undefined);
-    searchPromise[lang].then(setData);
-  }, [lang, enabled]);
-  return data;
-}
 const LIVE_PAGE = 8;
 
 type Filter = "all" | "fav" | Category;

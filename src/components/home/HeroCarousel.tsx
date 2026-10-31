@@ -21,6 +21,8 @@ export interface HeroSlide {
 }
 
 const AUTO_MS = 3500; // 자동으로 넘어가는 간격
+const AUTO_MS_PC = 5000; // PC 배너(겹쳐 바뀜)는 조금 느리게 (경수님 10/31)
+const FADE_MS = 1200; // PC 배너가 겹쳐 바뀌는 시간 (700 → 1200: 경수님 10/31 '좀 부드럽게')
 const RESUME_MS = 8000; // 직접 넘긴 뒤 이만큼 지나면 다시 자동
 const SLIDE_MS = 450; // 한 장 넘어가는 시간
 
@@ -55,6 +57,7 @@ export function HeroCarousel({
 
   // 자동 넘김 (직접 넘긴 직후 잠깐 쉬고, 탭이 안 보일 때는 브라우저가 알아서 늦춘다)
   // 시계의 AUTO_MS 눈금에 맞춰 시작해, 나란히 놓인 PC 배너 두 개가 같은 순간에 넘어가게 한다 (경수님 10/28)
+  const autoMs = layout === "single" ? AUTO_MS_PC : AUTO_MS;
   useEffect(() => {
     if (!loop || paused) return;
     let id: ReturnType<typeof setInterval> | undefined;
@@ -64,17 +67,17 @@ export function HeroCarousel({
       setPos((p) => p + 1);
     };
     // 다음 눈금이 너무 가까우면(첫 화면 직후) 한 눈금 더 기다린다
-    let wait = AUTO_MS - (Date.now() % AUTO_MS);
-    if (wait < AUTO_MS / 2) wait += AUTO_MS;
+    let wait = autoMs - (Date.now() % autoMs);
+    if (wait < autoMs / 2) wait += autoMs;
     const start = setTimeout(() => {
       tick();
-      id = setInterval(tick, AUTO_MS);
+      id = setInterval(tick, autoMs);
     }, wait);
     return () => {
       clearTimeout(start);
       clearInterval(id);
     };
-  }, [loop, paused]);
+  }, [loop, paused, autoMs]);
 
   // 가운데 벌을 벗어나면 넘김이 끝난 뒤 같은 배너 자리로 순간 이동
   useEffect(() => {
@@ -145,11 +148,12 @@ export function HeroCarousel({
             <Link
               key={`${s.id}-${k}`}
               href={s.href}
+              style={fade ? { transitionDuration: `${FADE_MS}ms` } : undefined}
               aria-hidden={!current}
               tabIndex={current ? 0 : -1}
               className={
                 fade
-                  ? `relative block aspect-[16/10] w-full overflow-hidden rounded-[28px] bg-gray-200 transition-opacity duration-700 [grid-area:1/1] md:aspect-[16/9] md:rounded-3xl ${current ? "z-[1] opacity-100" : "pointer-events-none opacity-0"}`
+                  ? `relative block aspect-[16/10] w-full overflow-hidden rounded-[28px] bg-gray-200 transition-opacity ease-in-out [grid-area:1/1] md:aspect-[16/9] md:rounded-3xl ${current ? "z-[1] opacity-100" : "pointer-events-none opacity-0"}`
                   : `relative block aspect-[16/10] w-[var(--w)] shrink-0 overflow-hidden rounded-[28px] bg-gray-200 transition-opacity duration-300 md:aspect-[16/9] md:rounded-3xl ${
                       current ? "" : second ? "opacity-60 md:opacity-100" : "opacity-60"
                     }`
@@ -165,7 +169,8 @@ export function HeroCarousel({
                   loading={main && eager ? "eager" : "lazy"}
                   fetchPriority={main && eager ? "high" : "auto"}
                   unoptimized={!canOptimize(s.img)}
-                  className="object-cover"
+                  // PC 겹쳐 바뀌는 배너: 들어오는 사진이 아주 살짝 당겨지듯 커졌다 제자리로 (부드럽게, 10/31)
+                  className={`object-cover ${fade ? `transition-transform duration-[6000ms] ease-out ${current ? "scale-100" : "scale-[1.06]"}` : ""}`}
                 />
               )}
               <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/30 to-transparent" />
@@ -197,14 +202,15 @@ export function HeroCarousel({
         <>
           {/* 아래 점 (왼쪽) + 일시정지·번호 알약 (오른쪽, NOL 레퍼런스) */}
           {/* 점은 작게 보이되 누르는 칸은 24px (Lighthouse target-size: 6px 버튼은 누르기 어렵다) */}
-          <div className="absolute bottom-0.5 left-[calc(var(--off)+10px)] flex items-center md:bottom-1.5 md:left-[calc(var(--off)+18px)]">
+          {/* z-[2]: 겹쳐 바뀌는 PC 배너는 지금 장이 z-[1]이라 점·버튼이 그 밑에 깔려 안 보였다 (경수님 10/31 '지나간 것도 점으로 고르게') */}
+          <div className="absolute bottom-0.5 left-[calc(var(--off)+10px)] z-[2] flex items-center md:bottom-1.5 md:left-[calc(var(--off)+18px)]">
             {slides.map((s, i) => (
               <button key={s.id} onClick={() => goTo(i)} aria-label={`${i + 1} / ${n}`} className="flex h-6 min-w-6 items-center justify-center">
                 <span className={`block h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-white" : "w-1.5 bg-white/55"}`} />
               </button>
             ))}
           </div>
-          <div className="absolute right-[calc(var(--off)+12px)] bottom-2.5 flex items-center gap-1 md:right-4 md:bottom-3">
+          <div className="absolute right-[calc(var(--off)+12px)] bottom-2.5 z-[2] flex items-center gap-1 md:right-4 md:bottom-3">
             {/* PC 넘기기 화살표: 배너 가운데에 두면 제목 글자를 가려서 번호 알약 옆으로 (QA #8, 10/27) */}
             {(["prev", "next"] as const).map((d) => (
               <button

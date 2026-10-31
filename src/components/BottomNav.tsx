@@ -7,6 +7,7 @@ import { stripLang } from "@/i18n/config";
 import { NavAuth } from "./AuthButtons";
 import { LangSwitcher } from "./LangSwitcher";
 import { PlusBadge } from "./PlusBadge";
+import { SearchBox } from "./search/SearchBox";
 import { SolarIcon } from "@/components/icons/SolarIcon";
 import type { SolarName } from "@/components/icons/solar";
 
@@ -74,6 +75,8 @@ export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
           })}
         </nav>
         <span className="ml-auto" aria-hidden />
+        {/* 어느 화면에서든 맨 위에서 바로 검색 (경수님 10/31: 컴퓨터도) — 치는 동안 아래로 결과판 */}
+        <SearchBox variant="desktop" className="w-44 shrink-0 lg:w-60 xl:w-72" />
         <p className="hidden text-xs whitespace-nowrap text-gray-500 2xl:block">{t("실시간 혼잡도 · AI 예측")}</p>
         {/* 오른쪽 버튼은 줄어들지 않게 (좁은 화면에서 '한국어'·'로그인'이 두 줄로 꺾이던 것) — 모자라면 메뉴 쪽이 옆으로 밀린다 */}
         <div className="flex shrink-0 items-center gap-2 whitespace-nowrap">
