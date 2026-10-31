@@ -7,6 +7,7 @@ import { getAllCrowd, refreshAll } from "@/lib/crowd/service";
 import { trackAccuracy } from "@/lib/accuracy";
 import { opsAlert } from "@/lib/ops";
 import { getAllSeoulLive } from "@/lib/seoul-live";
+import { recordSeoulExtras } from "@/lib/seoul-extra-log";
 import { chargeDue, expireEnded, sendRenewalNotices } from "@/lib/plus";
 import { addDays, kst } from "@/lib/time";
 import { PLACES } from "@/lib/places";
@@ -90,6 +91,8 @@ export async function GET(req: Request) {
   const googleFacts = hourly
     ? await refreshGoogleFacts(PLACES, 2).catch(async (e) => (await opsAlert("구글 장소 정보 받기 실패", e), null))
     : null;
+  // 서울 121곳 지하철·버스 승하차·공영주차장 점유를 시각별로 (acc:x:, 학습 모델 입력용, lib/seoul-extra-log)
+  const transit = hourly ? await recordSeoulExtras().catch(async (e) => (await opsAlert("서울 승하차·주차 기록 실패", e), 0)) : 0;
   // 시군구 주말/평일 방문객 비 (데이터랩, 명소 예측의 주말 배율)
   const weekRatios = daily ? await updateWeekRatios().catch(async (e) => (await opsAlert("주말 배율 계산 실패", e), 0)) : 0;
   // 어제 실측 기록을 하루 요약으로 (요일별·월별 실측 평균용, Redis)
@@ -133,6 +136,7 @@ export async function GET(req: Request) {
     scored,
     calibrated,
     percentiles,
+    transit,
     weekRatios,
     googleFacts,
     summarized,
