@@ -4361,5 +4361,1924 @@
     ]
    }
   ]
+ },
+ "seoulforest-climbing": {
+  "nameEn": "Seoul Forest Climbing Seongsu",
+  "spots": [
+   {
+    "label": "실내 볼더링 벽",
+    "why": "지하 2층의 넓은 암장으로, 후기에서 가장 자주 나오는 클라이밍 벽 풍경이다.",
+    "queries": [
+     "Seoul Forest Climbing Seongsu bouldering",
+     "indoor bouldering wall Seoul",
+     "Seoul climbing gym"
+    ]
+   },
+   {
+    "label": "일일체험 강습",
+    "why": "초보자용 일일체험 강습과 미션 클리어 후 음료를 받는 코스가 후기에 자주 올라온다.",
+    "queries": [
+     "indoor climbing lesson Seoul",
+     "bouldering beginner class Korea",
+     "climbing shoes chalk bouldering"
+    ]
+   },
+   {
+    "label": "유한타워",
+    "why": "성수일로 19 유한타워 B2층에 있어 방문 인증샷은 건물 입구와 외관에서 많이 찍는다.",
+    "queries": [
+     "Yuhan Tower Seongsu Seoul",
+     "Seongsu-dong Seongsuil-ro building",
+     "Seongsu-dong Seoul street"
+    ]
+   },
+   {
+    "label": "서울숲 메타세콰이어길",
+    "why": "암장 바로 옆 서울숲에서 클라이밍 후 들르는 대표 산책·사진 코스다.",
+    "queries": [
+     "Seoul Forest metasequoia road",
+     "Seoul Forest park Seongsu",
+     "Seoul Forest autumn"
+    ]
+   },
+   {
+    "label": "서울숲 거울연못",
+    "why": "서울숲의 대표 포토 스폿으로, 얕은 수면에 하늘과 나무가 비쳐 사진이 잘 나온다.",
+    "queries": [
+     "Seoul Forest mirror pond",
+     "Seoul Forest pond reflection",
+     "Seoul Forest Ecological Forest"
+    ]
+   }
+  ]
+ },
+ "boulderfriends-hongdae": {
+  "nameEn": "Boulder Friends Hongdae",
+  "spots": [
+   {
+    "label": "메인 볼더링 벽",
+    "why": "높이 약 5m, 길이 약 50m의 넓은 벽에 다양한 모양의 알록달록한 홀드가 붙어 있어 가장 많이 찍는 곳이다.",
+    "queries": [
+     "Boulder Friends Hongdae climbing wall",
+     "Bouldering gym Seoul colorful holds",
+     "Indoor bouldering wall Korea"
+    ]
+   },
+   {
+    "label": "난이도별 코스",
+    "why": "흰색·빨강·주황·노랑·초록·파랑·남색·보라 순으로 색을 나눈 문제들이 벽에 빼곡해서, 완등 인증샷을 찍는 곳으로 자주 나온다.",
+    "queries": [
+     "Boulder Friends Hongdae bouldering problems",
+     "Bouldering route colors indoor climbing gym",
+     "Indoor climbing holds color grades"
+    ]
+   },
+   {
+    "label": "지구력벽",
+    "why": "Sector E 구역으로, 처음 배우거나 몸을 풀 때 쓰는 벽이라 후기에 자주 등장한다.",
+    "queries": [
+     "Boulder Friends Hongdae endurance wall",
+     "Climbing gym endurance wall Seoul",
+     "Indoor climbing training wall"
+    ]
+   },
+   {
+    "label": "스트레칭룸",
+    "why": "2층에 있는 넓은 스트레칭룸으로, 운동 전후 사진과 후기에 종종 나온다.",
+    "queries": [
+     "Boulder Friends Hongdae stretching room",
+     "Climbing gym stretching area Seoul",
+     "Bouldering gym interior Seoul"
+    ]
+   }
+  ]
+ },
+ "peakers-jongno": {
+  "nameEn": "Peakers Climbing Jongno",
+  "spots": [
+   {
+    "label": "극장 암장",
+    "why": "CGV 상영관 두 개(7·8관)를 개조한 국내 첫 영화관 클라이밍짐으로, 극장 안에서 암벽을 타는 모습이 대표 컷이다.",
+    "queries": [
+     "Peakers Climbing Jongno",
+     "CGV Piccadilly 1958 climbing gym",
+     "indoor bouldering gym Seoul"
+    ]
+   },
+   {
+    "label": "볼더링 벽",
+    "why": "안전로프 없이 오르는 4~5m 높이 경기벽과 아래의 넓은 매트가 이곳의 상징적인 운동 장면이다.",
+    "queries": [
+     "Peakers Climbing bouldering wall",
+     "bouldering wall Seoul indoor",
+     "Korea indoor climbing gym"
+    ]
+   },
+   {
+    "label": "피크 아일랜드",
+    "why": "1호점 오픈 때부터 소개된 대표 존으로, 여러 존 중에서 가장 먼저 언급된다.",
+    "queries": [
+     "Peakers Climbing Peak Island",
+     "CGV Piccadilly 1958 Peakers",
+     "indoor climbing zone Korea"
+    ]
+   },
+   {
+    "label": "극장 입구",
+    "why": "계단으로 지하 4층에 내려가면 상영관 입구와 같은 진입로로 이어져, 극장에 들어가는 듯한 인증샷 장소가 된다.",
+    "queries": [
+     "CGV Piccadilly 1958 entrance",
+     "Piccadilly 1958 Jongno cinema",
+     "Danseongsa Piccadilly Seoul"
+    ]
+   },
+   {
+    "label": "피카디리 외관",
+    "why": "종로3가역과 바로 이어지는 옛 피카디리극장 건물로, 피커스를 찾아가는 기준이 되는 랜드마크다.",
+    "queries": [
+     "CGV Piccadilly 1958 exterior",
+     "Piccadilly Theatre Jongno Seoul",
+     "Donhwamun-ro Jongno 3-ga"
+    ]
+   }
+  ]
+ },
+ "climb-931706576": {
+  "nameEn": "Seoul Forest Climbing Jamsil",
+  "spots": [
+   {
+    "label": "대형 볼더링벽",
+    "why": "잠실새내역 인근 약 200평 규모의 대형 클라이밍짐으로, 후기에서는 넓고 쾌적하다는 평이 많다.",
+    "queries": [
+     "Seoul Forest Climbing Jamsil",
+     "bouldering gym Seoul",
+     "indoor bouldering wall Korea",
+     "실내 볼더링 암장"
+    ]
+   },
+   {
+    "label": "컬러 난이도 루트",
+    "why": "빨강(VB급)부터 검정까지 홀드 색으로 난이도를 나눈 루트가 영상 후기에 자주 나온다.",
+    "queries": [
+     "Seoul Forest Climbing Jamsil bouldering routes",
+     "colored climbing holds bouldering grades",
+     "indoor climbing holds colorful wall",
+     "클라이밍 홀드 난이도 색상"
+    ]
+   },
+   {
+    "label": "스트레칭존",
+    "why": "무대 같은 분위기의 넓은 동적 스트레칭 공간이 있고, 중량 턱걸이 기구도 갖춰 후기에 자주 언급된다.",
+    "queries": [
+     "Seoul Forest Climbing Jamsil stretching zone",
+     "climbing gym stretching area",
+     "pull-up bar climbing gym",
+     "클라이밍장 스트레칭존"
+    ]
+   },
+   {
+    "label": "깔끔한 세족장",
+    "why": "신규 오픈 암장답게 수건까지 갖춘 깔끔한 세족장이 블로그 후기에 사진과 함께 자주 올라온다.",
+    "queries": [
+     "Seoul Forest Climbing Jamsil foot washing area",
+     "climbing gym foot wash area Korea",
+     "climbing gym interior Seoul",
+     "클라이밍장 세족장"
+    ]
+   }
+  ]
+ },
+ "climb-496958523": {
+  "nameEn": "Seoul Forest Climbing Guro",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "검색 도구 한도 초과로 확인하지 못함. 실내 볼더링 클라이밍장이라 컬러풀한 홀드 벽이 일반적인 촬영 대상임",
+    "queries": [
+     "Indoor bouldering gym Seoul",
+     "Bouldering wall holds Korea",
+     "Indoor climbing wall"
+    ],
+    "ko": "실내 클라이밍 볼더링 벽"
+   },
+   {
+    "label": "홀드 코스",
+    "why": "검색 도구 한도 초과로 확인하지 못함. 난이도별 색상 홀드 루트는 실내 클라이밍장에서 흔한 포토 포인트임",
+    "queries": [
+     "Climbing holds colorful",
+     "Bouldering problem climbing route",
+     "Indoor climbing Korea"
+    ],
+    "ko": "클라이밍 홀드 코스"
+   },
+   {
+    "label": "구로디지털단지",
+    "why": "검색 도구 한도 초과로 확인하지 못함. 디지털로 일대는 구로디지털단지 지역이며 주변 풍경을 담기 좋음",
+    "queries": [
+     "Guro Digital Complex Seoul",
+     "Guro-gu Digital-ro Seoul",
+     "Guro Digital Complex Station"
+    ],
+    "ko": "구로디지털단지 디지털로"
+   },
+   {
+    "label": "클라이밍 체험",
+    "why": "검색 도구 한도 초과로 확인하지 못함. 초보자 체험과 클라이밍 동작 사진이 주요 콘텐츠일 가능성이 있음",
+    "queries": [
+     "Bouldering climber indoor",
+     "Rock climbing gym Korea",
+     "Sport climbing Seoul"
+    ],
+    "ko": "실내 클라이밍 체험"
+   }
+  ]
+ },
+ "climb-850543972": {
+  "nameEn": "Seoulforest Climbing Yeongdeungpo",
+  "spots": [
+   {
+    "label": "계단 포토존",
+    "why": "넓은 홀 중앙의 휴게공간에 계단 모양 포토존이 있어 후기에서 자주 언급된다.",
+    "queries": [
+     "Seoulforest Climbing Yeongdeungpo",
+     "indoor bouldering gym Seoul",
+     "climbing gym lounge stairs"
+    ]
+   },
+   {
+    "label": "팔길이 포토존",
+    "why": "팔길이(윙스팬)를 재 볼 수 있는 포토존이 있어 방문 후기에 단골로 나온다.",
+    "queries": [
+     "Seoulforest Climbing arm span",
+     "climbing ape index measurement wall",
+     "bouldering gym Seoul Yeongdeungpo"
+    ]
+   },
+   {
+    "label": "오버행 벽",
+    "why": "300평 대형 암장에서 플랫 벽과 오버행 벽이 비슷한 비율로 길게 이어지는 점이 특징이다.",
+    "queries": [
+     "Seoulforest Climbing overhang wall",
+     "indoor bouldering overhang wall",
+     "bouldering gym colorful holds"
+    ]
+   },
+   {
+    "label": "볼더링 문제벽",
+    "why": "양 옆의 긴 벽에 다양한 난이도의 문제가 세팅되어 있고, 일일권으로 초보부터 고수까지 즐긴다.",
+    "queries": [
+     "Seoulforest Climbing bouldering problems",
+     "indoor bouldering wall Korea",
+     "bouldering gym Seoul"
+    ]
+   },
+   {
+    "label": "클라이밍 팝업",
+    "why": "클라이밍 굿즈 팝업스토어와 오픈 페스티벌 같은 행사가 열린 적이 있다.",
+    "queries": [
+     "Seoulforest Climbing Yeongdeungpo pop-up",
+     "climbing gym event Seoul",
+     "Mullae-dong Yeongdeungpo-gu"
+    ]
+   }
+  ]
+ },
+ "climb-1045438278": {
+  "nameEn": "The Climb Mullae",
+  "spots": [
+   {
+    "label": "1층 볼더링존",
+    "why": "마트 건물을 통째로 개조한 2층 구조의 암장입니다. 1층은 벽이 높고 공간이 넓어 후기 사진이 가장 많이 나옵니다.",
+    "queries": [
+     "The Climb Mullae bouldering",
+     "indoor bouldering gym wall Seoul",
+     "climbing gym high bouldering wall"
+    ],
+    "ko": "더클라임 문래 볼더링"
+   },
+   {
+    "label": "대형 볼륨 홀드",
+    "why": "더클라임 문래점만의 특징으로, 회색 볼륨 홀드는 어떤 문제에서든 쓸 수 있습니다. 크고 고급스러운 대형 홀드가 많아 인증샷 소재로 자주 올라옵니다.",
+    "queries": [
+     "The Climb Mullae volume holds",
+     "climbing volume hold gym wall",
+     "bouldering gym large holds"
+    ],
+    "ko": "클라이밍 볼륨 홀드"
+   },
+   {
+    "label": "색깔 홀드 루트",
+    "why": "난이도를 색으로 나눈 코스가 벽을 가득 채웁니다. 완등 인증 사진의 단골 배경입니다.",
+    "queries": [
+     "The Climb Mullae colored holds",
+     "colorful climbing holds bouldering route",
+     "indoor climbing gym routes Korea"
+    ],
+    "ko": "클라이밍장 색깔 홀드"
+   },
+   {
+    "label": "2층 스트레칭존",
+    "why": "2층에는 스트레칭·웨이트존과 간단한 취식이 되는 휴게존이 있고, 벽이 1층보다 낮습니다. 운동 전후 사진을 찍는 곳으로 후기에 나옵니다.",
+    "queries": [
+     "The Climb Mullae second floor",
+     "climbing gym stretching area",
+     "indoor climbing gym lounge"
+    ],
+    "ko": "클라이밍장 스트레칭존"
+   },
+   {
+    "label": "창가 초록뷰",
+    "why": "1·2층 모두 창이 많아 바깥의 나무가 보입니다. 후기에서는 해외 암장 같은 분위기라고 표현합니다.",
+    "queries": [
+     "The Climb Mullae interior windows",
+     "bright indoor climbing gym windows",
+     "climbing gym interior natural light"
+    ],
+    "ko": "실내 클라이밍장 내부"
+   },
+   {
+    "label": "문래점 외관",
+    "why": "문래역과 영등포구청역 사이 당산로 변에 있습니다. 옛 마트 건물을 개조했고 간판이 달려 있어 방문 인증 사진을 찍는 곳입니다.",
+    "queries": [
+     "The Climb Mullae exterior",
+     "Mullae-dong Yeongdeungpo Dangsan-ro",
+     "Mullae station Seoul"
+    ],
+    "ko": "문래동 당산로 영등포"
+   }
+  ]
+ },
+ "climb-807578478": {
+  "nameEn": "The Climb Gangnam",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "더클라임 강남점은 실내 클라이밍·볼더링 짐이라서, 색색의 홀드가 붙은 볼더링 벽이 방문자들이 가장 많이 찍는 장면이다. 다만 검색 한도 때문에 후기로 직접 확인하지는 못했다.",
+    "queries": [
+     "The Climb Gangnam bouldering wall",
+     "Seoul indoor bouldering gym",
+     "bouldering wall holds Korea",
+     "실내 볼더링 암장"
+    ]
+   },
+   {
+    "label": "클라이밍 홀드",
+    "why": "형형색색 홀드와 루트 테이프는 클라이밍 짐 어디서나 찍는 대표 클로즈업이다. 이 지점에서 확인한 사실은 아니고 장르의 일반적인 특징이다.",
+    "queries": [
+     "The Climb Gangnam climbing holds",
+     "climbing holds colorful gym",
+     "Korea climbing gym holds",
+     "클라이밍 홀드"
+    ]
+   },
+   {
+    "label": "클라이밍 장면",
+    "why": "벽을 오르는 동작 사진은 클라이밍 짐 후기와 SNS에 가장 흔하게 올라오는 인증샷 유형이다.",
+    "queries": [
+     "The Climb Gangnam climbing",
+     "Seoul bouldering climber",
+     "Korea sport climbing indoor",
+     "실내 클라이밍 볼더링"
+    ]
+   },
+   {
+    "label": "역삼 테헤란로",
+    "why": "더클라임 강남점은 테헤란로8길, 즉 역삼·강남 업무지구에 있다. 방문 전후로 이 일대 거리와 빌딩가를 함께 찍는 경우가 많다.",
+    "queries": [
+     "Teheran-ro Gangnam Seoul",
+     "Yeoksam-dong Teheranno street",
+     "Gangnam business district Seoul",
+     "테헤란로 역삼동"
+    ]
+   }
+  ]
+ },
+ "climb-408430175": {
+  "nameEn": "The Climb Nonhyeon",
+  "spots": [
+   {
+    "label": "터널 벽",
+    "why": "더클라임 지점 중 유일하게 터널 같은 벽이 있다고 소개되는 논현점만의 구간",
+    "queries": [
+     "The Climb Nonhyeon tunnel wall",
+     "indoor climbing gym tunnel wall",
+     "bouldering gym overhang tunnel"
+    ]
+   },
+   {
+    "label": "볼더링 월",
+    "why": "색색의 홀드와 문제 코스가 있는 실내 볼더링 벽으로, 후기 영상에서도 빨강 문제 등 코스 풀이가 중심",
+    "queries": [
+     "The Climb Nonhyeon bouldering wall",
+     "indoor bouldering wall colorful holds",
+     "Climbing gym Seoul bouldering"
+    ]
+   },
+   {
+    "label": "체험강습",
+    "why": "초보자 프로그램이 체계적이라 입문용 암장으로 꼽히며, 체험강습 후기와 인증샷이 많음",
+    "queries": [
+     "The Climb Nonhyeon beginner lesson",
+     "indoor climbing beginner class",
+     "climbing shoes chalk bouldering"
+    ]
+   },
+   {
+    "label": "강남대로 입구",
+    "why": "강남대로 건물 지하 1층에 있고 논현역 4번 출구에서 걸어서 갈 수 있어 찾아가는 길 사진이 많음",
+    "queries": [
+     "Nonhyeon Station Seoul",
+     "Gangnam-daero Nonhyeon-dong",
+     "Gangnam-daero street Seoul"
+    ]
+   }
+  ]
+ },
+ "climb-78694546": {
+  "nameEn": "The Climb Yeonnam",
+  "spots": [
+   {
+    "label": "통창 암장 전경",
+    "why": "400평 규모의 지상층 암장으로, 통창 덕분에 밝은 분위기라고 소개되어 인증샷이 많이 나옵니다.",
+    "queries": [
+     "The Climb Yeonnam climbing gym",
+     "Yeonnam-dong climbing gym Seoul",
+     "Indoor bouldering gym Seoul"
+    ]
+   },
+   {
+    "label": "볼더링 벽",
+    "why": "다이내믹하고 유형이 다양한 문제가 많아 평일 퇴근 후나 주말에 클라이머가 몰리는 메인 촬영 구역입니다.",
+    "queries": [
+     "The Climb Yeonnam bouldering wall",
+     "Indoor bouldering wall Korea",
+     "실내 볼더링 클라이밍장"
+    ]
+   },
+   {
+    "label": "테라스",
+    "why": "오픈 당시 후기 영상에서 '테라스 맛집'으로 소개된 휴식·촬영 공간입니다.",
+    "queries": [
+     "The Climb Yeonnam terrace",
+     "Yeonnam-dong terrace Seoul"
+    ]
+   },
+   {
+    "label": "클라이밍 홀드",
+    "why": "알록달록한 홀드와 문제 세팅 클로즈업은 클라이밍 후기 사진과 브이로그에 자주 올라옵니다.",
+    "queries": [
+     "The Climb Yeonnam climbing holds",
+     "Bouldering holds colorful indoor",
+     "클라이밍 홀드"
+    ]
+   }
+  ]
+ },
+ "climb-367482090": {
+  "nameEn": "The Climb Sadang",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "더클라임 사당점의 중심 시설로, 색색의 홀드가 붙은 실내 볼더링 벽 사진이 가장 많이 공유됩니다.",
+    "queries": [
+     "The Climb Sadang bouldering wall",
+     "indoor bouldering gym Seoul",
+     "climbing gym holds wall"
+    ],
+    "ko": "더클라임 사당 볼더링"
+   },
+   {
+    "label": "루트 세팅 벽",
+    "why": "난이도별 색 홀드로 세팅한 루트 벽은 완등 인증샷을 찍는 대표 배경입니다.",
+    "queries": [
+     "The Climb Sadang route setting",
+     "climbing gym colorful holds",
+     "indoor climbing wall Korea"
+    ],
+    "ko": "실내 클라이밍 루트 세팅"
+   },
+   {
+    "label": "클라이밍 동작",
+    "why": "홀드를 잡고 오르는 장면은 클라이밍장 후기에서 가장 흔한 사진 구도입니다.",
+    "queries": [
+     "The Climb Sadang climber",
+     "bouldering climber indoor",
+     "climbing gym Seoul climber"
+    ],
+    "ko": "실내 클라이밍 볼더링 사진"
+   },
+   {
+    "label": "더클라임 입구",
+    "why": "지점 간판과 입구는 방문 인증용 사진으로 자주 쓰입니다.",
+    "queries": [
+     "The Climb Sadang entrance",
+     "The Climb climbing gym Seoul signage",
+     "Sadang Gwacheon-daero building"
+    ],
+    "ko": "더클라임 사당점 입구"
+   }
+  ]
+ },
+ "climb-1115009396": {
+  "nameEn": "The Climb Isu",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "실내 클라이밍장의 핵심 시설로, 컬러 홀드가 빽빽한 볼더링 벽이 가장 많이 찍히는 장면이다. (웹 검색 한도 초과로 현장 후기는 확인하지 못했다.)",
+    "queries": [
+     "The Climb Isu bouldering wall",
+     "The Climb climbing gym Seoul bouldering",
+     "indoor bouldering wall Korea",
+     "실내 볼더링 클라이밍장"
+    ]
+   },
+   {
+    "label": "컬러 홀드 루트",
+    "why": "난이도별 색깔 홀드와 루트 세팅이 시각적으로 눈에 띄어 인증샷에 자주 쓰인다. (후기로 확인하지 못했다.)",
+    "queries": [
+     "The Climb Isu climbing holds",
+     "climbing gym colored holds Seoul",
+     "climbing holds route setting"
+    ]
+   },
+   {
+    "label": "클라이밍 장면",
+    "why": "벽에 매달려 등반하는 모습이 방문자들이 주로 공유하는 사진이다. (후기로 확인하지 못했다.)",
+    "queries": [
+     "The Climb Isu climber",
+     "climbing gym Seoul climber",
+     "indoor rock climbing Korea"
+    ]
+   },
+   {
+    "label": "클라이밍 장비",
+    "why": "클라이밍 슈즈와 초크 등 장비 컷이 방문 인증용으로 흔하다. (후기로 확인하지 못했다.)",
+    "queries": [
+     "climbing shoes chalk bag",
+     "The Climb Isu climbing gear",
+     "클라이밍 슈즈 초크"
+    ]
+   }
+  ]
+ },
+ "climb-610038060": {
+  "nameEn": "The Climb Sillim",
+  "spots": [
+   {
+    "label": "볼더링 메인벽",
+    "why": "더클라임 신림점에서 사진이 가장 많이 나오는 곳으로 추정되는 알록달록한 홀드의 볼더링 벽 전경이다. 이번에는 웹 검색이 막혀 후기로 확인하지 못했다.",
+    "queries": [
+     "The Climb Sillim bouldering wall",
+     "The Climb bouldering gym Seoul",
+     "Bouldering gym Seoul climbing wall"
+    ]
+   },
+   {
+    "label": "오버행 벽",
+    "why": "경사가 센 오버행 구간에서 등반 자세를 찍는 사진이 많을 것으로 추정한다. 후기로 확인하지는 못했다.",
+    "queries": [
+     "The Climb Sillim overhang",
+     "Bouldering overhang climbing gym Korea",
+     "Indoor bouldering climber Seoul"
+    ]
+   },
+   {
+    "label": "매트·등반샷",
+    "why": "두꺼운 안전 매트 위에서 홀드를 잡고 오르는 장면은 실내 클라이밍 인증샷의 기본이다. 이 지점의 후기로 확인하지는 못했다.",
+    "queries": [
+     "The Climb Sillim climber",
+     "Indoor climbing gym Korea bouldering",
+     "Bouldering climbing hold close-up"
+    ]
+   },
+   {
+    "label": "신림 입구",
+    "why": "서울 관악구 신원로에 있는 건물 외관과 입구 간판은 방문 인증샷을 찍기 좋은 곳으로 추정한다. 후기로 확인하지는 못했다.",
+    "queries": [
+     "The Climb Sillim entrance",
+     "Sinwon-ro Gwanak-gu Seoul",
+     "Sillim-dong Gwanak-gu street"
+    ]
+   }
+  ]
+ },
+ "climb-26842478": {
+  "nameEn": "The Climb Ilsan",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "클라이밍장 대표 시설로, 형형색색 홀드가 붙은 경사 벽이 가장 많이 찍히는 장면(웹 검색 불가로 일반 시설 기준, 현장 확인 필요)",
+    "queries": [
+     "The Climb Ilsan bouldering wall",
+     "Indoor bouldering gym Korea",
+     "Bouldering wall holds"
+    ],
+    "ko": "더클라임 일산 볼더링"
+   },
+   {
+    "label": "컬러 홀드",
+    "why": "난이도별 색상 홀드와 루트 표시가 시각적으로 두드러져 클로즈업 사진으로 자주 쓰임(일반 시설 기준, 현장 확인 필요)",
+    "queries": [
+     "Climbing holds colorful",
+     "The Climb Ilsan climbing holds",
+     "Climbing gym route setting"
+    ],
+    "ko": "클라이밍 홀드"
+   },
+   {
+    "label": "리드 벽",
+    "why": "높은 수직·오버행 벽면을 올라가는 모습이 담기는 전형적인 암장 풍경(일반 시설 기준, 현장 확인 필요)",
+    "queries": [
+     "The Climb Ilsan lead climbing wall",
+     "Indoor lead climbing wall",
+     "Climbing gym Korea"
+    ],
+    "ko": "실내 클라이밍 리드 벽"
+   },
+   {
+    "label": "크래시패드",
+    "why": "바닥을 덮은 두꺼운 매트 위에서 점프·낙하하는 동작 컷이 인기(일반 시설 기준, 현장 확인 필요)",
+    "queries": [
+     "Bouldering crash pad gym",
+     "Indoor climbing gym mat",
+     "The Climb Ilsan interior"
+    ],
+    "ko": "클라이밍장 매트"
+   },
+   {
+    "label": "일산 외관",
+    "why": "더클라임 간판과 건물 외관은 방문 인증샷 포인트(일반 기준, 현장 확인 필요)",
+    "queries": [
+     "The Climb Ilsan exterior",
+     "Ilsan Donggu Goyang building",
+     "The Climb Korea climbing gym"
+    ],
+    "ko": "고양시 일산동구 더클라임"
+   }
+  ]
+ },
+ "climb-1796322688": {
+  "nameEn": "Climbing Park Jongno",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "실내 클라이밍장의 핵심인 컬러 홀드 볼더링 벽이다. 후기 사진에서 가장 자주 찍히는 구간이다. 웹 검색이 막혀 이 지점의 개별 후기는 확인하지 못했다.",
+    "queries": [
+     "Climbing Park Jongno bouldering",
+     "Seoul indoor bouldering gym",
+     "Bouldering wall colorful holds"
+    ],
+    "ko": "클라이밍파크 종로점 볼더링"
+   },
+   {
+    "label": "컬러 홀드",
+    "why": "난이도별 색 홀드가 벽에 촘촘히 박힌 모습이다. 클라이밍장에서 가장 흔한 인증 사진 소재다. 이 지점의 개별 후기는 확인하지 못했다.",
+    "queries": [
+     "Climbing holds colorful wall",
+     "Climbing Park Seoul holds",
+     "Indoor climbing gym Korea"
+    ],
+    "ko": "클라이밍 홀드 실내 암벽"
+   },
+   {
+    "label": "오버행 벽",
+    "why": "경사가 큰 오버행 벽에서 매달린 동작을 찍은 사진이 많다. 클라이밍장 대표 구도다. 이 지점의 개별 후기는 확인하지 못했다.",
+    "queries": [
+     "Overhang bouldering wall gym",
+     "Climbing Park Jongno overhang",
+     "Indoor climbing overhang Seoul"
+    ],
+    "ko": "실내 클라이밍 오버행"
+   },
+   {
+    "label": "훈련 구역",
+    "why": "캠퍼스보드나 행보드 같은 훈련 기구가 있는 구역이다. 클라이머들이 자주 공유하는 곳이다. 이 지점의 개별 후기는 확인하지 못했다.",
+    "queries": [
+     "Campus board climbing gym",
+     "Climbing training area hangboard",
+     "Climbing Park Jongno training"
+    ],
+    "ko": "클라이밍 훈련 캠퍼스보드"
+   },
+   {
+    "label": "종로 거리",
+    "why": "클라이밍파크가 있는 종로 일대 거리 풍경이다. 방문 전후에 함께 찍는 배경이다. 이 지점의 개별 후기는 확인하지 못했다.",
+    "queries": [
+     "Jongno Seoul street",
+     "Jongno-gu Seoul Jongno road",
+     "Jongno Tower Seoul"
+    ],
+    "ko": "서울 종로 거리"
+   }
+  ]
+ },
+ "climb-2029901090": {
+  "nameEn": "Climbing Park Gangnam",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "지하 1층의 넓은 암장에서 색깔 홀드 문제(노랑~흰색 난이도)를 푸는 모습이 가장 흔한 인증샷입니다.",
+    "queries": [
+     "Climbing Park Gangnam bouldering wall",
+     "Seoul indoor bouldering gym",
+     "Korea indoor climbing gym",
+     "실내 클라이밍장 볼더링"
+    ]
+   },
+   {
+    "label": "암장 인테리어",
+    "why": "클라이밍파크 4개 지점 중 가장 최근에 열었고 인테리어가 가장 예쁘다는 후기가 많습니다.",
+    "queries": [
+     "Climbing Park Gangnam interior",
+     "Seoul climbing gym interior",
+     "Gangnam indoor climbing"
+    ]
+   },
+   {
+    "label": "행보드 존",
+    "why": "행보드 트레이닝 공간이 넓어서 근력 운동을 하는 클라이머들이 자주 찍는 구역입니다.",
+    "queries": [
+     "Climbing Park Gangnam hangboard",
+     "hangboard training climbing gym",
+     "행보드 클라이밍 트레이닝"
+    ]
+   },
+   {
+    "label": "강남역 입구",
+    "why": "강남역 신분당선 4번 출구 바로 앞 건물이고, 엘리베이터로 지하 1층에 내려가면 암장이 나옵니다.",
+    "queries": [
+     "Gangnam Station Exit 4 Gangnam-daero",
+     "Gangnam-daero Seoul street",
+     "강남역 4번 출구 강남대로"
+    ]
+   }
+  ]
+ },
+ "climb-403186026": {
+  "nameEn": "Climbing Park Sinnonhyeon",
+  "spots": [
+   {
+    "label": "그린 포토존",
+    "why": "지하 암장의 답답함을 덜어 주려고 조화 나무와 이끼로 꾸민 인증샷 코너입니다. 운동 후 거울 앞에서 인증샷을 많이 찍습니다.",
+    "queries": [
+     "Climbing Park Sinnonhyeon green photo zone",
+     "indoor climbing gym Seoul plants interior",
+     "Climbing Park Gangnam interior"
+    ],
+    "ko": "클라이밍파크 신논현점 그린 포토존"
+   },
+   {
+    "label": "메인 볼더링벽",
+    "why": "암장 중앙에 있는 대표 벽입니다. 높이와 각도가 있어서 후기에 '높아서 무섭다'는 말이 자주 나옵니다.",
+    "queries": [
+     "Climbing Park Sinnonhyeon bouldering wall",
+     "Climbing Park Gangnam main wall",
+     "bouldering gym Seoul Gangnam"
+    ],
+    "ko": "클라이밍파크 신논현점 볼더링 메인벽"
+   },
+   {
+    "label": "슬랩·우측벽",
+    "why": "가장 왼쪽의 슬랩벽과 카운터 옆 우측벽은 각도가 센 편입니다. 2주마다 번갈아 새로 세팅해서 코스가 바뀝니다.",
+    "queries": [
+     "Climbing Park Sinnonhyeon slab wall",
+     "indoor bouldering overhang wall Seoul",
+     "bouldering route setting Korea gym"
+    ],
+    "ko": "클라이밍파크 신논현점 슬랩벽 우측벽"
+   },
+   {
+    "label": "지구력벽",
+    "why": "평소에는 지구력벽으로 쓰고, 이벤트 때는 볼더링 문제를 세팅합니다. 볼더링과 지구력을 함께 즐길 수 있는 점이 특징입니다.",
+    "queries": [
+     "Climbing Park Sinnonhyeon endurance wall",
+     "indoor lead climbing wall Seoul",
+     "Climbing Park Gangnam endurance wall"
+    ],
+    "ko": "클라이밍파크 신논현점 지구력벽"
+   },
+   {
+    "label": "신논현역 입구",
+    "why": "신논현역 5번 출구 바로 옆 충림빌딩 지하 3층에 있어서 찾기 쉽습니다. 강남대로 간판과 건물이 방문 인증 배경으로 쓰입니다.",
+    "queries": [
+     "Sinnonhyeon Station Exit 5",
+     "Gangnam-daero Sinnonhyeon street",
+     "Climbing Park Sinnonhyeon entrance"
+    ],
+    "ko": "신논현역 5번 출구 강남대로"
+   }
+  ]
+ },
+ "climb-2029401912": {
+  "nameEn": "Sonsangwon Climbing Gym Gangnam",
+  "spots": [
+   {
+    "label": "강남대로 입구",
+    "why": "강남역 5번 출구에서 도보 4분 거리에 있는 강남대로 331 건물의 입구라서, 방문 인증샷을 찍는 곳으로 자주 나옴",
+    "queries": [
+     "Sonsangwon Climbing Gym Gangnam entrance",
+     "Gangnam-daero Seoul street",
+     "Gangnam Station exit 5"
+    ],
+    "ko": "강남대로 강남역 5번 출구"
+   },
+   {
+    "label": "볼더링 벽",
+    "why": "실내 클라이밍짐의 핵심 시설인 볼더링 벽면으로, 컬러 홀드와 함께 등반하는 모습을 가장 많이 찍음",
+    "queries": [
+     "Sonsangwon Climbing Gym bouldering wall",
+     "Indoor bouldering gym Seoul",
+     "Bouldering wall colorful holds"
+    ],
+    "ko": "실내 클라이밍 볼더링 벽"
+   },
+   {
+    "label": "컬러 홀드 코스",
+    "why": "매주 월요일 정기 세팅으로 코스가 바뀌어서, 새 코스 앞 인증샷이 후기에 자주 올라옴",
+    "queries": [
+     "Sonsangwon Climbing Gym route setting",
+     "Climbing holds colorful routes indoor",
+     "Indoor climbing gym Seoul holds"
+    ],
+    "ko": "클라이밍 홀드 루트 세팅"
+   },
+   {
+    "label": "등반 장면",
+    "why": "체험과 강습 중 벽에 매달려 오르는 모습이 인스타그램 후기의 대표 컷임",
+    "queries": [
+     "Sonsangwon Climbing Gym climbing",
+     "Indoor rock climbing Seoul",
+     "Climber on indoor bouldering wall"
+    ],
+    "ko": "실내 암벽등반 클라이머"
+   }
+  ]
+ },
+ "climb-24374877": {
+  "nameEn": "Son Sang-won Climbing Gym Pangyo",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "실내 클라이밍짐의 핵심 시설입니다. 컬러 홀드가 붙은 볼더링 문제 벽 앞에서 등반 사진과 인증샷을 많이 찍습니다.",
+    "queries": [
+     "Indoor bouldering wall",
+     "Climbing gym bouldering Korea",
+     "Son Sang-won Climbing Gym Pangyo"
+    ],
+    "ko": "실내 볼더링"
+   },
+   {
+    "label": "홀드 컬러월",
+    "why": "난이도별로 색을 나눈 홀드가 벽을 가득 채웁니다. 클라이밍짐에서 가장 흔한 인증샷 배경입니다.",
+    "queries": [
+     "Climbing holds colorful wall",
+     "Indoor climbing gym holds",
+     "Son Sang-won Climbing Pangyo wall"
+    ],
+    "ko": "클라이밍 홀드"
+   },
+   {
+    "label": "유스페이스2",
+    "why": "짐이 있는 대왕판교로 670 유스페이스2 B동 지하 1층 건물입니다. 찾아가는 길의 외관 사진 배경이 됩니다.",
+    "queries": [
+     "U-Space Pangyo",
+     "Pangyo U Space building",
+     "Daewangpangyo-ro Pangyo Bundang"
+    ],
+    "ko": "판교 유스페이스"
+   },
+   {
+    "label": "판교 테크노밸리",
+    "why": "짐이 있는 판교역 일대 업무지구입니다. 퇴근길 클라이밍 후 주변 도시 풍경을 찍는 사람이 많습니다.",
+    "queries": [
+     "Pangyo Techno Valley",
+     "Pangyo Station Seongnam",
+     "Pangyo Bundang skyline"
+    ],
+    "ko": "판교 테크노밸리"
+   }
+  ]
+ },
+ "climb-196180430": {
+  "nameEn": "Sonsangwon Climbing Gym Euljiro",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "클라이밍짐 방문자들이 가장 많이 찍는 색색의 홀드가 붙은 볼더링 벽 (웹 검색 한도 초과로 확인 못 함)",
+    "queries": [
+     "Sonsangwon Climbing Gym bouldering wall",
+     "Indoor bouldering gym Seoul",
+     "Climbing holds colorful bouldering wall"
+    ]
+   },
+   {
+    "label": "리드·지구력벽",
+    "why": "높은 벽에서 로프를 매고 오르는 리드·지구력 구간으로, 등반 인증샷이 많은 곳 (웹 검색 한도 초과로 확인 못 함)",
+    "queries": [
+     "Sonsangwon Climbing Gym lead climbing wall",
+     "Indoor lead climbing wall Seoul",
+     "Indoor climbing gym rope climbing"
+    ]
+   },
+   {
+    "label": "루트 홀드",
+    "why": "난이도별 색깔 루트와 홀드를 클로즈업한 사진이 많음 (웹 검색 한도 초과로 확인 못 함)",
+    "queries": [
+     "Sonsangwon Climbing Gym route holds",
+     "Climbing gym holds close-up",
+     "Indoor climbing route setting"
+    ]
+   },
+   {
+    "label": "을지로 입구",
+    "why": "남대문로·을지로 도심 빌딩가에 있는 실내 클라이밍짐이라 입구와 외관을 함께 인증함 (웹 검색 한도 초과로 확인 못 함)",
+    "queries": [
+     "Sonsangwon Climbing Gym Euljiro entrance",
+     "Euljiro Seoul Jung-gu Namdaemun-ro building",
+     "Euljiro Seoul street"
+    ]
+   }
+  ]
+ },
+ "climb-688426394": {
+  "nameEn": "Peakers Sinchon (CGV Sinchon Artreon)",
+  "spots": [
+   {
+    "label": "통창 로비",
+    "why": "보도자료에서 통창 인테리어로 인스타그래머블한 공간이라고 소개한 입구 로비다. 후기에서도 햇볕이 들어오는 창과 깔끔한 입구를 장점으로 꼽는다.",
+    "queries": [
+     "Peakers Sinchon climbing gym lobby",
+     "CGV Sinchon Artreon Peakers",
+     "indoor climbing gym lobby Seoul"
+    ]
+   },
+   {
+    "label": "높은 층고 암벽",
+    "why": "상영관을 개조해 층고가 높고, 역동적인 볼더링을 할 수 있는 점이 신촌점의 가장 큰 특징이다. 기사에서도 이 점을 가장 먼저 내세운다.",
+    "queries": [
+     "Peakers Sinchon bouldering wall",
+     "Peakers climbing gym Seoul cinema conversion",
+     "indoor bouldering wall high ceiling Seoul"
+    ]
+   },
+   {
+    "label": "난이도 컬러홀드",
+    "why": "레드부터 블랙까지 9단계 색상 코스로 난이도를 나눈 홀드 벽이다. 클라이밍 후기 사진에 가장 자주 나온다.",
+    "queries": [
+     "Peakers Sinchon bouldering holds colors",
+     "bouldering gym colored holds Seoul",
+     "indoor climbing holds route setting Korea"
+    ]
+   },
+   {
+    "label": "클생네컷",
+    "why": "피커스 전용 포토프레임으로 찍는 네컷사진이다. 오픈 기념 이벤트로 무료 촬영을 제공했다.",
+    "queries": [
+     "Peakers Sinchon photo booth",
+     "Korean four-cut photo booth",
+     "Life Four Cuts Seoul"
+    ]
+   },
+   {
+    "label": "신촌아트레온",
+    "why": "피커스가 입점한 CGV 신촌 아트레온 건물이다. 11층에 있고 신촌역과 이대역 근처라 방문 인증샷의 배경이 된다.",
+    "queries": [
+     "Sinchon Artreon building Seoul",
+     "CGV Sinchon Artreon",
+     "Sinchon Station Seoul"
+    ]
+   }
+  ]
+ },
+ "climb-132573277": {
+  "nameEn": "Peakers Climbing Guro",
+  "spots": [
+   {
+    "label": "영화관 클라이밍홀",
+    "why": "CGV구로 3·4관을 개조해 높은 층고를 살린 곳으로, 영화관 속 클라이밍장이라는 점이 가장 큰 특징이다.",
+    "queries": [
+     "Peakers Climbing Guro",
+     "CGV Guro Peakers climbing gym",
+     "Climbing gym in cinema Seoul",
+     "피커스클라이밍 구로"
+    ]
+   },
+   {
+    "label": "대회용 컴피벽",
+    "why": "볼더링 대회를 열 수 있는 규모의 대형 암벽으로, 구로점의 가장 큰 특징으로 꼽힌다.",
+    "queries": [
+     "Peakers Guro competition wall",
+     "Peakers Guro bouldering wall",
+     "Indoor bouldering competition wall Seoul",
+     "피커스 구로 컴피벽"
+    ]
+   },
+   {
+    "label": "볼더링 벽",
+    "why": "입장하면 양쪽 계단 위로 알록달록한 홀드의 볼더링 구역이 나뉘어 있어, 후기 사진에서 가장 자주 보인다.",
+    "queries": [
+     "Peakers Guro bouldering",
+     "Colorful climbing holds Peakers Guro",
+     "Indoor bouldering Guro-gu Seoul",
+     "피커스 구로 볼더링"
+    ]
+   },
+   {
+    "label": "지구력벽",
+    "why": "컴피벽과 함께 아래층에 자리한 지구력 구역으로, 영화관 구조를 살린 공간 구성이 후기에 자주 나온다.",
+    "queries": [
+     "Peakers Guro endurance wall",
+     "Peakers Climbing Guro interior",
+     "Indoor climbing endurance wall Seoul",
+     "피커스 구로 지구력벽"
+    ]
+   },
+   {
+    "label": "NC신구로 입구",
+    "why": "구로역 1번 출구에서 NC신구로점으로 이어져 6층 CGV 옆에 있다. 입구를 찾기 어렵다는 후기가 많아 입구 사진이 자주 올라온다.",
+    "queries": [
+     "NC Cube Singuro Guro",
+     "CGV Guro NC Shin Guro",
+     "Guro Station exit 1 Seoul",
+     "구로역 NC신구로점"
+    ]
+   }
+  ]
+ },
+ "climb-26096554": {
+  "nameEn": "Yeosu Indoor Climbing Wall",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "여수실내암벽(여수클라이밍짐)은 볼더링 중심의 소규모 동네 클라이밍장이라 관광 포토 스폿은 따로 없고, 대표 장면은 로프 없이 오르는 볼더링 벽이다.",
+    "queries": [
+     "Yeosu climbing gym bouldering",
+     "Indoor bouldering wall",
+     "Bouldering gym Korea",
+     "실내 볼더링"
+    ]
+   },
+   {
+    "label": "인공 암벽",
+    "why": "실내 인공 암벽 등반은 이곳 이용객이 가장 많이 찍는 기본 장면이다(조사된 자료상 별도 명소는 확인되지 않음).",
+    "queries": [
+     "Yeosu indoor climbing wall",
+     "Indoor climbing wall Korea",
+     "Artificial climbing wall",
+     "인공암벽 클라이밍"
+    ]
+   },
+   {
+    "label": "홀드 루트",
+    "why": "색색의 홀드로 만든 루트 세팅은 클라이밍장 후기에서 흔히 찍는 클로즈업 소재다.",
+    "queries": [
+     "Climbing holds colorful wall",
+     "Indoor climbing route setting",
+     "Climbing holds close-up",
+     "클라이밍 홀드"
+    ]
+   },
+   {
+    "label": "리드 등반",
+    "why": "로프를 매고 높은 벽을 오르는 리드·지구력 등반은 실내암벽장의 대표 동작 사진이다.",
+    "queries": [
+     "Lead climbing indoor gym",
+     "Indoor rope climbing wall",
+     "Sport climbing Korea",
+     "리드 클라이밍"
+    ]
+   }
+  ]
+ },
+ "climb-489301153": {
+  "nameEn": "Handwork Climbing Gym Gwangju",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "광주 후기 영상에서 자주 소개되는 핸드워크의 핵심 공간으로, 다양한 색 홀드와 문제가 있는 실내 볼더링 벽이 대표 사진 포인트입니다.",
+    "queries": [
+     "Handwork Climbing Gym Gwangju bouldering",
+     "Indoor bouldering wall South Korea",
+     "Climbing gym bouldering wall"
+    ],
+    "ko": "광주 핸드워크 클라이밍 볼더링"
+   },
+   {
+    "label": "킬터보드",
+    "why": "핸드워크 양산점 소개에 킬터보드가 언급됩니다. 서방로 지점에도 있는지는 확인하지 못했습니다.",
+    "queries": [
+     "Kilter Board climbing",
+     "Kilter Board training wall",
+     "Handwork Climbing Gwangju Kilter Board"
+    ],
+    "ko": "킬터보드 클라이밍"
+   },
+   {
+    "label": "컬러 홀드",
+    "why": "알록달록한 홀드와 루트 테이프를 가까이서 찍는 클라이밍짐 클로즈업 컷입니다.",
+    "queries": [
+     "Climbing holds colorful gym wall",
+     "Bouldering holds close-up",
+     "Indoor climbing gym holds"
+    ],
+    "ko": "클라이밍 홀드"
+   },
+   {
+    "label": "통창 풍경",
+    "why": "핸드워크 양산점은 통창이 예쁘다고 소개됩니다. 서방로 지점의 창 구조는 확인하지 못했으니, 지점 확인 후 사용하세요.",
+    "queries": [
+     "Indoor climbing gym large windows",
+     "Handwork Climbing Yangsan Gwangju",
+     "Climbing gym interior natural light"
+    ],
+    "ko": "클라이밍짐 실내 통창"
+   }
+  ]
+ },
+ "climb-707402444": {
+  "nameEn": "Incave Climbing Gym Sangmu",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "클라이밍짐 방문자가 가장 많이 찍는 핵심 시설로, 색색의 홀드가 붙은 벽이 대표 장면이다. 웹 검색 한도 때문에 이 지점 후기는 확인하지 못했다.",
+    "queries": [
+     "Incave climbing gym bouldering wall",
+     "bouldering wall colorful holds indoor climbing gym",
+     "indoor bouldering Korea climbing gym"
+    ]
+   },
+   {
+    "label": "컬러 홀드 루트",
+    "why": "난이도별 색 홀드 루트는 클라이밍짐 사진에서 가장 흔한 구도다. 이 지점에서 확인한 내용은 아니다.",
+    "queries": [
+     "climbing holds colorful route indoor wall",
+     "indoor climbing route setting holds",
+     "Incave climbing gym holds"
+    ]
+   },
+   {
+    "label": "리드 클라이밍",
+    "why": "높은 벽을 로프로 오르는 장면은 클라이밍짐의 대표 포토 포인트다. 이 지점에 있는지는 확인하지 못했다.",
+    "queries": [
+     "indoor lead climbing wall gym",
+     "Incave climbing gym lead wall",
+     "lead climbing rope indoor gym Korea"
+    ]
+   },
+   {
+    "label": "클라이밍 체험",
+    "why": "초보자가 벽을 오르는 모습은 클라이밍짐 방문 인증샷으로 자주 찍힌다. 이 지점의 후기는 확인하지 못했다.",
+    "queries": [
+     "Incave climbing gym Gwangju",
+     "climber on indoor climbing wall",
+     "Gwangju Sangmu climbing gym"
+    ]
+   }
+  ]
+ },
+ "climb-662516308": {
+  "nameEn": "Off The Wall Climbing Itaewon",
+  "spots": [
+   {
+    "label": "블랙 힙 인테리어",
+    "why": "이태원 분위기에 맞춘 검은 벽의 힙한 인테리어가 후기마다 나오는 대표 포인트",
+    "queries": [
+     "Off The Wall Climbing Itaewon interior",
+     "Itaewon indoor climbing gym Seoul",
+     "이태원 실내 클라이밍장"
+    ]
+   },
+   {
+    "label": "볼더링 벽",
+    "why": "230평 규모에 다양한 높이와 스타일의 볼더링 문제가 있어 클라이밍 인증샷을 많이 찍음",
+    "queries": [
+     "Off The Wall Climbing Itaewon bouldering wall",
+     "Seoul bouldering gym climbing wall",
+     "볼더링 암장 클라이밍 벽"
+    ]
+   },
+   {
+    "label": "통유리 암장",
+    "why": "월간산에서 소개한 통유리의 넓고 쾌적한 암장 공간",
+    "queries": [
+     "Off The Wall Climbing Itaewon glass wall",
+     "Itaewon-ro climbing gym Yongsan",
+     "이태원로 190 오프더월"
+    ]
+   },
+   {
+    "label": "DJ 페스티벌",
+    "why": "행사 형식의 디제잉 페스티벌이 이곳의 특징으로 소개됨",
+    "queries": [
+     "Off The Wall Climbing Itaewon DJ festival",
+     "Itaewon climbing gym DJ party",
+     "클라이밍장 DJ 파티"
+    ]
+   },
+   {
+    "label": "체험 클래스",
+    "why": "전문 강사와 함께하는 입문 체험과 강습으로 처음 방문하는 여행자에게 인기",
+    "queries": [
+     "Off The Wall Climbing Itaewon lesson",
+     "Indoor climbing lesson Seoul beginner",
+     "실내 클라이밍 체험"
+    ]
+   }
+  ]
+ },
+ "climb-1270950119": {
+  "nameEn": "Climb Together Gangnam",
+  "spots": [
+   {
+    "label": "리드 클라이밍 벽",
+    "why": "클라임투게더는 서울·경기권 최대 규모의 실내 리드클라이밍 짐을 내세우는 곳이라, 높은 벽을 오르는 모습이 대표 사진 소재입니다.",
+    "queries": [
+     "Lead climbing wall indoor",
+     "Indoor climbing gym lead wall",
+     "Climb Together Korea climbing gym",
+     "실내 리드 클라이밍"
+    ]
+   },
+   {
+    "label": "볼더링 존",
+    "why": "낮은 벽에서 다양한 루트를 푸는 볼더링 구역은 실내 클라이밍장에서 가장 많이 찍는 장면입니다.",
+    "queries": [
+     "Indoor bouldering gym",
+     "Bouldering wall colorful holds",
+     "Climb Together bouldering",
+     "실내 볼더링"
+    ]
+   },
+   {
+    "label": "컬러풀 홀드 벽",
+    "why": "여러 색의 홀드와 루트 세팅이 한눈에 보이는 벽면은 클라이밍장 인증샷의 단골 배경입니다.",
+    "queries": [
+     "Climbing holds colorful wall",
+     "Indoor climbing route setting",
+     "Climb Together climbing holds",
+     "클라이밍 홀드"
+    ]
+   },
+   {
+    "label": "클라이밍 체험",
+    "why": "초보자도 체험할 수 있는 입문 클래스와 장비 착용 모습이 후기 사진에 자주 쓰입니다.",
+    "queries": [
+     "Indoor rock climbing beginner Korea",
+     "Climbing shoes and chalk bag",
+     "Sport climbing Seoul gym",
+     "실내 클라이밍 체험"
+    ]
+   }
+  ]
+ },
+ "climb-612949056": {
+  "nameEn": "Yeoksam Climbing Lab",
+  "spots": [
+   {
+    "label": "실내 클라이밍벽",
+    "why": "지하 1층에 있는 실내 암장입니다. 대표 볼거리는 클라이밍 벽이고, 이곳만의 유명한 포토 스폿에 대한 자료는 찾지 못했습니다.",
+    "queries": [
+     "Yeoksam Climbing Lab",
+     "indoor climbing gym Seoul",
+     "indoor climbing wall Korea"
+    ]
+   },
+   {
+    "label": "지구력 루트벽",
+    "why": "월간산이 서울 지구력 암장 목록에 올린 곳으로, 긴 루트를 오르는 지구력 클라이밍이 주력입니다.",
+    "queries": [
+     "Yeoksam Climbing Lab endurance wall",
+     "lead climbing wall Seoul gym",
+     "indoor lead climbing Korea"
+    ]
+   },
+   {
+    "label": "역삼역",
+    "why": "가장 가까운 지하철역으로 2호선 역삼역에서 도보 약 7분 거리입니다. 방문 동선에서 가장 많이 거치는 지점입니다.",
+    "queries": [
+     "Yeoksam station Seoul",
+     "Yeoksam-dong Gangnam street",
+     "Yeoksam station Line 2"
+    ]
+   },
+   {
+    "label": "테헤란로",
+    "why": "암장 주소가 테헤란로30길이고, 주변이 강남 업무지구 빌딩가입니다. 방문 전후로 이 일대 거리 풍경을 많이 찍습니다.",
+    "queries": [
+     "Teheran-ro Gangnam Seoul",
+     "Yeoksam-dong Teheran-ro buildings",
+     "Teheranno Seoul skyline"
+    ]
+   }
+  ]
+ },
+ "climb-768810860": {
+  "nameEn": "Gangnam Sports Climbing Center",
+  "spots": [
+   {
+    "label": "초대형 암벽",
+    "why": "폭 40m, 높이 18m로 전국 최대 규모의 야외 인공암벽장이라 정면 전경 사진이 가장 많이 나온다.",
+    "queries": [
+     "Gangnam Sports Climbing Center",
+     "Gangnam Sports Climbing Center climbing wall",
+     "Daechi climbing wall Seoul"
+    ]
+   },
+   {
+    "label": "리드 클라이밍",
+    "why": "15m 이상 높이로 경사진 리드 벽에서 로프를 매고 오르는 모습이 대표 인증 장면이다.",
+    "queries": [
+     "Gangnam Sports Climbing Center lead climbing",
+     "Lead climbing wall Seoul",
+     "Sport climbing lead Korea"
+    ]
+   },
+   {
+    "label": "볼더링",
+    "why": "로프 없이 낮은 벽의 과제를 푸는 볼더링 구간으로, 입문자 체험 후기에 자주 등장한다.",
+    "queries": [
+     "Gangnam Sports Climbing Center bouldering",
+     "Bouldering wall Seoul",
+     "Bouldering Korea indoor outdoor"
+    ]
+   },
+   {
+    "label": "스피드 벽",
+    "why": "국제 규격 스피드 레인(15m)이 있어 선수 훈련과 대회 사진이 많다. 스피드 이용은 1천 원이 추가된다.",
+    "queries": [
+     "Gangnam Sports Climbing Center speed climbing",
+     "Speed climbing wall Korea",
+     "Speed climbing lanes Seoul"
+    ]
+   },
+   {
+    "label": "빌딩숲 암장",
+    "why": "삼성역 일대 고층 빌딩 사이에서 야외 암벽을 오르는 대비 구도가 이곳의 매력으로 소개된다.",
+    "queries": [
+     "Daechi Yusuji Sports Park Seoul",
+     "Gangnam Daechi climbing Samseong skyline",
+     "Daechi-dong Seoul Tancheon"
+    ]
+   },
+   {
+    "label": "탄천 체육공원",
+    "why": "탄천변 8만㎡ 규모의 대치유수지 체육공원 안에 있다. 축구장, 트랙, 테니스장이 함께 있어 산책과 운동 사진 명소로 쓰인다.",
+    "queries": [
+     "Daechi Yusuji Sports Park",
+     "Tancheon Seoul Gangnam park",
+     "Daechi Detention Basin Seoul"
+    ]
+   }
+  ]
+ },
+ "climb-2036153750": {
+  "nameEn": "Sinchon Damjang",
+  "spots": [
+   {
+    "label": "클라이밍 월",
+    "why": "신촌담장은 신촌역로 10 5층의 클라이밍 짐이라, 대표 볼거리는 실내 암벽 벽면이다. 다만 사진 스폿으로 유명하다는 자료는 찾지 못했다.",
+    "queries": [
+     "Sinchon Damjang climbing gym",
+     "Sinchon Damjang bouldering wall",
+     "Seoul indoor climbing gym wall"
+    ]
+   },
+   {
+    "label": "볼더링 홀드",
+    "why": "공식 인스타그램과 후기 모임 글에서 자주 나오는 것이 클라이밍 체험과 루트 세팅이다. 색색의 홀드가 붙은 벽을 가까이서 찍는 컷이 대표적이다.",
+    "queries": [
+     "Sinchon Damjang climbing holds",
+     "bouldering holds colorful wall Seoul",
+     "Sinchon climbing gym Seodaemun"
+    ]
+   },
+   {
+    "label": "신촌 명물길",
+    "why": "신촌담장에서 가까운 보행 거리로, 신촌 방문 때 함께 찍는 거리 풍경이다. 인생네컷 신촌점도 이 거리에 있다.",
+    "queries": [
+     "Sinchon Myeongmul-gil street",
+     "Sinchon Seodaemun-gu street Seoul",
+     "Sinchon Yonsei-ro street"
+    ]
+   },
+   {
+    "label": "신촌 벽화골목",
+    "why": "신촌역에서 걸어서 5분 정도 거리의 골목에 동화와 열기구 그림 같은 벽화가 이어진다. 트립닷컴 게시글에서 커플과 학생들이 사진을 찍는 곳으로 소개됐다.",
+    "queries": [
+     "Sinchon mural alley Seoul",
+     "Sinchon painted wall Seodaemun",
+     "Sinchon-dong Seodaemun-gu mural"
+    ]
+   }
+  ]
+ },
+ "climb-226789176": {
+  "nameEn": "Hongdae Climbing Center",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "로프 없이 낮은 벽을 오르는 볼더링 구역이 암장의 중심이라 방문자 사진이 가장 많이 나오는 곳",
+    "queries": [
+     "Hongdae Climbing Center bouldering wall",
+     "Seoul indoor bouldering gym",
+     "Bouldering gym holds wall"
+    ]
+   },
+   {
+    "label": "컬러 홀드 루트",
+    "why": "벽에 색색의 홀드가 난이도별로 붙어 있어 인증샷 배경으로 자주 찍는 곳",
+    "queries": [
+     "Hongdae climbing gym colorful holds",
+     "Climbing holds route setting indoor gym",
+     "Indoor climbing wall colored holds Seoul"
+    ]
+   },
+   {
+    "label": "리드 지구력벽",
+    "why": "높은 벽에서 로프를 매고 오르는 리드·지구력 구간의 높이감과 등반 동작 컷이 인기",
+    "queries": [
+     "Seoul indoor lead climbing wall",
+     "Indoor lead climbing gym rope",
+     "Hongdae climbing center lead wall"
+    ]
+   },
+   {
+    "label": "홍대입구 거리",
+    "why": "암장이 홍대입구역 1번 출구 인근에 있어 클라이밍 전후로 홍대 거리 풍경을 함께 찍는 사람이 많음",
+    "queries": [
+     "Hongdae street Seoul",
+     "Hongik University street Mapo-gu",
+     "Hongik University Station Seoul"
+    ]
+   }
+  ]
+ },
+ "climb-24580642": {
+  "nameEn": "Summit Climbing Center Sinchon",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "웹 검색이 실패해 확인하지 못했다. 실내 클라이밍장의 대표 촬영 지점인 색색의 홀드가 붙은 볼더링 벽이다.",
+    "queries": [
+     "Summit Climbing Center Sinchon bouldering wall",
+     "indoor bouldering gym Seoul",
+     "indoor climbing wall holds"
+    ],
+    "ko": "실내 클라이밍 볼더링 벽"
+   },
+   {
+    "label": "리드 클라이밍 벽",
+    "why": "웹 검색이 실패해 확인하지 못했다. 높은 벽을 오르는 모습을 담는 일반적인 촬영 지점이다.",
+    "queries": [
+     "Summit Climbing Center Sinchon lead wall",
+     "indoor lead climbing wall Seoul"
+    ],
+    "ko": "실내 클라이밍 리드 벽"
+   },
+   {
+    "label": "신촌 거리",
+    "why": "웹 검색이 실패해 확인하지 못했다. 암장이 있는 신촌 일대의 대학가 거리 풍경이다.",
+    "queries": [
+     "Sinchon Seoul street",
+     "Sinchon Station Seoul",
+     "Yonsei-ro Sinchon"
+    ],
+    "ko": "신촌 거리"
+   },
+   {
+    "label": "클라이밍 체험",
+    "why": "웹 검색이 실패해 확인하지 못했다. 초보자가 신발과 초크를 갖추고 처음 오르는 모습은 후기 사진에 자주 나오는 장면이다.",
+    "queries": [
+     "Summit Climbing Center Sinchon climber",
+     "climbing gym chalk climbing shoes"
+    ],
+    "ko": "클라이밍 체험 초보자"
+   }
+  ]
+ },
+ "climb-188938778": {
+  "nameEn": "Hook Climbing Wangsimni",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "실내 클라이밍장의 핵심 시설입니다. 색색의 홀드가 붙은 경사벽이 대표 촬영 대상입니다. (웹 검색이 되지 않아 후기로 확인하지 못했고, 시설 유형에 근거한 후보입니다.)",
+    "queries": [
+     "Hook Climbing Wangsimni bouldering wall",
+     "indoor bouldering gym Seoul",
+     "bouldering wall holds"
+    ],
+    "ko": "실내 볼더링 암벽"
+   },
+   {
+    "label": "컬러 홀드",
+    "why": "루트마다 색이 다른 홀드를 클로즈업한 사진이 클라이밍장에서 흔한 구도입니다. (후기로 확인하지 못했습니다.)",
+    "queries": [
+     "Hook Climbing Wangsimni holds",
+     "climbing holds colorful",
+     "Seoul climbing gym holds"
+    ],
+    "ko": "클라이밍 홀드"
+   },
+   {
+    "label": "클라이밍 장면",
+    "why": "벽에 매달리거나 동작을 하는 순간이 방문자가 가장 많이 남기는 인증샷입니다. (후기로 확인하지 못했습니다.)",
+    "queries": [
+     "Hook Climbing Wangsimni climber",
+     "indoor climbing Seoul climber",
+     "bouldering climber indoor"
+    ],
+    "ko": "실내 클라이밍 하는 모습"
+   },
+   {
+    "label": "왕십리 외관",
+    "why": "성동구 고산자로6길의 건물 외관과 간판은 방문 인증용 사진 대상입니다. (후기로 확인하지 못했습니다.)",
+    "queries": [
+     "Hook Climbing Wangsimni exterior",
+     "Wangsimni Seongdong-gu street",
+     "Wangsimni Seoul"
+    ],
+    "ko": "왕십리역 거리 성동구"
+   }
+  ]
+ },
+ "climb-10817028": {
+  "nameEn": "The Top Indoor Climbing Songpa",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "웹 검색을 못 해 확인하지 못했습니다. 실내 암벽장에서 가장 많이 찍는 형태라 후보로만 넣었습니다. 알록달록한 홀드와 경사진 벽이 대표 컷입니다.",
+    "queries": [
+     "Indoor bouldering wall Seoul",
+     "Indoor climbing gym bouldering holds",
+     "Bouldering gym Korea"
+    ]
+   },
+   {
+    "label": "리드 클라이밍 벽",
+    "why": "웹 검색을 못 해 확인하지 못했습니다. 높은 직벽에서 로프를 매고 오르는 모습은 암벽장의 일반적인 촬영 포인트입니다. 이곳에 있는지는 확인이 필요합니다.",
+    "queries": [
+     "Indoor lead climbing wall",
+     "Indoor climbing gym rope climbing",
+     "Sport climbing indoor Korea"
+    ]
+   },
+   {
+    "label": "루트 홀드",
+    "why": "웹 검색을 못 해 확인하지 못했습니다. 색깔별로 난이도를 나눈 홀드 루트는 암벽장 사진의 단골 소재입니다.",
+    "queries": [
+     "Climbing holds colorful indoor wall",
+     "Climbing gym route setting holds"
+    ]
+   },
+   {
+    "label": "클라이밍 체험",
+    "why": "웹 검색을 못 해 확인하지 못했습니다. 초보자가 벽에 매달려 오르는 체험 장면은 후기 사진에서 흔한 구도입니다.",
+    "queries": [
+     "Indoor rock climbing beginner",
+     "Climbing gym Seoul",
+     "Rock climbing Korea indoor"
+    ]
+   }
+  ]
+ },
+ "climb-1671084771": {
+  "nameEn": "Boram A Sports Climbing",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "검색 한도 때문에 이 지점의 후기는 확인하지 못했다. 실내 클라이밍장의 대표 촬영 지점이라 넣었다. 알록달록한 홀드가 붙은 볼더링 벽이다.",
+    "queries": [
+     "Boram A Sports Climbing bouldering wall",
+     "Indoor bouldering gym Seoul",
+     "Bouldering wall colorful holds"
+    ]
+   },
+   {
+    "label": "리드 클라이밍 벽",
+    "why": "검색 한도 때문에 이 지점의 후기는 확인하지 못했다. 높은 루트 벽에서 오르는 모습이 실내 클라이밍장에서 자주 찍히는 장면이라 넣었다.",
+    "queries": [
+     "Boram A Sports Climbing lead wall",
+     "Indoor lead climbing wall Seoul",
+     "Indoor climbing gym Korea"
+    ]
+   },
+   {
+    "label": "클라이밍 홀드",
+    "why": "검색 한도 때문에 이 지점의 후기는 확인하지 못했다. 색깔별 홀드와 루트 세팅은 클라이밍장에서 클로즈업 사진으로 많이 남기는 대상이라 넣었다.",
+    "queries": [
+     "Climbing holds colorful wall",
+     "Boram A Sports Climbing holds",
+     "Indoor climbing route setting"
+    ]
+   },
+   {
+    "label": "관악구 관천로",
+    "why": "검색 한도 때문에 이 지점의 후기는 확인하지 못했다. 클라이밍장이 있는 관악구 관천로 일대 거리 풍경이라 넣었다.",
+    "queries": [
+     "Gwanak-gu Seoul street",
+     "Gwancheon-ro Gwanak Seoul",
+     "Gwanak District Seoul"
+    ]
+   }
+  ]
+ },
+ "climb-1965599390": {
+  "nameEn": "YDP Oreum Indoor Climbing Gym",
+  "spots": [
+   {
+    "label": "볼더링벽",
+    "why": "짧고 다양한 코스로 순발력과 힘을 겨루는 3면 볼더링벽이 이곳의 중심 시설이다.",
+    "queries": [
+     "YDP Oreum indoor climbing gym bouldering wall",
+     "Indoor bouldering wall Seoul",
+     "Bouldering gym Korea"
+    ],
+    "ko": "실내 볼더링 암벽"
+   },
+   {
+    "label": "지구력벽",
+    "why": "300개 이상의 홀드가 놓인 긴 벽으로, 심폐지구력 훈련용 1면이 따로 있다.",
+    "queries": [
+     "YDP Oreum climbing endurance wall",
+     "Indoor climbing wall holds Korea",
+     "Indoor lead climbing wall"
+    ],
+    "ko": "실내 암벽장 지구력벽"
+   },
+   {
+    "label": "컬러 홀드벽",
+    "why": "높은 층고와 벽에 박힌 알록달록한 홀드가 이용자의 시선을 끈다고 소개된다.",
+    "queries": [
+     "YDP Oreum climbing gym colorful holds",
+     "Climbing holds colorful wall",
+     "Indoor climbing gym interior Seoul"
+    ],
+    "ko": "암벽장 컬러 홀드"
+   },
+   {
+    "label": "강습 현장",
+    "why": "2024년 5월부터 강습 프로그램을 운영해 수강생이 벽을 오르는 모습이 자주 소개된다.",
+    "queries": [
+     "YDP Oreum climbing class",
+     "Indoor climbing lesson beginners",
+     "Climbing gym Yeongdeungpo-gu Seoul"
+    ],
+    "ko": "영등포 실내 암벽장 강습"
+   },
+   {
+    "label": "건물 외관",
+    "why": "도신로60길 5 라온아토 건물 2층에 있어서, 입구와 건물 모습이 위치를 알리는 사진으로 쓰인다.",
+    "queries": [
+     "Yeongdeungpo-gu Sillim Sindang Dosin-ro Seoul street",
+     "Singil-dong Yeongdeungpo-gu Seoul",
+     "Yeongdeungpo-gu Seoul building"
+    ],
+    "ko": "영등포구 신길동 도신로"
+   }
+  ]
+ },
+ "climb-26527675": {
+  "nameEn": "Climbing 88",
+  "spots": [
+   {
+    "label": "실내 볼더링",
+    "why": "클라이밍88은 강서구 화곡동에 있는 소규모 실내 볼더링·클라이밍 센터라서, 가장 많이 찍는 장면은 알록달록한 홀드가 붙은 볼더링 벽이다. 이곳만의 유명 포토 스폿은 확인되지 않아 일반 시설 이미지로 대체했다.",
+    "queries": [
+     "Indoor bouldering wall Seoul",
+     "Climbing 88 Seoul bouldering",
+     "Indoor climbing gym holds",
+     "실내 볼더링 암벽"
+    ]
+   },
+   {
+    "label": "클라이밍 홀드",
+    "why": "벽면에 색깔별로 붙은 홀드와 루트 표시는 실내 암장에서 가장 흔한 클로즈업 소재다.",
+    "queries": [
+     "Climbing holds colorful",
+     "Indoor climbing holds close-up",
+     "Climbing 88 Seoul holds",
+     "클라이밍 홀드"
+    ]
+   },
+   {
+    "label": "스포츠클라이밍",
+    "why": "벽을 오르는 클라이머의 모습이 이용자들이 가장 많이 남기는 인증 사진이다.",
+    "queries": [
+     "Sport climbing Korea indoor",
+     "Climbing 88 Seoul climber",
+     "Indoor rock climbing South Korea",
+     "스포츠클라이밍 실내"
+    ]
+   },
+   {
+    "label": "강서 암장 거리",
+    "why": "공항대로·화곡동 일대는 강서구 암장 밀집 지역이라 주변 거리 풍경도 함께 담는다.",
+    "queries": [
+     "Gonghang-daero Gangseo-gu Seoul",
+     "Hwagok-dong Gangseo Seoul street",
+     "강서구 공항대로"
+    ]
+   }
+  ]
+ },
+ "climb-1668558300": {
+  "nameEn": "August Climbing",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "검색 도구 오류로 확인하지 못했습니다. 클라이밍장의 일반적인 대표 촬영 대상으로 넣은 후보입니다.",
+    "queries": [
+     "August Climbing Seoul bouldering wall",
+     "climbing gym bouldering wall Seoul",
+     "Bouldering Korea indoor"
+    ]
+   },
+   {
+    "label": "리드 클라이밍 벽",
+    "why": "검색 도구 오류로 확인하지 못했습니다. 높은 인공 암벽은 일반적으로 사진 소재가 되어 후보로 넣었습니다.",
+    "queries": [
+     "August Climbing Seoul lead climbing wall",
+     "indoor climbing gym Seoul lead wall",
+     "Sport climbing Korea indoor wall"
+    ]
+   },
+   {
+    "label": "클라이밍 홀드",
+    "why": "검색 도구 오류로 확인하지 못했습니다. 색색의 홀드는 실내 암장에서 흔한 디테일 촬영 대상이라 후보로 넣었습니다.",
+    "queries": [
+     "August Climbing Seoul holds",
+     "climbing holds colorful gym",
+     "Indoor climbing holds Korea"
+    ]
+   },
+   {
+    "label": "강서구 양천로",
+    "why": "검색 도구 오류로 확인하지 못했습니다. 주소지 일대의 거리 풍경을 찾기 위한 후보입니다.",
+    "queries": [
+     "Yangcheon-ro Gangseo-gu Seoul",
+     "Gangseo District Seoul street",
+     "Magok Seoul Gangseo-gu"
+    ]
+   }
+  ]
+ },
+ "climb-349001291": {
+  "nameEn": "Weekly Climbing Guro",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "클라이밍장의 대표 촬영 지점. 알록달록한 홀드와 루트가 한 화면에 담긴다. (웹 검색 한도 초과로 이 장소 후기는 확인하지 못해 일반적인 클라이밍장 기준으로 작성함)",
+    "queries": [
+     "Weekly Climbing Guro bouldering",
+     "indoor bouldering wall Seoul",
+     "climbing gym bouldering wall"
+    ]
+   },
+   {
+    "label": "리드·탑로프 벽",
+    "why": "높은 인공 암벽에서 로프를 매고 오르는 모습을 찍는 구간. (장소별 확인 못 함, 일반적인 클라이밍장 기준)",
+    "queries": [
+     "Weekly Climbing Guro lead wall",
+     "indoor climbing gym Seoul rope wall",
+     "indoor lead climbing wall"
+    ]
+   },
+   {
+    "label": "컬러 홀드",
+    "why": "형형색색 홀드와 루트 세팅은 클라이밍장 사진에서 가장 흔한 클로즈업 소재다. (장소별 확인 못 함)",
+    "queries": [
+     "Weekly Climbing Guro holds",
+     "climbing holds colorful indoor",
+     "climbing gym holds route setting"
+    ]
+   },
+   {
+    "label": "클라이밍 장면",
+    "why": "벽을 오르는 순간을 담은 동작 사진이 이런 곳에서 가장 많이 공유된다. (장소별 확인 못 함)",
+    "queries": [
+     "Weekly Climbing Guro climber",
+     "climber indoor climbing gym Korea",
+     "indoor rock climbing Seoul"
+    ]
+   }
+  ]
+ },
+ "climb-814897728": {
+  "nameEn": "Seoul Boulders Mokdong",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "2024년 5월에 문을 연 2호점 실내 암장이다. 다른 암장보다 어렵다는 평이 있어서, 홀드가 가득한 벽에 매달린 인증샷이 많이 올라온다.",
+    "queries": [
+     "Seoul Boulders Mokdong bouldering wall",
+     "Seoul indoor bouldering gym",
+     "Bouldering gym Korea"
+    ]
+   },
+   {
+    "label": "무지개 홀드",
+    "why": "난이도를 빨강부터 검정까지 무지개색 홀드로 구분하는 것이 이곳의 특징이다. 색색의 홀드를 클로즈업한 사진이 대표적이다.",
+    "queries": [
+     "Seoul Boulders rainbow climbing holds",
+     "Colorful climbing holds bouldering",
+     "Climbing holds close-up"
+    ]
+   },
+   {
+    "label": "일일체험 강습",
+    "why": "초보자용 일일체험 강습이 후기에서 가장 자주 나온다. 기초 설명과 낙법 교육, 강습 뒤 퀘스트를 깨는 장면이 단골 사진이다.",
+    "queries": [
+     "Seoul Boulders Mokdong beginner class",
+     "Bouldering beginner lesson indoor",
+     "Indoor climbing gym instructor"
+    ]
+   },
+   {
+    "label": "암장 입구",
+    "why": "신목로 53 건물 2층에 있다. 오목교역에서 걸어서 갈 수 있고, 입구와 간판을 찍어 방문을 인증하는 후기가 많다.",
+    "queries": [
+     "Seoul Boulders Mokdong entrance",
+     "Mokdong Yangcheon-gu Sinmok-ro",
+     "Omokgyo station Seoul"
+    ]
+   }
+  ]
+ },
+ "climb-14825359": {
+  "nameEn": "Ace Climbing Center",
+  "spots": [
+   {
+    "label": "볼더링 벽",
+    "why": "클라이밍센터에서 가장 많이 찍는 컬러 홀드 볼더링 벽 풍경",
+    "queries": [
+     "Ace Climbing Center Seoul bouldering wall",
+     "Bouldering gym indoor climbing holds",
+     "Indoor bouldering Korea"
+    ],
+    "ko": "실내 볼더링 암벽"
+   },
+   {
+    "label": "리드 클라이밍 벽",
+    "why": "높은 인공 암벽에서 로프를 매고 오르는 장면이 대표 컷",
+    "queries": [
+     "Ace Climbing Center Seoul lead climbing wall",
+     "Indoor climbing gym lead wall",
+     "Indoor rock climbing wall Korea"
+    ],
+    "ko": "실내 리드 클라이밍 인공암벽"
+   },
+   {
+    "label": "컬러 홀드 루트",
+    "why": "난이도별 색색의 홀드와 루트 세팅이 클라이밍 인증샷의 핵심",
+    "queries": [
+     "Ace Climbing Center Seoul climbing holds",
+     "Climbing holds colorful route setting",
+     "Climbing gym route setting holds"
+    ],
+    "ko": "클라이밍 홀드 루트"
+   },
+   {
+    "label": "클라이밍 체험",
+    "why": "초보자가 암벽화를 신고 벽에 도전하는 체험 장면이 자주 공유됨",
+    "queries": [
+     "Ace Climbing Center Seoul climbing",
+     "Indoor rock climbing beginner gym",
+     "Climbing shoes chalk gym"
+    ],
+    "ko": "실내 클라이밍 체험"
+   }
+  ]
+ },
+ "climb-278485068": {
+  "nameEn": "Monkeys Climbing Mokdong",
+  "spots": [
+   {
+    "label": "실내 클라이밍 월",
+    "why": "키즈·여성 전용 실내 스포츠 클라이밍 센터로, 컬러 홀드가 붙은 암벽이 대표 시설임 (관광 명소가 아니라 후기·소개글 기준)",
+    "queries": [
+     "indoor climbing wall Korea",
+     "climbing gym colorful holds",
+     "bouldering gym Seoul"
+    ]
+   },
+   {
+    "label": "키즈 클라이밍",
+    "why": "미취학부터 청소년·성인반까지 정규반과 일일체험을 운영해서, 아이들이 암벽을 오르는 장면이 가장 흔한 사진 소재임",
+    "queries": [
+     "children climbing indoor wall",
+     "kids bouldering gym",
+     "Monkeys Climbing Mokdong kids"
+    ]
+   },
+   {
+    "label": "센타프라자 건물",
+    "why": "몽키즈클라이밍은 목동동로 65 센타프라자 6층에 있어서, 방문 인증용으로 건물 외관을 찍음 (사진이 있을지는 불확실)",
+    "queries": [
+     "Mokdong Yangcheon-gu Seoul street",
+     "Mokdongdong-ro Seoul building",
+     "Yangcheon-gu Seoul"
+    ]
+   }
+  ]
  }
 }
