@@ -117,54 +117,42 @@ async function incheonParking(place: Place): Promise<ParkingLot[]> {
     });
 }
 
-export interface ParkingFee {
-  group: string;
-  lines: FeeLine[];
-}
-
-/** 요금 한 줄: 번역 원본 k + 값 (분 m · 원 w). 못 읽은 줄은 원문 그대로 k */
-export interface FeeLine {
-  k: string;
-  m?: number;
-  w?: number;
-}
-
-const mins = (hhmm: string) => Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3, 5));
-
 /**
- * 공항공사 요금 문장을 읽기 쉽게 (11/1 지인 QA: '최초 00:30 에 한해 1200원 적용'·'00:15 초과 시 600원 부과'가 무슨 말인지 모르겠다)
- * → '처음 30분 1,200원' · '이후 15분마다 600원' · '하루 최대 24,000원'
+ * 인천공항 주차 요금표 (공식: airport.kr/ap_ko/969/subview.do, 2026-11-01 확인 — 두 터미널 같음).
+ * 11/1 경수님 '요금표는 확실하게': 요금 코드 API(15095053)는 주차장 이름이 없어 추정 매칭이었다 → 공식 표를 그대로 싣는다.
+ * 요금이 바뀌면 여기만 고친다 (분 단위·원)
  */
-export function friendlyFees(lines: string[]): FeeLine[] {
-  const hasFirst = lines.some((l) => /최초\s*\d\d:\d\d/.test(l));
-  return lines.map((l) => {
-    const first = l.match(/최초\s*(\d\d:\d\d)\s*에\s*한해\s*([\d,]+)\s*원/);
-    if (first) return { k: "처음 {m} {w}원", m: mins(first[1]), w: Number(first[2].replace(/,/g, "")) };
-    const over = l.match(/(\d\d:\d\d)\s*초과\s*시\s*([\d,]+)\s*원/);
-    if (over) return { k: hasFirst ? "이후 {m}마다 {w}원" : "{m}마다 {w}원", m: mins(over[1]), w: Number(over[2].replace(/,/g, "")) };
-    const max = l.match(/일일\s*최대\s*([\d,]+)\s*원/);
-    if (max) return { k: "하루 최대 {w}원", w: Number(max[1].replace(/,/g, "")) };
-    return { k: l };
-  });
+export interface ParkingFeeRow {
+  /** 주차장 (번역 원본) */
+  lot: string;
+  /** 처음 무료 분 */
+  freeMin: number;
+  /** 기본: 분·원 (없으면 추가 단위부터) */
+  base?: { min: number; won: number };
+  /** 추가: 분마다 원 */
+  step: { min: number; won: number };
+  dayMax: number;
+  /** 대형 요금이 따로 있으면 */
+  large?: { step: { min: number; won: number }; dayMax: number };
 }
 
-// 인천공항 주차장별 요금 부과 기준 (data.go.kr 15095053). 요금 코드에 주차장 이름이 없어서,
-// 인천공항이 공지한 단기·장기 요금과 일치하는 코드 1·2번만 매칭해 보여준다 (매칭은 추정)
-export async function getParkingFees(place: Place): Promise<ParkingFee[]> {
-  if (!place.airport?.startsWith("ICN")) return [];
-  try {
-    const rows = await dataGoKr("/B551177/ParkingChargeInfo/getParkingChargeInformation", { type: "json", numOfRows: "100" }, 24 * 60 * 60);
-    const by = (id: string) => rows.filter((r) => String(r.charid).endsWith(id)).map((r) => String(r.chardesc));
-    const fee = (n: string) => [...by(`FB0000000${n}`), ...by(`NF0000000${n}`)];
-    return [
-      { group: "단기주차장", lines: friendlyFees(fee("1")) },
-      { group: "장기주차장", lines: friendlyFees(fee("2")) },
-    ].filter((f) => f.lines.length > 0);
-  } catch (e) {
-    console.warn(`[airport] ${place.id} fees:`, e instanceof Error ? e.message : e);
-    return [];
-  }
-}
+export const ICN_PARKING_FEES: ParkingFeeRow[] = [
+  { lot: "단기주차장", freeMin: 10, base: { min: 30, won: 1200 }, step: { min: 15, won: 600 }, dayMax: 24000 },
+  { lot: "장기주차장", freeMin: 10, step: { min: 60, won: 1000 }, dayMax: 9000 },
+  { lot: "예약주차장", freeMin: 10, step: { min: 60, won: 1000 }, dayMax: 9000 },
+  { lot: "화물터미널 주차장", freeMin: 45, step: { min: 15, won: 500 }, dayMax: 10000, large: { step: { min: 15, won: 600 }, dayMax: 12000 } },
+];
+
+/** 감면 (가장 높은 1개만) */
+export const ICN_PARKING_DISCOUNTS: { who: string; pct: number }[] = [
+  { who: "경차", pct: 50 },
+  { who: "장애인·국가유공자(상이)", pct: 50 },
+  { who: "다자녀가구(사전 등록)", pct: 50 },
+  { who: "저공해차 1·2종", pct: 50 },
+  { who: "저공해차 3종", pct: 20 },
+];
+
+export const ICN_PARKING_FEE_URL = "https://www.airport.kr/ap_ko/969/subview.do";
 
 // 한국공항공사 전국공항 주차장 혼잡도 (김포·제주·김해 등), 인천공항은 인천국제공항공사 주차 정보
 export async function getParking(place: Place): Promise<ParkingLot[]> {
