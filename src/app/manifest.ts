@@ -20,8 +20,11 @@ export default function manifest(): MetadataRoute.Manifest {
     icons: [
       { src: "/icon-192.png", sizes: "192x192", type: "image/png" },
       { src: "/icon.png", sizes: "512x512", type: "image/png", purpose: "any" },
-      // 안드로이드 앱 아이콘은 원·둥근 네모 등으로 잘린다 → 가장자리까지 배경을 채우고 막대를 안쪽 80%에 둔 그림
+      // 안드로이드 앱 아이콘은 원·둥근 네모 등으로 잘린다 → 가장자리까지 배경을 채우고 돋보기를 안쪽 안전 영역에 둔 그림 (11/1 새 브랜드)
+      { src: "/icon-maskable-192.png", sizes: "192x192", type: "image/png", purpose: "maskable" },
       { src: "/icon-maskable.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      // 안드로이드 13+ 테마 아이콘 (흰 단색, 배경 투명)
+      { src: "/icon-mono.png", sizes: "512x512", type: "image/png", purpose: "monochrome" },
     ],
     shortcuts: [
       { name: "지도", url: "/map", icons: [{ src: "/icon-192.png", sizes: "192x192" }] },

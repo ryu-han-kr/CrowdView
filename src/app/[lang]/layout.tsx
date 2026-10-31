@@ -52,7 +52,15 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       },
     },
     formatDetection: { telephone: false },
-    icons: { icon: "/icon-192.png", apple: "/icon.png" },
+    // 11/1 새 브랜드: 탭은 ico(16·32·48)·svg(작은 크기 전용), 아이폰 홈 화면은 꽉 찬 정사각형(아이폰이 모서리를 직접 깎는다)
+    icons: {
+      icon: [
+        { url: "/favicon.ico", sizes: "any" },
+        { url: "/favicon.svg", type: "image/svg+xml" },
+        { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      ],
+      apple: "/apple-touch-icon.png",
+    },
   };
 }
 
