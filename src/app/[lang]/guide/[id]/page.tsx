@@ -11,7 +11,7 @@ import { getT } from "@/i18n/server";
 import { compactNumber } from "@/lib/format";
 import { levelOf, inkOf } from "@/lib/levels";
 import { translateNames } from "@/lib/name-translate";
-import { guideNames } from "@/lib/guide-names";
+import { guideNames, translateGuideText } from "@/lib/guide-names";
 import { GUIDE, GUIDE_KINDS, TOILETS, TOILET_FLAG, areaNear, getGuidePlace, guideText, nearest } from "@/lib/seoul-guide";
 import { getAllSeoulLive } from "@/lib/seoul-live";
 import { jsonLd, pageMeta } from "@/lib/seo";
@@ -31,7 +31,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const p = getGuidePlace(id);
   if (!p) return {};
   const t = getT(lang);
-  const { text } = guideText(p, lang as Lang);
+  const picked = guideText(p, lang as Lang);
+  const text = picked.lang === "ko" && lang !== "ko" ? await translateGuideText(picked.text, lang as Lang) : picked.text;
   return pageMeta({
     lang,
     path: `/guide/${id}`,
@@ -46,7 +47,9 @@ export default async function GuidePlacePage({ params }: { params: Promise<{ lan
   const t = getT(lang);
   const p = getGuidePlace(id);
   if (!p) notFound();
-  const { text, lang: textLang } = guideText(p, lang);
+  const { text: rawText, lang: textLang } = guideText(p, lang);
+  // 한국어 글뿐이면 주소·운영·가는 길도 화면 언어로 (Claude 번역 캐시, 이름은 아래 trName)
+  const text = textLang === "ko" && lang !== "ko" ? await translateGuideText(rawText, lang) : rawText;
   // 그 언어 글이 없어 한국어로 보일 때 이름만이라도 번역 (Papago 캐시) — 원래 이름은 아래 작은 글씨로
   const trName = textLang === "ko" && lang !== "ko" ? (await translateNames([text.n], lang)).get(text.n) : undefined;
   const kind = GUIDE_KINDS.find((k) => k.id === p.kind)!;
