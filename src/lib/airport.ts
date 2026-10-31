@@ -119,7 +119,33 @@ async function incheonParking(place: Place): Promise<ParkingLot[]> {
 
 export interface ParkingFee {
   group: string;
-  lines: string[];
+  lines: FeeLine[];
+}
+
+/** 요금 한 줄: 번역 원본 k + 값 (분 m · 원 w). 못 읽은 줄은 원문 그대로 k */
+export interface FeeLine {
+  k: string;
+  m?: number;
+  w?: number;
+}
+
+const mins = (hhmm: string) => Number(hhmm.slice(0, 2)) * 60 + Number(hhmm.slice(3, 5));
+
+/**
+ * 공항공사 요금 문장을 읽기 쉽게 (11/1 지인 QA: '최초 00:30 에 한해 1200원 적용'·'00:15 초과 시 600원 부과'가 무슨 말인지 모르겠다)
+ * → '처음 30분 1,200원' · '이후 15분마다 600원' · '하루 최대 24,000원'
+ */
+export function friendlyFees(lines: string[]): FeeLine[] {
+  const hasFirst = lines.some((l) => /최초\s*\d\d:\d\d/.test(l));
+  return lines.map((l) => {
+    const first = l.match(/최초\s*(\d\d:\d\d)\s*에\s*한해\s*([\d,]+)\s*원/);
+    if (first) return { k: "처음 {m} {w}원", m: mins(first[1]), w: Number(first[2].replace(/,/g, "")) };
+    const over = l.match(/(\d\d:\d\d)\s*초과\s*시\s*([\d,]+)\s*원/);
+    if (over) return { k: hasFirst ? "이후 {m}마다 {w}원" : "{m}마다 {w}원", m: mins(over[1]), w: Number(over[2].replace(/,/g, "")) };
+    const max = l.match(/일일\s*최대\s*([\d,]+)\s*원/);
+    if (max) return { k: "하루 최대 {w}원", w: Number(max[1].replace(/,/g, "")) };
+    return { k: l };
+  });
 }
 
 // 인천공항 주차장별 요금 부과 기준 (data.go.kr 15095053). 요금 코드에 주차장 이름이 없어서,
@@ -131,8 +157,8 @@ export async function getParkingFees(place: Place): Promise<ParkingFee[]> {
     const by = (id: string) => rows.filter((r) => String(r.charid).endsWith(id)).map((r) => String(r.chardesc));
     const fee = (n: string) => [...by(`FB0000000${n}`), ...by(`NF0000000${n}`)];
     return [
-      { group: "단기주차장", lines: fee("1") },
-      { group: "장기주차장", lines: fee("2") },
+      { group: "단기주차장", lines: friendlyFees(fee("1")) },
+      { group: "장기주차장", lines: friendlyFees(fee("2")) },
     ].filter((f) => f.lines.length > 0);
   } catch (e) {
     console.warn(`[airport] ${place.id} fees:`, e instanceof Error ? e.message : e);

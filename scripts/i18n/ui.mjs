@@ -3023,4 +3023,14 @@ export default {
   "Google 지도로 열기 ↗": ["Open in Google Maps ↗","Googleマップで開く ↗","在Google地图中打开 ↗","在Google地圖中打開 ↗"],
   "카카오맵 ↗": ["Kakao Map ↗","カカオマップ ↗","Kakao地图 ↗","Kakao地圖 ↗"],
   "Google 지도 ↗": ["Google Maps ↗","Googleマップ ↗","Google地图 ↗","Google地圖 ↗"],
+  // ── 공항 주차 요금·설명 (11/1)
+  "처음 {m} {w}원": ["First {m}: KRW {w}","最初の{m} {w}ウォン","首{m} {w}韩元","首{m} {w}韓元"],
+  "이후 {m}마다 {w}원": ["Then KRW {w} per {m}","以降{m}ごとに{w}ウォン","之后每{m} {w}韩元","之後每{m} {w}韓元"],
+  "{m}마다 {w}원": ["KRW {w} per {m}","{m}ごとに{w}ウォン","每{m} {w}韩元","每{m} {w}韓元"],
+  "하루 최대 {w}원": ["Max KRW {w} per day","1日最大{w}ウォン","每日最高{w}韩元","每日最高{w}韓元"],
+  "출처: 인천국제공항공사": ["Source: Incheon International Airport Corporation","出典: 仁川国際空港公社","来源：仁川国际机场公社","來源：仁川國際機場公社"],
+  "주차면 센서 기준": ["Based on parking-space sensors","駐車マスセンサー基準","基于车位传感器","依車位感測器"],
+  "앞뒤 2시간 도착편 · 입국장별 대기 인원": ["Arrivals ±2 h · people waiting by hall","前後2時間の到着便 · 到着口別の待ち人数","前后2小时到达航班 · 各入境口等候人数","前後2小時抵達航班 · 各入境口等候人數"],
+  "{n}시간": ["{n} h","{n}時間","{n}小时","{n}小時"],
+  "{n}구역": ["Zone {n}","{n}区画","{n}区","{n}區"],
 };

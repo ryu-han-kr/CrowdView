@@ -247,7 +247,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                           arrivals.flights.length > 0 ? (
                             <>
                               <p className="mb-3 text-xs text-gray-500">
-                                {t("지금 기준 앞뒤 2시간 도착편과 입국장(A~F)별 대기 인원이에요. 마중 나갈 때 참고하세요.")}
+                                {t("앞뒤 2시간 도착편 · 입국장별 대기 인원")}
                               </p>
                               <ul className="grid grid-cols-3 gap-2 md:grid-cols-6">
                                 {arrivals.gates.map((g) => (
@@ -354,14 +354,15 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                         <div className="mt-5">
                           <p className="text-sm font-bold">{t("단기주차장 구역별 빈자리")}</p>
                           <p className="text-[11px] text-gray-500">
-                            {t("주차면 센서 기준이에요. 공항공사가 구역 이름을 주지 않아 번호로 보여드려요.")}
+                            {t("주차면 센서 기준")}
                           </p>
                           <ul className="mt-2 grid grid-cols-2 gap-2 md:grid-cols-4">
                             {zones2.map((z) => {
                               const pct = Math.round((z.free / Math.max(1, z.total)) * 100);
                               return (
                                 <li key={z.zone} className="rounded-2xl bg-gray-50 px-3 py-2">
-                                  <p className="text-xs text-gray-500">{t("구역 {n}", { n: z.zone })}</p>
+                                  <p className="text-xs text-gray-500">{/* 11/1 지인 QA '이런 주차장이 있어?': 센서 번호 '01-01' 대신 '1구역' (주차장 번호가 하나뿐이면 구역 번호만) */}
+                                    {t("{n}구역", { n: zones2.every((x) => x.zone.split("-")[0] === zones2[0].zone.split("-")[0]) ? Number(z.zone.split("-")[1]) : z.zone })}</p>
                                   <p className="text-sm">
                                     <b className={pct < 10 ? "text-red-700 dark:text-red-400" : pct < 25 ? "text-orange-700 dark:text-orange-400" : "text-emerald-700"}>
                                       {t("{n}면", { n: z.free.toLocaleString() })}
@@ -385,14 +386,18 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                               <p className="font-semibold text-gray-700">{t(f.group)}</p>
                               <ul className="mt-0.5 list-disc pl-4 text-gray-600">
                                 {f.lines.map((l) => (
-                                  <li key={l}>{l}</li>
+                                  <li key={l.k}>
+                                    {t(l.k, {
+                                      ...(l.m !== undefined && { m: l.m % 60 === 0 ? t("{n}시간", { n: l.m / 60 }) : l.m > 60 ? `${t("{n}시간", { n: Math.floor(l.m / 60) })} ${t("{n}분", { n: l.m % 60 })}` : t("{n}분", { n: l.m }) }),
+                                      ...(l.w !== undefined && { w: l.w.toLocaleString() }),
+                                    })}
+                                  </li>
                                 ))}
                               </ul>
                             </div>
                           ))}
                           <p className="mt-2 text-[11px] text-gray-500">
-                            {t("인천국제공항공사 요금 기준. 요금 코드에 주차장 이름이 없어 공지된 단기·장기 요금과 맞는 항목만 보여줘요.")}
-                            {lang !== "ko" && ` ${t("요금 설명은 공항공사 원문(한국어)이에요.")}`}
+                            {t("출처: 인천국제공항공사")}
                           </p>
                         </div>
                       )}
