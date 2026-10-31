@@ -24,3 +24,6 @@ docs/*사업자등록증*
 
 # 보관 자료 내려받기 (scripts/archive/read.ts)
 /.archive/
+
+# 과거 이력 백필 원본 (scripts/history, 수백 MB)
+/.history-raw/
