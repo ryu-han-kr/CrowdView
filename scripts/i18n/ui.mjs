@@ -1327,12 +1327,8 @@ export default {
   인원: ["People", "人数", "人数", "人數"],
   "마지막 기록": ["Last record", "最終記録", "最近记录", "最近記錄"],
   최고: ["Peak", "最高", "最高", "最高"],
-  "실시간 데이터를 받은 시각마다 기록 · 총 {n}건": [
-    "Recorded each time live data arrives · {n} records",
-    "リアルタイムデータ受信ごとに記録・計{n}件",
-    "每次收到实时数据时记录 · 共{n}条",
-    "每次收到即時資料時記錄 · 共{n}筆",
-  ],
+  "기록 {n}건": ["{n} records", "記録 {n}件", "记录 {n}条", "記錄 {n}筆"],
+  "혼잡도 기록 그래프": ["Crowd history chart", "混雑度の記録グラフ", "拥挤度记录图表", "擁擠度記錄圖表"],
   "아직 쌓인 기록이 없어요. 실시간 데이터를 받을 때마다 기록이 쌓이고, 어제부터 지금까지의 추이를 여기서 볼 수 있어요.": [
     "No records yet. Each live update is saved, so you'll see the trend from yesterday until now here.",
     "まだ記録がありません。リアルタイムデータを受信するたびに記録され、昨日から今までの推移をここで見られます。",
