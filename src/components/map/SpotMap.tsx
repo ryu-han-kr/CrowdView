@@ -33,6 +33,7 @@ const CLUSTER_FROM = 40;
 const pinColor = (s?: number) => (s === undefined ? "#94a3b8" : levelOf(s).color);
 
 /** 목록 ↔ 지도 전환 버튼 */
+/** 11/1 지인 QA: 정렬(왼쪽)과 같은 크기로 오른쪽 끝에 둔다 */
 export function ViewToggle({ view, onChange }: { view: "list" | "map"; onChange: (v: "list" | "map") => void }) {
   const { t } = useI18n();
   return (

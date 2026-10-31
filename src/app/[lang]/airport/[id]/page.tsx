@@ -6,7 +6,6 @@ import { EmptyState } from "@/components/EmptyState";
 import Link from "@/i18n/link";
 import { notFound } from "next/navigation";
 import { AirportPaxChart } from "@/components/AirportPaxChart";
-import { DataTag } from "@/components/DataTag";
 import { JudgementCard } from "@/components/JudgementCard";
 import { InlineAd } from "@/components/AdUnit";
 import { FaqBlock } from "@/components/FaqBlock";
@@ -15,7 +14,7 @@ import { getSignals } from "@/lib/crowd/signals";
 import { HistoryChart } from "@/components/HistoryChart";
 import { ChipTabPanels } from "@/components/IconTabs";
 import { LevelBadge } from "@/components/Level";
-import { getAirportPaxDays, getArrivals, getParking, getParkingFees, getParkingZones } from "@/lib/airport";
+import { getAirportPaxDays, getArrivals, getParking, getParkingZones, ICN_PARKING_DISCOUNTS, ICN_PARKING_FEE_URL, ICN_PARKING_FEES } from "@/lib/airport";
 import { getHistory } from "@/lib/crowd/history";
 import { getCrowd } from "@/lib/crowd/service";
 import { levelOf } from "@/lib/levels";
@@ -79,12 +78,11 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
   // 주소도 외국어 화면에서는 번역 (외부 점검: en 화면 한국어 노출)
   const address = (await translateNames([place.address], lang)).get(place.address) ?? place.address;
 
-  const [crowd, paxDays, parking, history, fees, signals, arrivals, zones2] = await Promise.all([
+  const [crowd, paxDays, parking, history, signals, arrivals, zones2] = await Promise.all([
     getCrowd(id),
     getAirportPaxDays(place),
     getParking(place),
     getHistory(id, 2),
-    getParkingFees(place),
     getSignals(place),
     getArrivals(place),
     getParkingZones(place),
@@ -247,7 +245,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                           arrivals.flights.length > 0 ? (
                             <>
                               <p className="mb-3 text-xs text-gray-500">
-                                {t("지금 기준 앞뒤 2시간 도착편과 입국장(A~F)별 대기 인원이에요. 마중 나갈 때 참고하세요.")}
+                                {t("앞뒤 2시간 도착편 · 입국장별 대기 인원")}
                               </p>
                               <ul className="grid grid-cols-3 gap-2 md:grid-cols-6">
                                 {arrivals.gates.map((g) => (
@@ -354,14 +352,15 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                         <div className="mt-5">
                           <p className="text-sm font-bold">{t("단기주차장 구역별 빈자리")}</p>
                           <p className="text-[11px] text-gray-500">
-                            {t("주차면 센서 기준이에요. 공항공사가 구역 이름을 주지 않아 번호로 보여드려요.")}
+                            {t("주차면 센서 기준")}
                           </p>
                           <ul className="mt-2 grid grid-cols-2 gap-2 md:grid-cols-4">
                             {zones2.map((z) => {
                               const pct = Math.round((z.free / Math.max(1, z.total)) * 100);
                               return (
                                 <li key={z.zone} className="rounded-2xl bg-gray-50 px-3 py-2">
-                                  <p className="text-xs text-gray-500">{t("구역 {n}", { n: z.zone })}</p>
+                                  <p className="text-xs text-gray-500">{/* 11/1 지인 QA '이런 주차장이 있어?': 센서 번호 '01-01' 대신 '1구역' (주차장 번호가 하나뿐이면 구역 번호만) */}
+                                    {t("{n}구역", { n: zones2.every((x) => x.zone.split("-")[0] === zones2[0].zone.split("-")[0]) ? Number(z.zone.split("-")[1]) : z.zone })}</p>
                                   <p className="text-sm">
                                     <b className={pct < 10 ? "text-red-700 dark:text-red-400" : pct < 25 ? "text-orange-700 dark:text-orange-400" : "text-emerald-700"}>
                                       {t("{n}면", { n: z.free.toLocaleString() })}
@@ -374,25 +373,48 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                           </ul>
                         </div>
                       )}
-                      {fees.length > 0 && (
+                      {place.airport?.startsWith("ICN") && (
                         <div className="mt-5 rounded-2xl bg-gray-50 p-4">
-                          <p className="text-sm font-bold">
-                            {t("주차 요금 (소형 기준)")}
-                            <DataTag />
+                          <p className="text-sm font-bold">{t("주차 요금")}</p>
+                          {/* 공식 요금표 그대로 (lib/airport ICN_PARKING_FEES) — 11/1 '소형 기준·추정 말고 확실하게' */}
+                          <table className="mt-2 w-full text-left text-xs">
+                            <thead className="text-[11px] text-gray-500">
+                              <tr>
+                                <th className="py-1 font-medium">{t("주차장")}</th>
+                                <th className="py-1 font-medium">{t("요금")}</th>
+                                <th className="py-1 text-right font-medium">{t("하루 최대")}</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200/70">
+                              {ICN_PARKING_FEES.map((f) => {
+                                const dur = (m: number) => (m % 60 === 0 ? t("{n}시간", { n: m / 60 }) : t("{n}분", { n: m }));
+                                const won = (n: number) => t("{n}원", { n: n.toLocaleString() });
+                                return (
+                                  <tr key={f.lot} className="align-top">
+                                    <td className="py-1.5 pr-2 font-semibold whitespace-nowrap text-gray-800">{t(f.lot)}</td>
+                                    <td className="py-1.5 pr-2 text-gray-700">
+                                      {f.base && <span className="block">{t("처음 {m} {w}", { m: dur(f.base.min), w: won(f.base.won) })}</span>}
+                                      <span className="block">{t(f.base ? "이후 {m}마다 {w}" : "{m}마다 {w}", { m: dur(f.step.min), w: won(f.step.won) })}</span>
+                                      {f.large && <span className="block text-gray-500">{t("대형 {m}마다 {w}", { m: dur(f.large.step.min), w: won(f.large.step.won) })}</span>}
+                                      <span className="block text-[11px] text-gray-500">{t("처음 {m} 무료", { m: dur(f.freeMin) })}</span>
+                                    </td>
+                                    <td className="py-1.5 text-right font-bold whitespace-nowrap tabular-nums">
+                                      {won(f.dayMax)}
+                                      {f.large && <span className="block font-medium text-gray-500">{t("대형 {w}", { w: won(f.large.dayMax) })}</span>}
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                          <p className="mt-2 text-[11px] text-gray-600">
+                            {t("할인")}: {ICN_PARKING_DISCOUNTS.map((d) => `${t(d.who)} ${d.pct}%`).join(" · ")} {t("(가장 큰 할인 1개만)")}
                           </p>
-                          {fees.map((f) => (
-                            <div key={f.group} className="mt-2 text-xs">
-                              <p className="font-semibold text-gray-700">{t(f.group)}</p>
-                              <ul className="mt-0.5 list-disc pl-4 text-gray-600">
-                                {f.lines.map((l) => (
-                                  <li key={l}>{l}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          ))}
-                          <p className="mt-2 text-[11px] text-gray-500">
-                            {t("인천국제공항공사 요금 기준. 요금 코드에 주차장 이름이 없어 공지된 단기·장기 요금과 맞는 항목만 보여줘요.")}
-                            {lang !== "ko" && ` ${t("요금 설명은 공항공사 원문(한국어)이에요.")}`}
+                          <p className="mt-1 text-[11px] text-gray-500">
+                            {t("소형 = 승용차·15인 이하 승합·1톤 이하 화물 · 두 터미널 같은 요금")} ·{" "}
+                            <a href={ICN_PARKING_FEE_URL} target="_blank" rel="noreferrer" className="underline">
+                              {t("출처: 인천국제공항공사")}
+                            </a>
                           </p>
                         </div>
                       )}

@@ -71,7 +71,7 @@ export default async function CrowdIndex({ params }: { params: Promise<{ lang: s
   return (
     <main className="px-5 pt-6 pb-10 md:px-0 md:pt-10">
       <PageHeader title={t("지금 붐비나요?")} name="hamster" pose="explore" className="mb-2">
-        <p className="mt-1 text-sm text-gray-600">{t("가고 싶은 곳을 누르면 지금 혼잡도, 오늘 한산한 시간, 쌓인 기록으로 본 가기 좋은 때를 알려 드려요.")}</p>
+        <p className="mt-1 text-sm text-gray-600">{t("누르면 지금 혼잡도와 가기 좋은 때를 알려 드려요")}</p>
       </PageHeader>
       <Group title={t("공항·놀이공원·장소")} list={rows.filter((r) => r.p.kind === "place")} />
       <Group title={t("서울 실시간 지역")} list={rows.filter((r) => r.p.kind === "seoul")} />

@@ -1,4 +1,5 @@
 import { DroneVideos } from "@/components/DroneVideos";
+import { offSeasonLabel } from "@/lib/season-label";
 import { LiveCountButton } from "@/components/place/LiveCountButton";
 import { TripBrief } from "@/components/place/TripBrief";
 import { tripBriefAi } from "@/lib/trip-brief";
@@ -251,7 +252,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const level = isOpen
     ? levelOf(crowd.score)
     : {
-        label: crowd.offSeason ? "시즌 아님" : "운영 종료",
+        label: crowd.offSeason ? offSeasonLabel(crowd.opens, t) : "운영 종료",
         desc:
           crowd.offSeason && place.season
             ? t("{from}월 ~ {to}월에만 운영해요", { from: place.season[0], to: place.season[1] })
@@ -678,7 +679,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 label: t("이번 주"),
                 body: (
                   <>
-                    <p className="mb-3 text-sm font-medium text-gray-700">{t("이번 주 시간대별 예상 혼잡 · 초록 칸이 한산해요")}</p>
+                    <p className="mb-3 text-sm font-medium text-gray-700">{t("이번 주 시간대별 예상")}</p>
                     <WeekHeatmap days={heatDays} nowHour={now.hour} />
                     <p className="mt-3 text-[15px] font-semibold">
                       {calmest.peakScore >= 60
@@ -696,7 +697,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 label: t("한 달"),
                 body: (
                   <>
-                    <p className="mb-3 text-sm font-medium text-gray-700">{t("앞으로 5주, 날마다 가장 붐빌 때의 예상 단계예요. 날짜를 누르면 그날 이유가 보여요")}</p>
+                    <p className="mb-3 text-sm font-medium text-gray-700">{t("앞으로 5주, 날마다 가장 붐빌 때")}</p>
                     <MonthCalendar cells={calCells.slice(0, 35)} />
                   </>
                 ),
@@ -909,7 +910,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                     : t("오늘 {from} ~ {to}", { from: formatClock(place.hours[0]), to: formatClock(place.hours[1]) })}
                   {!place.info?.closedToday && <LocalTime hour={place.hours[0]} to={place.hours[1]} />}{" "}
                   <span className={isOpen ? "text-emerald-700" : "text-gray-500"}>
-                    {isOpen ? `· ${t("운영 중")}` : `· ${t(crowd.offSeason ? "시즌 아님" : "운영 종료")}`}
+                    {isOpen ? `· ${t("운영 중")}` : `· ${crowd.offSeason ? offSeasonLabel(crowd.opens, t) : t("운영 종료")}`}
                   </span>
                   {!place.info?.hoursVerified && <DataTag kind="임의" />}
                   {place.info?.hoursSource === "google" && <span className="ml-1 text-xs text-gray-500">({t("Google 지도 기준")})</span>}

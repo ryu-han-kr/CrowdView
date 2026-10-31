@@ -180,10 +180,10 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
       ) : (
         <>
           {failed && <p className="mt-4 text-xs font-semibold text-red-600 md:mt-0">{t("데이터를 불러오지 못했어요. 잠시 뒤 새로고침해 주세요.")}</p>}
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-2 md:mt-0">
-            <p className="text-sm text-gray-500">{t("{n}곳", { n: list.length })}</p>
-            <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
-              {view === "list" && !me && (
+          <p className="mt-4 text-sm text-gray-500 md:mt-0">{t("{n}곳", { n: list.length })}</p>
+          {/* 11/1 지인 QA: 정렬은 왼쪽, 목록·지도는 오른쪽 끝 (같은 크기) */}
+          <div className="mt-2 flex items-center justify-between gap-2">
+              {view === "list" && !me ? (
                 <div className="flex rounded-full bg-gray-100 p-0.5 text-xs font-semibold">
                   {[false, true].map((c) => (
                     <button
@@ -195,9 +195,10 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
                     </button>
                   ))}
                 </div>
+              ) : (
+                <span />
               )}
               <ViewToggle view={view} onChange={setView} />
-            </div>
           </div>
           {view === "map" ? (
             <SpotMap

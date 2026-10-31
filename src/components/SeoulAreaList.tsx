@@ -100,10 +100,9 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
         },
       ]}
     >
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-2 md:mt-0">
-        <p className="text-sm text-gray-500">{t("{n}곳", { n: list.length })}</p>
-        <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
-          <ViewToggle view={view} onChange={setView} />
+      <p className="mt-4 text-sm text-gray-500 md:mt-0">{t("{n}곳", { n: list.length })}</p>
+      {/* 11/1 지인 QA: 정렬은 왼쪽, 목록·지도는 오른쪽 끝 (같은 크기) */}
+      <div className="mt-2 flex items-center justify-between gap-2">
           <div className="flex rounded-full bg-gray-100 p-0.5 text-xs font-semibold">
             {(["busy", "calm", "near"] as const).map((s) => (
               <button
@@ -123,11 +122,11 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
               </button>
             ))}
           </div>
-        </div>
+          <ViewToggle view={view} onChange={setView} />
       </div>
       {geoError && <p className="mt-2 text-xs font-semibold text-red-600">{geoError}</p>}
       {/* 서울시 단계는 장소별 평소 대비라 인원 수와 단계가 엇갈려 보일 수 있다 */}
-      <p className="mt-2 text-xs text-gray-500">{t("단계는 장소마다 평소 인구와 비교한 서울시 기준이에요 · 인원이 많아도 '원활'일 수 있어요")}</p>
+      <p className="mt-2 text-xs text-gray-500">{t("단계는 인원 수가 아니라 평소보다 얼마나 많은지예요")}</p>
       {view === "map" ? (
         <SpotMap
           className="mt-3"

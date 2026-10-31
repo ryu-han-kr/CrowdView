@@ -50,6 +50,8 @@ export function ListCard({ item }: { item: ListCardItem }) {
       <Link
         href={item.href}
         {...dataAttrs}
+        // 바깥 주소(카카오맵 등)는 새 창으로 — 우리 화면을 잃지 않게 (11/1)
+        {...(item.href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}
         className="relative flex gap-3 rounded-2xl bg-white p-2.5 pr-3 shadow-[0_1px_2px_rgb(15_23_42/0.06)] transition active:scale-[0.99] md:hover:shadow-md"
       >
         <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-xl bg-gray-100">
@@ -82,7 +84,8 @@ export function ListCard({ item }: { item: ListCardItem }) {
               {item.tag.label}
             </p>
           )}
-          <p className="mt-0.5 truncate pr-8 text-base font-extrabold text-gray-950">{item.title}</p>
+          {/* 이름은 두 줄까지 (11/1 UX 점검: '2026 숭례문 파수…'·'롯데월드타워 서울…'처럼 한 줄로 잘려 무슨 곳인지 몰랐다) */}
+          <p className="mt-0.5 line-clamp-2 pr-8 text-base leading-snug font-extrabold break-keep text-gray-950">{item.title}</p>
           {item.sub && <p className="truncate text-[13px] font-medium text-gray-600">{item.sub}</p>}
           <p className="mt-1.5 flex min-w-0 items-center gap-1.5 overflow-hidden whitespace-nowrap">
             {item.level ? (

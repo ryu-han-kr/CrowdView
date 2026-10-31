@@ -15,7 +15,7 @@ export async function GET() {
     "> Live crowd levels and crowd forecasts for South Korea: Incheon/Gimpo/Jeju/Gimhae airport departure wait times, theme parks (Everland, Lotte World), 121 Seoul hotspots (live population from Seoul city data), and nationwide festivals. Free; available in Korean, English, Japanese and Chinese.",
     "> 한국 공항·놀이공원·명소·축제와 서울 121곳의 실시간 혼잡도와 예측 서비스 (무료, 한국어·영어·일본어·중국어).",
     "",
-    "Crowd levels use five steps: 쾌적 (very quiet), 원활 (quiet), 보통 (moderate), 혼잡 (busy), 매우 혼잡 (very busy). Data refreshes every 10 minutes. Sources: Seoul Metropolitan Government real-time city data, Incheon International Airport Corporation, Korea Airports Corporation, Korea Tourism Organization (TourAPI, DataLab), Korea Meteorological Administration, AirKorea, ThemeParks.wiki. Values are estimates and may differ from on-site conditions.",
+    "Crowd levels use five steps: 한산 (very quiet), 여유 (quiet), 보통 (moderate), 혼잡 (busy), 매우 혼잡 (very busy). Data refreshes every 10 minutes. Sources: Seoul Metropolitan Government real-time city data, Incheon International Airport Corporation, Korea Airports Corporation, Korea Tourism Organization (TourAPI, DataLab), Korea Meteorological Administration, AirKorea, ThemeParks.wiki. Values are estimates and may differ from on-site conditions.",
     "",
     "## Main pages",
     `- [Home: where is it quiet right now](${SITE}/): live crowd levels for all places`,

@@ -15,6 +15,8 @@ export interface PhotoCardItem {
   href: string;
   /** 바깥 사이트(지도 등)면 새 창 */
   external?: boolean;
+  /** 바깥으로 나가는 카드 표시 (예: '카카오맵 ↗') — 정보 화면인 줄 알고 눌렀다가 놀라지 않게 (11/1) */
+  outLabel?: string;
   img?: string;
   emoji?: string;
   title: string;
@@ -67,6 +69,9 @@ export function PhotoCard({ item, rank, className = "" }: { item: PhotoCardItem;
           </div>
         )}
         {item.tag && <TagLabel label={item.tag.label} className="absolute top-2 left-2" />}
+        {item.outLabel && !item.favId && (
+          <span className="absolute top-2 right-2 rounded-full bg-black/60 px-2 py-0.5 text-[11px] font-bold text-white backdrop-blur-sm">{item.outLabel}</span>
+        )}
         {item.favId && (
           <button
             type="button"
@@ -156,8 +161,9 @@ export function PhotoRail({
           {title}
           {subtitle && <span className="ml-2 hidden text-sm font-medium text-gray-600 md:inline">{subtitle}</span>}
         </h2>
+        {/* 11/1 UX 점검: 누르는 자리만 위아래로 넓힘 (배치는 그대로) */}
         {moreHref && (
-          <Link href={moreHref} className="shrink-0 text-sm font-semibold text-gray-700">
+          <Link href={moreHref} className="-my-2 shrink-0 py-2 text-sm font-semibold text-gray-700">
             {t("전체 보기")} ›
           </Link>
         )}

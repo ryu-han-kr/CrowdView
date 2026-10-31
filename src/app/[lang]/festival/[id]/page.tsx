@@ -204,21 +204,22 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
             </p>
           )}
           <section className="rounded-3xl p-5" style={{ background: level ? `${level.color}14` : "#f9fafb" }}>
-            <div className="flex items-center justify-between gap-3">
+            {/* 11/1 지인 QA: 토끼 높이에 맞춰 가운데 정렬돼 제목 위 여백이 넓고 붕 떴다 → 위로 붙이고 단계 글씨는 조금 크게 */}
+            <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-xs font-medium text-gray-500">
-                  {t("지역 방문 증가 예상 (시군구 기준)")}
+                  {crowd ? t("{area} 방문 예상", { area: tr(crowd.signguName) }) : t("지역 방문 예상")}
                   <DataTag />
                 </p>
                 {crowd && level && (
-                  <p className="mt-1 text-2xl font-extrabold" style={{ color: inkOf(level.color) }}>
+                  <p className="mt-0.5 text-[28px] leading-tight font-extrabold" style={{ color: inkOf(level.color) }}>
                     {t(level.label)}
                   </p>
                 )}
               </div>
               {/* 실시간 카드가 있으면 거기 토끼가 있으니 여기엔 예측 표정만 작게, 자료가 없으면 기다리는 토끼 */}
               {crowd ? (
-                <CrowdMascot character="rabbit" score={crowd.score} size={live ? 64 : 96} className="-my-2 shrink-0" label={level ? t(level.label) : undefined} />
+                <CrowdMascot character="rabbit" score={crowd.score} size={live ? 56 : 72} className="-mt-1 -mb-3 shrink-0" label={level ? t(level.label) : undefined} />
               ) : null}
             </div>
             {crowd && level ? (
@@ -226,8 +227,8 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
                 <p className="mt-1 text-sm text-gray-700">
                   {t(
                     crowd.ratio >= 1
-                      ? "작년 이 기간 {area} 방문객이 평소보다 {pct} 많았어요"
-                      : "작년 이 기간 {area} 방문객이 평소보다 {pct} 적었어요",
+                      ? "작년 이맘때 평소보다 {pct} 많았어요"
+                      : "작년 이맘때 평소보다 {pct} 적었어요",
                     {
                       area: tr(crowd.signguName),
                       pct: pctAbs(crowd.ratio),
@@ -235,7 +236,7 @@ export default async function FestivalPage({ params }: { params: Promise<{ id: s
                   )}
                 </p>
                 <p className="mt-1 text-[11px] text-gray-500">
-                  {t("축제장 안의 인원이나 대기시간이 아니라 {area} 전체 방문객 통계예요.", { area: tr(crowd.signguName) })}
+                  {t("축제장 인원이 아닌 {area} 전체 통계", { area: tr(crowd.signguName) })}
                 </p>
               </>
             ) : (

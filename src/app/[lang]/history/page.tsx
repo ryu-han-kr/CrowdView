@@ -62,7 +62,7 @@ export default async function HistoryIndex({ params }: { params: Promise<{ lang:
   return (
     <main className="px-5 pt-6 pb-10 md:px-0 md:pt-10">
       <PageHeader title={t("지난 혼잡 기록")} name="otter" pose="explore" className="mb-4">
-        <p className="mt-1 text-sm text-gray-600">{t("5분마다 모은 실제 혼잡을 날짜별로 정리했어요. 오른쪽은 최근 7일 평균이에요.")}</p>
+        <p className="mt-1 text-sm text-gray-600">{t("5분마다 모은 실제 혼잡을 날짜별로 · 오른쪽은 7일 평균")}</p>
       </PageHeader>
       {!index.length ? (
         <p className="mt-6 rounded-2xl bg-gray-50 p-4 text-sm text-gray-600">{t("기록을 정리하는 중이에요. 내일부터 날짜별로 보여요.")}</p>

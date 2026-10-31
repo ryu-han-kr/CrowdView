@@ -7,12 +7,13 @@ import { PLACES } from "@/lib/places";
 const at = (kstHour: number) => new Date(Date.UTC(2026, 9, 21, kstHour - 9, 0)); // 2026-10-21 수요일 KST
 const by = (id: string) => PLACES.find((p) => p.id === id)!;
 
-test("운영 중 실측 놀이공원은 5분, 서울시 지역·공항은 10분", () => {
+test("운영 중 실측 놀이공원·낮 서울시 지역은 5분, 공항은 10분", () => {
   const everland = by("everland");
   assert.ok(everland.themeparksId || everland.queueTimesId);
   assert.equal(cadenceMinutes(everland, at(14)), PEAK_MIN);
   const seoulPlace = PLACES.find((p) => p.seoulArea && p.hours[1] - p.hours[0] < 24 && p.hours[0] <= 14 && p.hours[1] > 14)!;
-  assert.equal(cadenceMinutes(seoulPlace, at(14)), NORMAL_MIN);
+  // 11/1: 서울시 원천이 5분 단위라 낮(7~23시)엔 5분
+  assert.equal(cadenceMinutes(seoulPlace, at(14)), PEAK_MIN);
   const airport = PLACES.find((p) => p.airport)!;
   assert.equal(cadenceMinutes(airport, at(14)), NORMAL_MIN);
 });

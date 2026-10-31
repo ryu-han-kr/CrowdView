@@ -31,7 +31,7 @@ const SYSTEM = `너는 한국 여행 서비스 CrowdView의 편집자다. 웹 �
 function prompt(today: string) {
   return `오늘은 ${today}(한국 시간)이다. 지금 한국에서 가장 화제인 축제·행사·시즌 이벤트 8~10개를 찾아라.
 마지막 답은 다른 말 없이 아래 모양의 JSON 배열 하나만 쓴다:
-[{"title":"행사 이름","venue":"장소 이름","region":"시·도 (서울·경기·부산·제주·강원 등)","start":"YYYY-MM-DD 또는 빈 값","end":"YYYY-MM-DD 또는 빈 값","url":"https://...","why":"화제인 이유 한 줄 (40자 안)"}]`;
+[{"title":"행사 이름","venue":"장소 이름","region":"시·도 (서울·경기·부산·제주·강원 등)","start":"YYYY-MM-DD 또는 빈 값","end":"YYYY-MM-DD 또는 빈 값","url":"https://...","why":"화제인 이유 한 줄 (25자 안, 명사형으로 짧게)"}]`;
 }
 
 const str = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");

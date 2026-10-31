@@ -186,7 +186,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       img: photoOf("gyeongbokgung", 1) ?? "/places/gyeongbokgung.jpg",
       live: true,
       tag: t("실시간"),
-      title: t("서울 실시간 인구 {n}곳", { n: SEOUL_AREAS.length }),
+      title: t("서울 실시간 장소 {n}곳", { n: SEOUL_AREAS.length }),
       sub: t("강남역·성수·홍대·한강공원… 지금 몇 명이 있을까?"),
     },
   ];
@@ -304,13 +304,15 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       img: x.img,
       emoji: x.kind === "event" ? "🎉" : "📍",
       sub: [x.period, region].filter(Boolean).join(" · ") || undefined,
+      // 11/1 지인 QA: 화제 이유가 잘려 못 읽고 앞의 'AI ·'는 뜻을 모르겠다 → 'AI ·' 빼고 두 줄까지 (검색량·빨간 글씨는 경수님 확인으로 그대로)
       note:
         x.kind === "event"
-          ? `AI · ${trendTr.get(x.reason) ?? x.reason}`
+          ? (trendTr.get(x.reason) ?? x.reason)
           : x.rising && x.rising >= 1.5
             ? t("검색량 {n}배 ↑", { n: x.rising.toFixed(1) })
             : t("요즘 많이 찾는 곳"),
       hot: x.kind === "event" || (x.rising ?? 0) >= 1.5,
+      wrap: x.kind === "event",
     };
   });
   const trendList = trendItems.length ? (
@@ -374,9 +376,10 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
   // 계절 배너: 스키 시즌엔 스키장, 여름엔 워터파크를 여행 배너 두 번째에 (경수님 10/28)
   const seasonSlide: HeroSlide | undefined =
     season === "ski"
-      ? { id: "season-ski", href: localePath(lang, "/?cat=ski#places"), img: photoOf("phoenix") ?? "", tag: t("시즌"), title: t("올겨울 스키장"), sub: t("개장 전에 미리 보는 혼잡 예측") }
+      ? // 배너는 Link가 언어 접두사를 붙인다 → localePath를 또 쓰면 /en/en/… (11/1 UX 점검)
+        { id: "season-ski", href: "/?cat=ski#places", img: photoOf("phoenix") ?? "", tag: t("시즌"), title: t("올겨울 스키장"), sub: t("개장 전에 미리 보는 혼잡 예측") }
       : season === "summer"
-        ? { id: "season-water", href: localePath(lang, "/?cat=waterpark#places"), img: photoOf("caribbean-bay") ?? "", tag: t("시즌"), title: t("여름엔 워터파크"), sub: t("물놀이 가기 전 혼잡 미리 보기") }
+        ? { id: "season-water", href: "/?cat=waterpark#places", img: photoOf("caribbean-bay") ?? "", tag: t("시즌"), title: t("여름엔 워터파크"), sub: t("물놀이 가기 전 혼잡 미리 보기") }
         : undefined;
   const travelBanner = uniq([
     travelSlides[0],
@@ -420,7 +423,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     },
     {
       id: "palace",
-      href: localePath(lang, "/?cat=landmark#places"),
+      // 11/1 UX 점검: ?cat=landmark는 실시간 장소의 명소 2곳만 (칩도 없어 텅 빈 듯) → 명소 탭(전국 명소)으로
+      href: localePath(lang, "/?tab=landmark#places"),
       img: photoOf("gyeongbokgung"),
       badge: t("추천"),
       title: t("고궁·명소 산책"),
@@ -489,7 +493,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       t(r),
       t("{region} 지금 한산한 곳 모음", { region: t(r) }),
       t("지역 모음"),
-      "/?q=" + encodeURIComponent(t(r)) + "#places",
+      // 11/1 경수님: 홈 안 검색(/?q=)으로 보내면 같은 화면이 다시 그려지며 아래로 튀었다 → 그 지역 명소·축제 화면으로
+      `/explore?region=${encodeURIComponent(r)}`,
       places.filter((p) => p.region.startsWith(r)),
     ),
   ).filter((c) => c.items.length >= 3);

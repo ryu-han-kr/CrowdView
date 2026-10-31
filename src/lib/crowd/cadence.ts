@@ -29,6 +29,11 @@ export function activeNow(p: Place, at = new Date()): boolean {
 export function cadenceMinutes(p: Place, at = new Date()): number {
   if (!hasLiveSource(p) || !activeNow(p, at)) return IDLE_MIN;
   if ((p.category === "themepark" || p.category === "waterpark") && (p.themeparksId || p.queueTimesId)) return PEAK_MIN;
+  // 서울시 실측: 원천이 5분 단위 → 낮(7~23시)엔 5분 (11/1, lib/seoul-live seoulTtl과 같다)
+  if (p.seoulArea) {
+    const h = kst(at).hour;
+    if (h >= 7 && h < 23) return PEAK_MIN;
+  }
   return NORMAL_MIN;
 }
 

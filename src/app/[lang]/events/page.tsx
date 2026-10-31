@@ -50,7 +50,7 @@ export default async function EventsPage({ params }: { params: Promise<{ lang: s
     <main className="px-5 pt-6 pb-8 md:px-0 md:pt-10">
       <PageHeader title={t("전국 축제")} name="rabbit" pose="done">
         <p className="mt-1 text-sm text-gray-500">
-          {t("한국관광공사·서울시 축제 일정 {n}개 · 서울 축제는 실시간, 그 외는 작년 같은 기간 방문객으로 예측해요", { n: festivals.length })}
+          {t("축제 {n}개 · 서울은 실시간, 그 외는 예측", { n: festivals.length })}
         </p>
       </PageHeader>
       <FestivalList

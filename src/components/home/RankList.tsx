@@ -19,6 +19,8 @@ export interface RankItem {
   external?: boolean;
   /** note를 진한 빨강으로 (검색량 급증 등) */
   hot?: boolean;
+  /** note를 자르지 않고 두 줄까지 (행사 화제 이유) */
+  wrap?: boolean;
 }
 
 /** 큰 순위 숫자 + 글 + 오른쪽 사진 (NOL '많이 찾은 즐길거리' 레퍼런스 10/21) */
@@ -40,8 +42,9 @@ export function RankList({
     <section className="mt-10 md:mt-14">
       <div className="flex items-end justify-between gap-3">
         <h2 className="min-w-0 text-lg font-bold md:text-xl">{title}</h2>
+        {/* 11/1 UX 점검: 누르는 자리만 위아래로 넓힘 (배치는 그대로) */}
         {moreHref && moreLabel && (
-          <Link href={moreHref} className="shrink-0 text-sm text-gray-500">
+          <Link href={moreHref} className="-my-2 shrink-0 py-2 text-sm text-gray-500">
             {moreLabel} ›
           </Link>
         )}
@@ -58,7 +61,7 @@ export function RankList({
                   {it.score !== undefined && <LevelBadge score={it.score} />}
                   {it.sub && <span className="truncate text-sm text-gray-700">{it.sub}</span>}
                 </div>
-                {it.note && <p className={`mt-0.5 truncate text-xs ${it.hot ? "font-bold text-rose-700" : "text-gray-600"}`}>{it.note}</p>}
+                {it.note && <p className={`mt-0.5 text-xs ${it.wrap ? "line-clamp-2 break-keep" : "truncate"} ${it.hot ? "font-bold text-rose-700" : "text-gray-600"}`}>{it.note}</p>}
               </div>
               <div className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-2xl bg-gray-100 md:h-20 md:w-20">
                 {it.img ? (

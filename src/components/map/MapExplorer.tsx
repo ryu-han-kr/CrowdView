@@ -12,6 +12,8 @@ import { Glyph } from "@/components/Glyph";
 export interface ExploreSpot extends MapSpot {
   theme: ThemeId;
   region: string;
+  /** 근처 명소가 혼잡을 빌려 써도 되는 실시간 장소 (바깥 명소·거리·해변). 실내·테마파크·공항·행사는 false */
+  outdoor?: boolean;
 }
 export type ThemeId = "live" | "seoul" | "landmark" | "festival";
 
@@ -31,10 +33,11 @@ export function MapExplorer({ spots: base, regions, subtitle }: { spots: Explore
   const { t, lang } = useI18n();
   const [theme, setTheme] = useState<ThemeId | "all">("all");
   const [region, setRegion] = useState<string>("all");
-  // 전국 명소 디렉터리(관광공사 1,852곳)는 브라우저에서 받는다. 혼잡은 가까운(1km 안) 실시간 장소·서울 지역 값
+  // 전국 명소 디렉터리(관광공사 1,852곳)는 브라우저에서 받는다. 혼잡은 가까운(1km 안) 바깥 실시간 장소·서울 지역 값
+  // (11/1 QA: 1km 안 클라이밍장·오락실·테마파크 값을 빌려 쓰던 것을 뺐다)
   const [directory, setDirectory] = useState<ExploreSpot[]>([]);
   useEffect(() => {
-    const live = base.filter((s) => (s.theme === "live" || s.theme === "seoul") && s.score !== undefined);
+    const live = base.filter((s) => (s.theme === "seoul" || (s.theme === "live" && s.outdoor)) && s.score !== undefined);
     fetch("/data/spots.json")
       .then((r) => r.json())
       .then((rows: [string, string, string, string, number, number, string, string][]) =>

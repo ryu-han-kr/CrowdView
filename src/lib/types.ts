@@ -101,6 +101,8 @@ export interface Place {
   queueTimesId?: number;
   /** 계절 영업: 여는 달 ~ 닫는 달 (1~12, 해를 넘기면 [12, 3]처럼). 그 밖의 달은 시즌 아님 */
   season?: [from: number, to: number];
+  /** 이번 시즌 발표된 개장일 (YYYY-MM-DD). 없으면 season의 여는 달로 '12월 오픈 예정' */
+  openDate?: string;
   /** TourAPI에서 받아 붙인 정보 (getLivePlaces) */
   info?: PlaceInfo;
 }
@@ -145,6 +147,8 @@ export interface CrowdSnapshot {
   officialLevel?: string;
   /** 계절 영업 장소의 시즌이 아닌 때 (스키장 여름 등) */
   offSeason?: boolean;
+  /** 비시즌일 때 다시 여는 때: 발표된 개장일 'MM-DD' 또는 여는 달 'MM' (lib/season-label) */
+  opens?: string;
   /** 테마파크: 운영 중 놀이기구 평균 대기(분) */
   avgWaitMin?: number;
   /** headcount가 한국공항공사 시간대별 탑승객 수(이번 시간 출발 승객)인지 */

@@ -25,7 +25,7 @@ const PEOPLE_NOTE: Record<NonNullable<HourPoint["peopleKind"]>, string> = {
 const hourDate = (h: number) => new Date(Date.UTC(2000, 0, 1, h));
 
 /** 글자 폭 어림 (12px 기준): 한글·한자·가나는 한 글자가 거의 정사각형, 그 밖은 절반쯤 */
-const textWidth = (s: string) =>
+export const textWidth = (s: string) =>
   [...s].reduce((w, c) => w + (/[\u1100-\u11ff\u3130-\u318f\uac00-\ud7af\u3040-\u30ff\u4e00-\u9fff]/.test(c) ? 12 : 6.6), 0);
 
 /**

@@ -1,4 +1,5 @@
 // 혼잡도 5단계. 내부적으로는 0~100 점수로 다루고, 화면에는 단계로 보여준다.
+// 11/1 경수님: 이름을 쾌적·원활 → 한산·여유 (지인 QA: 쾌적과 원활이 비슷하게 느껴진다)
 // 7단계는 색만으로 구분이 어렵고, 원천 데이터(서울시 4단계 등)의 해상도보다 촘촘해서 5단계를 채택.
 
 export type LevelKey = 1 | 2 | 3 | 4 | 5;
@@ -12,8 +13,8 @@ export interface Level {
 }
 
 export const LEVELS: Level[] = [
-  { key: 1, label: "쾌적", desc: "줄 없이 바로 이용", color: "#10b981", min: 0 },
-  { key: 2, label: "원활", desc: "대기 짧고 이동 편함", color: "#84cc16", min: 20 },
+  { key: 1, label: "한산", desc: "줄 없이 바로 이용", color: "#10b981", min: 0 },
+  { key: 2, label: "여유", desc: "대기 짧고 이동 편함", color: "#84cc16", min: 20 },
   { key: 3, label: "보통", desc: "평소 주말 수준", color: "#eab308", min: 40 },
   { key: 4, label: "혼잡", desc: "대기·이동 불편", color: "#f97316", min: 60 },
   { key: 5, label: "매우 혼잡", desc: "방문 비추천", color: "#ef4444", min: 80 },

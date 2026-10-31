@@ -13,8 +13,7 @@ import Link from "@/i18n/link";
 import { DEFAULT_LANG, type Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { getAllCrowd } from "@/lib/crowd/service";
-import { distanceKm } from "@/lib/geo";
-import { LANDMARKS, LANDMARK_KINDS, landmarkMapHref } from "@/lib/korea";
+import { LANDMARKS, LANDMARK_KINDS, landmarkCrowdSource, landmarkMapHref } from "@/lib/korea";
 import { LANDMARK_INFO } from "@/lib/landmark-info";
 import { PLACES, placeHref } from "@/lib/places";
 import { breadcrumbLd, jsonLd, pageMeta, SITE } from "@/lib/seo";
@@ -97,13 +96,15 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
   const intro = firstRest || (paras[1] ?? "");
   const rest = paras.slice(firstRest ? 1 : 2).join("\n");
 
-  // 지금 혼잡도: 1.5km 안 우리 장소 → 0.8km 안 서울 실시간 지역
+  // 지금 혼잡도: 같은 곳(우리 장소·서울 실시간 지역) → 0.8km 안 서울 실시간 지역 → 1km 안 같은 종류의 우리 장소 (lib/korea landmarkCrowdSource).
+  // 11/1 QA: 1.5km 안 아무 장소나 빌려 써서 해동용궁사가 롯데월드 어드벤처 부산, 봉은사가 펀시티 코엑스몰점(오락실) 값을 보였다
   const [crowd, seoul] = await Promise.all([
     getAllCrowd().catch(() => ({}) as Awaited<ReturnType<typeof getAllCrowd>>),
     getAllSeoulLive().catch(() => ({}) as Awaited<ReturnType<typeof getAllSeoulLive>>),
   ]);
-  const place = PLACES.find((p) => p.category !== "airport" && distanceKm(p, l) < 1.5);
-  const area = l.region === "서울" ? SEOUL_AREAS.find((a) => distanceKm(a, l) < 0.8) : undefined;
+  const source = landmarkCrowdSource(l, { place: (pid) => !!crowd[pid], area: (code) => !!seoul[code] });
+  const place = source?.placeId ? PLACES.find((p) => p.id === source.placeId) : undefined;
+  const area = source?.seoulCode ? SEOUL_AREAS.find((a) => a.code === source.seoulCode) : undefined;
   const live: { score: number; href: string; label: string; open: boolean } | undefined =
     place && crowd[place.id]
       ? { score: crowd[place.id].score, href: placeHref(place), label: t(place.name), open: crowd[place.id].open }
@@ -269,7 +270,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
               {t("언제 가면 한산할까")}
               <DataTag />
             </h2>
-            <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("이번 주 시간대별 예상 혼잡 · 초록 칸이 한산해요")}</p>
+            <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("이번 주 시간대별 예상")}</p>
             <WeekHeatmap
               nowHour={kst().hour}
               days={model.week.map((d, i) => ({
@@ -290,7 +291,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
             return (
               <section className="mt-8">
                 <h2 className="text-lg font-bold">{t("작년 이맘때 {region} 방문객", { region: lastYearRegion })}</h2>
-                <p className="mt-0.5 text-sm text-gray-500">{t("관광공사 데이터랩 · 다른 지역에서 온 사람과 외국인, 작년 같은 요일")}</p>
+                <p className="mt-0.5 text-sm text-gray-500">{t("출처: 한국관광공사 데이터랩")}</p>
                 <p className="mt-2 text-[15px]">
                   {t("하루 평균 약 {n}명, {day}이 가장 많았어요 (약 {m}명).", {
                     n: compactNumber(avg, lang),
@@ -318,7 +319,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
             <h2 className="text-lg font-bold">{t("앞으로 30일 붐빔 예측")}</h2>
             {daily.length > 1 ? (
               <>
-                <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("한국관광공사 관광지 집중률 예측 · 그래프를 눌러 날짜별로 보기")}</p>
+                <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("출처: 한국관광공사")}</p>
                 <DailyForecastChart days={daily} weekdays={daily.map((d) => weekday(d.date))} />
               </>
             ) : (

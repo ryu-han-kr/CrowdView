@@ -12,15 +12,15 @@ import { compactNumber } from "@/lib/format";
 import { areaPhoto } from "@/lib/seoul-guide";
 import { PageHeader } from "@/components/PageHeader";
 
-// 서울시 실시간 인구는 5분 단위 → 10분마다 다시 렌더링 (지역마다 10분 캐시라 서울시 호출도 10분에 한 번)
-export const revalidate = 600;
+// 서울시 실시간 인구는 5분 단위 → 5분마다 다시 렌더링 (11/1: 낮엔 지역 캐시도 5분, 밤엔 10분이라 그대로 보임)
+export const revalidate = 300;
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const t = getT((await params).lang);
   return pageMeta({
     lang: (await params).lang,
     path: "/seoul",
-    title: t("서울 실시간 인구 {n}곳", { n: SEOUL_AREAS.length }),
+    title: t("서울 실시간 장소 {n}곳", { n: SEOUL_AREAS.length }),
     description: t("강남역·성수·홍대·한강공원 등 서울 주요 장소의 지금 인구와 혼잡도 (서울시 실시간 도시데이터)"),
   });
 }
@@ -50,9 +50,9 @@ export default async function SeoulPage({ params }: { params: Promise<{ lang: st
 
   return (
     <main className="px-5 pt-6 pb-8 md:px-0 md:pt-10">
-      <PageHeader title={t("서울 실시간 인구 {n}곳", { n: SEOUL_AREAS.length })} name="otter">
-        <p className="mt-1 text-sm text-gray-500">
-          {t("관광특구·고궁·상권·공원·역 주변에 지금 몇 명이 있는지 5분마다 바뀌는 서울시 데이터로 보여드려요")}
+      <PageHeader title={t("서울 실시간 장소 {n}곳", { n: SEOUL_AREAS.length })} name="otter">
+        <p className="mt-1 text-gray-500">
+          {t("서울 곳곳의 지금 인원, 5분마다 갱신")}
         </p>
       </PageHeader>
       {/* 배치 다양화 (사용자 10/22): 지금 가장 한산한 서울 — 큰 카드 1 + 작은 카드 4 (역 주변은 빼고, 사진 있는 곳) */}
@@ -76,7 +76,14 @@ export default async function SeoulPage({ params }: { params: Promise<{ lang: st
             people: r.min !== undefined ? t("{min}~{max}명", { min: compactNumber(r.min, lang), max: compactNumber(r.max ?? r.min, lang) }) : undefined,
           }))}
       />
-      <SeoulAreaList rows={rows} names={names} />
+      {/* 11/1 지인 QA: 검색창이 위 사진 칸에 딱 붙어 갑자기 나왔다 → 위 '지금 가장 한산한 서울'처럼 제목으로 구역을 나눈다 */}
+      <section className="mt-10">
+        <h2 className="text-xl font-extrabold tracking-tight md:text-2xl">{t("원하는 장소 검색")}</h2>
+        <p className="mt-0.5 text-[13px] font-medium text-gray-600 md:text-sm">{t("이름·종류로 찾고 지금 혼잡도로 정렬")}</p>
+        <div className="mt-3">
+          <SeoulAreaList rows={rows} names={names} />
+        </div>
+      </section>
       <InlineAd className="mt-6" />
       <p className="mt-6 text-center text-[11px] text-gray-500">
         {t("서울시 실시간 도시데이터 (통신사 기지국 기반 추정 인구)")}
