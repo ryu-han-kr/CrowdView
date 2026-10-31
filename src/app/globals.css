@@ -561,6 +561,15 @@ img:is([src*="visitkorea"], [src*="wikimedia"], [src*="%2Fplaces%2F"], [src^="/p
 @keyframes chart-pulse { 0%, 100% { transform: scale(0.75); opacity: 0.9; } 50% { transform: scale(1.25); opacity: 0.4; } }
 .chart-pulse { animation: chart-pulse 1.6s ease-in-out infinite; }
 
+/* 기록 그래프(HistoryChart): 막대가 바닥에서 차례로 자라고, 고르면 나머지가 옅어진다. 움직임 줄이기 설정이면 끈다 */
+@keyframes hist-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.hist-bar { transform-box: fill-box; transform-origin: 50% 100%; animation: hist-grow 0.55s cubic-bezier(0.22, 1, 0.36, 1) both; transition: opacity 0.18s ease; }
+.hist-tip { transition: transform 0.12s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .hist-bar { animation: none; transition: none; }
+  .hist-tip { transition: none; }
+}
+
 /* 애드센스가 광고를 채우지 못한 칸(data-ad-status="unfilled")은 '광고' 글자째 숨긴다.
    10/27 광고 단위를 켠 직후 휴대폰 390×390·PC 1104×280 빈 칸이 그대로 보였다 (애드센스 권장 방식) */
 ins.adsbygoogle[data-ad-status="unfilled"],
