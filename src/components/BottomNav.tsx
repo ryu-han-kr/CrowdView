@@ -89,9 +89,9 @@ export function TopNav({ authEnabled = false }: { authEnabled?: boolean }) {
   );
 }
 
-/** 휴대폰 하단 탭 5개, 홈이 가운데 (NOL 레퍼런스 10/21: 카테고리·내주변·홈·찜·마이). 지역 여행이 '탐색'으로 들어온다 */
-// 하단 첫 칸: 지역 여행(탐색)은 홈 통합 검색으로 옮기고, 한산한 코스 추천을 둔다 (사용자 10/22)
-const MOBILE_TABS = ["/route", "/map", "/", "/airport", "/me"].map((href) => TABS.find((tab) => tab.href === href)!);
+/** 휴대폰 하단 탭 5개. 지역 여행(탐색)은 홈 통합 검색으로 옮기고 한산한 코스 추천을 둔다 (사용자 10/22) */
+// 11/1 경수님: 홈을 가운데(NOL 레퍼런스) → 맨 왼쪽으로
+const MOBILE_TABS = ["/", "/route", "/map", "/airport", "/me"].map((href) => TABS.find((tab) => tab.href === href)!);
 const MOBILE_LABEL: Record<string, string> = { "/route": "코스" };
 
 export function BottomNav() {

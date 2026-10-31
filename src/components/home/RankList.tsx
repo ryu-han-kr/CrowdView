@@ -19,6 +19,8 @@ export interface RankItem {
   external?: boolean;
   /** note를 진한 빨강으로 (검색량 급증 등) */
   hot?: boolean;
+  /** note를 자르지 않고 두 줄까지 (행사 화제 이유) */
+  wrap?: boolean;
 }
 
 /** 큰 순위 숫자 + 글 + 오른쪽 사진 (NOL '많이 찾은 즐길거리' 레퍼런스 10/21) */
@@ -58,7 +60,7 @@ export function RankList({
                   {it.score !== undefined && <LevelBadge score={it.score} />}
                   {it.sub && <span className="truncate text-sm text-gray-700">{it.sub}</span>}
                 </div>
-                {it.note && <p className={`mt-0.5 truncate text-xs ${it.hot ? "font-bold text-rose-700" : "text-gray-600"}`}>{it.note}</p>}
+                {it.note && <p className={`mt-0.5 text-xs ${it.wrap ? "line-clamp-2 break-keep" : "truncate"} ${it.hot ? "font-bold text-rose-700" : "text-gray-600"}`}>{it.note}</p>}
               </div>
               <div className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-2xl bg-gray-100 md:h-20 md:w-20">
                 {it.img ? (

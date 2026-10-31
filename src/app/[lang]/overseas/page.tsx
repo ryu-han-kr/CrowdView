@@ -3,7 +3,7 @@ import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { fmtMinutes } from "@/i18n/patterns";
 import { inkOf } from "@/lib/levels";
-import { allParksNow, type ParkNow } from "@/lib/overseas-parks";
+import { allParksNow, OVERSEAS_PARKS, type ParkNow } from "@/lib/overseas-parks";
 import { pageMeta } from "@/lib/seo";
 
 // 해외 테마파크 지금 대기시간 (경수님 10/30). ThemeParks.wiki 대기시간이 5분마다라 ISR도 5분
@@ -74,15 +74,36 @@ export default async function OverseasPage({ params }: { params: Promise<{ lang:
   const parks = await allParksNow();
   // 운영 중인 곳을 위로, 그 안에서는 한산한 순
   const sorted = [...parks].sort((a, b) => Number(b.open !== false) - Number(a.open !== false) || (a.avgWait ?? 999) - (b.avgWait ?? 999));
+  // 11/1 경수님 '나라별로': 나라 칩(누르면 그 구역으로) + 나라별 구역. 나라 순서는 목록에 처음 나온 순
+  const countries = [...new Set(OVERSEAS_PARKS.map((p) => p.country))].map((c) => ({
+    name: c,
+    flag: OVERSEAS_PARKS.find((p) => p.country === c)!.flag,
+    id: `c-${OVERSEAS_PARKS.find((p) => p.country === c)!.id}`,
+    parks: sorted.filter((p) => p.park.country === c),
+  }));
   return (
     <main className="px-5 pt-6 pb-8 md:px-0 md:pt-10">
       <h1 className="text-2xl font-bold md:text-3xl">{t("해외 테마파크 지금 혼잡도")}</h1>
-      <p className="mt-1 text-sm text-gray-600">{t("운영 중인 놀이기구의 평균 대기시간으로 매겨요. 5분마다 갱신돼요.")}</p>
-      <ul className="mt-5 space-y-3 md:grid md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] md:gap-4 md:space-y-0">
-        {sorted.map((p) => (
-          <ParkCard key={p.park.id} p={p} lang={lang} t={t} />
+      <p className="mt-1 text-[13px] text-gray-600">{t("놀이기구 평균 대기시간 · 5분마다 갱신")}</p>
+      <nav className="no-scrollbar -mx-5 mt-4 flex gap-2 overflow-x-auto px-5 md:mx-0 md:px-0">
+        {countries.map((c) => (
+          <a key={c.id} href={`#${c.id}`} className="shrink-0 rounded-full bg-gray-100 px-3.5 py-1.5 text-sm font-semibold text-gray-700">
+            <span aria-hidden>{c.flag}</span> {t(c.name)} <span className="text-gray-500">{c.parks.length}</span>
+          </a>
         ))}
-      </ul>
+      </nav>
+      {countries.map((c) => (
+        <section key={c.id} id={c.id} className="mt-7 scroll-mt-20">
+          <h2 className="text-lg font-bold">
+            <span aria-hidden>{c.flag}</span> {t(c.name)}
+          </h2>
+          <ul className="mt-3 space-y-3 md:grid md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] md:gap-4 md:space-y-0">
+            {c.parks.map((p) => (
+              <ParkCard key={p.park.id} p={p} lang={lang} t={t} />
+            ))}
+          </ul>
+        </section>
+      ))}
       <p className="mt-4 text-xs text-gray-600">
         {t("대기시간")}:{" "}
         <a href="https://themeparks.wiki" target="_blank" rel="noreferrer" className="underline">

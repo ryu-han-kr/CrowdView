@@ -38,7 +38,7 @@ export default async function RoutePage({ params }: { params: Promise<{ lang: st
     <main className="px-5 pt-6 pb-10 md:px-0 md:pt-10">
       <PageHeader title={t("한산한 코스 추천")} name="raccoon" pose="explore" className="mb-6">
         <KstNote className="mt-1" />
-        <p className="mt-1 text-sm text-gray-500">{t("가고 싶은 종류와 시간만 고르면, 도착할 때 덜 붐비는 순서로 이어 드려요")}</p>
+        <p className="mt-1 text-sm text-gray-500">{t("도착할 때 덜 붐비는 순서로 이어 드려요")}</p>
       </PageHeader>
       <RoutePlanner hubs={START_HUBS} names={names} kakao={await kakaoLocalOn()} />
       {/* 코스를 짜지 않고 나가는 방문이 많아(10/26 다음 페이지로 0%) 바로 누를 곳을 사진으로. 서울시청 기준 15km, 한산한 순 */}

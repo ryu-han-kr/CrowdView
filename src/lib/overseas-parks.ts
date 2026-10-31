@@ -1,6 +1,7 @@
 // 해외 테마파크 지금 대기시간 (경수님 10/30: '해외 공항 및 명소 혼잡도'). 한국 여행자가 많이 가는 아시아 공원부터.
 // ThemeParks.wiki 무료 API (상업 이용 가능, "Powered by ThemeParks.wiki" 표기 필수) — 국내 테마파크와 같은 출처(lib/crowd/themeparks).
-// 오션파크 홍콩(10/29부터 갱신 없음)·유니버설 싱가포르(대기시간 비어 있음)는 자료가 살아나면 넣는다
+// 유니버설 싱가포르(대기시간 비어 있음)는 자료가 살아나면 넣는다. 오션파크 홍콩은 11/1 갱신이 살아나 넣음
+// 11/1 경수님 '해외 탭 나라별로': 나라(country) 칸 + 미국·프랑스·후지큐 추가
 import { levelOf, scoreFromValue, type Level, type LevelSteps } from "./levels";
 
 const API = "https://api.themeparks.wiki/v1/entity";
@@ -14,19 +15,28 @@ export interface OverseasPark {
   /** 번역 원본 (한국어) */
   name: string;
   city: string;
+  /** 나라 (번역 원본, 해외 화면 나라 칩) */
+  country: string;
   /** 국기 이모지 */
   flag: string;
   themeparksId: string;
 }
 
 export const OVERSEAS_PARKS: OverseasPark[] = [
-  { id: "tokyo-disneyland", name: "도쿄 디즈니랜드", city: "일본 지바", flag: "🇯🇵", themeparksId: "3cc919f1-d16d-43e0-8c3f-1dd269bd1a42" },
-  { id: "tokyo-disneysea", name: "도쿄 디즈니씨", city: "일본 지바", flag: "🇯🇵", themeparksId: "67b290d5-3478-4f23-b601-2f8fb71ba803" },
-  { id: "usj", name: "유니버설 스튜디오 재팬", city: "일본 오사카", flag: "🇯🇵", themeparksId: "47f61fac-7586-41ac-ae80-61c9257cf33e" },
-  { id: "legoland-japan", name: "레고랜드 재팬", city: "일본 나고야", flag: "🇯🇵", themeparksId: "0c14c187-13f5-41ef-91b1-7ecb504239a7" },
-  { id: "shanghai-disneyland", name: "상하이 디즈니랜드", city: "중국 상하이", flag: "🇨🇳", themeparksId: "ddc4357c-c148-4b36-9888-07894fe75e83" },
-  { id: "universal-beijing", name: "유니버설 스튜디오 베이징", city: "중국 베이징", flag: "🇨🇳", themeparksId: "68e1d8f0-ed42-4351-af25-160421e37ce0" },
-  { id: "hongkong-disneyland", name: "홍콩 디즈니랜드", city: "홍콩", flag: "🇭🇰", themeparksId: "bd0eb47b-2f02-4d4d-90fa-cb3a68988e3b" },
+  { id: "tokyo-disneyland", name: "도쿄 디즈니랜드", city: "일본 지바", country: "일본", flag: "🇯🇵", themeparksId: "3cc919f1-d16d-43e0-8c3f-1dd269bd1a42" },
+  { id: "tokyo-disneysea", name: "도쿄 디즈니씨", city: "일본 지바", country: "일본", flag: "🇯🇵", themeparksId: "67b290d5-3478-4f23-b601-2f8fb71ba803" },
+  { id: "usj", name: "유니버설 스튜디오 재팬", city: "일본 오사카", country: "일본", flag: "🇯🇵", themeparksId: "47f61fac-7586-41ac-ae80-61c9257cf33e" },
+  { id: "legoland-japan", name: "레고랜드 재팬", city: "일본 나고야", country: "일본", flag: "🇯🇵", themeparksId: "0c14c187-13f5-41ef-91b1-7ecb504239a7" },
+  { id: "shanghai-disneyland", name: "상하이 디즈니랜드", city: "중국 상하이", country: "중국", flag: "🇨🇳", themeparksId: "ddc4357c-c148-4b36-9888-07894fe75e83" },
+  { id: "universal-beijing", name: "유니버설 스튜디오 베이징", city: "중국 베이징", country: "중국", flag: "🇨🇳", themeparksId: "68e1d8f0-ed42-4351-af25-160421e37ce0" },
+  { id: "fuji-q", name: "후지큐 하이랜드", city: "일본 야마나시", country: "일본", flag: "🇯🇵", themeparksId: "ae527507-b1d0-4d40-83ea-143d87bef989" },
+  { id: "hongkong-disneyland", name: "홍콩 디즈니랜드", city: "홍콩", country: "홍콩", flag: "🇭🇰", themeparksId: "bd0eb47b-2f02-4d4d-90fa-cb3a68988e3b" },
+  { id: "ocean-park-hk", name: "오션파크 홍콩", city: "홍콩", country: "홍콩", flag: "🇭🇰", themeparksId: "1c6cf709-2157-443d-9c4b-d443dd53c0de" },
+  { id: "disneyland-paris", name: "디즈니랜드 파리", city: "프랑스 파리", country: "프랑스", flag: "🇫🇷", themeparksId: "dae968d5-630d-4719-8b06-3d107e944401" },
+  { id: "disneyland-ca", name: "디즈니랜드 (캘리포니아)", city: "미국 애너하임", country: "미국", flag: "🇺🇸", themeparksId: "7340550b-c14d-4def-80bb-acdb51d49a66" },
+  { id: "universal-hollywood", name: "유니버설 스튜디오 할리우드", city: "미국 로스앤젤레스", country: "미국", flag: "🇺🇸", themeparksId: "bc4005c5-8c7e-41d7-b349-cdddf1796427" },
+  { id: "magic-kingdom", name: "매직 킹덤 (디즈니 월드)", city: "미국 올랜도", country: "미국", flag: "🇺🇸", themeparksId: "75ea578a-adc8-4116-a54d-dccb60765ef9" },
+  { id: "universal-florida", name: "유니버설 스튜디오 플로리다", city: "미국 올랜도", country: "미국", flag: "🇺🇸", themeparksId: "eb3f4560-2383-4a36-9152-6b3e5ed6bc57" },
 ];
 
 export interface ParkNow {

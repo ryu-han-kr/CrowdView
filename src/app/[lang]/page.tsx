@@ -186,7 +186,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       img: photoOf("gyeongbokgung", 1) ?? "/places/gyeongbokgung.jpg",
       live: true,
       tag: t("실시간"),
-      title: t("서울 실시간 인구 {n}곳", { n: SEOUL_AREAS.length }),
+      title: t("서울 실시간 장소 {n}곳", { n: SEOUL_AREAS.length }),
       sub: t("강남역·성수·홍대·한강공원… 지금 몇 명이 있을까?"),
     },
   ];
@@ -293,7 +293,6 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         emoji: "📰",
         sub: headline,
         note: [region, t("뉴스 화제")].filter(Boolean).join(" · "),
-        hot: true,
       };
     }
     return {
@@ -304,13 +303,9 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       img: x.img,
       emoji: x.kind === "event" ? "🎉" : "📍",
       sub: [x.period, region].filter(Boolean).join(" · ") || undefined,
-      note:
-        x.kind === "event"
-          ? `AI · ${trendTr.get(x.reason) ?? x.reason}`
-          : x.rising && x.rising >= 1.5
-            ? t("검색량 {n}배 ↑", { n: x.rising.toFixed(1) })
-            : t("요즘 많이 찾는 곳"),
-      hot: x.kind === "event" || (x.rising ?? 0) >= 1.5,
+      // 11/1 지인 QA: 빨간 'AI ·'·'검색량 N배'가 촌스럽고 쓸모없다, 화제 이유는 잘려서 못 읽는다 → 행사만 이유 한 줄(두 줄까지), 나머지는 비움
+      note: x.kind === "event" ? (trendTr.get(x.reason) ?? x.reason) : undefined,
+      wrap: x.kind === "event",
     };
   });
   const trendList = trendItems.length ? (
@@ -489,7 +484,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       t(r),
       t("{region} 지금 한산한 곳 모음", { region: t(r) }),
       t("지역 모음"),
-      "/?q=" + encodeURIComponent(t(r)) + "#places",
+      // 11/1 경수님: 홈 안 검색(/?q=)으로 보내면 같은 화면이 다시 그려지며 아래로 튀었다 → 그 지역 명소·축제 화면으로
+      `/explore?region=${encodeURIComponent(r)}`,
       places.filter((p) => p.region.startsWith(r)),
     ),
   ).filter((c) => c.items.length >= 3);

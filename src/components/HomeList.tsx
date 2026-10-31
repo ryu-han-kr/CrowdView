@@ -1,5 +1,6 @@
 "use client";
 
+import { offSeasonLabel } from "@/lib/season-label";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { seasonSort, type Season } from "@/lib/season-order";
 import { useI18n } from "@/i18n/client";
@@ -25,6 +26,9 @@ import { RoundChips } from "@/components/RoundChips";
 import { ScrollRow } from "./ScrollRow";
 
 /** 홈 통합 검색의 다른 탭 항목 (서버에서 만든 명소·축제·서울 지역) */
+
+/** 위 탭(명소·축제)과 겹치는 종류: 실시간 장소 칩에서 뺀다 */
+const TAB_OVERLAP = new Set<string>(["landmark", "street", "beach", "event"]);
 export interface SearchItem {
   id: string;
   href: string;
@@ -173,12 +177,12 @@ export function HomeList({
 
   // 닫힌 곳 표시: 행사는 열리기 전이면 'D-n', 끝났으면 '종료' (QA 10/21: 열리기 전 행사가 '운영 종료'로 보임)
   const today = new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
-  const closedLabel = (p: (typeof list)[number], offSeason?: boolean) => {
+  const closedLabel = (p: (typeof list)[number], offSeason?: boolean, opens?: string) => {
     if (p.category === "event" && p.eventDate) {
       if (p.eventDate > today) return `D-${Math.round((Date.parse(p.eventDate) - Date.parse(today)) / 86_400_000)}`;
       if ((p.eventEndDate ?? p.eventDate) < today) return t("종료");
     }
-    return t(offSeason ? "시즌 아님" : "운영 종료");
+    return offSeason ? offSeasonLabel(opens, t) : t("운영 종료");
   };
   const cards: (PhotoCardItem & { lat: number; lng: number; emoji: string; region: string; trend?: "up" | "down" | "flat" })[] = list.map((p) => {
     const c = crowd[p.id];
@@ -194,7 +198,7 @@ export function HomeList({
       people: hc?.text,
       trend: c.open ? c.trend : undefined,
       score: c.open ? c.score : undefined,
-      badge: c.open ? undefined : closedLabel(p, c.offSeason),
+      badge: c.open ? undefined : closedLabel(p, c.offSeason, c.opens),
       tag: placeTag(p, t),
       favId: p.id,
       lat: p.lat,
@@ -206,7 +210,11 @@ export function HomeList({
   const chips: { id: Filter; label: string; emoji: string; img?: string }[] = [
     { id: "all", label: t("전체"), emoji: "✨" },
     ...(favorites.length ? [{ id: "fav" as const, label: t("찜"), emoji: "❤️" }] : []),
-    ...(season ? seasonSort(CATEGORIES, (c) => c, season) : CATEGORIES).filter((c) => places.some((p) => p.category === c)).map((c) => ({
+    // 11/1 경수님: 명소 2·축제 3·핫플 2·해변 1곳뿐인 칩이 바로 위 '명소'·'축제' 탭(수백 곳)과 이름이 겹쳐 텅 비어 보였다
+    // → 칩은 이 탭 고유 종류만. 그 장소들은 '전체'에는 그대로 나온다
+    ...(season ? seasonSort(CATEGORIES, (c) => c, season) : CATEGORIES)
+      .filter((c) => !TAB_OVERLAP.has(c) && places.some((p) => p.category === c))
+      .map((c) => ({
       id: c,
       label: t(CATEGORY_LABEL[c]),
       emoji: CATEGORY_EMOJI[c],
@@ -424,19 +432,22 @@ export function HomeList({
                   ? t("찜한 곳")
                   : t(CATEGORY_LABEL[filter])}
           </h2>
-          <div className="ml-auto flex shrink-0 items-center gap-2">
-            {view === "list" && (
+          {/* 11/1 지인 QA: 정렬은 왼쪽, 목록·지도는 오른쪽 끝 — 둘이 같은 크기로 제목 아래 한 줄 */}
+          <div className="flex w-full items-center justify-between gap-2">
+            {view === "list" ? (
               <div className="flex rounded-full bg-gray-100 p-0.5 text-xs font-semibold">
                 {(["calm", "busy"] as const).map((s) => (
                   <button
                     key={s}
                     onClick={() => setSort(s)}
-                    className={`rounded-full px-3 py-1 ${sort === s ? "bg-white text-gray-900 shadow-sm" : "text-gray-600"}`}
+                    className={`min-h-8 rounded-full px-3 py-1.5 ${sort === s ? "bg-white text-gray-900 shadow-sm" : "text-gray-600"}`}
                   >
                     {s === "calm" ? t("한산한 순") : t("붐비는 순")}
                   </button>
                 ))}
               </div>
+            ) : (
+              <span />
             )}
             <ViewToggle view={view} onChange={setView} />
           </div>

@@ -58,6 +58,10 @@ export function inSeason(place: Place, date: string): boolean {
   return from <= to ? m >= from && m <= to : m >= from || m <= to;
 }
 
+/** 비시즌 장소가 다시 여는 때: 발표된 개장일이 앞으로면 'MM-DD', 아니면 여는 달 'MM' (11/1 지인 QA: '시즌 아님' 대신 '오픈 예정') */
+export const opensOf = (place: Place, date: string): string | undefined =>
+  place.openDate && place.openDate >= date ? place.openDate.slice(5) : place.season ? String(place.season[0]).padStart(2, "0") : undefined;
+
 const clamp = (v: number) => Math.max(0, Math.min(100, v));
 const pad2 = (n: number) => String(Math.floor(n)).padStart(2, "0");
 
@@ -302,7 +306,7 @@ export function modelSnapshot(place: Place, at: Date = new Date(), s?: Signals):
     placeId: place.id,
     score,
     open: now.hour >= place.hours[0] && now.hour < place.hours[1] && !place.info?.closedToday && inSeason(place, now.date),
-    ...(inSeason(place, now.date) ? {} : { offSeason: true }),
+    ...(inSeason(place, now.date) ? {} : { offSeason: true, opens: opensOf(place, now.date) }),
     // 인원 기준이 있으면 같은 기준으로 환산 (그래프·카드 숫자가 서로 맞도록)
     headcount: place.criteria?.unit === "명" ? valueFromScore(score, place.criteria.steps) : Math.round((place.capacity * score) / 100),
     trend: delta > 4 ? "up" : delta < -4 ? "down" : "flat",

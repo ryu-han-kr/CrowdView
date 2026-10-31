@@ -1,5 +1,6 @@
 "use client";
 
+import { offSeasonLabel } from "@/lib/season-label";
 import { useI18n } from "@/i18n/client";
 import { LEVELS, levelOf, inkOf } from "@/lib/levels";
 
@@ -28,6 +29,7 @@ export function LevelBadge({
   large = false,
   closed = false,
   offSeason = false,
+  opens,
   event,
 }: {
   score: number;
@@ -35,6 +37,8 @@ export function LevelBadge({
   closed?: boolean;
   /** 계절 영업 장소의 비시즌 (스키장 등) */
   offSeason?: boolean;
+  /** 비시즌에 다시 여는 때 ('MM' 또는 'MM-DD') → '12월 오픈 예정' */
+  opens?: string;
   /** 행사 장소: 열리기 전이면 'D-n', 끝났으면 '종료' (운영 종료와 구분 — QA 10/21: 열리기 전 행사가 '운영 종료'로 보임) */
   event?: { start?: string; end?: string };
 }) {
@@ -48,7 +52,7 @@ export function LevelBadge({
       : closed && ended
         ? { label: "종료", color: "#9ca3af" }
         : closed
-          ? { label: offSeason ? "시즌 아님" : "운영 종료", color: "#9ca3af" }
+          ? { label: offSeason ? offSeasonLabel(opens, t) : t("운영 종료"), color: "#9ca3af", tr: true }
           : levelOf(score);
   return (
     <span
@@ -58,7 +62,7 @@ export function LevelBadge({
       style={{ color: inkOf(level.color), background: `${level.color}14` }}
     >
       <span className="h-2 w-2 rounded-full" style={{ background: level.color }} />
-      {t(level.label)}
+      {"tr" in level ? level.label : t(level.label)}
     </span>
   );
 }
