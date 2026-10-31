@@ -16,6 +16,7 @@ import {
   type GoogleFacts,
 } from "@/lib/google-facts";
 import { PLACES } from "@/lib/places";
+import { formatClock } from "@/lib/time";
 import type { Place } from "@/lib/types";
 
 const pt = (day: number, hour: number, minute = 0) => ({ day, hour, minute });
@@ -162,4 +163,10 @@ test("받을 장소: 한 곳짜리 시설만 (공항·축제·거리·해변 제
   assert.ok(want.length > 200);
   assert.ok(want.every((p) => p.category !== "airport" && p.category !== "event" && p.category !== "street" && p.category !== "beach"));
   assert.ok(want.some((p) => p.id === "everland"));
+});
+
+test("밤샘 영업 닫는 시각 표시: 24 넘으면 다음 날 시각", () => {
+  assert.equal(formatClock(27), "03:00");
+  assert.equal(formatClock(24), "24:00");
+  assert.equal(formatClock(9.5), "09:30");
 });

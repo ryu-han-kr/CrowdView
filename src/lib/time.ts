@@ -46,7 +46,9 @@ export function formatAge(minutes: number): string {
 }
 
 /** 22.5 → 22:30 */
+/** 14.5 → "14:30". 밤샘 영업의 닫는 시각(24 넘음, 구글 지도 운영 시간)은 다음 날 시각으로 (26 → "02:00"), 24는 "24:00" */
 export function formatClock(h: number): string {
+  if (h > 24) h -= 24;
   const hh = Math.floor(h);
   return `${String(hh).padStart(2, "0")}:${String(Math.round((h - hh) * 60)).padStart(2, "0")}`;
 }
