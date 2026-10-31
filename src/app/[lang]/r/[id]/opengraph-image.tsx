@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { getT } from "@/i18n/server";
 import { levelOf } from "@/lib/levels";
+import { loadOgFont as loadFont } from "@/lib/og-font";
 import { getSharedRoute } from "@/lib/route-share";
 
 // 공유 코스 미리보기 (카톡·SNS에 링크를 붙였을 때): 출발지와 들르는 곳·도착 시각·혼잡 색
@@ -9,17 +10,6 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 const clock = (min: number) => `${String(Math.floor(min / 60) % 24).padStart(2, "0")}:${String(min % 60).padStart(2, "0")}`;
-
-/** 이미지에 쓸 글자만 담은 Noto Sans KR (Google Fonts, UA 없이 받으면 TTF). 실패하면 글꼴 없이 그린다 */
-async function loadFont(text: string): Promise<ArrayBuffer | null> {
-  try {
-    const css = await (await fetch(`https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&text=${encodeURIComponent(text)}`)).text();
-    const url = css.match(/src: url\((.+?)\) format\('(?:opentype|truetype)'\)/)?.[1];
-    return url ? await (await fetch(url)).arrayBuffer() : null;
-  } catch {
-    return null;
-  }
-}
 
 export default async function OgImage({ params }: { params: Promise<{ lang: string; id: string }> }) {
   const { lang, id } = await params;

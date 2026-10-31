@@ -37,7 +37,7 @@ import { splitInfoNote } from "@/lib/info-note";
 import { PLACES, placeHref } from "@/lib/places";
 import { daysUntil, formatClock, kst } from "@/lib/time";
 import type { Lang } from "@/i18n/config";
-import { DEFAULT_LANG, localePath } from "@/i18n/config";
+import { DEFAULT_LANG, isLang, localePath } from "@/i18n/config";
 import { fmtAge, fmtMinutes, fmtPeople, trReason } from "@/i18n/patterns";
 import { getT } from "@/i18n/server";
 import { formatHour, type T } from "@/i18n/translate";
@@ -156,8 +156,9 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         ? t("{name} 혼잡도 · 오늘 사람 많나요? 실시간 확인", { name: t(place.name) })
         : t("{name} 혼잡도 예측 · 오늘 사람 많을까? 한산한 시간", { name: t(place.name) }),
     description: t("{name} 오늘 사람 얼마나 많은지 지금 혼잡도와 시간대별 예측으로 확인하고, 한산한 시간에 가세요", { name: t(place.name) }),
-    // 공유 미리보기: 대표 사진 (직접 고른 사진·관광사진 갤러리가 있으면 그것)
-    image: heroImage(place),
+    // 공유 미리보기: 대표 사진 위에 그 순간 혼잡도 카드 (opengraph-image.tsx, 10/31 '알리기' 1번).
+    // 주소에 10분 단위 꼬리를 붙여, 카톡이 페이지를 다시 읽을 때 옛 카드를 그대로 쓰지 않게
+    image: `${SITE}${localePath(isLang(lang) ? lang : DEFAULT_LANG, `${placeHref(place)}/opengraph-image`)}?t=${Math.floor(Date.now() / 600_000)}`,
   });
 }
 
