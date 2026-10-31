@@ -24,6 +24,9 @@ import { PlaceHero } from "@/components/PlaceHero";
 import { PhotoGallery } from "@/components/PhotoGallery";
 import placeImages from "@/data/korea/place-images.json";
 import { kst } from "@/lib/time";
+import { forecastForDate } from "@/lib/crowd/model";
+import { holidayNames, upcomingHolidayWindows } from "@/lib/holiday-windows";
+import { formatHour } from "@/i18n/translate";
 import { DEFAULT_LANG, type Lang } from "@/i18n/config";
 import { fmtAge, fmtMinutes, fmtPeople, trParking, trZone } from "@/i18n/patterns";
 import { getT } from "@/i18n/server";
@@ -93,6 +96,20 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
   const zones = crowd.zones ?? [];
   const avgWait = zones.length && zones[0].waitMin !== undefined ? Math.round(zones.reduce((s, z) => s + (z.waitMin ?? 0), 0) / zones.length) : null;
   const zoneLabels = Object.fromEntries(zones.map((z) => [z.id, z.label]));
+  // 다가오는 연휴 출국장 예상 (10/31 '알리기' 7번: 연휴 검색이 몰리기 전에). 천문연구원 공휴일 + 고정 공휴일·설·추석 표로 예측
+  const holidays = new Map([...holidayNames(now.date, 130, signals.holidays), ...(signals.holidays ?? [])]);
+  const holidayWindows = upcomingHolidayWindows(now.date, 120, signals.holidays)
+    .slice(0, 3)
+    .map((w) => ({
+      ...w,
+      days: w.days.map((date) => {
+        const peak = forecastForDate(place, date, { ...signals, holidays }).reduce((a, b) => (b.score > a.score ? b : a));
+        return { date, score: peak.score, hour: peak.hour };
+      }),
+    }));
+  const dayLabel = (date: string) =>
+    new Intl.DateTimeFormat(lang, { month: "numeric", day: "numeric", weekday: "short", timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
+  const busiest = (w: (typeof holidayWindows)[number]) => w.days.reduce((a, b) => (b.score > a.score ? b : a));
 
   return (
     <main className="px-5 pb-8 md:px-0 md:pt-8">
@@ -390,6 +407,39 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
           {/* 외국인 도착 필수품(eSIM·공항철도·리무진·패스)과 공항 투어·교통 상품 (경수님 10/28 '외국어 버전에 잘') */}
           {lang !== "ko" && <TourLinks ko={place.name} en={getT("en")(place.name)} lang={lang} t={t} className="mt-6" picks={AIRPORT_PICKS} />}
           <InlineAd className="mt-6" />
+          {holidayWindows.length > 0 && (
+            <section className="card mt-6">
+              <h2 className="text-base font-bold">{t("다가오는 연휴 출국장 예상")}</h2>
+              <p className="mt-0.5 text-[11px] text-gray-500">{t("AI 예측 · 연휴가 가까워지면 공항 예고 승객 수로 더 정확해져요")}</p>
+              {holidayWindows.map((w) => {
+                const top = busiest(w);
+                return (
+                  <div key={w.name + w.days[0].date} className="mt-4">
+                    <p className="text-sm font-bold">
+                      {t("{name} 연휴", { name: t(w.name) })} <span className="font-normal text-gray-500">{dayLabel(w.days[0].date)} ~ {dayLabel(w.days[w.days.length - 1].date)}</span>
+                    </p>
+                    <ul className="mt-2 grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+                      {w.days.map((d) => {
+                        const lv = levelOf(d.score);
+                        return (
+                          <li key={d.date} className="flex items-center gap-1.5 rounded-xl bg-gray-50 px-2.5 py-1.5 text-xs">
+                            <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: lv.color }} />
+                            <span className="font-semibold">{dayLabel(d.date)}</span>
+                            <span className="ml-auto font-bold" style={{ color: inkOf(lv.color) }}>
+                              {t(lv.label)}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                    <p className="mt-2 text-xs text-gray-600">
+                      {t("가장 붐빌 때: {day} {hour}쯤", { day: dayLabel(top.date), hour: formatHour(top.hour, lang) })}
+                    </p>
+                  </div>
+                );
+              })}
+            </section>
+          )}
           {zones.length > 0 && avgWait !== null && (
             <FaqBlock
               className="mt-8"
@@ -407,6 +457,16 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
                     });
                   })(),
                 },
+                ...holidayWindows.slice(0, 1).map((w) => {
+                  const top = busiest(w);
+                  return {
+                    q: t("{holiday} 연휴 {name} 언제 가장 붐비나요?", { holiday: t(w.name), name: t(place.name) }),
+                    a: t("AI 예측으로는 {day} {hour}쯤 출국장이 가장 붐빌 것으로 보여요. 이 시간대 비행기라면 평소보다 일찍 도착하세요.", {
+                      day: dayLabel(top.date),
+                      hour: formatHour(top.hour, lang),
+                    }),
+                  };
+                }),
                 {
                   q: t("{name} 몇 시간 전에 가야 하나요?", { name: t(place.name) }),
                   a: t("지금 평균 대기가 {avg}라서, 국제선은 출발 2시간 30분~3시간 전 도착을 권해요. 붐비는 시간대는 시간대 탭에서 확인하세요.", {
