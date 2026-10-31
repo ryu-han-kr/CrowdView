@@ -449,7 +449,10 @@ export default {
   "한산해지면 알림": ["Alert when quiet", "空いたら通知", "人少时提醒", "人少時提醒"],
   "붐비기 시작하면 알림": ["Alert when busy", "混み始めたら通知", "开始拥挤时提醒", "開始擁擠時提醒"],
   // 무료 알림 1개 (P2-1)
-  "로그인하고 이 장소가 한산해질 때 알림을 받아 보세요": ["Log in to get notified when this place gets quiet","ログインしてこの場所が空いたときに通知を受け取る","登录后在这里变清闲时收到提醒","登入後在這裡變清閒時收到提醒"],
+  // 로그인 없는 한 번 알림 (10/31 '알리기' 11번, lib/alerts-anon)
+  "로그인 없이 한 번 알려 드려요 (7일 동안)": ["We'll alert you once, no login needed (for 7 days)","ログインなしで1回お知らせします(7日間)","无需登录,提醒一次(7天内)","無需登入,提醒一次(7天內)"],
+  "지금도 한산해요. 붐볐다가 다시 한산해지면 알려 드려요": ["It's quiet right now. We'll alert you when it gets quiet again after a busy spell","今も空いています。混んだあと再び空いたらお知らせします","现在也很清闲。变拥挤后再次清闲时提醒您","現在也很清閒。變擁擠後再次清閒時提醒您"],
+  "로그인하면 붐빔 알림도": ["Log in for busy alerts too","ログインで混雑通知も","登录后还可接收拥挤提醒","登入後還可接收擁擠提醒"],
   "무료는 알림 1개 · Plus는 30개": ["Free: 1 alert · Plus: 30","無料は通知1件・Plusは30件","免费1个提醒 · Plus 30个","免費1個提醒 · Plus 30個"],
   "Plus 알아보기": ["About Plus","Plusについて","了解Plus","了解Plus"],
   "1개": ["1","1件","1个","1個"],
