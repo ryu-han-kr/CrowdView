@@ -88,10 +88,8 @@ async function commons(q: string): Promise<PlacePhoto[]> {
     .map((p) => {
       const ii = p.imageinfo?.[0];
       const m = ii?.extmetadata ?? {};
-      const who = String(m.Artist?.value ?? "").replace(/<[^>]+>/g, "").trim().split("
-")[0].trim().slice(0, 60) || "Unknown"; // 첫 줄만 (10/31: 'Asacyan
-
- This photo was taken with…')
+      // 첫 줄만 (10/31: 작가 칸에 'Asacyan' 뒤로 촬영 장비 설명이 여러 줄 붙어 있었다)
+      const who = String(m.Artist?.value ?? "").replace(/<[^>]+>/g, "").trim().split("\n")[0].trim().slice(0, 60) || "Unknown";
       return { src: String(ii?.thumburl ?? "").split("?")[0], w: ii?.width ?? 0, h: ii?.height ?? 0, page: ii?.descriptionurl, lic: m.LicenseShortName?.value ?? "", who };
     })
     .filter((x) => x.src && Math.max(x.w, x.h) >= 1200 && /CC0|CC BY|Public domain/i.test(x.lic) && !/NC|ND/.test(x.lic))
@@ -177,6 +175,12 @@ for (const id of ONLY.length ? ONLY : PILOT) {
   }
   const pro = (await kto(place.name.replace(/\(.*?\)/g, "").trim()).catch(() => [])).slice(0, 12);
   const goo = process.env.GOOGLE ? await google(id).catch(() => []) : [];
+  // 구글 사진을 못 받으면(무료분 보호선 등) 건너뛴다 — 10/31: 오락실이 위키미디어의 엉뚱한 사진(미군 기지 오락실·광안리 해변)으로 채워졌다
+  if (process.env.GOOGLE && !goo.length) {
+    console.log(`  ${place.name}: 구글 사진 없음 — 건너뜀`);
+    lacking.push(id);
+    continue;
+  }
   const all: Cand[] = [...current.slice(0, 8), ...pro, ...goo, ...found].filter((p, i, a) => a.findIndex((x) => x.src === p.src) === i);
   const loaded = (await Promise.all(all.slice(0, MAX + 8).map(load))).filter((x): x is NonNullable<typeof x> => !!x).slice(0, MAX);
   if (loaded.length < 3) {

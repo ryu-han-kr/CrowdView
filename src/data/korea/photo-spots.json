@@ -3473,5 +3473,893 @@
     ]
    }
   ]
+ },
+ "zzang-arcade-cheonho": {
+  "nameEn": "Jjang Arcade Cheonho",
+  "spots": [
+   {
+    "label": "인형뽑기존",
+    "why": "검색 도구 오류로 확인하지 못했다. 한국 오락실의 대표 시설이라 넣은 항목이다.",
+    "queries": [
+     "Korean arcade claw machine",
+     "Jjang Arcade Cheonho claw machine",
+     "Korea crane game arcade"
+    ]
+   },
+   {
+    "label": "레트로 게임기",
+    "why": "검색 도구 오류로 확인하지 못했다. 오락실에서 가장 흔한 촬영 대상이라 넣은 항목이다.",
+    "queries": [
+     "Korean arcade retro games",
+     "Jjang Arcade Cheonho arcade machines",
+     "Seoul arcade game room"
+    ]
+   },
+   {
+    "label": "펀치 게임기",
+    "why": "검색 도구 오류로 확인하지 못했다. 오락실에서 자주 찍는 체감형 기계라 넣은 항목이다.",
+    "queries": [
+     "Korean arcade punching machine",
+     "Jjang Arcade Cheonho boxing machine",
+     "Korea arcade boxing game"
+    ]
+   },
+   {
+    "label": "천호 거리 간판",
+    "why": "검색 도구 오류로 확인하지 못했다. 매장 외관과 간판은 방문 인증 사진에 흔히 쓰이는 컷이라 넣은 항목이다.",
+    "queries": [
+     "Cheonho-dong Seoul street",
+     "Jjang Arcade Cheonho entrance",
+     "Cheonho Station Gangdong-gu"
+    ]
+   }
+  ]
+ },
+ "zzang-arcade-inspire": {
+  "nameEn": "Jjang Arcade Inspire (INSPIRE Entertainment Resort)",
+  "spots": [
+   {
+    "label": "짱랜드 오락실",
+    "why": "인스파이어 2층 오로라 거리에 있는 초대형 오락실입니다. 인형뽑기와 각종 오락기가 모여 있어 실내 놀이동산 같다는 후기가 많습니다.",
+    "queries": [
+     "Inspire Entertainment Resort arcade",
+     "Inspire Resort Incheon Jjang Land",
+     "Korean arcade claw machine"
+    ]
+   },
+   {
+    "label": "오로라 거리",
+    "why": "짱오락실 입구가 있는 리조트 내부 메인 거리입니다. 오로라바 맞은편에 있어 방문객 대부분이 지나가며 사진을 찍습니다.",
+    "queries": [
+     "Inspire Entertainment Resort Aurora",
+     "Inspire Entertainment Resort interior",
+     "INSPIRE Resort Incheon atrium"
+    ]
+   },
+   {
+    "label": "인스파이어 아레나",
+    "why": "국내 최초의 공연 전문 아레나로 약 1만 5천 석 규모입니다. K팝 콘서트 인증샷 명소로 꼽힙니다.",
+    "queries": [
+     "Inspire Arena Incheon",
+     "INSPIRE Entertainment Resort arena concert",
+     "Inspire Arena Yeongjong"
+    ]
+   },
+   {
+    "label": "스플래시 베이",
+    "why": "유리 돔 아래 실내 워터파크로, 한겨울에도 여름 분위기에서 물놀이 사진을 남길 수 있습니다. 유수풀과 파도풀이 인기입니다.",
+    "queries": [
+     "Inspire Entertainment Resort Splash Bay",
+     "Inspire Resort Incheon water park",
+     "Inspire Entertainment Resort indoor pool"
+    ]
+   },
+   {
+    "label": "리조트 전경",
+    "why": "세 동의 5성급 호텔 타워가 어우러진 영종도 대표 복합리조트 외관입니다. 방문 인증샷의 기본 코스입니다.",
+    "queries": [
+     "Inspire Entertainment Resort Incheon",
+     "Inspire Resort Yeongjongdo hotel tower",
+     "INSPIRE Entertainment Resort exterior"
+    ]
+   },
+   {
+    "label": "겨울 라이트",
+    "why": "겨울 시즌에는 리조트 내부가 크리스마스 조명과 장식으로 꾸며집니다. 트립닷컴 후기에서 겨울 빛 장식 명소로 소개되었습니다.",
+    "queries": [
+     "Inspire Entertainment Resort Christmas",
+     "Inspire Resort Incheon winter lights",
+     "Incheon Inspire resort Christmas tree"
+    ]
+   }
+  ]
+ },
+ "zzang-gangnam": {
+  "nameEn": "Jjang Arcade Gangnam-daero",
+  "spots": [
+   {
+    "label": "외관 간판",
+    "why": "검색 도구 오류로 확인하지 못했습니다. 강남대로변 1층 오락실 입구와 간판을 기준으로 한 후보입니다.",
+    "queries": [
+     "Gangnam-daero street",
+     "Gangnam Station street Seoul",
+     "Jjang Arcade Gangnam"
+    ]
+   },
+   {
+    "label": "인형뽑기",
+    "why": "검색 도구 오류로 확인하지 못했습니다. 한국 오락실에서 흔히 찍는 인형뽑기 기계를 기준으로 한 후보입니다.",
+    "queries": [
+     "Korean arcade claw machine",
+     "crane game Seoul arcade",
+     "Jjang Arcade claw machine"
+    ]
+   },
+   {
+    "label": "레트로 오락기",
+    "why": "검색 도구 오류로 확인하지 못했습니다. 한국 오락실의 고전 아케이드 게임기를 기준으로 한 후보입니다.",
+    "queries": [
+     "Korean arcade cabinets",
+     "retro arcade Seoul",
+     "Jjang Arcade retro game"
+    ]
+   },
+   {
+    "label": "리듬게임",
+    "why": "검색 도구 오류로 확인하지 못했습니다. 한국 오락실의 리듬게임과 펌프 기기를 기준으로 한 후보입니다.",
+    "queries": [
+     "Pump It Up arcade Korea",
+     "rhythm game arcade Seoul",
+     "Jjang Arcade rhythm game"
+    ]
+   },
+   {
+    "label": "강남대로 거리",
+    "why": "검색 도구 오류로 확인하지 못했습니다. 주변 강남역 일대 거리 풍경을 기준으로 한 후보입니다.",
+    "queries": [
+     "Gangnam Station Seoul",
+     "Gangnam-daero Seoul",
+     "Gangnam District street"
+    ]
+   }
+  ]
+ },
+ "zzang-gangnam2": {
+  "nameEn": "Jjang Arcade Gangnam 2nd Branch",
+  "spots": [
+   {
+    "label": "레트로 오락기",
+    "why": "고전 아케이드 게임기가 줄지어 있는 오락실 대표 풍경",
+    "queries": [
+     "Jjang Arcade Gangnam",
+     "Korean arcade retro game machines",
+     "Gangnam arcade Seoul"
+    ]
+   },
+   {
+    "label": "인형뽑기",
+    "why": "크레인 게임기가 모여 있어 오락실에서 가장 많이 찍는 코너",
+    "queries": [
+     "Jjang Arcade claw machine",
+     "Korean arcade claw crane game",
+     "Seoul claw machine arcade"
+    ]
+   },
+   {
+    "label": "리듬게임",
+    "why": "리듬·댄스 게임기를 즐기는 모습을 영상과 사진으로 많이 남김",
+    "queries": [
+     "Jjang Arcade rhythm game",
+     "Korean arcade rhythm game machine",
+     "Seoul arcade dance game"
+    ]
+   },
+   {
+    "label": "강남대로 외관",
+    "why": "강남대로변 건물 외관과 간판이 방문 인증샷 포인트",
+    "queries": [
+     "Gangnam-daero street Seoul",
+     "Gangnam Station Gangnam-daero",
+     "Jjang Arcade Gangnam entrance"
+    ]
+   }
+  ]
+ },
+ "zzang-hongdae": {
+  "nameEn": "Jjang Arcade Hongdae",
+  "spots": [
+   {
+    "label": "건물 외관",
+    "why": "홍대 어울마당로 길가에 있는 건물로, 짱오락실 지점 중 건물이 가장 트렌디하다는 후기가 있어 입구 인증샷 장소로 꼽힌다.",
+    "queries": [
+     "Jjang Arcade Hongdae",
+     "Hongdae arcade exterior Seoul",
+     "Hongdae Eoullimadang-ro street"
+    ],
+    "ko": "짱오락실 홍대점 외관"
+   },
+   {
+    "label": "리듬게임존",
+    "why": "3층에 펌프 잇 업 피닉스, 마이마이 디럭스, 태고의 달인 같은 리듬게임이 모여 있어 플레이 영상과 사진이 많이 올라온다.",
+    "queries": [
+     "Jjang Arcade Hongdae rhythm game",
+     "Pump It Up arcade Korea",
+     "maimai DX arcade Korea"
+    ],
+    "ko": "홍대 오락실 리듬게임"
+   },
+   {
+    "label": "펌프 댄스",
+    "why": "리듬게임존의 대표 기종으로, 발판 위에서 춤추듯 플레이하는 모습이 인기 있는 촬영 장면이다.",
+    "queries": [
+     "Pump It Up Phoenix arcade",
+     "Pump It Up dance machine Korea",
+     "Jjang Arcade Pump It Up"
+    ],
+    "ko": "펌프 잇 업 오락실"
+   },
+   {
+    "label": "홍대 거리",
+    "why": "홍대입구역 상수역 일대 번화가에 있어 홍대 앞 거리 풍경과 함께 찍는 사람이 많다.",
+    "queries": [
+     "Hongdae street Seoul",
+     "Hongik University street Mapo-gu",
+     "Hongdae shopping street night"
+    ],
+    "ko": "홍대 걷고싶은거리"
+   }
+  ]
+ },
+ "zzang-bundang": {
+  "nameEn": "Jjang Arcade Bundang",
+  "spots": [
+   {
+    "label": "오락실 외관",
+    "why": "블루홀플라자 1층에 있는 오락실 입구와 간판이 방문 인증샷의 기본 컷으로 많이 쓰입니다. 다만 검색이 제한돼 개별 후기로 확인하지는 못했습니다.",
+    "queries": [
+     "Korean arcade entrance Bundang",
+     "Bundang-gu Seongnam street shop",
+     "Korean arcade signboard neon"
+    ]
+   },
+   {
+    "label": "인형뽑기존",
+    "why": "한국 오락실에서 가장 흔한 사진 소재인 크레인 게임 기계들이 줄지어 있는 구역입니다. 이 지점에 실제로 있는지는 확인하지 못했습니다.",
+    "queries": [
+     "Korean claw machine arcade",
+     "Korea crane game arcade",
+     "Korean arcade claw machines Seoul"
+    ]
+   },
+   {
+    "label": "펀치·농구",
+    "why": "펀치 기계와 농구 게임은 오락실에서 친구끼리 점수를 겨루며 찍는 대표 코너입니다. 이 지점에 있는지는 확인하지 못했습니다.",
+    "queries": [
+     "Korean arcade boxing machine",
+     "Basketball arcade game Korea",
+     "Korean arcade punching machine"
+    ]
+   },
+   {
+    "label": "리듬게임",
+    "why": "리듬게임과 레트로 아케이드 기기는 오락실 특유의 분위기를 보여주는 대표 소재입니다. 이 지점의 기종은 확인하지 못했습니다.",
+    "queries": [
+     "Korean arcade rhythm game machines",
+     "Pump It Up arcade Korea",
+     "Korean retro arcade cabinets"
+    ]
+   },
+   {
+    "label": "레트로 게임기",
+    "why": "오락실 내부의 오래된 아케이드 게임기와 조명은 여행객 사진에 자주 나오는 장면입니다. 이 지점에 있는지는 확인하지 못했습니다.",
+    "queries": [
+     "Korean arcade interior",
+     "Arcade cabinets Korea retro",
+     "Bundang arcade game center"
+    ]
+   }
+  ]
+ },
+ "zzang-hwajeong": {
+  "nameEn": "Jjang Arcade Hwajeong Ilsan",
+  "spots": [
+   {
+    "label": "리듬게임존",
+    "why": "짱오락실 체인은 EZ2AC 같은 리듬게임 기기를 갖춘 곳으로 알려져 있어 연주 장면 촬영이 많다. 화정점에 이 기기가 있는지는 확인하지 못했다.",
+    "queries": [
+     "Korean arcade rhythm game",
+     "Jjang Arcade rhythm game",
+     "Rhythm game arcade cabinet"
+    ]
+   },
+   {
+    "label": "펌프 댄스게임",
+    "why": "한국 오락실을 대표하는 발판 댄스게임으로, 플레이 모습을 영상과 사진으로 많이 남긴다. 화정점 보유 여부는 확인하지 못했다.",
+    "queries": [
+     "Pump It Up arcade Korea",
+     "Dance Dance Revolution arcade",
+     "Korean arcade dance game"
+    ]
+   },
+   {
+    "label": "인형뽑기",
+    "why": "오락실에서 가장 흔하게 찍는 크레인 게임 코너다. 화정점에 어떤 기계가 있는지는 확인하지 못했다.",
+    "queries": [
+     "Claw machine Korea",
+     "Crane game arcade Korea",
+     "Korean arcade claw machine"
+    ]
+   },
+   {
+    "label": "오락실 내부",
+    "why": "네온 조명과 줄지어 선 게임기가 오락실 분위기를 한눈에 보여 주는 기본 컷이다. 화정점 내부 사진은 확인하지 못했다.",
+    "queries": [
+     "Korean arcade interior",
+     "Jjang Arcade Korea",
+     "Video game arcade Seoul"
+    ]
+   }
+  ]
+ },
+ "zzang-bupyeong": {
+  "nameEn": "Jjang Arcade Bupyeong",
+  "spots": [
+   {
+    "label": "락실 외관",
+    "why": "부평 로데오거리 골목 성진프라자 1층에 있는 간판과 입구가 방문 인증샷 자리로 쓰인다. 다만 검색 한도 때문에 후기로 교차 확인하지 못했다.",
+    "queries": [
+     "Bupyeong rodeo street Incheon",
+     "Bupyeong arcade Incheon",
+     "Korean arcade entrance"
+    ]
+   },
+   {
+    "label": "아케이드 게임기",
+    "why": "락실의 핵심은 줄지어 놓인 오락 게임기와 네온 불빛이다. 유튜브 방문 후기에서도 이 점포는 락실로 소개된다.",
+    "queries": [
+     "Korean arcade game machines",
+     "Korea arcade interior",
+     "Jjang Arcade Bupyeong game"
+    ]
+   },
+   {
+    "label": "인형뽑기",
+    "why": "한국 락실은 인형뽑기와 크레인 기계가 함께 있는 경우가 많아 사진에 자주 담긴다. 이 점포에 실제로 있는지는 확인하지 못했다.",
+    "queries": [
+     "Korean claw machine arcade",
+     "Crane game Korea",
+     "Bupyeong claw machine"
+    ]
+   },
+   {
+    "label": "부평 문화의거리",
+    "why": "락실이 있는 부평역 상권 골목은 부평 문화의거리·로데오거리와 이어져 있어 거리 풍경 사진이 많다.",
+    "queries": [
+     "Bupyeong Culture Street Incheon",
+     "Bupyeong Station shopping street",
+     "Bupyeong Market Incheon"
+    ]
+   }
+  ]
+ },
+ "zzang-gwangalli": {
+  "nameEn": "Jjang Arcade Gwangalli Busan",
+  "spots": [
+   {
+    "label": "짱오락실",
+    "why": "광안리 해변 끝 민락 회타운 건물 1층의 대형 오락실로, 인형뽑기와 풍선 터트리기 게임으로 후기에 자주 나온다.",
+    "queries": [
+     "Jjang Arcade Gwangalli",
+     "Korean arcade claw machine Busan",
+     "Gwangalli arcade Busan"
+    ],
+    "ko": "짱오락실 광안리"
+   },
+   {
+    "label": "광안리해변",
+    "why": "오락실에서 걸어갈 수 있는 부산 대표 해수욕장으로, 모래사장과 해안 산책로가 사진 명소다.",
+    "queries": [
+     "Gwangalli Beach Busan",
+     "Gwangan Beach Busan sand",
+     "Gwangalli Beach promenade"
+    ],
+    "ko": "광안리해수욕장"
+   },
+   {
+    "label": "광안대교 야경",
+    "why": "광안리 해변에서 보이는 조명 켜진 광안대교는 이 일대에서 가장 많이 찍는 야경이다.",
+    "queries": [
+     "Gwangandaegyo Bridge night Busan",
+     "Gwangan Bridge Gwangalli night view",
+     "Gwangalli Gwangan Bridge"
+    ],
+    "ko": "광안대교 야경"
+   },
+   {
+    "label": "드론라이트쇼",
+    "why": "광안리 밤하늘에서 열리는 드론쇼로 방문객이 찾는 볼거리다. 날씨가 나쁘면 취소되기도 한다.",
+    "queries": [
+     "Gwangalli drone show Busan",
+     "Gwangalli drone light show",
+     "Gwangalli Beach drone"
+    ],
+    "ko": "광안리 드론쇼"
+   },
+   {
+    "label": "부산불꽃축제",
+    "why": "광안리 해변에서 매년 열리는 부산국제불꽃축제는 광안대교를 배경으로 한 대표 계절 행사다.",
+    "queries": [
+     "Busan International Fireworks Festival Gwangalli",
+     "Busan Fireworks Festival Gwangan Bridge",
+     "Gwangalli fireworks Busan"
+    ],
+    "ko": "부산불꽃축제 광안리"
+   },
+   {
+    "label": "민락수변공원",
+    "why": "오락실 옆 민락 회타운과 수변공원 일대에서 바다와 광안대교를 함께 찍을 수 있다.",
+    "queries": [
+     "Millak Waterside Park Busan",
+     "Millak Raw Fish Town Busan",
+     "Minrak Waterside Park Gwangan Bridge"
+    ],
+    "ko": "민락수변공원"
+   }
+  ]
+ },
+ "zzang-daegu": {
+  "nameEn": "Jjang Arcade Daegu Dongseongno",
+  "spots": [
+   {
+    "label": "주황 외관",
+    "why": "짱오락실 특유의 거대한 주황색 건물이 동성로에서 눈에 띄어 인증샷 장소로 꼽힌다. 게임메카 성지순례 기사는 홍대 본점과 견줄 만한 규모라고 평했다.",
+    "queries": [
+     "Jjang Arcade Dongseongno Daegu",
+     "Jjang Arcade Daegu exterior",
+     "Dongseong-ro Daegu arcade building"
+    ],
+    "ko": "짱오락실 대구 동성로점 외관"
+   },
+   {
+    "label": "1층 크레인존",
+    "why": "1층에 넓게 깔린 크레인(인형뽑기) 게임 구역이다. 입구에서 가장 먼저 보이는 구역이라 구경하고 찍는 사람이 많다.",
+    "queries": [
+     "Jjang Arcade Daegu crane game",
+     "Korean arcade claw machine Daegu",
+     "Dongseongno arcade claw machine"
+    ],
+    "ko": "짱오락실 크레인 게임"
+   },
+   {
+    "label": "500원 고전게임",
+    "why": "전용 게임기 박스에 스노우브로스, KOF 98, 철권 7 FR이 들어 있고 1회 500원이다. 레트로 오락실 분위기를 담기 좋다.",
+    "queries": [
+     "Jjang Arcade retro arcade cabinet",
+     "Korean arcade Tekken 7 cabinet",
+     "Snow Bros arcade cabinet"
+    ],
+    "ko": "짱오락실 고전 게임기"
+   },
+   {
+    "label": "야구 피칭존",
+    "why": "트립닷컴 후기에 서울 잠실 피처캠프와 같은 야구 게임이 재밌었다는 말이 나온다. 같은 후기는 홍대·신촌점보다 훨씬 크고 게임 종류도 많다고 썼다.",
+    "queries": [
+     "Jjang Arcade Daegu baseball pitching game",
+     "Korean arcade pitching machine",
+     "Daegu Dongseongno arcade game center"
+    ],
+    "ko": "짱오락실 야구 피칭 게임"
+   },
+   {
+    "label": "동성로 거리",
+    "why": "대구 최대 번화가 동성로의 대구백화점 맞은편에 있다. 주변 스파크랜드 등과 엮어 동성로 거리 풍경과 함께 찍는 경우가 많다.",
+    "queries": [
+     "Dongseongno Daegu street",
+     "Dongseong-ro Daegu shopping district",
+     "Daegu Department Store Dongseongno"
+    ],
+    "ko": "대구 동성로 거리"
+   }
+  ]
+ },
+ "zzang-gwangju": {
+  "nameEn": "Jjang Arcade Gwangju Cheomdan",
+  "spots": [
+   {
+    "label": "펌프 잇 업",
+    "why": "나무위키에 이곳 보유 기기로 나온 리듬게임 펌프 잇 업 PHOENIX 1대(1회 1,000원). 확인된 유일한 대표 기기",
+    "queries": [
+     "Pump It Up arcade",
+     "Pump It Up dance machine Korea",
+     "Jjang Arcade Pump It Up"
+    ]
+   },
+   {
+    "label": "짱오락실 간판",
+    "why": "광주에 처음 생긴 짱오락실 지점이라 방문 인증 사진을 찍는 외관·간판 컷. 인기도는 후기로 확인하지 못함",
+    "queries": [
+     "Jjang Arcade Gwangju",
+     "Korean arcade storefront",
+     "Cheomdan Gwangju Gwangsan street"
+    ]
+   },
+   {
+    "label": "캐주얼 게임기",
+    "why": "나무위키 기기 목록에 캐주얼 게임 분류가 있음. 구체적인 기종은 확인하지 못함",
+    "queries": [
+     "Korean arcade interior",
+     "Jjang Arcade game machines",
+     "Arcade game center Korea"
+    ]
+   },
+   {
+    "label": "스포츠 게임기",
+    "why": "나무위키 기기 목록에 스포츠 게임 분류가 있음. 농구·펀치 같은 구체적인 기종은 확인하지 못함",
+    "queries": [
+     "Korean arcade basketball game",
+     "Arcade sports game machine Korea",
+     "Arcade game room Gwangju"
+    ]
+   }
+  ]
+ },
+ "funcity-coex": {
+  "nameEn": "Fun City COEX Mall",
+  "spots": [
+   {
+    "label": "펀시티 입구",
+    "why": "코엑스몰 지하 2층에 있는 대형 게임센터의 네온 간판과 입구가 방문 인증샷 자리로 올라온다.",
+    "queries": [
+     "Fun City COEX Mall",
+     "Starfield COEX Mall arcade",
+     "COEX Mall B2 Seoul"
+    ]
+   },
+   {
+    "label": "인형뽑기존",
+    "why": "인형뽑기 기계가 줄지어 있어 후기에 가장 자주 나오는 구역이다.",
+    "queries": [
+     "Fun City COEX Mall claw machine",
+     "Korean arcade claw machine",
+     "Seoul arcade crane game"
+    ]
+   },
+   {
+    "label": "4컷 스티커사진",
+    "why": "매장 안 4컷 사진 부스는 오락실 방문 후기에서 단골로 등장한다.",
+    "queries": [
+     "Fun City COEX photo booth",
+     "Korean photo sticker booth",
+     "Four cut photo booth Seoul"
+    ]
+   },
+   {
+    "label": "코인노래방",
+    "why": "K-POP 부스와 TJ 기기가 있는 부스형 노래방으로, 외국인 여행자도 많이 찾는다.",
+    "queries": [
+     "Fun City COEX coin karaoke",
+     "Korean coin karaoke booth",
+     "Noraebang booth Seoul"
+    ]
+   },
+   {
+    "label": "초대형 테트리스",
+    "why": "한 블로그 후기에 매장 안 초대형 테트리스 게임이 눈에 띄는 볼거리로 소개됐다.",
+    "queries": [
+     "Fun City COEX giant Tetris",
+     "Giant Tetris arcade game",
+     "Korean arcade game center interior"
+    ]
+   },
+   {
+    "label": "코엑스몰 오락실",
+    "why": "스타필드 코엑스몰 B2의 쇼핑몰 안에 있는 오락실이라 코엑스몰 풍경과 함께 찍는 경우가 많다.",
+    "queries": [
+     "Starfield COEX Mall interior",
+     "COEX Mall Seoul underground shopping",
+     "Fun City COEX Mall Samseong-dong"
+    ]
+   }
+  ]
+ },
+ "funcity-kondae": {
+  "nameEn": "Fun City Konkuk University",
+  "spots": [
+   {
+    "label": "건대 맛의거리",
+    "why": "펀시티 건대점은 건대입구역 2번 출구 근처 '건대 맛의거리' 한복판에 있어, 이 골목 풍경이 가장 먼저 나오는 배경입니다.",
+    "queries": [
+     "Konkuk University Station street Seoul",
+     "Gunguk University food street Seoul",
+     "Konkuk University Station exit 2"
+    ]
+   },
+   {
+    "label": "인형뽑기존",
+    "why": "인기 캐릭터 인형을 뽑는 기계가 매장을 가득 채우고 있어, 후기에서 자주 언급되는 대표 볼거리입니다.",
+    "queries": [
+     "Korean claw machine arcade Seoul",
+     "Fun City Konkuk claw machine",
+     "crane game Korea arcade"
+    ]
+   },
+   {
+    "label": "펌프 잇 업",
+    "why": "라이트 유저 중심인 매장에서 몇 안 되는 마니아 게임으로, 리듬게임 후기에서 언급됩니다.",
+    "queries": [
+     "Pump It Up arcade Korea",
+     "Pump It Up dance machine Seoul",
+     "Fun City Konkuk Pump It Up"
+    ]
+   },
+   {
+    "label": "네온 오락실",
+    "why": "여러 색의 조명이 빛나는 복합 엔터테인먼트형 게임센터 내부 분위기가 사진 소재로 소개됩니다.",
+    "queries": [
+     "Korean arcade neon lights Seoul",
+     "Seoul game center interior Konkuk",
+     "Fun City arcade Seoul"
+    ]
+   }
+  ]
+ },
+ "funnyland-hongdae": {
+  "nameEn": "Funny Land Hongdae",
+  "spots": [
+   {
+    "label": "크레인 간판",
+    "why": "크레인 게임 모양의 큰 영문 간판과 유리벽 외관이 홍대 거리에서 한눈에 띄어 입구 인증샷 장소로 꼽힌다.",
+    "queries": [
+     "Funny Land Hongdae arcade",
+     "Hongdae arcade exterior Seoul",
+     "Hongdae Eoulmadang-ro street"
+    ]
+   },
+   {
+    "label": "인형뽑기존",
+    "why": "지상 1층 인형뽑기 기계 구역이 이곳의 대표 시설로 소개된다.",
+    "queries": [
+     "Funny Land Hongdae claw machine",
+     "Korean arcade claw machine Seoul",
+     "Hongdae crane game"
+    ]
+   },
+   {
+    "label": "핑크 포토존",
+    "why": "인형뽑기 층의 핑크톤 인테리어와 포토존이 사진 찍기 좋은 공간으로 언급된다.",
+    "queries": [
+     "Funny Land Hongdae pink photo zone",
+     "Korean arcade interior pink Seoul"
+    ]
+   },
+   {
+    "label": "리듬게임",
+    "why": "펌프 잇 업과 태고의 달인 등 리듬 게임 기기가 있어 게이머들이 많이 찾는다.",
+    "queries": [
+     "Funny Land Hongdae rhythm game",
+     "Pump It Up arcade Korea",
+     "Taiko no Tatsujin arcade Seoul"
+    ]
+   },
+   {
+    "label": "사격·스포츠",
+    "why": "사격, 농구, 펀치, 볼링, 레이싱 게임 같은 체험형 기기가 한곳에 모여 있다.",
+    "queries": [
+     "Funny Land Hongdae shooting game",
+     "Korean arcade basketball game Seoul",
+     "Time Crisis arcade Korea"
+    ]
+   },
+   {
+    "label": "노래방",
+    "why": "고음질 사운드 시스템을 갖춘 노래방이 지하 층의 특징으로 소개된다.",
+    "queries": [
+     "Funny Land Hongdae coin karaoke",
+     "Korean coin karaoke Hongdae",
+     "Hongdae noraebang"
+    ]
+   }
+  ]
+ },
+ "daebbang-sinchon": {
+  "nameEn": "Daeppang Arcade Sinchon",
+  "spots": [
+   {
+    "label": "신촌 명물길",
+    "why": "오락실이 있는 신촌 명물길 거리는 대학가 번화가로 유명해서, 입구 간판과 거리 풍경을 함께 찍는 사람이 많음",
+    "queries": [
+     "Sinchon Seoul street",
+     "Sinchon Myeongmulgil Seodaemun-gu",
+     "Sinchon Yonsei-ro nightlife"
+    ],
+    "ko": "신촌 명물길 거리"
+   },
+   {
+    "label": "오락실 간판",
+    "why": "대형 네온 간판과 건물 외관이 오락실 방문 인증샷의 기본 구도로 쓰임",
+    "queries": [
+     "Korean arcade neon sign",
+     "Sinchon Seoul arcade",
+     "Daeppang arcade Sinchon"
+    ],
+    "ko": "신촌 오락실 간판"
+   },
+   {
+    "label": "인형뽑기존",
+    "why": "크레인 게임기가 줄지어 늘어선 층은 오락실 사진과 영상에서 가장 자주 찍히는 장면임",
+    "queries": [
+     "Korea claw machine arcade",
+     "Crane game machines Seoul",
+     "Sinchon arcade claw machine"
+    ],
+    "ko": "오락실 인형뽑기 기계"
+   },
+   {
+    "label": "레트로 게임기",
+    "why": "추억의 아케이드 게임기와 펀치·농구 같은 체감형 게임기가 레트로 감성 사진 소재가 됨",
+    "queries": [
+     "Korean arcade games Seoul",
+     "Retro arcade cabinets Korea",
+     "Sinchon arcade game machines"
+    ],
+    "ko": "신촌 레트로 오락실 게임기"
+   }
+  ]
+ },
+ "wadada-sinchon": {
+  "nameEn": "Wadada Arcade Sinchon",
+  "spots": [
+   {
+    "label": "신촌 명물길",
+    "why": "오락실이 있는 신촌 명물길 거리 풍경과 건물 외관이 방문 인증샷 배경으로 쓰인다.",
+    "queries": [
+     "Sinchon Myeongmul-gil Seoul",
+     "Sinchon street Seodaemun-gu",
+     "Wadada Arcade Sinchon exterior"
+    ]
+   },
+   {
+    "label": "오락실 내부",
+    "why": "여러 층에 게임기가 줄지어 있는 네온 분위기의 아케이드 내부가 대표 사진 포인트다.",
+    "queries": [
+     "Wadada Arcade Sinchon interior",
+     "Korean arcade game center Seoul",
+     "Sinchon arcade Seoul"
+    ]
+   },
+   {
+    "label": "인형뽑기",
+    "why": "크레인 게임과 경품 기계가 많아 뽑은 인형을 들고 찍는 사진이 흔하다.",
+    "queries": [
+     "Korean claw machine arcade Seoul",
+     "Wadada Arcade claw machine",
+     "crane game Korea"
+    ]
+   },
+   {
+    "label": "리듬게임",
+    "why": "리듬게임과 레트로 게임기를 즐기는 모습이 오락실의 대표 체험이자 촬영 포인트다.",
+    "queries": [
+     "Korean arcade rhythm game machine",
+     "Wadada Arcade Sinchon games",
+     "retro arcade cabinets Korea"
+    ]
+   },
+   {
+    "label": "포토부스",
+    "why": "친구들과 오락실 방문 기념으로 찍는 셀프 포토부스 사진이 인기다.",
+    "queries": [
+     "Korean photo booth Seoul",
+     "Life Four Cuts photo booth Korea",
+     "Wadada Arcade photo booth"
+    ]
+   }
+  ]
+ },
+ "gamepark-kondae": {
+  "nameEn": "Game Park Konkuk Star City",
+  "spots": [
+   {
+    "label": "스타시티몰 입구",
+    "why": "게임파크가 있는 건대 스타시티몰 2층 쇼핑몰의 외관과 입구로, 방문 인증샷을 찍는 곳",
+    "queries": [
+     "Star City Mall Konkuk University",
+     "Star City Gwangjin-gu Seoul",
+     "Star City Konkuk Seoul mall"
+    ]
+   },
+   {
+    "label": "인형뽑기존",
+    "why": "오락실의 대표 놀거리인 크레인 인형뽑기 기계가 줄지어 있어 인형 인증샷을 많이 찍음",
+    "queries": [
+     "Game Park Konkuk claw machine",
+     "Korean arcade claw machine Seoul",
+     "Seoul arcade crane game"
+    ]
+   },
+   {
+    "label": "아케이드 게임기",
+    "why": "리듬게임·레이싱·펀치 등 아케이드 게임기가 모여 있는 오락실 내부 풍경",
+    "queries": [
+     "Game Park Konkuk arcade",
+     "Korean arcade Seoul game machines",
+     "Seoul arcade interior"
+    ]
+   },
+   {
+    "label": "건대입구 거리",
+    "why": "게임파크가 있는 건대입구 상권으로, 쇼핑과 놀거리를 함께 즐기는 번화가",
+    "queries": [
+     "Konkuk University Station Seoul street",
+     "Konkuk University Station Star City",
+     "Gunja Seoul Gwangjin-gu street"
+    ]
+   }
+  ]
+ },
+ "cubezone-daegu": {
+  "nameEn": "Cube Zone Daegu Stadium",
+  "spots": [
+   {
+    "label": "인형뽑기",
+    "why": "나무위키 오락실 정보에 500원·1000원짜리 인형뽑기 기기가 있다고 나온다.",
+    "queries": [
+     "Claw machine arcade Korea",
+     "Crane game arcade",
+     "Daegu arcade claw machine",
+     "인형뽑기"
+    ]
+   },
+   {
+    "label": "레이싱 게임",
+    "why": "이니셜D 아케이드 스테이지와 스피드 라이더 같은 레이싱 기기가 있는 곳으로 소개된다.",
+    "queries": [
+     "Initial D Arcade Stage",
+     "Racing arcade cabinet Korea",
+     "Cube Zone Daegu Stadium racing game",
+     "레이싱 오락실"
+    ]
+   },
+   {
+    "label": "건슈팅",
+    "why": "트랜스포머, 데드스톰 파이레츠, 타임 크라이시스, 아이스맨 같은 건슈팅 기기를 갖췄다.",
+    "queries": [
+     "Time Crisis arcade cabinet",
+     "Light gun arcade game",
+     "Cube Zone Daegu Stadium shooting game",
+     "건슈팅 오락실"
+    ]
+   },
+   {
+    "label": "코인노래방",
+    "why": "1곡 500원짜리 부스형 코인노래방 기기(엣지, TJ)가 여러 대 있다.",
+    "queries": [
+     "Coin karaoke booth Korea",
+     "Coin noraebang Korea",
+     "Cube Zone Daegu Stadium karaoke",
+     "코인노래방"
+    ]
+   },
+   {
+    "label": "펀치·해머",
+    "why": "펀치(데스페라도)와 해머(썬더) 기기가 있어 가볍게 즐기며 사진 찍기 좋다.",
+    "queries": [
+     "Punching machine arcade",
+     "Hammer strength arcade game",
+     "Cube Zone Daegu Stadium punch machine",
+     "펀치 게임기"
+    ]
+   },
+   {
+    "label": "스타디움몰",
+    "why": "큐브존이 들어 있는 원형 건물로, 대구스타디움 바로 옆에 있다. 큐브존은 지하 1층 CGV 입구 근처다.",
+    "queries": [
+     "Daegu Stadium Mall",
+     "Daegu Stadium",
+     "Daegu Stadium exterior",
+     "대구스타디움몰"
+    ]
+   }
+  ]
  }
 }

@@ -8004,5 +8004,352 @@
     "reason": "클라이밍 슈즈 매장과 벽 일부가 보여 이용 이미지는 주지만 대표 명소는 아니다."
    }
   ]
+ },
+ "zzang-arcade-inspire": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-31",
+  "photos": [
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Inspire_Entertainment_Resort_Exterior.jpg/1920px-Inspire_Entertainment_Resort_Exterior.jpg",
+    "w": 9648,
+    "h": 6462,
+    "credit": "Whoisim / Wikimedia Commons",
+    "license": "CC BY-SA 4.0",
+    "page": "https://commons.wikimedia.org/wiki/File:Inspire_Entertainment_Resort_Exterior.jpg",
+    "alt": "푸른 하늘 아래 인스파이어 리조트 전경",
+    "score": 9,
+    "label": "리조트 전경",
+    "reason": "맑은 파란 하늘 아래 리조트 전경이 선명하게 담겨 낮의 대표 모습으로 가장 좋다."
+   },
+   {
+    "src": "/api/gphoto/zzang-arcade-inspire/f909a8898cca",
+    "w": 3024,
+    "h": 4032,
+    "credit": "Google 지도 · りんりん",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112474590537040078803",
+    "gname": "places/ChIJD9HbegCbezURcSmm3gdO6iY/photos/AV-0GLd6LWoI2iljehgeeTlrcB6L6xDFw4K3l1-7iYvg9EvsdvWmLs5gd_RQdcTzIOdq04l_PYcQDac9_uB8gkMRsTZvofupohJ_H4mHl-PSzREcRdLIvNvS8EHGHcxfKEXQu4kwIODjuFyOFIt5LMFiHe9ayZMuPY3U5cHVc8uEu0rBYJngTeFyw8EMsFQ8GP7mmYmzUs448RdEebfNXm7f7NqO-I-rdD3AumQBNZ4hhSDF4oGWA_VoyVUyj0GbU7PJ13UK5_WBe82nfYjufTnZ_hBCn8VLH_1_OnV2-r6R0T5vtEAqXAlVb1WqKRC-AvTT65Kkjshswd_O-w8WKRIq0UmEdv7zxw2YQ_g-PwMwEeiVZONzG79xcj_WkGdiCF2n2zwiakY4xxR6FBW3xmjr1Ssf-tNWSMey0i9rpLTH3xs_Gg",
+    "alt": "네온 불빛으로 반짝이는 대형 회전목마",
+    "score": 8,
+    "label": "짱랜드 오락실",
+    "reason": "네온으로 빛나는 회전목마가 화려해 실내 놀거리의 분위기가 한눈에 전해진다."
+   },
+   {
+    "src": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Incheon_Newcomers_Tour_%288801826%29.jpg/1920px-Incheon_Newcomers_Tour_%288801826%29.jpg",
+    "w": 4412,
+    "h": 6618,
+    "credit": "U.S. Army photo by Spc. Philemon Tan / Wikimedia Commons",
+    "license": "Public domain",
+    "page": "https://commons.wikimedia.org/wiki/File:Incheon_Newcomers_Tour_(8801826).jpg",
+    "alt": "고래 영상이 펼쳐진 오로라 거리 천장",
+    "score": 7,
+    "label": "오로라 거리",
+    "reason": "천장 화면에 고래가 헤엄치는 오로라 거리가 인상적이지만 앞사람들이 어둡게 가린다."
+   },
+   {
+    "src": "/api/gphoto/zzang-arcade-inspire/adbc4f3bbe63",
+    "w": 3024,
+    "h": 4032,
+    "credit": "Google 지도 · りんりん",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112474590537040078803",
+    "gname": "places/ChIJD9HbegCbezURcSmm3gdO6iY/photos/AV-0GLdd5iPcjTmEHNsTABgo9k3KTJyHYTtHI6FtGfKN1yEV6hIlmWAKmpP2n-OmxSxN1uG-kdy2uK645_sgGvsLHfFmxJlqHCe18X2wniJzO7PSIsRVT9vE0o5a8Pyf4R1qYibCp8DL-vXOrYAU8-bqYC8DE276A10gkeJnlVO_rJgBYYQcr5ertlbCaRcBpoyEO_aod2pSF-A6JCczPFgeTFJ3XtWaWKdAUJjkkXzxYyHRNlFsmgLiOKrtHijBaWKocvXo8b3_PZbMclPGq4q86XSO5N-XPmp8XwxE9kSMovJAgb-BFbTILEWR6dh61HZ_PM6WO19jiV1ijJ37Hh1mabl2zffU-u2d6SZ_eNnGFwPToS9PjWWr1miziMaATyQeEc3LpwMB93bLDgF93bXWdk4sYbHu2r2gmkzHFhk5_AD8wg",
+    "alt": "네온으로 빛나는 에펠탑 조형물",
+    "score": 8,
+    "label": "짱랜드 오락실",
+    "reason": "네온으로 빛나는 에펠탑 조형물이 주황빛 벽과 어울려 감성적인 포토 스폿이다."
+   },
+   {
+    "src": "/api/gphoto/zzang-arcade-inspire/8fe44eb22da1",
+    "w": 3000,
+    "h": 4000,
+    "credit": "Google 지도 · Jane Park",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/109771461505741517339",
+    "gname": "places/ChIJD9HbegCbezURcSmm3gdO6iY/photos/AV-0GLdJ4FZDAqVQ2FrYAM55afu-xKDNwk1yARYsTW01PiyI_VMHaej3O93TIZryd7HYi-R7ZkogJ9cY8DUeu0folhE6tlcT88GJ-8lo3CTO1ocap_A88lBplXiBVDfLggL8Sc4khcbzgiZ2pEO2Nb7p6HNfxUrC4MqywZu-WGAYTK-_5WmvfdMTN5L8hHK5eLtgfFMgrNig5KHHW23qKujqP_GqTFXgQOHoF93msWNX_wF_WMRvgVri_knEUYUTuZ-2RY8DyCgAlOGea-QbyLZM-iAHIFJtnBFotb3D2-tE_ilIvI2d1OoBnG0461E-62JeUjIVg9SN5zIjUKMNqBdpP1NF4_rlDl0PR0zySUjWKFNHgYwSmOj7u86SVCJGsUdtbpLGBCNP_T1SEjCpO-nbygZeLPSxBOg9UHqhgPZ3OY4-aQ",
+    "alt": "네온이 켜진 레이싱 게임기들이 늘어선 모습",
+    "score": 7,
+    "label": "짱랜드 오락실",
+    "reason": "레이싱 게임기가 줄지어 늘어서 오락실의 신나는 분위기를 잘 보여 준다."
+   },
+   {
+    "src": "/api/gphoto/zzang-arcade-inspire/aa6b1b7f6ede",
+    "w": 1868,
+    "h": 4000,
+    "credit": "Google 지도 · Jason Ham",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107286292749481439488",
+    "gname": "places/ChIJD9HbegCbezURcSmm3gdO6iY/photos/AV-0GLf1Mv4lWPd9vOQLb6OnZa1DEL_5uMSMhsPCi-8JMFqxZz760epPqGxCpL3JYAUS72UuVKEOMNvhMiDsULbguGVrhmbg6JkN09MItVvywvTQAM1sJvDfxJG58W8GoCumIP683Awr9Z_wj1qttr5mW4OXvGb_gtf-1VK4FDptOBx2Y40gXae2Ul6DtSfNx_WU11_14DLTdftsU1RjnAonbGgBYLOUF1koivXKj87tpe7WXvSC78A9egn0hCGVxiy6bGLT-v84FRzJSAiOexgw5u03Nr6wiHokNqt5MrecyXcT9Z27iSshPSnljy4QjFGZyYYLE-lR5kEq_4dUAbKsWLsLYaCGVmntDBxU8rr2gnKmT2b2nG2lLGXWnabeYMrBnkkNJE2D1kEO1sTk-DntV1oNCiA",
+    "alt": "대형 화면의 레이싱 게임기",
+    "score": 7,
+    "label": "짱랜드 오락실",
+    "reason": "대형 화면의 레이싱 시뮬레이터가 박진감 있게 담겨 즐길 거리가 잘 드러난다."
+   },
+   {
+    "src": "/api/gphoto/zzang-arcade-inspire/413aaf3ef25e",
+    "w": 3600,
+    "h": 4800,
+    "credit": "Google 지도 · DioBrand",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/118100337300304004195",
+    "gname": "places/ChIJD9HbegCbezURcSmm3gdO6iY/photos/AV-0GLcFs8qI_45LV81tUR5ThtI_yF2TiE7KuCRMoNM0C-2NjPsbZd284r_3Ml_MLtvCfrQrDF230FQ86UnV3EtofiZ7AAEtCQeoDfwsOixx-JbL2oTdYGJqNKFsfZR-zeR_JAja0Wums5sHIfQR0xaoOoghDeNxdup01R6_XR2uBZQzlb23GKvYsYrQMTfkrmufbRsVDg9IXrgaq-l9tq30fBgGCr01vit43_Xz6rgRlLUn1IykeYV5rCtpJqEf2TffGrh1QTAbvDtRuNOygfU2cDQGtQ8AuYigXKqAebWnmksKp7c6qBdOP937Eoo3ynKDHheeus6gRu2DQb0bIPG7rEecUGgEe17GtbbkqLj7XgKZdqWaJNpfcE2-LkGFA9oNv9CmQ1ClP5etGQHsqq5Kh8P7ifhxLovgJVt_bVnNar1RKw",
+    "alt": "주황빛 협곡 모양의 짱랜드 입구",
+    "score": 7,
+    "label": "짱랜드 오락실",
+    "reason": "주황빛 협곡 같은 입구가 독특하지만 사람이 작게 있고 다소 휑하다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/zzang-arcade-inspire/5eefc7f2c626",
+    "w": 3000,
+    "h": 4000,
+    "credit": "Google 지도 · Jane Park",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/109771461505741517339",
+    "gname": "places/ChIJD9HbegCbezURcSmm3gdO6iY/photos/AV-0GLclSpxHfn2s-DU2vSO9mjtg8jvLI8INPBjS9ZxRLSmjcRpCX-X6rlk-hPB5IND4AtL71gLUnEsWi2LbqY6y59PUvcUP330Gb1M4TJSmFdLyf5yOvabQbms83Df0xTNHiIsWDPjADSHha_T68ay2ucXDg7_SjFuDLil6BcxJMEjomHFbKKn6FD6Cr--_8LhEGLxdpUHjl3aPlRWm6TJErJ99i0CrZ7fQdeXn-26ygi_aijAbfa74rt73zbmT9ak48rz43slWtYcbJWFVt4nT1WTaHoAB1kMZ4gzL5dxcy6Z7K_BvyYEybfIKfHKsbioWju2RjqMMg_w8aazHv-aER2z3OE9qKQPjNg1b5WaH6COodNWrmldEDB1c5lx2FjiV2inxdtyfBjVQ1j5mKI-O9MqEOB0TRD6aKXFmQeRdH_9nAA",
+    "alt": "인형이 가득한 인형 뽑기 기계",
+    "score": 6,
+    "label": "짱랜드 오락실",
+    "reason": "인형 뽑기 기계가 컬러풀하지만 로고 간판이 커서 구도가 다소 평범하다."
+   },
+   {
+    "src": "/api/gphoto/zzang-arcade-inspire/d9b0bcd24ac8",
+    "w": 1868,
+    "h": 4000,
+    "credit": "Google 지도 · Jason Ham",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107286292749481439488",
+    "gname": "places/ChIJD9HbegCbezURcSmm3gdO6iY/photos/AV-0GLfCcSkpMCzI488Q-fqW-c7sFhtbQDokoC56ixtyvVkC3BFMgue2MUc8nP-xABlHi0eLuNywq15jsvotMx2vxhkgf6dolGndRlpK1N_SdhhJJfkwD7OSFa5Del80iLr761IY3jbzJV_nEwyw-7FNE2B7LxNCh7w8-_LvQjXUTL6bfKpogzrDDxyhKXNPmWdLZMn79Nc8yBOYJqaBfFQTp4iOmYg0Igpbyqmm7NagXKIHwMaDhCxEZM02DV8B3FJ1qUfkfze-lAA0MWbYmcWJKkXdFIGZxJ9jsB93UrMvJ_Bem8_G2V9Tm9aqCmuKG5HDf2cH_TWIZAMygFr3M1ZdhXIdMxQl9WyU4FP314Q_rTUNap2Lqga3y_lJkiCjXRrWlyW6zl0msyKRhMe7XsIgiz2lOd8",
+    "alt": "주황색 간판의 짱게임즈 오락실 입구",
+    "score": 6,
+    "label": "짱랜드 오락실",
+    "reason": "오락실 입구가 보여 장소 파악엔 좋지만 글자 간판 비중이 크고 활기가 약하다."
+   },
+   {
+    "src": "/api/gphoto/zzang-arcade-inspire/a3500f025d25",
+    "w": 1868,
+    "h": 4000,
+    "credit": "Google 지도 · Jason Ham",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/107286292749481439488",
+    "gname": "places/ChIJD9HbegCbezURcSmm3gdO6iY/photos/AV-0GLfAVIW5AOTiQKgwfKKAae5QbiicoIDXoOA8UZvpDC1JeVfnoGvF2xTBXfisVJ7F7dXMXlFblltjnKSDhpA4xba4UqMqfXNo9csNBHRlCCCEiy1kXil_CIOBEg8tVM5MkG9EGc0GMTFbQOAlC9A5Ydgj-iqJOEA1BfiDFqVXJLj_DIUSnrwSk4wwRj8aQFEhHRAF696bsq838ZdGm6kG14zLktqYi-_1mxmMCEM4naA7Qr2ZOFDs3ZjpwajRK1aK5f5AN12nWR85SG2aQuMRgoAvI5EO3rjEAazBZKSyVsMK2pkJDzwYVAQDvmi4uUu1XWKv_c5mXI02S8TxujcteNW7X0Iod2rUO29PNG1T0PBsw3Ty0g_SKPLe8qU91LoQKYYTXjD4-rN3Kh04L5OoDOM5Cd0",
+    "alt": "마리오 카트 레이싱 게임기",
+    "score": 6,
+    "label": "짱랜드 오락실",
+    "reason": "마리오 카트 게임기가 눈길을 끌지만 구도가 약간 기울고 어둡다."
+   },
+   {
+    "src": "/api/gphoto/zzang-arcade-inspire/b12946d890e6",
+    "w": 3000,
+    "h": 4000,
+    "credit": "Google 지도 · Jane Park",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/109771461505741517339",
+    "gname": "places/ChIJD9HbegCbezURcSmm3gdO6iY/photos/AV-0GLfCwvfKrTcbsD1XdTujK_WTLqzk2bMKSn1bRjO76LjkurNFRf0_C_xNPH3P_Rmbvk5y026DFgyOld3-UPy0230lvwv7_k3pFdTRdDdqlUMdMkhAKSwV8Iuvp63mdb9PSWeUzkzVuw_kMT8KHwv_wGP9gtj9TYaKAjDM8rFXm-1QNXdmAB7ma9c3M2X-DrVTOJgy1_c3K7vSEKqf5gX3dXAlC-7n1NtuCmYM5e3WiaIH8OVdc_SXEH5Ff_sYM3tn7R8MzFM8fMopZu1cM2fsibWLlqIZPJbgRg8lucTJ2SxMFaf-hHpoydusidduMYH9tG3n2ztpQD5aRnQ1Mgr4Fl9Gb1ZCzyySKMGRkx245PKyFMnWTYgUWNQw8OLTSHrr5oKiEARI1w-XDeJmpQcH_oQdyiNqzXJh9KqmVX3ddeK0RA",
+    "alt": "오토바이 모양의 레이싱 게임기",
+    "score": 5,
+    "label": "짱랜드 오락실",
+    "reason": "오토바이 레이싱 게임기가 나왔지만 구도가 어수선하고 사람 손과 소품이 가린다."
+   }
+  ]
+ },
+ "zzang-gangnam": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-31",
+  "photos": [
+   {
+    "src": "/api/gphoto/zzang-gangnam/f7fdf467ad5b",
+    "w": 4032,
+    "h": 2268,
+    "credit": "Google 지도 · S.Y H",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112160701749776897902",
+    "gname": "places/ChIJa4HXNgChfDURdfwP94jtA6A/photos/AV-0GLfmr8oqku034Bel4nIILYyrWSuCuiKk75rBMjWMuoKc-szKaWpbkyOMTuceTKy_XqvXb9j2Uq8ix0VFeQNFThaAczDen0vOsqv1cEbY9AdFnTYtZv-cnMbbN8fhfTiGe_ZwXZ6ZyuuT7aJlo3GbbVx5dACz3kmAbjaMedVOpCOdK3M6lWlGPcG-W3eXuHh6pOBvKAWfMHeq5w6AXODv0C_g_QnKIQHsHISZJtRgmHMY5d2QAP_grLTCoCg5prf_D3b2Wlx4jyI-IdasKLRnFJbHNhiYKybmSa440NUuDX5ROm0Ph1IKfx6cJVKxDULX3PHOvgjRGOFtCCLe-PC2GGpd0neEaleH7NTU9-TS7KLivHONP8Q6k6bATrUzt9SLJB-UGHMgiwdlOCWQ0aqs3Tfc4e7Qipc",
+    "alt": "레이싱 게임기가 늘어선 밝은 오락실 내부",
+    "score": 8,
+    "label": "레트로 오락기",
+    "reason": "밝고 화려한 체커보드 바닥 위에 레이싱 게임기가 줄지어 있어 활기가 느껴진다."
+   },
+   {
+    "src": "/api/gphoto/zzang-gangnam/c12476c35aa7",
+    "w": 4800,
+    "h": 3600,
+    "credit": "Google 지도 · 전까꿍",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112017521365303290900",
+    "gname": "places/ChIJa4HXNgChfDURdfwP94jtA6A/photos/AV-0GLc3Nhwdr_lnT6_Xv7VOrqHifWn--fE1g-fMen2m_sRzkIDvQW7LWYCTNUb_O-ZEFS9HTlnO8w-8bMhJpYrQemRG3bDun-ZTOKLDGIQtAvJ3zD0S1StmjtiP8Mu0G6k6pbT5HWsWxhy64PtPQIvFIhRO2hcPOv0UDKd7xBTDpC5EFz9TRYvupRUj0MVmmwsLUrGm3q5JYuWdRWNcYsAsWDb2S8GiodWcK9vnLcv10M2fr7UKZRSq9Au9qJFJ_fH1BLTngbJC-TM-ipBNFtdSJzkE7x8n_mA009xqapmDMWB9k-2xbl5RsUSTm2PUP0jvGSOnztyU5W3Sp7a37DdrK4U1Dgpp6xqENWkjyMKfh79t3TeMSIhhNi38AuqRHZLhP61yKIG9O3c1A_97JoyNVDFVqnvk07I",
+    "alt": "짱오락실 전구 간판이 빛나는 외관",
+    "score": 8,
+    "label": "외관 간판",
+    "reason": "전구 간판과 주황빛 외관이 선명해 어떤 곳인지 한눈에 보인다."
+   },
+   {
+    "src": "/api/gphoto/zzang-gangnam/5d13980e2e88",
+    "w": 4800,
+    "h": 3600,
+    "credit": "Google 지도 · 전까꿍",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112017521365303290900",
+    "gname": "places/ChIJa4HXNgChfDURdfwP94jtA6A/photos/AV-0GLeA-eNE8WvFM-9y9Q3H5eqNNjHHcqlEETcDHoF_H7MJmk1ewYifDt62n98PpiUF7Esw5hcoKUQnOFSrGLBGxySzz5g4SOhzTl_c12ItTe8zxBZ_qO7cAEp9eAUY9H1W4YLeliAroXq46Heu9C0feAvCREej1gSYm1VgdG9O2yB0IRbC3Lgk_ZTeaSOCzgWraTaKQ3wiem6bFJcDU2C62cSB_kUD_3ER1BmWNVx0pND4T4Ue5SGwYnYRFoWeJK7_d-ts0shuI-nme8BFG0Sotf3lvKJANGJ7ZD9edjd5KIWylxQO1yrMH1q36pKeEduKoTN4dtUzgQolJB7uN7ELp3xegS2FCGVf29fSLzcVNTr9HzQ42CzhwI3HRijTl6RsKzTXAFSFKYnibeePdOOaBHFn-A",
+    "alt": "주황 아치 너머 인형뽑기 존",
+    "score": 7,
+    "label": "인형뽑기",
+    "reason": "주황색 아치 너머로 인형뽑기 존이 보여 매장 분위기가 잘 전해진다."
+   },
+   {
+    "src": "/api/gphoto/zzang-gangnam/5cb474af4aed",
+    "w": 3024,
+    "h": 4032,
+    "credit": "Google 지도 · 맨디 md",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/100949425366020863501",
+    "gname": "places/ChIJa4HXNgChfDURdfwP94jtA6A/photos/AV-0GLf1RSB-o1Yd_qnVzDuRw7EpTCbqYpzyB5ejIb4pT1wKMeQT3LRr4lnfiihgxbNoTnOK5Ma7KwCVIU6llYb9MmIQEZ3eQN7ghbFJ0l0DZZOV9cmo7dwV1yzqiniXjnviZqXxB4QzMd5BaKQdTMj1xUD1Zbr2nLgZDmxSM03pgjNsfNlxuoYdWAww7d36BbO7lNLgIOmJZFqu2Swt9SLWRnI8J28ML2Uy2gYXInOefDGhesp5oizChVcYVy4wxpMBvKnSmVs5Ue8irzQsJJ4Q90_zg99J3rjvsY2pqyOQFnh5yMyv7djXI1ReB64qI6xXkd-jhHh3Ewfl2PZBLUWUuq7ooxEbjneXT8YSvpRyOpq1OHuB-zy4osQD8e5RLB5k5mOaK-_O_l2D3m8FQHWLgLLhXNPD7vU",
+    "alt": "네온이 반사되는 에어하키 게임기",
+    "score": 8,
+    "label": "레트로 오락기",
+    "reason": "거울 천장에 네온이 반사되어 에어하키 기계가 감성적이고 인스타 느낌으로 담겼다."
+   },
+   {
+    "src": "/api/gphoto/zzang-gangnam/9f71bc414a20",
+    "w": 3024,
+    "h": 4032,
+    "credit": "Google 지도 · 맨디 md",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/100949425366020863501",
+    "gname": "places/ChIJa4HXNgChfDURdfwP94jtA6A/photos/AV-0GLdz2bDyTnBKkSHPcZaPOEC1rq_xxt03PiU61F5UViF-A5MRQbD_jG1h5Ph0T3JXRqLA63hshlNBU7PP5XaHYr6L-lsV8RgSLqypRLV67Ei2KOX9WJnJtAFPjnsorlFS6gOCD9idZ3lfR9niZz57WAP26CGO21cEHprQDoM95EfUf9lXmxbU1SxSfxLF4ktcGsPEALG9DW3VfmQuZ9ZfX8hDw3G0HTgpxUuIXkqX8hIWW7biddywPpNf7VX3f55_lihgwBNvwl3Ekukt4JJAMx9I0XoucMXEUl9aLQGFgSsmq_iMKTqUXhnX1jeJjsALlzbTyHtVyi1K8UR9sVoD4IZMxc1JZPalE67qpURtXk6tbz2D6jNqfbknLAPeVnbwprSihA9O_FtK6ShKWCzkH5U4BNo",
+    "alt": "인형이 가득한 코르크 페스티벌 부스",
+    "score": 7,
+    "label": "인형뽑기",
+    "reason": "코르크 페스티벌 부스에 귀여운 인형이 가득해 눈길을 끈다."
+   },
+   {
+    "src": "/api/gphoto/zzang-gangnam/cd386838a76e",
+    "w": 4032,
+    "h": 2268,
+    "credit": "Google 지도 · S.Y H",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112160701749776897902",
+    "gname": "places/ChIJa4HXNgChfDURdfwP94jtA6A/photos/AV-0GLfN8E1B8cagBd1qz5yu7zOfAh4-mr_4rlYZfHG0YCNDV0eAVHY5rzjEtjhzMhlnhenLRU2iHcCO1gZAJyDF_2zQBqndaWsp_vPXTjjSezoXrl0-aB-x76QzjtRjRA7Z9Q8ShpGrM8mcKmA-J7AunNN9VAaqfLjxmWQajzIailrIZeRP7gw5TfOhOZ-rdPA9N3Ddv_okGUrDMc99rxKqLmfNJFNocy4KwsZiblGs_9SwYxfsuzHTdnloZljEoo5vHZliv3ex32yFWal0KBxxheY7QJT5j3Z8GTdgPKo-vDNbiPxB0dtu-5P5WSfIZ-SiIBjlTkHLTbBkzS3fnpIg0XyKspP8NTm3bWcnBT1AL3timTH8IyL_rnILE3QDamczAUI9ArQtI0e-oYiqAtZlhlwijSkyZIw",
+    "alt": "조명 아래 크레인 기계가 늘어선 통로",
+    "score": 7,
+    "label": "인형뽑기",
+    "reason": "아치와 반짝이는 조명 아래 크레인 기계가 길게 이어져 있다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/zzang-gangnam/fe58cf8167b0",
+    "w": 4032,
+    "h": 2268,
+    "credit": "Google 지도 · S.Y H",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112160701749776897902",
+    "gname": "places/ChIJa4HXNgChfDURdfwP94jtA6A/photos/AV-0GLd1zziIb0NCnC0nem-zsPpYmBvjdoKM2MVnjUhP-h1qU_MbyNfbykEQNNmcvOWT9pJSMLgp_sGC36n-GflSt8F3dJVxH0q4Dt0UavyR-ffTLQC65b2VuMGRjxZN9Zbr8EOFv2bvjsckH_kvhxD0ieETPM3kY5mzq0zjg4PFmMzr1WDNp45pFb9wsYA5oqIsQgmWn_kUrCQf-Z6c44WpMI3b9jw0M6H4boZT0VtSKN4u_w-fRiHj2qgdUC_Kq7Um_552tkwZYmJQJZCeyF5W1I6VYr5_zqgD2uOBByw0Oz5rpmDdRxvZzGxegsY-9DrL4pIEFePttbc-Emm_wMl77ssDNzn4tC3gvnJfwWHf2Fh8YgPzwS3QMvuPMXBYr9J0ysQotQcUnHwQfmzW0vCVY9jidKnK",
+    "alt": "사람들로 붐비는 짱오락실 입구",
+    "score": 6,
+    "label": "외관 간판",
+    "reason": "간판은 잘 보이지만 앞쪽 사람들로 구도가 어수선하다."
+   },
+   {
+    "src": "/api/gphoto/zzang-gangnam/db51967b805c",
+    "w": 3024,
+    "h": 4032,
+    "credit": "Google 지도 · Ikkyun Kim",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/111893791521310558094",
+    "gname": "places/ChIJa4HXNgChfDURdfwP94jtA6A/photos/AV-0GLdHabFSWVLWe0DxbWRnWb8JPOpymWhJAuAdVG0jbHSOM_Hr7--vtxw6IfvrB-4oiycic49IxWovfilFgovN2pll1ppNzHFI0r7gDR_UX9POy9CEomhA1JVOXNK9Rm232zI1eUw661yRZ7GpGmc1WT0JRgyk9th-ZWI4Cg64FT2ZS3VGtN_EFexONgxF_2ua4FDc1bMx1OIgH1EnOklhq8WenYe-gJ7kp42RleH8JpZbKdcYULL7Gsjgya_I1QO7SfG0LTqc7Vv_OcZHChYAXmDSawNtLMouO--9F87n-V5hKJoi1As72DPX-B6UagwBrtteivheCfyX8W1rjM43molKKV3-i4HOPvsneaS2ML-TfoPX2QNEUYrxW0aMiVhJZUg-10stFVerk8ESprf1lFq7ggwuIyAi1afsk1Pgw4qong",
+    "alt": "인형이 쌓인 크레인 기계 내부",
+    "score": 6,
+    "label": "인형뽑기",
+    "reason": "크레인 기계 속 인형들이 한눈에 보이지만 구도가 다소 평범하다."
+   },
+   {
+    "src": "/api/gphoto/zzang-gangnam/9dd250437f60",
+    "w": 2992,
+    "h": 2992,
+    "credit": "Google 지도 · Jueon",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112094780559736463286",
+    "gname": "places/ChIJa4HXNgChfDURdfwP94jtA6A/photos/AV-0GLctXD96DWINOyKZjYk3R_99pV8QS5jq03aSsHJyFs5YETBmUplt7ZF4dUcPJOBWizniVPAGzK2cCJQY80urHZ0pGT0TPdNK4aM8vbDpaBH8vVVWwjgCClHxE_1oQo1lN5odzK2Dd-gDHSGegSPZNlY6Bsln4W6VUSkMvlhrjBkXcSyDm2LKOowepWGRqoex_3DjS6IG5C5TlDWHvjsbSXFFSFv-7SKr6yn5QLvx-Y_QtlgPbo_Cn6dXyzem7zYHBkSxBNWbj55QZ-1aLPYlIbJbKXl0isuDmecvGlVYnpaZUex0X6yLZixzYKopJSLCuHqp581LVTuQwP1JAbf0oIzSOKn7XI_A2WmaIHkB98QHx7jmpRi3YOWNK9b4jb0Y530r1d5n7QjO6E2-JKgaXU2nfYXR",
+    "alt": "태고의 달인 리듬게임 화면",
+    "score": 6,
+    "label": "리듬게임",
+    "reason": "태고의 달인 화면이 크게 담겨 리듬게임임을 알 수 있으나 화면 위주다."
+   },
+   {
+    "src": "/api/gphoto/zzang-gangnam/509a297b83bb",
+    "w": 2268,
+    "h": 4032,
+    "credit": "Google 지도 · Gabe Agnew",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/102961116619753992579",
+    "gname": "places/ChIJa4HXNgChfDURdfwP94jtA6A/photos/AV-0GLdXx6Y25cfPXntZoeT_ZoxwhgPBMTAXh4TWzWy9KgcECOLhz-garjMSkIOx8oOyvQ4TL10dwcWZh1JE6tYofjw8Ks7vrLR_OAAdIT6xKxRRvCwyA7yyKVnqUAOA1dbKyFpFb8DRvkwO5MaVr3Go1n1kADr3AqHVpKP8-BIFyay9R4yePD3qby4rpAMsatHFOHto2FZD616sRz086r6QaiUTDZlKF9hMsX7AW4uXn5M335Ouxcrm0z6AEG6bIGIp74k2ARshThGon8N9t89R_jSyQblxtuTpJp3d_FjHYi6S4IYrE8fLNREao0Lcdfz_gI1Y0AZ4wrB-AyJNw4AUSi5kMFSi6yKeeSIzigFJm5zSHtIFQdM8vg99UJD0PFsAaJmTjUMG3PDq7u2YGBeeidjQuYg2MhDdZZHRzxSeMz0uBg",
+    "alt": "경마 게임기 화면",
+    "score": 5,
+    "label": "레트로 오락기",
+    "reason": "경마 게임기가 보이지만 어둡고 구도가 어정쩡하다."
+   }
+  ]
+ },
+ "zzang-gangnam2": {
+  "model": "claude-sonnet-5-5",
+  "date": "2026-10-31",
+  "photos": [
+   {
+    "src": "/api/gphoto/zzang-gangnam2/385b065fac68",
+    "w": 4032,
+    "h": 3024,
+    "credit": "Google 지도 · 나는나예요",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112805109200133615002",
+    "gname": "places/ChIJ3_YiThGhfDURuIZ9hF0v-OM/photos/AV-0GLfoR9zy5ClXWqXB5c2aB-8XAzpY-DD3KNDzsWk2ZVTNrpYwrHLWs2tSZMfruD8MvyrLq2Q_QOquTZlCxfAlNQdf49H6tie5-z7KBKkL9V03xlcfWor_4X8Q5J7hgwvKeYn3MBL3eTQMUqCDWRkpMvLRiIeOL1hLFyqonK95k6j95qIipmoy-ClKM2bBziXX34Z-xxUzoeFMoZkNTqShBtoxwba1fB3e_pgGtd1Z8qZ9x8EvPTLPEFNI-sPCnZwOrz9P9uWOJ5P51dF-t4KfsbJJdXX-njTUSwJEkdCTajC4F4s-Y1_F8_M9w3m7qfVcyNWgokNNKKTq93BGJ_SuxR1flyZjkbBNYsJH6FUb6Ug37r_0Ija2gvHhE_IPmQX_FU8PEfQK1t-hFL8vRPcO1xPZUvs",
+    "alt": "인형뽑기 기계 속 귀여운 시바견 인형",
+    "score": 9,
+    "label": "인형뽑기",
+    "reason": "크게 잡힌 시바견 인형과 뒤쪽 인형들이 인형뽑기 기계 안에서 귀엽고 선명하게 담겼다."
+   },
+   {
+    "src": "/api/gphoto/zzang-gangnam2/269112de0f6e",
+    "w": 3000,
+    "h": 4000,
+    "credit": "Google 지도 · Liez A",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/117991486938084998039",
+    "gname": "places/ChIJ3_YiThGhfDURuIZ9hF0v-OM/photos/AV-0GLfoBfpxXo3GFx8ck3kfPn7kJ7AKSwQMzRt91eGiB52cs6PI8bT4vWKR72o3DOrbfEGteur8cta8rFiWwOGF7kaO295y7DjtfbrVqZL3mnMoU333p92W_YYpvyOcEq-UYbFvUH_06VloSf7_gOeZ1_MzCPymP5_xmp7y7MPHGrFh3sv4BXGq9A76neOuvjOmvuXUoHnKhAmfw48_-8V2zrU4A2xYJggjHNshkRHWSZjyj-Qf4M5MpPMCOlqhuEyLisDLcpCHFk_I1bhNOOLNmxIaa9vnm65dSvZAYmebW_lfHf-XeRNSyP6KYs7YDX53nTew7be34p6Y-MAaf6d3YaT_s3dZra85C-CH-HvCc88ToXQ9aRumS3jFBsSFI8ehnjxl3Uqs7AChOdYwRpHqU3xF-hML",
+    "alt": "네온 불빛 속 사격 오락기",
+    "score": 7,
+    "label": "레트로 오락기",
+    "reason": "총 쏘는 사격 오락기와 네온 불빛이 이곳의 오락실 분위기를 잘 보여 주지만 약간 어수선하다."
+   },
+   {
+    "src": "/api/gphoto/zzang-gangnam2/cf6de6494601",
+    "w": 4000,
+    "h": 2252,
+    "credit": "Google 지도 · TED NAM",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/115535521869733417939",
+    "gname": "places/ChIJ3_YiThGhfDURuIZ9hF0v-OM/photos/AV-0GLcDVvH5n39WKlCDS_BRHDv_WpTX6xumSu6vLo9E8oMWFeDZRtozXlTgyMqdIrBBJb8ZQNu3Pr7kqekU3015EdDLbjOmNFqhbupVdfltHtvZJdSDjgWYmCnS1UWwdGwb8cJO_SIkaEIyrHh0D2V_DVzja7d9aw0HIPnZ8ff1R-7bFoaaUyqbbyi7vHwmWEmQfHhSnS4hXofcE38hj24UXok7T4pr1XlyjKfA2hxuCdqA7T5JJakw64C7WpPErTxIgxDNtQ8jQiylEmmIW8Y22uijuwdhq2cfk4AUD-C6ZMAbPjkAHF01vo2N0YlqAIvGh6QTKUgO2i1lilZ3PMRs3iTBqdw4pldk16zJWh9wdecNhDUaHWkSPTuJuHF2EvSq3tB25Fe-ddpE6pYX1VMu5o0yGHM",
+    "alt": "네온 불빛의 레이싱 아케이드 게임기",
+    "score": 7,
+    "label": "리듬게임",
+    "reason": "네온 테두리의 레이싱 아케이드 화면이 선명하게 보이지만 각도가 비스듬하고 리듬게임은 아니다."
+   }
+  ],
+  "pending": [
+   {
+    "src": "/api/gphoto/zzang-gangnam2/7246472f985e",
+    "w": 1920,
+    "h": 2560,
+    "credit": "Google 지도 · 김정규",
+    "license": "Google 지도 사용자 사진",
+    "page": "https://maps.google.com/maps/contrib/112949199253031178542",
+    "gname": "places/ChIJ3_YiThGhfDURuIZ9hF0v-OM/photos/AV-0GLfcGbDvMvnoFel7f8l-P1JrYF_qJGlf8tC18H114JnqWY9tEAPGlziagXtL3EEn7cWusNZAJyo5wsNCtdrIi-hJc52jW7GkunvmMekJRqynrwRunhqAh3T1ItD2iNFs0DFTIS6Q8UK_wsfiesC0CopTezPyujV2Uc9fvsmHKiyEwpvdA5EVzo6Z1LcLvlOHzqDl21cRKIbmAiMeJDJIS-556AvdbsH29hku0Jd2CCCwMqcTuJcKziir7exY9TcUx7LWR_oybHwQ8Y7XpcHolh8MmUwJvHogKaE3WJYEldxXc32WNPaLhnQr6l2TQ1_PRHIh1Vag3MYXfpLZAJ4RWukiJW5VRZScqzVXezVYivFhp69p-gs0x4AOH41lPGziqVe1qSrMOpCfRyUZ-2u3_k_HZoK4dJ-w-Q0oqIkwvYQNPw",
+    "alt": "차 안에서 뽑은 인형들을 들어 보임",
+    "score": 6,
+    "label": "인형뽑기",
+    "reason": "뽑은 인형을 자랑하는 모습이 재미있지만 차 안이라 매장 분위기는 전달되지 않는다."
+   }
+  ]
  }
 }
