@@ -8,6 +8,7 @@
 import { scoreFromValue, valueFromScore } from "../levels";
 import type { CrowdSnapshot, HourPoint, Place } from "../types";
 import { addDays, kst, kstDateParts, type KstParts } from "../time";
+import { seasonFactor } from "./season-index";
 import type { Signals, Weather } from "./signals";
 
 const SPREAD: Record<Place["category"], number> = {
@@ -152,6 +153,13 @@ function concentrationFactor(s: Signals | undefined, date: string): number {
   return ratio === undefined ? 1 : Math.max(0.7, Math.min(1.4, 0.5 + 0.5 * ratio));
 }
 
+/** 실측 이력의 계절(월) 지수: 오늘보다 붐비는 철이면 올린다 (lib/crowd/season-index). 실내·공항·행사는 계절을 덜 타서 뺀다 */
+const SEASONAL = new Set<Place["category"]>(["landmark", "street", "themepark", "waterpark", "ski", "beach"]);
+function historySeasonFactor(place: Place, date: string): number {
+  if (!SEASONAL.has(place.category) || place.eventDate) return 1;
+  return seasonFactor("place", place.id, date, kst().date);
+}
+
 interface Expected {
   score: number;
   people?: number;
@@ -187,6 +195,7 @@ function expected(place: Place, t: KstParts, s?: Signals): Expected {
     concentrationFactor(s, t.date) *
     trendFactor(s, t.date) *
     schoolFactor(place, t, s) *
+    historySeasonFactor(place, t.date) *
     (s?.calib?.[cellOf(t, s.holidays)] ?? 1);
   const pop = s?.localPop?.hourly;
   const eventDay = !!place.eventDate && t.date >= place.eventDate && t.date <= (place.eventEndDate ?? place.eventDate);
