@@ -218,6 +218,42 @@ export default async function SeoulAreaPage({ params }: { params: Promise<{ lang
             </section>
           )}
 
+          {/* 근처 지하철·버스 승하차(교통카드 태그)·공영주차장 점유 — 같은 서울시 전체판에서 (10/31). 새벽 1~5시엔 승하차가 없다 */}
+          {(() => {
+            const sub = extra?.subway && extra.subway.in30 + extra.subway.out30 > 0 ? extra.subway : undefined;
+            const bus = extra?.bus && extra.bus.in30 + extra.bus.out30 > 0 ? extra.bus : undefined;
+            const park = extra?.parking;
+            if (!sub && !bus && !park) return null;
+            const n = (v: number) => compactNumber(v, lang);
+            return (
+              <section className="mt-4 rounded-3xl border border-gray-100 p-4">
+                <h2 className="flex items-center gap-1.5 text-sm font-bold">
+                  <Glyph e="🚇" className="h-4 w-4 text-indigo-500" /> {t("대중교통·주차")}
+                </h2>
+                <ul className="mt-2 space-y-1.5 text-[13px] text-gray-700">
+                  {sub && (
+                    <li>
+                      <Glyph e="🚇" /> {t("근처 지하철 최근 30분 승차 {on}명 · 하차 {off}명", { on: n(sub.in30), off: n(sub.out30) })}
+                      {sub.stations ? <span className="text-gray-500"> ({t("역 {n}곳", { n: sub.stations })})</span> : null}
+                    </li>
+                  )}
+                  {bus && (
+                    <li>
+                      <Glyph e="🚌" /> {t("근처 버스 최근 30분 승차 {on}명 · 하차 {off}명", { on: n(bus.in30), off: n(bus.out30) })}
+                    </li>
+                  )}
+                  {park && (
+                    <li>
+                      <Glyph e="🅿️" /> {t("공영주차장 {pct}% 찼어요", { pct: park.pct })}{" "}
+                      <span className="text-gray-500">({t("{used}/{total}면 · {n}곳", { used: n(park.occupied), total: n(park.capacity), n: park.lots })})</span>
+                    </li>
+                  )}
+                </ul>
+                <p className="mt-2 text-[11px] text-gray-500">{t("교통카드 승하차·공영주차장 실시간 (서울시 실시간 도시데이터)")}</p>
+              </section>
+            );
+          })()}
+
           {live?.profile && <SeoulPeopleProfile profile={live.profile} lang={lang} />}
           {(() => {
             const toilets = toiletCount;

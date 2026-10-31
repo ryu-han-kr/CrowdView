@@ -247,6 +247,90 @@ export interface SeoulAreaExtra {
     slowest?: { road: string; speed: number }[];
   };
   bikes?: number;
+  /** 근처 지하철역 승하차 (교통카드 태그, 장소 안 역 합계) */
+  subway?: Ridership;
+  /** 근처 버스정류장 승하차 */
+  bus?: Ridership;
+  /** 실시간 주차 대수가 나오는 공영주차장만 합친 점유 */
+  parking?: ParkingShare;
+}
+
+/** 승하차 인원 (서울시가 주는 최소~최대 범위의 가운데) */
+export interface Ridership {
+  /** 최근 30분 승차·하차 */
+  in30: number;
+  out30: number;
+  /** 첫차 이후(04시 기준) 오늘 누적 승차·하차 */
+  inDay?: number;
+  outDay?: number;
+  /** 장소 안 역·정류장 수 */
+  stations?: number;
+}
+
+export interface ParkingShare {
+  /** 찬 비율 0~100 (주차 대수 합 ÷ 면수 합) */
+  pct: number;
+  /** 합친 주차장 수 */
+  lots: number;
+  occupied: number;
+  capacity: number;
+}
+
+/** 빈 문자열·null은 없음 (Number("")가 0이 되지 않게) */
+const num = (v: unknown): number | undefined => {
+  if (v === null || v === undefined || v === "") return undefined;
+  const n = Number(v);
+  return Number.isFinite(n) && n >= 0 ? n : undefined;
+};
+const mid = (lo: unknown, hi: unknown): number | undefined => {
+  const a = num(lo);
+  const b = num(hi);
+  if (a === undefined && b === undefined) return undefined;
+  return Math.round(((a ?? b!) + (b ?? a!)) / 2);
+};
+
+/**
+ * LIVE_SUB_PPLTN·LIVE_BUS_PPLTN (prefix "SUB" / "BUS") → 승하차. 30분 승하차가 둘 다 없으면 없음.
+ * 서울시는 01~05시에 대중교통 승하차를 내지 않는다 (매뉴얼 3장 '실시간 대중교통 승·하차 정보')
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function parseRidership(x: any, prefix: "SUB" | "BUS"): Ridership | undefined {
+  if (!x || typeof x !== "object") return undefined;
+  const v = (w: string, dir: "GTON" | "GTOFF") => mid(x[`${prefix}_${w}_${dir}_PPLTN_MIN`], x[`${prefix}_${w}_${dir}_PPLTN_MAX`]);
+  const in30 = v("30WTHN", "GTON");
+  const out30 = v("30WTHN", "GTOFF");
+  if (in30 === undefined && out30 === undefined) return undefined;
+  return {
+    in30: in30 ?? 0,
+    out30: out30 ?? 0,
+    inDay: v("ACML", "GTON"),
+    outDay: v("ACML", "GTOFF"),
+    stations: num(x[`${prefix}_STN_CNT`]),
+  };
+}
+
+/**
+ * PRK_STTS → 공영주차장 점유. CUR_PRK_CNT는 '지금 주차된 차 수'다 (명세서 설명은 '주차 가능 면수'로 적혀 있지만
+ * 10/31 같은 주차장을 서울시 시영주차장 실시간(GetParkingInfo NOW_PRK_VHCL_CNT, 현재 주차 차량수)과 대조해 맞춤: 세종로 199 vs 190).
+ * 실시간 제공(CUR_PRK_YN=Y)이고 면수가 있고 갱신이 1시간 안인 곳만 합친다
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function parseParkingShare(lots: any, now = Date.now()): ParkingShare | undefined {
+  let occupied = 0;
+  let capacity = 0;
+  let n = 0;
+  for (const p of Array.isArray(lots) ? lots : []) {
+    if (p?.CUR_PRK_YN !== "Y") continue;
+    const cap = num(p.CPCTY);
+    const cur = num(p.CUR_PRK_CNT);
+    if (!cap || cur === undefined) continue;
+    const at = Date.parse(`${String(p.CUR_PRK_TIME ?? "").replace(" ", "T")}+09:00`);
+    if (Number.isFinite(at) && now - at > 60 * 60_000) continue;
+    occupied += Math.min(cur, cap);
+    capacity += cap;
+    n++;
+  }
+  return n ? { pct: Math.round((occupied / capacity) * 100), lots: n, occupied, capacity } : undefined;
 }
 
 /**
@@ -259,49 +343,57 @@ export async function getSeoulAreaExtra(areaName: string): Promise<SeoulAreaExtr
   try {
     return await cached(`seoul:extra:${areaName}`, 600, async () => {
       await beforeCall(APIS.find((a) => a.id === "seoul-citydata"));
-      const res = await fetch(`http://openapi.seoul.go.kr:8088/${key}/json/citydata/1/5/${encodeURIComponent(areaName)}`, {
-        signal: AbortSignal.timeout(10_000),
-      });
-      if (!res.ok) throw new Error(`seoul citydata ${res.status}`);
-      const c = (await res.json()).CITYDATA ?? {};
-      const cm = c.LIVE_CMRCL_STTS;
-      const road = c.ROAD_TRAFFIC_STTS?.AVG_ROAD_DATA;
-      const links = ((c.ROAD_TRAFFIC_STTS?.ROAD_TRAFFIC_STTS ?? []) as { ROAD_NM?: string; SPD?: number | string; IDX?: string }[])
-        .map((l) => ({ road: String(l.ROAD_NM ?? "").trim(), speed: Number(l.SPD), idx: String(l.IDX ?? "") }))
-        .filter((l) => l.speed > 0 && l.speed <= 200);
-      const slowByRoad = new Map<string, number>();
-      for (const l of links) if (l.road && l.idx !== "원활") slowByRoad.set(l.road, Math.min(slowByRoad.get(l.road) ?? Infinity, l.speed));
-      const bikes = ((c.SBIKE_STTS ?? []) as Record<string, string>[]).reduce((s, b) => s + (Number(b.SBIKE_PARKING_CNT) || 0), 0);
-      return {
-        commerce: cm?.AREA_CMRCL_LVL
-          ? {
-              level: String(cm.AREA_CMRCL_LVL),
-              time: String(cm.CMRCL_TIME ?? ""),
-              categories: ((cm.CMRCL_RSB ?? []) as Record<string, string>[]).map((r) => ({
-                name: r.RSB_MID_CTGR,
-                group: r.RSB_LRG_CTGR,
-                level: r.RSB_PAYMENT_LVL,
-              })),
-            }
-          : undefined,
-        road: road?.ROAD_TRAFFIC_IDX
-          ? {
-              index: road.ROAD_TRAFFIC_IDX,
-              speed: Number(road.ROAD_TRAFFIC_SPD),
-              message: road.ROAD_MSG,
-              time: road.ROAD_TRAFFIC_TIME ? String(road.ROAD_TRAFFIC_TIME) : undefined,
-              links: links.length,
-              slowShare: links.length ? Math.round((links.filter((l) => l.idx !== "원활").length / links.length) * 100) / 100 : undefined,
-              slowest: [...slowByRoad]
-                .sort((a, b) => a[1] - b[1])
-                .slice(0, 3)
-                .map(([r, speed]) => ({ road: r, speed: Math.round(speed) })),
-            }
-          : undefined,
-        bikes: bikes || undefined,
-      };
+      return fetchSeoulAreaExtra(key, areaName);
     });
   } catch {
     return undefined;
   }
+}
+
+/** 전체판 한 지역을 받아 필요한 것만 뽑는다 (캐시·호출 집계 없이. 매시 기록은 집계를 한 번에 올린다) */
+export async function fetchSeoulAreaExtra(key: string, areaName: string): Promise<SeoulAreaExtra> {
+  const res = await fetch(`http://openapi.seoul.go.kr:8088/${key}/json/citydata/1/5/${encodeURIComponent(areaName)}`, {
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!res.ok) throw new Error(`seoul citydata ${res.status}`);
+  const c = (await res.json()).CITYDATA ?? {};
+  const cm = c.LIVE_CMRCL_STTS;
+  const road = c.ROAD_TRAFFIC_STTS?.AVG_ROAD_DATA;
+  const links = ((c.ROAD_TRAFFIC_STTS?.ROAD_TRAFFIC_STTS ?? []) as { ROAD_NM?: string; SPD?: number | string; IDX?: string }[])
+    .map((l) => ({ road: String(l.ROAD_NM ?? "").trim(), speed: Number(l.SPD), idx: String(l.IDX ?? "") }))
+    .filter((l) => l.speed > 0 && l.speed <= 200);
+  const slowByRoad = new Map<string, number>();
+  for (const l of links) if (l.road && l.idx !== "원활") slowByRoad.set(l.road, Math.min(slowByRoad.get(l.road) ?? Infinity, l.speed));
+  const bikes = ((c.SBIKE_STTS ?? []) as Record<string, string>[]).reduce((s, b) => s + (Number(b.SBIKE_PARKING_CNT) || 0), 0);
+  return {
+    commerce: cm?.AREA_CMRCL_LVL
+      ? {
+          level: String(cm.AREA_CMRCL_LVL),
+          time: String(cm.CMRCL_TIME ?? ""),
+          categories: ((cm.CMRCL_RSB ?? []) as Record<string, string>[]).map((r) => ({
+            name: r.RSB_MID_CTGR,
+            group: r.RSB_LRG_CTGR,
+            level: r.RSB_PAYMENT_LVL,
+          })),
+        }
+      : undefined,
+    road: road?.ROAD_TRAFFIC_IDX
+      ? {
+          index: road.ROAD_TRAFFIC_IDX,
+          speed: Number(road.ROAD_TRAFFIC_SPD),
+          message: road.ROAD_MSG,
+          time: road.ROAD_TRAFFIC_TIME ? String(road.ROAD_TRAFFIC_TIME) : undefined,
+          links: links.length,
+          slowShare: links.length ? Math.round((links.filter((l) => l.idx !== "원활").length / links.length) * 100) / 100 : undefined,
+          slowest: [...slowByRoad]
+            .sort((a, b) => a[1] - b[1])
+            .slice(0, 3)
+            .map(([r, speed]) => ({ road: r, speed: Math.round(speed) })),
+        }
+      : undefined,
+    bikes: bikes || undefined,
+    subway: parseRidership(c.LIVE_SUB_PPLTN, "SUB"),
+    bus: parseRidership(c.LIVE_BUS_PPLTN, "BUS"),
+    parking: parseParkingShare(c.PRK_STTS),
+  };
 }

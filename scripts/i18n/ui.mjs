@@ -2949,4 +2949,12 @@ export default {
   "앞으로 한 달 예측으로는 {calm}이 가장 한산하고, {busy}이 가장 붐빌 것으로 보여요.": ["For the coming month, {calm} look quietest and {busy} look busiest.", "今後1か月の予想では{calm}が最も空いていて、{busy}が最も混みそうです。", "根据未来一个月的预测，{calm}人最少，{busy}人最多。", "根據未來一個月的預測，{calm}人最少，{busy}人最多。"],
   "주말이 평일보다 꽤 붐벼요. 평일에 가면 여유로워요.": ["Weekends are much busier than weekdays, so go on a weekday if you can.", "週末は平日よりかなり混みます。平日がおすすめです。", "周末比工作日拥挤得多，工作日去更从容。", "週末比平日擁擠得多，平日去更從容。"],
   "오히려 평일이 주말보다 붐비는 곳이에요.": ["Unusually, weekdays here are busier than weekends.", "ここは平日のほうが週末より混みます。", "这里反而是工作日比周末更拥挤。", "這裡反而是平日比週末更擁擠。"],
+  // ── 서울 지역 상세 '대중교통·주차' (lib/seoul-live 승하차·공영주차장, 10/31)
+  "대중교통·주차": ["Transit & parking", "公共交通・駐車場", "公共交通·停车", "大眾運輸·停車"],
+  "근처 지하철 최근 30분 승차 {on}명 · 하차 {off}명": ["Nearby subway, last 30 min: {on} in · {off} out", "近くの地下鉄 直近30分 乗車{on}人・降車{off}人", "附近地铁 最近30分钟 上车{on}人 · 下车{off}人", "附近捷運 最近30分鐘 上車{on}人 · 下車{off}人"],
+  "역 {n}곳": ["{n} stations", "駅{n}か所", "{n}个站", "{n}個站"],
+  "근처 버스 최근 30분 승차 {on}명 · 하차 {off}명": ["Nearby buses, last 30 min: {on} on · {off} off", "近くのバス 直近30分 乗車{on}人・降車{off}人", "附近公交 最近30分钟 上车{on}人 · 下车{off}人", "附近公車 最近30分鐘 上車{on}人 · 下車{off}人"],
+  "공영주차장 {pct}% 찼어요": ["Public parking {pct}% full", "公営駐車場 {pct}%埋まっています", "公共停车场已停满{pct}%", "公共停車場已停滿{pct}%"],
+  "{used}/{total}면 · {n}곳": ["{used}/{total} spaces · {n} lots", "{used}/{total}台・{n}か所", "{used}/{total}个车位 · {n}处", "{used}/{total}個車位 · {n}處"],
+  "교통카드 승하차·공영주차장 실시간 (서울시 실시간 도시데이터)": ["Transit card taps and live public parking (Seoul real-time city data)", "交通カードの乗降・公営駐車場リアルタイム（ソウル市リアルタイム都市データ）", "交通卡上下车·公共停车场实时（首尔市实时城市数据）", "交通卡上下車·公共停車場即時（首爾市即時城市資料）"],
 };

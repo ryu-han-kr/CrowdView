@@ -2,6 +2,7 @@
 // 데이터(장소·축제·분류)는 이모지를 그대로 갖고 있고, 화면에 그릴 때만 이 표로 바꾼다 (표에 없으면 이모지 그대로)
 import {
   Bike,
+  Bus,
   Check,
   Flower2,
   Guitar,
@@ -12,6 +13,7 @@ import {
   PlaneLanding,
   PlaneTakeoff,
   Soup,
+  SquareParking,
   Star,
   Tent,
   Toilet,
@@ -76,6 +78,8 @@ const MAP: Record<string, SolarName | [LucideIcon, boolean?]> = {
   "🚶": "walking",
   "🚗": "car",
   "🚲": [Bike],
+  "🚌": [Bus],
+  "🅿️": [SquareParking],
   "🚴": [Bike],
   "💳": "card",
   "🛍️": "bag-4",
