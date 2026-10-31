@@ -27,7 +27,7 @@ export function compactNumber(n: number, lang: Lang = DEFAULT_LANG): string {
  * - 그 외(예측 모델, 한국공항공사 단계값): 수용 인원 × 혼잡도로 계산한 추정치. 라벨이 꺼져 있으면 숨긴다
  */
 export function headcountInfo(
-  c: CrowdResult,
+  c: Pick<CrowdResult, "open" | "source" | "area" | "headcount" | "headcountRange" | "paxHour" | "peopleScope">,
   i18n: { t: T; lang: Lang } = { t: makeT(undefined), lang: DEFAULT_LANG },
 ): { text: string; kind?: DataKind } | null {
   const { t, lang } = i18n;
