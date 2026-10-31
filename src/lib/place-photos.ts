@@ -17,8 +17,9 @@ export interface PlacePhoto {
 }
 
 const PHOTOS = data as Record<string, PlacePhoto[]>;
-/** 격자(큰 1 + 작은 4)를 채우려면 이만큼은 있어야 새 사진으로 바꾼다 */
-const MIN = 3;
+/** 이만큼은 있어야 새 사진으로 바꾼다.
+ * 10/31: 3장 → 2장 — 실내 체험장(스몹 수원·목동 아이스링크)은 구글 지도까지 뒤져도 좋은 사진이 2장뿐이라 아예 사진 없이 보였다 */
+const MIN = 2;
 
 // 커먼즈 썸네일 주소의 추적용 쿼리(utm_*)는 떼어 낸다 (같은 사진이 다른 주소로 캐시되지 않게)
 const clean = (src: string) => (src.includes("wikimedia.org") ? src.split("?")[0] : src);

@@ -149,7 +149,8 @@ const BY_ID: Record<string, SubCategory> = {
   "shooting-bowling-goyang": "bowling",
 };
 
-export const subOf = (placeId: string): SubCategory | undefined => BY_ID[placeId];
+// 전국 클라이밍장 목록(data/korea/climbing-gyms.json)은 'climb-' 주소로 들어온다 (10/31: 159곳이 분류 없이 '실내'로만 보였다)
+export const subOf = (placeId: string): SubCategory | undefined => BY_ID[placeId] ?? (placeId.startsWith("climb-") ? "climbing" : undefined);
 
 /** 세부 분류 3D 아이콘 (public/icons/3d, Fluent Emoji MIT). 없으면 상위 분류 아이콘 */
 export const SUB_ICON: Partial<Record<SubCategory, string>> = {

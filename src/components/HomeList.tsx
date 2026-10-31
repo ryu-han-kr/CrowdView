@@ -9,6 +9,7 @@ import { useFavorites } from "@/lib/prefs";
 import { CATEGORY_LABEL, type Category, type CrowdResult, type Place } from "@/lib/types";
 import { placeTag } from "@/lib/category-style";
 import { levelOf } from "@/lib/levels";
+import { matchScore } from "@/lib/search-match";
 import { ListCard } from "./ListCard";
 import type { PhotoCardItem } from "./home/PhotoRail";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
@@ -160,15 +161,24 @@ export function HomeList({
   useEffect(() => setSpotShown(SPOT_PAGE), [region, query, tab]);
   useEffect(() => setLiveShown(LIVE_PAGE), [filter, sub, query, sort]);
   const q = query.trim().toLowerCase();
-  const hit = (xs: (string | undefined)[]) => !q || xs.some((s) => !!s && s.toLowerCase().includes(q));
+  // 띄어쓰기·낱말 순서·초성까지 보는 검색 (lib/search-match, 10/31 '남산 타워' → 남산 N서울타워). 검색 중엔 더 잘 맞는 곳이 위로
+  const score = (xs: (string | undefined)[]) => matchScore(q, xs);
+  const hit = (xs: (string | undefined)[]) => !q || score(xs) > 0;
+  const byScore = <T,>(xs: T[], fields: (x: T) => (string | undefined)[]) =>
+    q ? xs.map((x) => [score(fields(x)), x] as const).filter(([n]) => n > 0).sort((a, b) => b[0] - a[0]).map(([, x]) => x) : xs;
   const list = places
     .filter((p) => (filter === "all" ? true : filter === "fav" ? favorites.includes(p.id) : p.category === filter))
     .filter((p) => sub === "all" || subOf(p.id) === sub)
-    .filter((p) => {
+    .map((p) => {
       const sc = subOf(p.id);
-      return hit([p.name, p.region, ...p.tags, CATEGORY_LABEL[p.category], ...(sc ? [SUB_LABEL[sc]] : [])].flatMap((s) => [s, t(s)]));
+      return { p, m: score([p.name, p.region, ...p.tags, CATEGORY_LABEL[p.category], ...(sc ? [SUB_LABEL[sc]] : [])].flatMap((s) => [s, t(s)])) };
     })
-    .sort((a, b) => Number(crowd[b.id].open) - Number(crowd[a.id].open) || (sort === "calm" ? 1 : -1) * (crowd[a.id].score - crowd[b.id].score));
+    .filter(({ m }) => m > 0)
+    .sort(
+      ({ p: a, m: ma }, { p: b, m: mb }) =>
+        (q ? mb - ma : 0) || Number(crowd[b.id].open) - Number(crowd[a.id].open) || (sort === "calm" ? 1 : -1) * (crowd[a.id].score - crowd[b.id].score),
+    )
+    .map(({ p }) => p);
 
   // 닫힌 곳 표시: 행사는 열리기 전이면 'D-n', 끝났으면 '종료' (QA 10/21: 열리기 전 행사가 '운영 종료'로 보임)
   const today = new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
@@ -221,14 +231,15 @@ export function HomeList({
   const search = useHomeSearch(withSearch && (!!q || (tab !== "all" && tab !== "live")));
   const inReg = (r?: string) => region === "all" || r === region;
   /* eslint-disable react-hooks/exhaustive-deps -- q·region에 따라 다시 거른다 */
-  const landmarks = useMemo(() => (search?.landmarks ?? []).filter((x) => inReg(x.region) && hit([x.title, x.sub, ...(x.keys ?? [])])), [search, region, q]);
-  const festivals = useMemo(() => (search?.festivals ?? []).filter((x) => inReg(x.region) && hit([x.title, x.sub, ...(x.keys ?? [])])), [search, region, q]);
-  const seoulAreas = useMemo(() => (search?.seoul ?? []).filter((x) => hit([x.title, x.sub, ...(x.keys ?? [])])), [search, q]);
+  const landmarks = useMemo(() => byScore((search?.landmarks ?? []).filter((x) => inReg(x.region)), (x) => [x.title, x.sub, ...(x.keys ?? [])]), [search, region, q]);
+  const festivals = useMemo(() => byScore((search?.festivals ?? []).filter((x) => inReg(x.region)), (x) => [x.title, x.sub, ...(x.keys ?? [])]), [search, region, q]);
+  const seoulAreas = useMemo(() => byScore(search?.seoul ?? [], (x) => [x.title, x.sub, ...(x.keys ?? [])]), [search, q]);
   const spotItems: SearchItem[] = useMemo(
     () =>
-      (spots ?? [])
-        .filter((s: SpotRow) => inReg(s[2]) && hit([s[3], s[7], t(s[2])]))
-        .map((s: SpotRow) => ({
+      byScore(
+        (spots ?? []).filter((s: SpotRow) => inReg(s[2])),
+        (s: SpotRow) => [s[3], s[7], t(s[2])],
+      ).map((s: SpotRow) => ({
           id: `spot-${s[0]}`,
           href:
             i18n.lang === "ko"

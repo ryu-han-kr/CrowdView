@@ -88,7 +88,10 @@ async function commons(q: string): Promise<PlacePhoto[]> {
     .map((p) => {
       const ii = p.imageinfo?.[0];
       const m = ii?.extmetadata ?? {};
-      const who = String(m.Artist?.value ?? "").replace(/<[^>]+>/g, "").trim().slice(0, 60) || "Unknown";
+      const who = String(m.Artist?.value ?? "").replace(/<[^>]+>/g, "").trim().split("
+")[0].trim().slice(0, 60) || "Unknown"; // 첫 줄만 (10/31: 'Asacyan
+
+ This photo was taken with…')
       return { src: String(ii?.thumburl ?? "").split("?")[0], w: ii?.width ?? 0, h: ii?.height ?? 0, page: ii?.descriptionurl, lic: m.LicenseShortName?.value ?? "", who };
     })
     .filter((x) => x.src && Math.max(x.w, x.h) >= 1200 && /CC0|CC BY|Public domain/i.test(x.lic) && !/NC|ND/.test(x.lic))
@@ -213,8 +216,9 @@ for (const id of ONLY.length ? ONLY : PILOT) {
     label: x.pick.spot && x.pick.spot !== "전경" ? x.pick.spot : undefined,
     reason: x.pick.reason,
   });
-  // 좋은 사진이 4장도 안 되면 덮어쓰지 않는다 (10/30: 김해·인천 T2가 2장만 남아 갤러리가 비었다) → GOOGLE=1로 다시
-  if (ordered.length < 4) {
+  // 좋은 사진이 4장도 안 되면 덮어쓰지 않는다 (10/30: 김해·인천 T2가 2장만 남아 갤러리가 비었다) → GOOGLE=1로 다시.
+  // 고른 사진이 아직 하나도 없는 곳은 2장만 돼도 넣는다 (10/31: 실내 체험장 7곳이 구글까지 1~3장뿐 — 빈 것보다 낫다)
+  if (ordered.length < (picks[id]?.photos.length ? 4 : 2)) {
     console.log(`  ${place.name}: 좋은 사진 ${ordered.length}장뿐 — 그대로 두고 구글 지도 사진으로 다시 (GOOGLE=1)`);
     lacking.push(id);
     continue;
