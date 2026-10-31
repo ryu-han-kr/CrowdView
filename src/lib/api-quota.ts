@@ -85,6 +85,7 @@ export const APIS: ApiInfo[] = [
   // 호출: 하루 200·월 3,000 (AI 여행 요약·화제 행사·사진 작업 합). 더 쓰려면 AI_DAILY_LIMIT·AI_MONTHLY_LIMIT
   { id: "anthropic", name: "Claude API 호출", limit: Number(process.env.AI_DAILY_LIMIT) || 200, monthlyLimit: Number(process.env.AI_MONTHLY_LIMIT) || 3000 },
   // 웹 검색: 1천 건당 $10 → 월 1,000건(약 $10)·하루 80건. 부르기 전에 max_uses만큼 잡아 두고, 안 쓴 만큼 돌려준다
+  // (10/31 말일엔 남은 크레딧을 쓰려고 환경변수로 하루 8,000·월 10,000까지 올렸다가 11/1 기본값으로 되돌림 — 그날 크레딧이 먼저 바닥남)
   { id: "anthropic-search", name: "Claude 웹 검색 (1천 건당 $10)", limit: Number(process.env.AI_SEARCH_DAILY_LIMIT) || 80, monthlyLimit: Number(process.env.AI_SEARCH_MONTHLY_LIMIT) || 1000, unit: "건" },
 ];
 
