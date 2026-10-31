@@ -1,12 +1,16 @@
-// API에서 들어오는 고유명사(축제 이름·지역명·장소명)를 Papago로 번역한다.
-// 이름마다 한 번만 번역해 Redis에 90일 저장 → Papago 호출은 새 이름이 생길 때만.
+// API에서 들어오는 고유명사(축제 이름·지역명·장소명)를 번역한다.
+// 10/31부터 Claude Haiku가 먼저 번역하고(경수님: 네이버 클라우드 월 22,000원이 전부 Papago — Claude는 크레딧에서 몇십 원), 안 되면 Papago.
+// 이름마다 한 번만 번역해 Redis에 저장(Papago 90일·Claude 180일) → 호출은 새 이름이 생길 때만.
 // 키가 없거나 실패하면 원문(한국어)을 그대로 쓴다.
+import Anthropic from "@anthropic-ai/sdk";
 import type { Lang } from "@/i18n/config";
+import { aiCreate, aiEnabled } from "./ai-quota";
 import { APIS, beforeCall } from "./api-quota";
 import { kv } from "./cache";
 
 const ENDPOINT = process.env.PAPAGO_ENDPOINT ?? "https://papago.apigw.ntruss.com/nmt/v1/translation";
 const TTL = 90 * 24 * 60 * 60;
+const TTL_AI = 180 * 24 * 60 * 60;
 const MAX_CHARS = 4500; // 요청당 5000자 제한
 
 // 지도와 같은 NCP Application을 쓴다 (콘솔에서 Papago Translation 사용 설정 필요)
@@ -49,6 +53,43 @@ async function papago(texts: string[], lang: Lang): Promise<string[] | null> {
   return out.length === texts.length ? out.map((s) => s.trim()) : null;
 }
 
+const LANG_NAME: Record<Lang, string> = { ko: "Korean", en: "English", ja: "Japanese", "zh-CN": "Simplified Chinese", "zh-TW": "Traditional Chinese (Taiwan)" };
+const AI_SYSTEM = `You translate Korean text for CrowdView, a Korea travel site: festival names, place and venue names, regions, addresses, opening-hours notes and news headlines.
+Return exactly one translation per input item, in the same order. No explanations, no extra items.
+Use the established name when one exists (경복궁 → Gyeongbokgung Palace, 롯데월드 → Lotte World). Otherwise keep proper nouns recognisable: romanize per the Revised Romanization of Korean and add a short descriptor only when the Korean has one (축제 → Festival, 시장 → Market).
+Keep numbers, dates, times, units and brand names as they are.`;
+/** Claude 묶음 번역 (구조화 출력). 개수가 안 맞으면 null */
+async function claude(texts: string[], lang: Lang): Promise<string[] | null> {
+  const client = new Anthropic({ timeout: 90_000 });
+  const res = await aiCreate(client, {
+    model: "claude-haiku-5-5",
+    max_tokens: Math.min(16_000, 400 + texts.join("").length * 4),
+    system: AI_SYSTEM,
+    output_config: {
+      format: {
+        type: "json_schema",
+        schema: { type: "object", properties: { items: { type: "array", items: { type: "string" } } }, required: ["items"], additionalProperties: false },
+      },
+    },
+    messages: [{ role: "user", content: `Translate into ${LANG_NAME[lang]}:
+${JSON.stringify(texts)}` }],
+  });
+  if (res.stop_reason !== "end_turn") return null;
+  const text = res.content
+    .filter((b): b is Anthropic.Beta.BetaTextBlock => b.type === "text")
+    .map((b) => b.text)
+    .join("");
+  try {
+    const items = (JSON.parse(text) as { items?: unknown }).items;
+    return Array.isArray(items) && items.length === texts.length ? items.map((x) => String(x).trim()) : null;
+  } catch {
+    return null;
+  }
+}
+/** Claude로 번역할지 (키가 있고 끄지 않았으면). TRANSLATE_ENGINE=papago 로 되돌릴 수 있다 */
+const useClaude = () => aiEnabled() && process.env.TRANSLATE_ENGINE !== "papago";
+const AI_BATCH = 60; // 한 번에 보내는 이름 수 (많으면 개수가 어긋나기 쉽다)
+
 const HANGUL = /[가-힣]/;
 let disabledUntil = 0; // 권한 없음·한도 초과 등으로 실패하면 잠시 호출을 멈춘다
 /** NCP 429를 받은 뒤 모든 서버가 멈추는 공유 표시 (Redis) */
@@ -65,11 +106,27 @@ const inflight = new Map<string, Promise<string | undefined>>();
 /** 이름들을 번역해 Redis에 저장한다. 묶음의 줄 수가 안 맞으면 버리지 않고 하나씩 다시 보낸다 */
 async function translateMissing(names: string[], lang: Lang): Promise<Map<string, string>> {
   const out = new Map<string, string>();
-  const save = (s: string, tr: string | undefined) => {
+  const save = (s: string, tr: string | undefined, ttl = TTL) => {
     if (!tr) return;
     out.set(s, tr);
-    return kv.set(cacheKey(lang, s), tr, TTL).catch(() => {});
+    return kv.set(cacheKey(lang, s), tr, ttl).catch(() => {});
   };
+
+  // 1) Claude: 60개씩. 실패한 묶음만 아래 Papago로 넘긴다
+  if (useClaude()) {
+    const left: string[] = [];
+    for (let i = 0; i < names.length; i += AI_BATCH) {
+      const batch = names.slice(i, i + AI_BATCH);
+      const result = await claude(batch, lang).catch((e) => {
+        console.warn("[name-translate] claude", e instanceof Error ? e.message : e);
+        return null;
+      });
+      if (result) await Promise.all(batch.map((s, k) => save(s, result[k], TTL_AI)));
+      else left.push(...batch);
+    }
+    names = left;
+    if (!names.length) return out;
+  }
 
   // 글자 수 제한에 맞춰 나눠 보낸다
   const batches: string[][] = [[]];
@@ -119,7 +176,7 @@ export async function translateNames(texts: (string | undefined)[], lang: Lang):
   uniq.forEach((s, i) => (cached[i] ? out.set(s, cached[i]!) : missing.push(s)));
   if (missing.length === 0 || Date.now() < disabledUntil || !canTranslate()) return out;
   // 다른 서버가 NCP 429를 받았으면 이 서버도 부르지 않는다 (Redis 읽기 1번)
-  if (await papagoBlockedUntil()) return out;
+  if (!useClaude() && (await papagoBlockedUntil())) return out;
 
   // 1) 이 서버에서 이미 번역 중인 이름은 그 결과를 기다린다
   const waiting = missing.filter((s) => inflight.has(cacheKey(lang, s)));
