@@ -667,11 +667,11 @@ export default {
     "这些拥挤度信息来自哪里?",
     "這些擁擠度資訊來自哪裡?",
   ],
-  "{source}를 바탕으로 CrowdView가 10분마다 갱신해요. 실제 현장과 다를 수 있어요.": [
-    "CrowdView updates it every 10 minutes based on {source}. It may differ from on-site conditions.",
-    "{source}をもとにCrowdViewが10分ごとに更新しています。実際と異なる場合があります。",
-    "CrowdView根据{source}每10分钟更新一次，可能与实际情况不同。",
-    "CrowdView依{source}每10分鐘更新一次，可能與實際情況不同。",
+  "{source}를 바탕으로 CrowdView가 {n}분마다 갱신해요. 실제 현장과 다를 수 있어요.": [
+    "CrowdView updates it every {n} minutes based on {source}. It may differ from on-site conditions.",
+    "{source}をもとにCrowdViewが{n}分ごとに更新しています。実際と異なる場合があります。",
+    "CrowdView根据{source}每{n}分钟更新一次，可能与实际情况不同。",
+    "CrowdView依{source}每{n}分鐘更新一次，可能與實際情況不同。",
   ],
   "지금 {name}에 사람이 얼마나 있나요?": [
     "How many people are at {name} right now?",

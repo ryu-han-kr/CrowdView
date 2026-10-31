@@ -238,7 +238,7 @@ const dict: Dict = {
   "오늘은 {hour}가 가장 한산할 것으로 예상돼요 (예상 '{level}').": "Today, {hour} is expected to be the quietest (expected '{level}').",
   "오늘 남은 운영 시간 중에는 지금이 가장 한산한 편이에요.": "For the rest of today's opening hours, now is about as quiet as it gets.",
   "이 혼잡도 정보는 어디서 나오나요?": "Where does this crowd data come from?",
-  "{source}를 바탕으로 CrowdView가 10분마다 갱신해요. 실제 현장과 다를 수 있어요.": "CrowdView updates it every 10 minutes based on {source}. It may differ from on-site conditions.",
+  "{source}를 바탕으로 CrowdView가 {n}분마다 갱신해요. 실제 현장과 다를 수 있어요.": "CrowdView updates it every {n} minutes based on {source}. It may differ from on-site conditions.",
   "지금 {name}에 사람이 얼마나 있나요?": "How many people are at {name} right now?",
   "{time} 기준 {name} 일대에는 약 {range}이 있어요. 서울시 혼잡 단계는 '{level}'이에요.": "As of {time}, there are about {range} around {name}. Seoul's crowd level is '{level}'.",
   "{name} 오늘 언제 가장 한산한가요?": "When is {name} quietest today?",

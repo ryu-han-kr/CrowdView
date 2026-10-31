@@ -35,6 +35,7 @@ import { AlertFab } from "@/components/place/AlertFab";
 import { WeekHeatmap } from "@/components/WeekHeatmap";
 import { splitInfoNote } from "@/lib/info-note";
 import { PLACES, placeHref } from "@/lib/places";
+import { cadenceMinutes } from "@/lib/crowd/cadence";
 import { addDays, daysUntil, formatClock, kst } from "@/lib/time";
 import type { Lang } from "@/i18n/config";
 import { DEFAULT_LANG, isLang, localePath } from "@/i18n/config";
@@ -846,7 +847,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
               ...(monthFaq ? [monthFaq] : []),
               {
                 q: t("이 혼잡도 정보는 어디서 나오나요?"),
-                a: t("{source}를 바탕으로 CrowdView가 10분마다 갱신해요. 실제 현장과 다를 수 있어요.", { source: t(SOURCE_LABEL[crowd.source]) }),
+                // 갱신 주기는 실제 수집 주기(lib/crowd/cadence: 운영 중 놀이공원 5분·서울 10분·문 닫은 시간 30분) — 10/31 비교 점검: '10분' 고정 문구가 위 '5분마다'와 달랐다
+                a: t("{source}를 바탕으로 CrowdView가 {n}분마다 갱신해요. 실제 현장과 다를 수 있어요.", { source: t(SOURCE_LABEL[crowd.source]), n: cadenceMinutes(place) }),
               },
             ]}
           />
