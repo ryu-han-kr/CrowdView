@@ -15,6 +15,8 @@ export interface PhotoCardItem {
   href: string;
   /** 바깥 사이트(지도 등)면 새 창 */
   external?: boolean;
+  /** 바깥으로 나가는 카드 표시 (예: '카카오맵 ↗') — 정보 화면인 줄 알고 눌렀다가 놀라지 않게 (11/1) */
+  outLabel?: string;
   img?: string;
   emoji?: string;
   title: string;
@@ -67,6 +69,9 @@ export function PhotoCard({ item, rank, className = "" }: { item: PhotoCardItem;
           </div>
         )}
         {item.tag && <TagLabel label={item.tag.label} className="absolute top-2 left-2" />}
+        {item.outLabel && !item.favId && (
+          <span className="absolute top-2 right-2 rounded-full bg-black/60 px-2 py-0.5 text-[11px] font-bold text-white backdrop-blur-sm">{item.outLabel}</span>
+        )}
         {item.favId && (
           <button
             type="button"

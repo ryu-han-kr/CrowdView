@@ -50,6 +50,8 @@ export function ListCard({ item }: { item: ListCardItem }) {
       <Link
         href={item.href}
         {...dataAttrs}
+        // 바깥 주소(카카오맵 등)는 새 창으로 — 우리 화면을 잃지 않게 (11/1)
+        {...(item.href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}
         className="relative flex gap-3 rounded-2xl bg-white p-2.5 pr-3 shadow-[0_1px_2px_rgb(15_23_42/0.06)] transition active:scale-[0.99] md:hover:shadow-md"
       >
         <div className="relative h-[104px] w-[104px] shrink-0 overflow-hidden rounded-xl bg-gray-100">

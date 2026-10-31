@@ -3014,4 +3014,13 @@ export default {
   "매직 킹덤 (디즈니 월드)": ["Magic Kingdom (Walt Disney World)","マジック・キングダム（WDW）","神奇王国（迪士尼世界）","神奇王國（迪士尼世界）"],
   "미국 올랜도": ["Orlando, USA","オーランド","美国奥兰多","美國奧蘭多"],
   "유니버설 스튜디오 플로리다": ["Universal Studios Florida","ユニバーサル・スタジオ・フロリダ","佛罗里达环球影城","佛羅里達環球影城"],
+  // ── 11/1 '구구절절' → 출처만
+  "출처: 한국관광공사 데이터랩": ["Source: Korea Tourism Organization DataLab","出典: 韓国観光公社データラボ","来源：韩国观光公社数据实验室","來源：韓國觀光公社數據實驗室"],
+  "출처: 한국관광공사": ["Source: Korea Tourism Organization","出典: 韓国観光公社","来源：韩国观光公社","來源：韓國觀光公社"],
+  "이번 주 시간대별 예상": ["This week by time of day (forecast)","今週の時間帯別予想","本周各时段预测","本週各時段預測"],
+  "앞으로 5주, 날마다 가장 붐빌 때": ["Next 5 weeks · each day's busiest time","今後5週間・毎日のピーク","未来5周·每天最拥挤时","未來5週·每天最擁擠時"],
+  "카카오맵으로 열기 ↗": ["Open in Kakao Map ↗","カカオマップで開く ↗","在Kakao地图中打开 ↗","在Kakao地圖中打開 ↗"],
+  "Google 지도로 열기 ↗": ["Open in Google Maps ↗","Googleマップで開く ↗","在Google地图中打开 ↗","在Google地圖中打開 ↗"],
+  "카카오맵 ↗": ["Kakao Map ↗","カカオマップ ↗","Kakao地图 ↗","Kakao地圖 ↗"],
+  "Google 지도 ↗": ["Google Maps ↗","Googleマップ ↗","Google地图 ↗","Google地圖 ↗"],
 };

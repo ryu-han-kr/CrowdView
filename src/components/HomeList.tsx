@@ -248,6 +248,8 @@ export function HomeList({
           emoji: "📍",
           title: s[3],
           sub: [t(s[2]), s[7] ? t(s[7]) : undefined].filter(Boolean).join(" · "),
+          // 11/1 경수님: 정보 화면인 줄 알고 눌렀다가 카카오맵이 열려 놀랐다 → 바깥 지도로 간다는 걸 카드에 표시
+          badge: i18n.lang === "ko" ? t("카카오맵으로 열기 ↗") : t("Google 지도로 열기 ↗"),
         })),
     [spots, region, q],
   );

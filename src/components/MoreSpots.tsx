@@ -62,6 +62,7 @@ export function spotCard(s: SpotRow, lang: string, t: (k: string) => string, sco
         ? `https://map.kakao.com/link/map/${encodeURIComponent(s[3])},${s[4]},${s[5]}`
         : `https://www.google.com/maps/search/?api=1&query=${s[4]},${s[5]}`,
     external: true,
+    outLabel: lang === "ko" ? t("카카오맵 ↗") : t("Google 지도 ↗"),
     img: s[6],
     title: s[3],
     sub: `${s[7] ? `${t(s[7])} · ` : ""}${t(kind.label)}`,

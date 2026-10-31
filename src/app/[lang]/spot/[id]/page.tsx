@@ -269,7 +269,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
               {t("언제 가면 한산할까")}
               <DataTag />
             </h2>
-            <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("이번 주 시간대별 예상 혼잡 · 초록 칸이 한산해요")}</p>
+            <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("이번 주 시간대별 예상")}</p>
             <WeekHeatmap
               nowHour={kst().hour}
               days={model.week.map((d, i) => ({
@@ -290,7 +290,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
             return (
               <section className="mt-8">
                 <h2 className="text-lg font-bold">{t("작년 이맘때 {region} 방문객", { region: lastYearRegion })}</h2>
-                <p className="mt-0.5 text-sm text-gray-500">{t("관광공사 데이터랩 · 다른 지역에서 온 사람과 외국인, 작년 같은 요일")}</p>
+                <p className="mt-0.5 text-sm text-gray-500">{t("출처: 한국관광공사 데이터랩")}</p>
                 <p className="mt-2 text-[15px]">
                   {t("하루 평균 약 {n}명, {day}이 가장 많았어요 (약 {m}명).", {
                     n: compactNumber(avg, lang),
@@ -318,7 +318,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
             <h2 className="text-lg font-bold">{t("앞으로 30일 붐빔 예측")}</h2>
             {daily.length > 1 ? (
               <>
-                <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("한국관광공사 관광지 집중률 예측 · 그래프를 눌러 날짜별로 보기")}</p>
+                <p className="mt-0.5 mb-3 text-sm text-gray-500">{t("출처: 한국관광공사")}</p>
                 <DailyForecastChart days={daily} weekdays={daily.map((d) => weekday(d.date))} />
               </>
             ) : (

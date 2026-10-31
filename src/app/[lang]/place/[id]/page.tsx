@@ -679,7 +679,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 label: t("이번 주"),
                 body: (
                   <>
-                    <p className="mb-3 text-sm font-medium text-gray-700">{t("이번 주 시간대별 예상 혼잡 · 초록 칸이 한산해요")}</p>
+                    <p className="mb-3 text-sm font-medium text-gray-700">{t("이번 주 시간대별 예상")}</p>
                     <WeekHeatmap days={heatDays} nowHour={now.hour} />
                     <p className="mt-3 text-[15px] font-semibold">
                       {calmest.peakScore >= 60
@@ -697,7 +697,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 label: t("한 달"),
                 body: (
                   <>
-                    <p className="mb-3 text-sm font-medium text-gray-700">{t("앞으로 5주, 날마다 가장 붐빌 때의 예상 단계예요. 날짜를 누르면 그날 이유가 보여요")}</p>
+                    <p className="mb-3 text-sm font-medium text-gray-700">{t("앞으로 5주, 날마다 가장 붐빌 때")}</p>
                     <MonthCalendar cells={calCells.slice(0, 35)} />
                   </>
                 ),
