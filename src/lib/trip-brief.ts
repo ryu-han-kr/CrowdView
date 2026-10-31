@@ -7,6 +7,7 @@ import { aiCreate, aiEnabled } from "./ai-quota";
 import { QuotaError } from "./api-quota";
 import { kv } from "./cache";
 import { nearestStation } from "./subway";
+import { formatClock } from "./time";
 import type { Place } from "./types";
 
 export interface TripBrief {
@@ -46,7 +47,7 @@ export function factsOf(place: Place) {
     name: place.name,
     address: place.address,
     category: place.category,
-    hours: place.info?.hoursText ?? `${place.hours[0]}:00~${place.hours[1]}:00`,
+    hours: place.info?.hoursText ?? `${formatClock(place.hours[0])}~${formatClock(place.hours[1])}`,
     rest: place.info?.restText ?? "",
     station: st ? `${st.name} (${st.lines.join("·")}, 걸어서 약 ${st.walkMin}분)` : "",
     stationInfo: st,
