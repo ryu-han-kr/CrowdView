@@ -12,8 +12,8 @@ import { compactNumber } from "@/lib/format";
 import { areaPhoto } from "@/lib/seoul-guide";
 import { PageHeader } from "@/components/PageHeader";
 
-// 서울시 실시간 인구는 5분 단위 → 10분마다 다시 렌더링 (지역마다 10분 캐시라 서울시 호출도 10분에 한 번)
-export const revalidate = 600;
+// 서울시 실시간 인구는 5분 단위 → 5분마다 다시 렌더링 (11/1: 낮엔 지역 캐시도 5분, 밤엔 10분이라 그대로 보임)
+export const revalidate = 300;
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const t = getT((await params).lang);

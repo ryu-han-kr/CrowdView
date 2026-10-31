@@ -15,7 +15,7 @@ export async function GET(req: Request) {
   const names = [...calm, ...busy].map((p) => p.place.name).join("");
   const title = "이번 주말 어디가 한산할까?";
   const sub = `${md(sat)}(토)·${md(sun)}(일) AI 예측`;
-  const font = await loadOgFont(`${title}${sub}${names}비교적 한산할 곳붐빌 곳쾌적원활보통혼잡매우실시간 혼잡도는crowdview.appCrowdView0123456789·()/`);
+  const font = await loadOgFont(`${title}${sub}${names}비교적 한산할 곳붐빌 곳한산여유보통혼잡매우실시간 혼잡도는crowdview.appCrowdView0123456789·()/`);
   const row = (p: WeekendPick, i: number) => {
     const lv = levelOf(p.score);
     return (

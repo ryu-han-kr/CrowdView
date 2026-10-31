@@ -77,12 +77,18 @@ export function seoulGroup(name: string): SeoulGroup {
  * 서울시 실시간 지역 전체 (약 120곳). 10분 수집기에 넣지 않고 누가 볼 때만 부른다.
  * 전체를 Redis 키 하나에 10분 저장 (페이지를 그릴 때 Redis 읽기 1번). 서울시에는 동시에 8개씩
  */
+/** 서울시 캐시 초: 낮(7~23시)은 5분, 밤은 10분 (11/1 경수님 '5분으로' — 원천이 5분 단위라 낮에만 줄인다) */
+export const seoulTtl = (at = new Date()) => {
+  const h = (at.getUTCHours() + 9) % 24;
+  return h >= 7 && h < 23 ? 300 : 600;
+};
+
 export function getAllSeoulLive(): Promise<Record<string, Omit<SeoulLive, "distance">>> {
   const key = process.env.SEOUL_OPENAPI_KEY ?? (fixtureMode() && "fixture");
   if (!key) return Promise.resolve({});
   return cached(
     `seoul:live:all${fixtureMode() ? `:fx-${fixtureMode()}` : ""}`,
-    600,
+    seoulTtl(),
     async () => {
       const out: Record<string, Omit<SeoulLive, "distance">> = {};
       const run = async (areas: SeoulArea[]) => {
@@ -127,8 +133,8 @@ export async function getSeoulLive(lat: number, lng: number): Promise<SeoulLive 
   const area = nearestSeoulArea(lat, lng);
   if (!key || !area) return undefined;
   try {
-    // 지역마다 10분에 한 번만 서울시를 부른다 (Redis 공유 캐시)
-    const live = await cached(`seoul:live:${area.name}`, 600, () => fetchSeoulLive(key, area.name));
+    // 지역마다 낮 5분·밤 10분에 한 번만 서울시를 부른다 (Redis 공유 캐시)
+    const live = await cached(`seoul:live:${area.name}`, seoulTtl(), () => fetchSeoulLive(key, area.name));
     return { ...live, distance: area.distance };
   } catch {
     return undefined;

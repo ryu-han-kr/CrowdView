@@ -24,10 +24,10 @@ test("EVENT-01·02: 축제 상태는 한국 날짜로, 시작·종료 당일은 
 
 test("혼잡 단계: 0~100 점수가 빠짐없이 5단계 중 하나, 경계값은 위 단계", () => {
   for (let s = 0; s <= 100; s++) assert.ok(LEVELS.includes(levelOf(s)));
-  assert.equal(levelOf(19.9).label, "쾌적");
-  assert.equal(levelOf(20).label, "원활");
+  assert.equal(levelOf(19.9).label, "한산");
+  assert.equal(levelOf(20).label, "여유");
   assert.equal(levelOf(80).label, "매우 혼잡");
-  assert.equal(levelOf(-5).label, "쾌적");
+  assert.equal(levelOf(-5).label, "한산");
 });
 
 test("인원 → 점수: 인원이 늘면 점수가 줄지 않고 0 이상", () => {

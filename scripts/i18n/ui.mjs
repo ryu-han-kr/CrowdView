@@ -1039,7 +1039,7 @@ export default {
     "機場、遊樂園、景點與節慶的即時擁擠度與AI預測",
   ],
   "실시간 혼잡도 · AI 예측": ["Live crowds · AI forecast", "リアルタイム混雑度・AI予測", "实时拥挤度 · AI预测", "即時擁擠度 · AI預測"],
-  "지금 가면 쾌적해요": ["Comfortable right now", "今なら快適", "现在去很舒适", "現在去很舒適"],
+  "지금 가면 한산해요": ["Comfortable right now", "今なら快適", "现在去很舒适", "現在去很舒適"],
   "다가오는 축제": ["Upcoming festivals", "これからの祭り", "即将举行的节庆", "即將舉行的節慶"],
   "전체 보기": ["See all", "すべて見る", "查看全部", "查看全部"],
   // 홈 NOL 레퍼런스 (10/21): 최근 본 곳·붐비는 TOP 5·상태 알약·배너 일시정지·하단 탭 '탐색'
@@ -2712,7 +2712,7 @@ export default {
   "기록상 {day} {hour}쯤이 가장 붐볐고, 요일로는 {busyDay}요일이 가장 붐볐어요.": ["Records show it's busiest around {hour} on {day}, and {busyDay} is the busiest day overall.", "記録上、{day} {hour}ごろが最も混み、曜日では{busyDay}が最も混みました。", "记录显示{day} {hour}左右最拥挤，按星期则{busyDay}最拥挤。", "紀錄顯示{day} {hour}左右最擁擠，按星期則{busyDay}最擁擠。"],
   "오늘은 {hour}쯤이 가장 한산할 것으로 예상돼요. 날짜별 기록이 더 쌓이면 요일·시간대별로 알려 드려요.": ["Today it's expected to be quietest around {hour}. Once more daily records build up, we'll show the best weekday and hour.", "今日は{hour}ごろが最も空く見込みです。日付別の記録がたまると、曜日・時間帯別にお知らせします。", "今天预计{hour}左右最清静。累积更多每日记录后，将按星期·时段告诉您。", "今天預計{hour}左右最清靜。累積更多每日紀錄後，將按星期·時段告訴您。"],
   "혼잡도는 어떻게 재나요?": ["How is the crowd level measured?", "混雑度はどうやって測っていますか？", "拥挤度是怎么测量的？", "擁擠度是怎麼測量的？"],
-  "공식 실시간 자료(서울시 실시간 인구·공항 출국장 대기·놀이기구 대기 등)가 있으면 그것으로, 없으면 요일·시간·날씨·공휴일 패턴 모델로 추정해 5단계(쾌적~매우 혼잡)로 보여 줘요. 10분마다 갱신해요.": ["We use official live data where available (Seoul real-time population, airport departure wait times, ride wait times); otherwise we estimate from weekday, time, weather and holiday patterns. Shown in five levels (very quiet to very busy) and refreshed every 10 minutes.", "公式のリアルタイムデータ（ソウル市リアルタイム人口・空港出国場待ち時間・アトラクション待ち時間など）があればそれを使い、なければ曜日・時間・天気・祝日のパターンモデルで推定し、5段階（快適〜非常に混雑）で表示します。10分ごとに更新します。", "有官方实时数据（首尔实时人口、机场出境大厅等待、游乐设施等待等）时使用，没有则根据星期·时间·天气·节假日模式模型估算，以5个等级（舒适~非常拥挤）显示，每10分钟更新。", "有官方即時數據（首爾即時人口、機場出境大廳等待、遊樂設施等待等）時使用，沒有則根據星期·時間·天氣·節假日模式模型估算，以5個等級（舒適~非常擁擠）顯示，每10分鐘更新。"],
+  "공식 실시간 자료(서울시 실시간 인구·공항 출국장 대기·놀이기구 대기 등)가 있으면 그것으로, 없으면 요일·시간·날씨·공휴일 패턴 모델로 추정해 5단계(한산~매우 혼잡)로 보여 줘요. 10분마다 갱신해요.": ["We use official live data where available (Seoul real-time population, airport departure wait times, ride wait times); otherwise we estimate from weekday, time, weather and holiday patterns. Shown in five levels (very quiet to very busy) and refreshed every 10 minutes.", "公式のリアルタイムデータ（ソウル市リアルタイム人口・空港出国場待ち時間・アトラクション待ち時間など）があればそれを使い、なければ曜日・時間・天気・祝日のパターンモデルで推定し、5段階（快適〜非常に混雑）で表示します。10分ごとに更新します。", "有官方实时数据（首尔实时人口、机场出境大厅等待、游乐设施等待等）时使用，没有则根据星期·时间·天气·节假日模式模型估算，以5个等级（舒适~非常拥挤）显示，每10分钟更新。", "有官方即時數據（首爾即時人口、機場出境大廳等待、遊樂設施等待等）時使用，沒有則根據星期·時間·天氣·節假日模式模型估算，以5個等級（舒適~非常擁擠）顯示，每10分鐘更新。"],
   "서울시 실시간 도시데이터(통신 기반 실시간 인구)를 5분마다 받아 5단계로 보여 줘요. 인원은 서울시가 주는 범위예요.": ["We pull Seoul's real-time city data (live population from mobile network data) every 5 minutes and show it in five levels. People counts are the range Seoul provides.", "ソウル市リアルタイム都市データ（通信ベースのリアルタイム人口）を5分ごとに取得し5段階で表示します。人数はソウル市が提供する範囲です。", "每5分钟获取首尔实时城市数据（基于通信的实时人口），以5个等级显示。人数为首尔市提供的范围。", "每5分鐘取得首爾即時城市數據（基於通訊的即時人口），以5個等級顯示。人數為首爾市提供的範圍。"],
   "{time} 기준 (한국 시간) · 10분마다 갱신": ["As of {time} (Korea time) · updated every 10 min", "{time}時点（韓国時間）・10分ごとに更新", "截至{time}（韩国时间）· 每10分钟更新", "截至{time}（韓國時間）· 每10分鐘更新"],
   "실시간 상세 보기": ["See live details", "リアルタイム詳細を見る", "查看实时详情", "查看即時詳情"],
