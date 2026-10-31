@@ -8,6 +8,9 @@ import { translateNames } from "@/lib/name-translate";
 import { PLACES } from "@/lib/places";
 import { START_HUBS } from "@/lib/route-data";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
+import { guideTextParts } from "@/lib/guide-names";
+import { getRelatedPlaces } from "@/lib/related-places";
+import { getLivePlaces } from "@/lib/place-info";
 import { GUIDE, guideText } from "@/lib/seoul-guide";
 
 export const maxDuration = 300;
@@ -19,6 +22,10 @@ export async function POST(req: Request) {
   const lang = body?.lang;
   if (!isLang(lang) || lang === "ko") return NextResponse.json({ error: "bad lang" }, { status: 400 });
   const festivals = await getFestivals(60).catch(() => []);
+  // 장소 운영 시간·휴무 안내(관광공사 글)와 연관 관광지 이름 — 장소 화면이 번역해 쓰는 그대로 (줄바꿈은 ' / ')
+  const live = await getLivePlaces().catch(() => PLACES);
+  const flat = (x?: string) => x?.replace(/\s*\n+\s*/g, " / ").trim();
+  const related = (await Promise.all(PLACES.map((p) => getRelatedPlaces(p).catch(() => [])))).flat();
   const names = [
     ...new Set(
       [
@@ -26,7 +33,9 @@ export async function POST(req: Request) {
         ...SEOUL_AREAS.map((a) => a.name),
         ...PLACES.map((p) => p.address),
         ...START_HUBS.map((h) => h.name),
-        ...GUIDE.filter((g) => guideText(g, lang).lang === "ko").map((g) => g.t.ko!.n),
+        ...GUIDE.filter((g) => guideText(g, lang).lang === "ko").flatMap((g) => [g.t.ko!.n, ...guideTextParts(g.t.ko!)]),
+        ...live.flatMap((p) => [flat(p.info?.hoursText), flat(p.info?.restText)]),
+        ...related.flatMap((r) => [r.name, r.region]),
       ].filter((s): s is string => !!s),
     ),
   ];
