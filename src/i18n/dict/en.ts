@@ -1828,6 +1828,26 @@ const dict: Dict = {
   "2024년 문을 연 종로3가역 도보 3분 암장.": "Gym opened in 2024, a 3-minute walk from Jongno 3-ga Station.",
   "홍대의 아담한 볼더링장.": "Cozy bouldering gym in Hongdae.",
   "CGV피카디리1958 지하의 클라이밍짐. 종로3가역에서 바로.": "Climbing gym under CGV Piccadilly 1958, right at Jongno 3-ga Station.",
+  // 구글 지도 평점 (장소 페이지 정보)
+  "평점": "Rating",
+  "리뷰 {n}개": "{n} reviews",
+  "Google 지도": "Google Maps",
+  "Google 지도 기준": "per Google Maps",
+  "편의": "Amenities",
+  "평점·소개·편의 정보 출처": "Rating, about & amenities from",
+  "무료 주차장": "Free parking lot",
+  "유료 주차장": "Paid parking lot",
+  "무료 주차 건물": "Free garage parking",
+  "유료 주차 건물": "Paid garage parking",
+  "무료 노상 주차": "Free street parking",
+  "유료 노상 주차": "Paid street parking",
+  "발레 주차": "Valet parking",
+  "휠체어 출입구": "Wheelchair-accessible entrance",
+  "휠체어 주차": "Wheelchair-accessible parking",
+  "휠체어 화장실": "Wheelchair-accessible restroom",
+  "휠체어 좌석": "Wheelchair-accessible seating",
+  "아이와 가기 좋음": "Good for kids",
+  "반려견 동반": "Dogs allowed",
 };
 
 export default dict;

@@ -19,6 +19,7 @@ import { expectedScore } from "@/lib/crowd/model";
 import { recordActuals, updateQuantiles } from "@/lib/crowd/percentile";
 import { getHolidays, getSignals } from "@/lib/crowd/signals";
 import { getLivePlaces } from "@/lib/place-info";
+import { refreshGoogleFacts } from "@/lib/google-facts";
 import { updateWeekRatios } from "@/lib/region-visitors";
 import type { CrowdResult } from "@/lib/types";
 
@@ -85,6 +86,10 @@ export async function GET(req: Request) {
         return saved + summarized;
       })().catch(async (e) => (await opsAlert("백분위 혼잡지수 기록 실패", e), 0))
     : 0;
+  // 구글 장소 정보(평점·운영 시간·영업 상태): 매시 10일 지난 곳 2곳씩 (약 230곳 → 하루 약 23곳, 월 상세 호출 약 700건 · 무료 1,000건 안, lib/google-facts)
+  const googleFacts = hourly
+    ? await refreshGoogleFacts(PLACES, 2).catch(async (e) => (await opsAlert("구글 장소 정보 받기 실패", e), null))
+    : null;
   // 시군구 주말/평일 방문객 비 (데이터랩, 명소 예측의 주말 배율)
   const weekRatios = daily ? await updateWeekRatios().catch(async (e) => (await opsAlert("주말 배율 계산 실패", e), 0)) : 0;
   // 어제 실측 기록을 하루 요약으로 (요일별·월별 실측 평균용, Redis)
@@ -129,6 +134,7 @@ export async function GET(req: Request) {
     calibrated,
     percentiles,
     weekRatios,
+    googleFacts,
     summarized,
     trips,
     reports,
