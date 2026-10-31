@@ -59,3 +59,27 @@ export function matchScore(query: string, fields: (string | undefined)[]): numbe
   if ([...q].length >= 3 && hays.some((h) => inOrder(q, h))) return 50;
   return 0;
 }
+
+/** 이름에서 검색어에 맞는 글자 표시 (드롭다운에서 굵게): 낱말이 들어 있으면 그 자리, 아니면 글자 순서대로 맞는 글자 */
+export function highlightMask(query: string, text: string): boolean[] {
+  const mask = new Array<boolean>(text.length).fill(false);
+  const low = text.toLowerCase();
+  const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  let any = false;
+  for (const w of words) {
+    const i = low.indexOf(w);
+    if (i < 0) continue;
+    mask.fill(true, i, i + w.length);
+    any = true;
+  }
+  if (any) return mask;
+  const q = squash(query);
+  let k = 0;
+  for (let i = 0; i < low.length && k < q.length; i++) {
+    if (low[i] === q[k]) {
+      mask[i] = true;
+      k++;
+    }
+  }
+  return k === q.length ? mask : new Array<boolean>(text.length).fill(false);
+}

@@ -1494,6 +1494,8 @@ const dict: Dict = {
   "{name} 혼잡도 · 오늘 사람 많나요? 실시간 확인": "{name} crowds today: how busy is it now? Live check",
   "{name} 혼잡도 예측 · 오늘 사람 많을까? 한산한 시간": "{name} crowd forecast: will it be busy today? Best quiet times",
   "{name} 오늘 사람 얼마나 많은지 지금 혼잡도와 시간대별 예측으로 확인하고, 한산한 시간에 가세요": "See how busy {name} is today with the current crowd level and hourly forecast, and go when it's quiet",
+  "축제·행사": "Festivals & events",
+  "‘{q}’ 전체 결과 {n}곳 보기": "See all {n} results for ‘{q}’",
   "한국민속촌": "Korean Folk Village",
   "서울대공원": "Seoul Grand Park",
   "롯데월드 아쿠아리움": "Lotte World Aquarium",
