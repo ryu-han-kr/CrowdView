@@ -3057,4 +3057,10 @@ export default {
   "저공해차 3종": ["Low-emission cars class 3", "低公害車3種", "低污染车3类", "低污染車3類"],
   "(가장 큰 할인 1개만)": ["(highest one only)", "(最大の割引1つのみ)", "(仅限最高一项)", "(僅限最高一項)"],
   "소형 = 승용차·15인 이하 승합·1톤 이하 화물 · 두 터미널 같은 요금": ["Small = cars, vans up to 15 seats, trucks up to 1 t · same rates at both terminals", "小型 = 乗用車・15人以下のバン・1トン以下の貨物車 · 両ターミナル同一料金", "小型 = 轿车·15座以下客车·1吨以下货车 · 两航站楼同价", "小型 = 轎車·15座以下客車·1噸以下貨車 · 兩航廈同價"],
+  // ── 축제 혼잡 상자 짧게 (11/1)
+  "{area} 방문 예상": ["{area} visitors (forecast)", "{area}の来訪予想", "{area}访客预测", "{area}訪客預測"],
+  "지역 방문 예상": ["Area visitors (forecast)", "地域の来訪予想", "地区访客预测", "地區訪客預測"],
+  "작년 이맘때 평소보다 {pct} 많았어요": ["{pct} more than usual this time last year", "昨年の同時期は平常より{pct}多かった", "去年同期比平时多{pct}", "去年同期比平時多{pct}"],
+  "작년 이맘때 평소보다 {pct} 적었어요": ["{pct} fewer than usual this time last year", "昨年の同時期は平常より{pct}少なかった", "去年同期比平时少{pct}", "去年同期比平時少{pct}"],
+  "축제장 인원이 아닌 {area} 전체 통계": ["Whole-{area} stats, not the festival grounds", "会場の人数ではなく{area}全体の統計", "非会场人数，为{area}整体统计", "非會場人數，為{area}整體統計"],
 };
