@@ -1,7 +1,7 @@
 "use client";
 
 import { offSeasonLabel } from "@/lib/season-label";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { seasonSort, type Season } from "@/lib/season-order";
 import { useI18n } from "@/i18n/client";
 import { headcountInfo } from "@/lib/format";
@@ -63,6 +63,8 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "spot", label: "관광지" },
 ];
 const SPOT_PAGE = 12;
+/** 홈 안 링크로 고르기 전 스크롤 자리 (주소별) — 뒤로 가기 때 되돌린다 (11/1 UX 점검) */
+const backY = new Map<string, number>();
 
 const LIVE_PAGE = 8;
 
@@ -133,19 +135,101 @@ export function HomeList({
   const { t } = i18n;
 
   // 홈 아이콘 메뉴의 '테마파크' 같은 링크: /?cat=themepark#places → 그 파트를 골라 목록으로
+  // 11/1 UX 점검: 홈에서 누르면 화면 전체를 새로 열어(사진·배너 다시 받기) 맨 위에서 아래로 튀었고, 배너(Link)로 누르면 주소만 바뀌고 목록은 그대로였다
+  // → 홈 안 링크는 새로 열지 않고 그 자리에서 고른 뒤 목록 머리로 내려간다 (뒤로 가기는 고르기 전으로)
+  const applyUrl = (search: string, scroll: boolean, syncQuery = true) => {
+    const params = new URLSearchParams(search);
+    const raw = params.get("cat");
+    // 명소·축제는 칩 대신 위 탭이 맡는다 (11/1 칩 정리) → 그 탭으로
+    const asTab: Tab | null = raw === "landmark" ? "landmark" : raw === "event" ? "festival" : null;
+    const cat = !asTab && CATEGORIES.includes(raw as Category) ? (raw as Category) : null;
+    const tb = asTab ?? (params.get("tab") as Tab | null);
+    const nextTab = tb && TABS.some((x) => x.id === tb) ? tb : cat ? "live" : "all";
+    setFilter(cat ?? "all");
+    setTab(nextTab);
+    // 처음 열 때 검색어는 useUrlQuery가 주소에서 읽는다 (여기서 또 쓰면 주소를 한 번 더 고쳐 쓴다)
+    if (syncQuery) setQuery(params.get("q") ?? "");
+    if (scroll && (cat || tb || params.has("q"))) setScrollReq((r) => ({ n: r.n + 1 }));
+  };
+  // 고른 결과가 그려진 뒤(추천 모음이 접힌 뒤) 목록 머리로. 뒤로 가기면 누르기 전 자리로.
+  // 조금 늦춘다: 주소를 바꾸면 Next 라우터가 한 번 더 그리면서 스크롤을 맨 위로 되돌려 부드러운 스크롤이 끊겼다
+  const [scrollReq, setScrollReq] = useState<{ n: number; y?: number }>({ n: 0 });
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const cat = params.get("cat") as Category | null;
-    if (cat && CATEGORIES.includes(cat)) {
-      setFilter(cat);
-      setTab("live");
-      document.getElementById("places")?.scrollIntoView({ behavior: "smooth" });
-    }
-    const tb = params.get("tab") as Tab | null;
-    if (tb && TABS.some((x) => x.id === tb)) {
-      setTab(tb);
-      document.getElementById("places")?.scrollIntoView({ behavior: "smooth" });
-    }
+    if (!scrollReq.n) return;
+    const id = setTimeout(() => {
+      if (scrollReq.y !== undefined) window.scrollTo({ top: scrollReq.y });
+      else document.getElementById("places")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+    return () => clearTimeout(id);
+  }, [scrollReq]);
+  // 11/1 UX 점검: 목록을 내려 본 채(위 줄이 붙은 채) 탭·칩을 바꾸면 위 추천 모음이 접히고 목록이 바뀌며 새 목록 한가운데(예: 명소 15번째)로 떨어졌다
+  // (자료가 늦게 오는 명소·축제 탭은 목록이 잠깐 비어 스크롤이 줄었다가, 채워질 때 브라우저가 예전 자리로 되돌렸다)
+  // → 탭·칩 줄(StickyBar)이 화면에 있던 자리를 지킨다: 위에 붙어 있었으면 새 목록 맨 위, 아니면 보던 자리 그대로. 잠깐(1.5초) 고정하고 손대면 푼다
+  const [topReq, setTopReq] = useState(0);
+  const pin = useRef<number | null>(null);
+  const barTop = () => (document.getElementById("places")?.previousElementSibling as HTMLElement | null)?.getBoundingClientRect().top;
+  const listTop = () => {
+    // 줄 위 여백(mt-8)만큼 빼야 붙은 자리와 같아진다 (센티널은 여백 위에 있다)
+    const bar = document.getElementById("places");
+    const head = (window.innerWidth >= 768 ? 64 : 0) - (bar ? parseFloat(getComputedStyle(bar).marginTop) || 0 : 0);
+    pin.current = Math.max(barTop() ?? head, head);
+    document.documentElement.style.overflowAnchor = "none";
+    setTopReq((n) => n + 1);
+  };
+  useLayoutEffect(() => {
+    if (!topReq) return;
+    const apply = () => {
+      const top = barTop();
+      if (pin.current !== null && top !== undefined && Math.abs(top - pin.current) > 1) window.scrollTo({ top: window.scrollY + top - pin.current });
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(document.body);
+    const release = () => {
+      ro.disconnect();
+      pin.current = null;
+      document.documentElement.style.overflowAnchor = "";
+    };
+    const id = setTimeout(release, 1500);
+    window.addEventListener("touchstart", release, { once: true, passive: true });
+    window.addEventListener("wheel", release, { once: true, passive: true });
+    return () => {
+      clearTimeout(id);
+      ro.disconnect();
+      window.removeEventListener("touchstart", release);
+      window.removeEventListener("wheel", release);
+    };
+  }, [topReq]);
+  useEffect(() => () => void (document.documentElement.style.overflowAnchor = ""), []);
+  useEffect(() => {
+    applyUrl(window.location.search, true, false);
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = (e.target as Element | null)?.closest?.("a[href]") as HTMLAnchorElement | null;
+      if (!a || a.target === "_blank") return;
+      const u = new URL(a.href, location.href);
+      if (u.origin !== location.origin || u.pathname.replace(/\/$/, "") !== location.pathname.replace(/\/$/, "") || !/(^|&|\?)(cat|tab|q)=/.test(u.search)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      // Next 라우터 기록과 함께 쌓이도록 history.pushState (Next가 감싼 것을 쓴다). 지금 자리는 뒤로 올 때 되돌릴 수 있게 기억
+      backY.set(location.pathname + location.search, window.scrollY);
+      history.pushState(history.state, "", u.pathname + u.search);
+      applyUrl(u.search, true);
+    };
+    const onPop = () => {
+      applyUrl(location.search, false);
+      const y = backY.get(location.pathname + location.search);
+      if (y !== undefined) setScrollReq((r) => ({ n: r.n + 1, y }));
+    };
+    // 캡처 단계: Next Link의 클릭 처리보다 먼저 가로챈다
+    document.addEventListener("click", onClick, true);
+    window.addEventListener("popstate", onPop);
+    return () => {
+      document.removeEventListener("click", onClick, true);
+      window.removeEventListener("popstate", onPop);
+    };
+    // 처음 한 번만 (applyUrl은 상태 setter만 쓴다)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const searching = query.trim() !== "";
   useEffect(() => {
@@ -213,7 +297,8 @@ export function HomeList({
     // 11/1 경수님: 명소 2·축제 3·핫플 2·해변 1곳뿐인 칩이 바로 위 '명소'·'축제' 탭(수백 곳)과 이름이 겹쳐 텅 비어 보였다
     // → 칩은 이 탭 고유 종류만. 그 장소들은 '전체'에는 그대로 나온다
     ...(season ? seasonSort(CATEGORIES, (c) => c, season) : CATEGORIES)
-      .filter((c) => !TAB_OVERLAP.has(c) && places.some((p) => p.category === c))
+      // 단, 장소 화면의 '해변 ›' 같은 링크(?cat=beach)로 와서 고른 상태면 그 칩은 보인다 (11/1 UX 점검: 고른 칩이 안 보여 왜 2곳뿐인지 몰랐다)
+      .filter((c) => (!TAB_OVERLAP.has(c) || c === filter) && places.some((p) => p.category === c))
       .map((c) => ({
       id: c,
       label: t(CATEGORY_LABEL[c]),
@@ -310,7 +395,10 @@ export function HomeList({
                 key={x.id}
                 role="tab"
                 aria-selected={tab === x.id}
-                onClick={() => setTab(x.id)}
+                onClick={() => {
+                  setTab(x.id);
+                  listTop();
+                }}
                 className={`-mb-px shrink-0 border-b-[3px] px-3 pt-1 pb-2 text-[15px] font-bold transition-colors ${
                   tab === x.id ? "border-gray-900 text-gray-950" : "border-transparent text-gray-500 md:hover:text-gray-800"
                 }`}
@@ -343,7 +431,10 @@ export function HomeList({
             {["all", ...regionChips].map((r) => (
               <button
                 key={r}
-                onClick={() => setRegion(r)}
+                onClick={() => {
+                  setRegion(r);
+                  listTop();
+                }}
                 aria-pressed={region === r}
                 className={`shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-semibold ${
                   region === r ? "border-gray-900 bg-gray-900 text-white" : "border-gray-200 bg-white text-gray-700"
@@ -364,6 +455,7 @@ export function HomeList({
             onChange={(id) => {
               setFilter(id as Filter);
               if (tab === "all" && id !== "all" && id !== "fav") setTab("live");
+              listTop();
             }}
           />
         )}
@@ -373,7 +465,10 @@ export function HomeList({
             {(["all", ...subs] as const).map((x) => (
               <button
                 key={x}
-                onClick={() => setSub(x)}
+                onClick={() => {
+                  setSub(x);
+                  listTop();
+                }}
                 aria-pressed={sub === x}
                 className={`flex shrink-0 items-center gap-1 rounded-lg px-3 py-1.5 text-[13px] font-bold ${
                   sub === x ? "bg-indigo-600 text-white" : "bg-indigo-50 text-indigo-800"
@@ -415,7 +510,7 @@ export function HomeList({
                 title={t(TABS.find((x) => x.id === id)!.label)}
                 count={items.length}
                 items={items.slice(0, 4)}
-                more={items.length > 4 ? () => setTab(id) : undefined}
+                more={items.length > 4 ? () => (setTab(id), listTop()) : undefined}
                 moreLabel={t("전체 보기")}
               />
             ),

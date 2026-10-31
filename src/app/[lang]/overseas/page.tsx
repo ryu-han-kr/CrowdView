@@ -5,6 +5,7 @@ import { fmtMinutes } from "@/i18n/patterns";
 import { inkOf } from "@/lib/levels";
 import { allParksNow, OVERSEAS_PARKS, type ParkNow } from "@/lib/overseas-parks";
 import { pageMeta } from "@/lib/seo";
+import { PageHeader } from "@/components/PageHeader";
 
 // 해외 테마파크 지금 대기시간 (경수님 10/30). ThemeParks.wiki 대기시간이 5분마다라 ISR도 5분
 export const revalidate = 300;
@@ -83,8 +84,10 @@ export default async function OverseasPage({ params }: { params: Promise<{ lang:
   }));
   return (
     <main className="px-5 pt-6 pb-8 md:px-0 md:pt-10">
-      <h1 className="text-2xl font-bold md:text-3xl">{t("해외 테마파크 지금 혼잡도")}</h1>
-      <p className="mt-1 text-[13px] text-gray-600">{t("놀이기구 평균 대기시간 · 5분마다 갱신")}</p>
+      {/* 11/1 UX 점검: 홈 아이콘으로 오는 화면 — 다른 탭과 같은 PageHeader 머리로 */}
+      <PageHeader title={t("해외 테마파크 지금 혼잡도")}>
+        <p className="mt-1 text-gray-500">{t("놀이기구 평균 대기시간 · 5분마다 갱신")}</p>
+      </PageHeader>
       <nav className="no-scrollbar -mx-5 mt-4 flex gap-2 overflow-x-auto px-5 md:mx-0 md:px-0">
         {countries.map((c) => (
           <a key={c.id} href={`#${c.id}`} className="shrink-0 rounded-full bg-gray-100 px-3.5 py-1.5 text-sm font-semibold text-gray-700">

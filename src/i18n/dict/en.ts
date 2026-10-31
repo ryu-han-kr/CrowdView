@@ -810,7 +810,7 @@ const dict: Dict = {
   "지역별 여행 · 대표 명소와 축제": "Travel by region · landmarks & festivals",
   "서울·부산·제주·경주 등 지역별 대표 명소와 다가오는 축제, 지금 혼잡도를 한 번에": "Top landmarks, upcoming festivals and live crowds for Seoul, Busan, Jeju, Gyeongju and more",
   "지역 여행": "Regions",
-  "지역별 대표 명소와 축제, 그리고 지금 혼잡도. 혼잡도는 근처 실시간 데이터가 있는 곳만 보여요": "Landmarks and festivals by region, with live crowds where nearby real-time data exists",
+  "지역별 대표 명소·축제와 지금 혼잡도": "Top sights & festivals by region, with live crowds",
   "사진·위치: 한국관광공사 TourAPI · 축제: 한국관광공사·서울시 · 혼잡도: 서울시 실시간 도시데이터·CrowdView 예측": "Photos & locations: Korea Tourism Organization TourAPI · Festivals: KTO, Seoul · Crowds: Seoul real-time city data, CrowdView forecasts",
   "오늘의 추천": "Today's picks",
   "오늘의 여행지": "Today's destination",

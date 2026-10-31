@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "@/i18n/link";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
 import { FeatureGrid } from "./home/FeatureLayouts";
@@ -37,13 +37,24 @@ export function ExploreView({
   const [kind, setKind] = useState<string>("all");
   const [view, setView] = useState<"list" | "map">("list");
 
-  useEffect(() => {
+  // 그리기 전에 주소의 지역으로 (11/1 UX 점검: useEffect면 서울이 한 번 그려진 뒤 바뀌었다). 숨겨 둔 본문은 그다음 그림에서 보인다
+  useLayoutEffect(() => {
     const r = new URLSearchParams(window.location.search).get("region");
     if (r && regions.some((x) => x.id === r)) setRegion(r);
+    const id = requestAnimationFrame(() => document.documentElement.removeAttribute("data-explore-wait"));
+    return () => {
+      cancelAnimationFrame(id);
+      document.documentElement.removeAttribute("data-explore-wait");
+    };
     // 처음 한 번만
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const choose = (id: string) => {
+    // 11/1 UX 점검: 내려 본 채(지역 줄이 위에 붙은 채) 다른 지역을 고르면 새 지역 목록 한가운데로 떨어졌다 → 그 지역 맨 위로
+    const sentinel = document.querySelector("[data-explore-body]")?.firstElementChild as HTMLElement | null;
+    const top = sentinel?.getBoundingClientRect().top ?? 0;
+    const head = window.innerWidth >= 768 ? 64 : 0;
+    if (top < head) window.scrollTo({ top: window.scrollY + top - head });
     setRegion(id);
     setKind("all");
     const url = new URL(window.location.href);
@@ -57,7 +68,7 @@ export function ExploreView({
     `shrink-0 rounded-full px-3.5 py-1.5 text-sm font-semibold ${on ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-600"}`;
 
   return (
-    <div>
+    <div data-explore-body>
       <StickyBar className="-mx-5 px-5 py-3 md:mx-0 md:px-0">
         <ScrollRow className="no-scrollbar flex gap-2 overflow-x-auto">
           {regions.map((r) => (
@@ -144,7 +155,8 @@ export function ExploreView({
           <section className="mt-10">
             <div className="flex items-end justify-between gap-3">
               <h2 className="text-lg font-bold md:text-xl">{t("{region} 축제", { region: t(cur.id) })}</h2>
-              <Link href="/events" className="shrink-0 text-sm text-gray-500">
+              {/* 11/1 UX 점검: 누르는 자리만 위아래로 넓힘 (배치는 그대로) */}
+              <Link href="/events" className="-my-2 shrink-0 py-2 text-sm text-gray-500">
                 {t("전국 축제")} ›
               </Link>
             </div>

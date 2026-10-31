@@ -161,8 +161,9 @@ export function PhotoRail({
           {title}
           {subtitle && <span className="ml-2 hidden text-sm font-medium text-gray-600 md:inline">{subtitle}</span>}
         </h2>
+        {/* 11/1 UX 점검: 누르는 자리만 위아래로 넓힘 (배치는 그대로) */}
         {moreHref && (
-          <Link href={moreHref} className="shrink-0 text-sm font-semibold text-gray-700">
+          <Link href={moreHref} className="-my-2 shrink-0 py-2 text-sm font-semibold text-gray-700">
             {t("전체 보기")} ›
           </Link>
         )}
