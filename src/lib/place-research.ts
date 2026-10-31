@@ -35,10 +35,12 @@ function prompt(t: ResearchTarget, today: string) {
   return `오늘은 ${today}이다. 아래 장소의 혼잡 관련 사실을 조사하라.
 장소: ${t.name} (${t.kind}) / 주소: ${t.address}
 
-검색할 것: "${t.name} 입장객 수"·"${t.name} 방문객"·"${t.name} 혼잡"·"${t.name} 대기시간"·"${t.name} 사람 많은 시간"·운영 시간·휴무일.
+과거 기록도 찾는다 (연도별·월별 입장객, 역대 최다 인파 날, 입장 제한·매진 기록).
+검색할 것: "${t.name} 입장객 수"·"${t.name} 연간 방문객 통계"·"${t.name} 방문객"·"${t.name} 혼잡"·"${t.name} 대기시간"·"${t.name} 사람 많은 시간"·운영 시간·휴무일.
 마지막 답은 다른 말 없이 아래 모양의 JSON 하나만 쓴다 (모르면 null 또는 빈 배열):
-{"annualVisitors":{"count":숫자,"year":연도,"source":"출처"}|null,
-"monthlyVisitors":[{"month":"YYYY-MM","count":숫자}],
+{"annualVisitors":[{"year":연도,"count":숫자,"source":"출처"}] (찾을 수 있는 만큼 여러 해, 최근 5~10년),
+"monthlyVisitors":[{"month":"YYYY-MM","count":숫자}] (과거 월별 통계가 있으면 전부),
+"pastPeaks":[{"date":"YYYY-MM-DD 또는 기간","count":숫자|null,"what":"예: 2025 어린이날 입장 제한"}],
 "dailyPeak":{"count":숫자,"note":"예: 어린이날 하루 최다"}|null,
 "capacity":{"count":숫자,"note":"수용 인원·동시 입장 제한·좌석 등"}|null,
 "peakMonths":[1~12],"quietMonths":[1~12],
