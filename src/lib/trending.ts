@@ -9,8 +9,10 @@ import { naverDatalabKeys, SEARCH_TREND_URL, searchTrendHeaders } from "./crowd/
 import { festivalHref, getFestivals, isLongRunning } from "./festivals";
 import { summarizeNews } from "./news-summary";
 import { heroImage } from "./place-photos";
+import { REGIONS, inRegion } from "./korea";
 import { PLACES, placeHref } from "./places";
 import { addDays, kst } from "./time";
+import type { Place } from "./types";
 import { cleanTitle, searchNews, strip, webSearchEnabled, type NewsHit } from "./web-search";
 
 export interface TrendItem {
@@ -58,6 +60,64 @@ const NOT_EVENT = /직원|사고|논란|소방|훈련|채용|주가|실적|부�
 const COMMUNITY = /ruliweb|fmkorea|dcinside|theqoo|instiz|clien|ppomppu|pann.nate|bobaedream|mlbpark|inven|todayhumor|blog.|cafe./;
 const isEvent = (h: NewsHit) => EVENT_WORDS.test(h.title) && !NOT_EVENT.test(h.title);
 
+const squash = (s: string) => s.replace(/[\s·,\-]/g, "");
+/** AI가 쓴 시·도 이름(서울특별시·경상남도 등) → 짧은 이름(서울·경남). 모르면 빈 값 */
+const LONG_REGION: Record<string, string> = { 충청북도: "충북", 충청남도: "충남", 전라북도: "전북", 전북특별자치도: "전북", 전라남도: "전남", 경상북도: "경북", 경상남도: "경남", 강원특별자치도: "강원", 강원도: "강원", 경기도: "경기", 제주특별자치도: "제주", 제주도: "제주" };
+function shortRegion(region: string): string {
+  const first = region.trim().split(/[\s·,/]/)[0] ?? "";
+  const r = LONG_REGION[first] ?? first.replace(/(특별시|광역시|특별자치시)$/, "");
+  return REGIONS.some((x) => x.id === r) ? r : "";
+}
+
+/**
+ * AI 화제 행사 → 우리 장소 (그 장소 상세로 보낼지). 11/1 감사: 예전엔 `PLACES.find(venue ⊃ 이름 || 이름 ⊃ venue || 제목 ⊃ 이름)`이라
+ * 장소가 '광안리'면 짱오락실 부산광안리점, 빈 장소면 맨 앞 장소(롯데월드), '롯데월드 어드벤처 부산 할로윈'이면 서울 롯데월드로 갔다.
+ * 이제: 지역이 맞는 곳 중 장소 이름이 같음 > 장소 칸에 우리 이름이 통째로 > 제목에 우리 이름이 통째로 > 우리 이름에 장소 칸이 통째로(3글자 이상).
+ * 실내 매장은 이름이 같거나 장소 칸에 통째로 있을 때만. 같은 단계면 장소 칸·제목에 든 쪽은 더 긴(구체적인) 이름, 장소 칸을 품는 쪽은 더 짧은(가까운) 이름
+ */
+export function placeForEvent(e: Pick<AiEvent, "title" | "venue" | "region">, places: readonly Place[] = PLACES): Place | undefined {
+  const venue = squash(e.venue);
+  const title = squash(e.title);
+  const region = shortRegion(e.region);
+  let top: { p: Place; s: number } | undefined;
+  for (const p of places) {
+    if (p.category === "airport") continue;
+    if (region && !inRegion(p.region, region)) continue;
+    const name = squash(p.name);
+    if (name.length < 2) continue;
+    const indoor = p.category === "indoor";
+    // 정수 부분 = 단계, 소수 부분 = 같은 단계 안 순서
+    const s =
+      venue && venue === name
+        ? 4
+        : venue && name.length >= 3 && venue.includes(name)
+          ? 3 + name.length / 100
+          : !indoor && name.length >= 3 && title.includes(name)
+            ? 2 + name.length / 100
+            : !indoor && venue.length >= 3 && name.includes(venue)
+              ? 1 + (1 - name.length / 100)
+              : 0;
+    if (s && (!top || s > top.s)) top = { p, s };
+  }
+  return top?.p;
+}
+
+/**
+ * 뉴스 제목이 이 장소 이야기인지: 짧은 이름이 들어 있고, 그 이름을 품은 다른 우리 장소(더 긴 이름)의 기사가 아닐 때.
+ * 예: '롯데월드 어드벤처 부산 할로윈'은 서울 롯데월드 어드벤처(짧은 이름 '롯데월드')의 소식이 아니다
+ */
+export function newsTitleFits(p: Place, short: string, title: string, places: readonly Place[] = PLACES): boolean {
+  if (!title.includes(short)) return false;
+  const t = squash(title);
+  const mine = squash(p.name);
+  const s = squash(short);
+  return !places.some((q) => {
+    if (q.id === p.id) return false;
+    const other = squash(q.name);
+    return other.length > mine.length && other.includes(s) && !mine.includes(other) && t.includes(other);
+  });
+}
+
 /** 소식을 볼 장소: 사람이 찾아가는 곳 (공항·행사 장소 제외), 스키장은 11~3월만 */
 function newsPlaces(month: number) {
   return PLACES.filter(
@@ -87,7 +147,7 @@ async function refreshPlaceNews(today: string): Promise<TrendItem[]> {
     const base = tidy(await searchNews(p.name, 7));
     const extra = p.category === "themepark" ? await (async () => (await new Promise((r) => setTimeout(r, 1100)), searchNews(`${short} 이벤트`, 7)))().then(tidy) : [];
     const hits = [...extra.filter(isEvent), ...base]
-      .filter((h, i, arr) => h.title.includes(short) && arr.findIndex((x) => x.url === h.url) === i)
+      .filter((h, i, arr) => newsTitleFits(p, short, h.title) && arr.findIndex((x) => x.url === h.url) === i)
       .slice(0, 3);
     if (!hits.length) continue;
     // 기사가 그대로면 지난 요약을 다시 쓰고, 바뀐 날에만 AI를 부른다
@@ -212,7 +272,7 @@ export async function refreshTrending(): Promise<number> {
   }));
   // AI 행사: 우리 장소 이름이 들어 있으면 그 장소 상세로, 아니면 기사·공식 주소로
   const aiItems: TrendItem[] = ai.map((e, i) => {
-    const place = PLACES.find((p) => e.venue.includes(p.name) || p.name.includes(e.venue) || e.title.includes(p.name));
+    const place = placeForEvent(e);
     return {
       id: `ai-${i}`,
       kind: "event",

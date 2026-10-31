@@ -10,6 +10,7 @@ import { PLACES, placeHref } from "./places";
 import type { Candidate, Interest, Leg, MealSpot } from "./route";
 import { CULTURE, GUIDE, getGuidePlace, photoNear } from "./seoul-guide";
 import { kakaoSearch } from "./kakao-local";
+import { OUTDOOR_AREA } from "./link-match";
 import { SEOUL_AREAS } from "./seoul-areas";
 import { getAllSeoulLive, seoulGroup, type SeoulGroup, type SeoulLive } from "./seoul-live";
 import { subwayTrip } from "./subway";
@@ -25,6 +26,14 @@ const PLACE_INTEREST: Partial<Record<Category, Interest>> = {
   beach: "nature",
 };
 const PLACE_OVERRIDE: Record<string, Interest> = { namsan: "nature" };
+
+/** 서울 실시간 지역이 이미 코스 후보인 우리 장소와 같은 곳인지 (그러면 장소 쪽을 쓴다) */
+export function sameSpotAsArea(p: Place, a: { name: string; lat: number; lng: number }): boolean {
+  // 공항 지역(김포공항)은 공항 그 자체 — 코스 목적지가 아니라 예전처럼 뺀다
+  if (p.category === "airport") return distanceKm(p, a) < 0.3;
+  if (!(PLACE_OVERRIDE[p.id] ?? PLACE_INTEREST[p.category])) return false;
+  return p.seoulArea === a.name || (OUTDOOR_AREA.includes(p.category) && distanceKm(p, a) < 0.3);
+}
 const PLACE_STAY: Partial<Record<Category, number>> = { landmark: 80, street: 70, themepark: 240, waterpark: 240, ski: 300, beach: 90 };
 
 const GROUP_INTEREST: Partial<Record<SeoulGroup, Interest>> = { heritage: "history", park: "nature", street: "shopping", tour: "shopping" };
@@ -238,7 +247,9 @@ export async function getRouteCandidates(): Promise<Candidate[]> {
     const live = seoul[a.code];
     if (!interest || !live) continue;
     // 우리 장소와 같은 곳이면 장소 쪽을 쓴다 (예: 경복궁, 홍대)
-    if (PLACES.some((p) => p.seoulArea === a.name || distanceKm(p, a) < 0.3)) continue;
+    // 11/1 감사: 300m 안 아무 장소(클라이밍장·오락실·행사)나 같은 곳으로 봐서 강남 MICE·이태원·종로·DMC 등 25곳이 코스 후보에서 빠졌다
+    // → 코스 후보인 장소이면서 서울 지역으로 이어 둔 곳(seoulArea), 또는 300m 안 바깥 장소(명소·거리·해변)일 때만
+    if (PLACES.some((p) => sameSpotAsArea(p, a))) continue;
     out.push({ ...seoulCandidate(a, live, beyond), interest, stay: GROUP_STAY[group] ?? 60, hours: DEFAULT_HOURS[interest] });
   }
   return out;

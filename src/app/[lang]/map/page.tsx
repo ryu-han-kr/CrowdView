@@ -4,8 +4,8 @@ import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { festivalHref, festivalStatus, getFestivalCrowd, getFestivals, isLongRunning } from "@/lib/festivals";
-import { distanceKm, type LatLng } from "@/lib/geo";
-import { LANDMARKS, LANDMARK_KINDS, REGIONS, inRegion, landmarkLink } from "@/lib/korea";
+import { LANDMARKS, LANDMARK_KINDS, REGIONS, festivalCrowdSource, inRegion, landmarkCrowdSource, landmarkLink } from "@/lib/korea";
+import { OUTDOOR_AREA } from "@/lib/link-match";
 import { PLACES, placeHref } from "@/lib/places";
 import { pageMeta } from "@/lib/seo";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
@@ -37,13 +37,11 @@ export default async function MapPage({ params }: { params: Promise<{ lang: stri
   const today = kst().date;
   const [crowd, seoul, festivals] = await Promise.all([getAllCrowd(), getAllSeoulLive(), getFestivals(30).catch(() => [])]);
 
-  // 명소·축제 근처의 지금 혼잡: 1.5km 안 우리 장소 → 0.8km 안 서울 실시간 지역
-  const nearScore = (p: LatLng): number | undefined => {
-    const place = PLACES.find((x) => x.category !== "airport" && crowd[x.id]?.open && distanceKm(x, p) < 1.5);
-    if (place) return crowd[place.id].score;
-    const area = SEOUL_AREAS.find((a) => seoul[a.code] && distanceKm(a, p) < 0.8);
-    return area ? seoul[area.code].score : undefined;
-  };
+  // 명소·축제 근처의 지금 혼잡: 같은 곳 → 0.8km 안 서울 실시간 지역 → 1km 안 같은 종류의 장소 (lib/korea).
+  // 11/1 QA: 1.5km 안 아무 장소(오락실·클라이밍장·테마파크)나 빌려 쓰던 것을 고쳤다
+  const has = { place: (id: string) => !!crowd[id]?.open, area: (code: string) => !!seoul[code] };
+  const scoreOf = (src: ReturnType<typeof landmarkCrowdSource>): number | undefined =>
+    src?.placeId ? crowd[src.placeId]?.score : src?.seoulCode ? seoul[src.seoulCode]?.score : undefined;
 
   const spots: ExploreSpot[] = [];
   for (const p of PLACES) {
@@ -60,6 +58,7 @@ export default async function MapPage({ params }: { params: Promise<{ lang: stri
       emoji: p.emoji,
       sub: `${t(CATEGORY_LABEL[p.category])} · ${c?.open ? t("지금") : t("운영 종료")}`,
       img: p.image,
+      outdoor: OUTDOOR_AREA.includes(p.category),
     });
   }
   for (const a of SEOUL_AREAS) {
@@ -89,7 +88,7 @@ export default async function MapPage({ params }: { params: Promise<{ lang: stri
       lat: l.lat,
       lng: l.lng,
       href: landmarkLink(l, lang).href,
-      score: nearScore(l),
+      score: scoreOf(landmarkCrowdSource(l, has)),
       emoji: kind.emoji,
       sub: `${t(l.region)} · ${t(kind.label)}`,
       img: l.img,
@@ -110,7 +109,7 @@ export default async function MapPage({ params }: { params: Promise<{ lang: stri
       lat: f.lat!,
       lng: f.lng!,
       href: festivalHref(f),
-      score: (on && nearScore(f as LatLng)) || fcrowd[i]?.score,
+      score: (on && scoreOf(festivalCrowdSource({ lat: f.lat!, lng: f.lng!, title: f.title, region: f.region }, has))) || fcrowd[i]?.score,
       emoji: "🎪",
       sub: `${on ? t("진행 중") : `${shortDate(f.start)}~`} · ${f.region}`,
       img: f.image,
