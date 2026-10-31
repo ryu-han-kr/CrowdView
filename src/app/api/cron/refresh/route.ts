@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { checkAlerts } from "@/lib/alerts";
 import { checkAnonAlerts } from "@/lib/alerts-anon";
+import { mailWeekendCard } from "@/lib/weekend-pick";
 import { archiveSnapshot } from "@/lib/archive";
 import { getAllCrowd, refreshAll } from "@/lib/crowd/service";
 import { trackAccuracy } from "@/lib/accuracy";
@@ -66,6 +67,9 @@ export async function GET(req: Request) {
   // Plus 자동결제: 결제일이 된 구독을 결제한다 (토스는 예약 결제가 없어서 우리가 돌린다. 대상이 없으면 DB 조회 1번)
   const charged = await chargeDue().catch(async (e) => (await opsAlert("Plus 자동결제 실행 실패", e), 0));
   const expired = daily ? await expireEnded().catch(async (e) => (await opsAlert("구독 만료 정리 실패", e), 0)) : 0;
+  // 목요일 새벽: '이번 주말 한산한 곳' 카드·글을 경수님 메일로 (10/31 '알리기' 5번, lib/weekend-pick)
+  const weekendCard =
+    daily && new Date(`${now.date}T12:00:00+09:00`).getUTCDay() === 4 ? await mailWeekendCard().catch(async (e) => (await opsAlert("주말 카드 메일 실패", e), 0)) : 0;
   // 예측 정확도: 매시 정각 첫 수집 때 채점·새 예측 저장 (서울 121곳, Redis)
   const hourly = firstRun;
   const scored = hourly ? await trackAccuracy(await getAllSeoulLive()).catch(async (e) => (await opsAlert("예측 정확도 기록 실패", e), 0)) : 0;
@@ -119,6 +123,7 @@ export async function GET(req: Request) {
     anonAlerts,
     charged,
     expired,
+    weekendCard,
     notices,
     scored,
     calibrated,
