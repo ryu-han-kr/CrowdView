@@ -533,8 +533,13 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       {/* 휴대폰 머리: 로고 + 검색 알약 (NOL 레퍼런스 10/21). 제목(h1)은 검색엔진·PC용으로 아래에 */}
       <header className="mb-3 md:mb-5">
         <div className="flex items-center gap-3 md:hidden">
-          <Link href="/" className="shrink-0 text-xl font-extrabold tracking-tight">
-            <span className="text-indigo-600">Crowd</span>View
+          <Link href="/" className="flex shrink-0 items-center gap-1.5 text-xl font-extrabold tracking-tight">
+            {/* 11/1 새 브랜드 아이콘 (public/favicon.svg = 작은 크기 전용판) */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/favicon.svg" alt="" width={24} height={24} className="h-6 w-6 shrink-0" />
+            <span>
+              <span className="text-indigo-600">Crowd</span>View
+            </span>
           </Link>
           <HomeSearchInput />
           <LangSwitcher iconOnly />

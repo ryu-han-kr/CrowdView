@@ -10,8 +10,9 @@ self.addEventListener("push", (event) => {
     self.registration.showNotification(data.title || "CrowdView", {
       body: data.body || "",
       tag: data.tag,
-      icon: "/icon.png",
-      badge: "/icon.png",
+      icon: "/icon-192.png",
+      // 알림 막대 작은 아이콘은 안드로이드가 모양(투명도)만 쓴다 → 흰 단색판
+      badge: "/badge-96.png",
       data: { url: data.url || "/" },
     }),
   );
