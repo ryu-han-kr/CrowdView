@@ -10,6 +10,7 @@ import { CATEGORY_LABEL, type Category, type CrowdResult, type Place } from "@/l
 import { placeTag } from "@/lib/category-style";
 import { levelOf } from "@/lib/levels";
 import { matchScore } from "@/lib/search-match";
+import type { HomeCrowd } from "@/lib/home-crowd";
 import { ListCard } from "./ListCard";
 import type { PhotoCardItem } from "./home/PhotoRail";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
@@ -94,6 +95,7 @@ const CATEGORY_FACE: Partial<Record<Category, string>> = {
  */
 /** 홈 목록이 쓰는 장소 필드만 (page.tsx가 이 모양으로 잘라 보낸다) */
 export type HomePlace = Pick<Place, "id" | "name" | "category" | "region" | "lat" | "lng" | "emoji" | "tags" | "image" | "eventDate" | "eventEndDate">;
+export type { HomeCrowd } from "@/lib/home-crowd";
 
 export function HomeList({
   places,
@@ -103,7 +105,7 @@ export function HomeList({
   children,
 }: {
   places: HomePlace[];
-  crowd: Record<string, CrowdResult>;
+  crowd: Record<string, HomeCrowd>;
   /** 계절에 맞춰 분류 칩 순서를 바꾼다 (겨울 스키장·여름 워터파크 앞으로) */
   season?: Season;
   /** 명소·축제·서울 지역 탭 (자료는 탭을 고르거나 검색할 때 /api/home-search/{lang} 에서 받는다) */

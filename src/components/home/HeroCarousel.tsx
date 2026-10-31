@@ -143,7 +143,8 @@ export function HeroCarousel({
           // 처음 화면에 가운데 보이는 배너 (가장 큰 그림 → 먼저 받기). 무한 넘김용 복제본도 같은 그림이라 같이 (LCP 경고: 복제본이 lazy였다)
           const main = s.id === items[loop && !fade ? n : 0].id;
           // 겹쳐 바뀌는 배너는 지금·다음·이전 장만 그림을 받는다 (6장이 한 자리에 겹쳐 있어 모두 화면 안으로 잡힌다)
-          const near = fade ? current || k === (index + 1) % n || k === (index + n - 1) % n : Math.abs(k - pos) <= 1;
+          // 밀어 넘기는 배너(휴대폰)도 지금 장 앞뒤 2장만 그림을 넣는다 — 12장을 3벌 복제해 36장의 사진 주소(srcset)가 HTML에 다 실려 50KB였다 (10/31 라이트하우스)
+          const near = fade ? current || k === (index + 1) % n || k === (index + n - 1) % n : Math.abs(k - pos) <= 2;
           return (
             <Link
               key={`${s.id}-${k}`}
@@ -159,7 +160,7 @@ export function HeroCarousel({
                     }`
               }
             >
-              {(!fade || near) && (
+              {near && (
                 <Image
                   src={s.img}
                   alt=""

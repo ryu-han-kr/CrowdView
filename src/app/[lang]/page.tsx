@@ -4,6 +4,7 @@ import { pageMeta } from "@/lib/seo";
 import { getT as getMetaT } from "@/i18n/server";
 import { jsonLd, SITE } from "@/lib/seo";
 import { HomeList, type HomePlace } from "@/components/HomeList";
+import { homeCrowd } from "@/lib/home-crowd";
 import { CategoryIcons } from "@/components/home/CategoryIcons";
 import { HeroCarousel, type HeroSlide } from "@/components/home/HeroCarousel";
 import { SeasonBackdrop, SproutStrip } from "@/components/home/SeasonBackdrop";
@@ -123,8 +124,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
     eventDate: p.eventDate,
     eventEndDate: p.eventEndDate,
   }));
-  // 홈 목록은 지금 값만 쓴다 → 시간대 배열(45곳 × 18점)·구역은 빼서 HTML을 줄인다 (사용자 10/26 성능)
-  const listCrowd = Object.fromEntries(Object.entries(crowd).map(([id, c]) => [id, { ...c, hourly: [], zones: undefined }]));
+  // 홈 목록은 지금 값만 쓴다 → 쓰는 칸만 골라 HTML을 줄인다 (사용자 10/26 성능, 10/31 라이트하우스: 갱신 시각·빈 배열까지 실렸다)
+  const listCrowd = Object.fromEntries(Object.entries(crowd).map(([id, c]) => [id, homeCrowd(c)]));
   // 고해상도 사진 (place-photos 의 n번째, 없으면 기존 대표 사진)
   const photoOf = (id: string, n = 0) => placePhotos(id)[n]?.src ?? places.find((x) => x.id === id)?.image;
   // 지금 한산한 명소 (사진 있는 우리 장소)
