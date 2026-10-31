@@ -166,9 +166,11 @@ export function HeroCarousel({
                   alt=""
                   fill
                   sizes="(min-width: 768px) 560px, 84vw"
-                  // 현재 장만 즉시 (10/26 성능: 양옆 2장까지 즉시 받던 것을 넘길 때로)
-                  loading={main && eager ? "eager" : "lazy"}
-                  fetchPriority={main && eager ? "high" : "auto"}
+                  // 처음 보이는 장은 <head>에서 미리 받기(preload): 앞뒤 2장만 그리게 된 뒤(10/31) 이 사진이 HTML 뒤쪽에서야 발견돼
+                  // 느린 회선 라이트하우스의 첫 큰 화면이 4.2초 → 8.7초로 밀렸다. 나머지는 넘길 때 (10/26 성능)
+                  {...(main && eager && k === (loop && !fade ? n : 0)
+                    ? { preload: true }
+                    : { loading: main && eager ? ("eager" as const) : ("lazy" as const), fetchPriority: main && eager ? ("high" as const) : ("auto" as const) })}
                   unoptimized={!canOptimize(s.img)}
                   // PC 겹쳐 바뀌는 배너: 들어오는 사진이 아주 살짝 당겨지듯 커졌다 제자리로 (부드럽게, 10/31)
                   className={`object-cover ${fade ? `transition-transform duration-[6000ms] ease-out ${current ? "scale-100" : "scale-[1.06]"}` : ""}`}
