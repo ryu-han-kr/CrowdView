@@ -1,4 +1,5 @@
 import { makeT, type T } from "../i18n/translate";
+import { researchPeak } from "./research-facts";
 import placeKto from "../data/korea/place-kto.json";
 import climbingGyms from "../data/korea/climbing-gyms.json";
 import type { Place } from "./types";
@@ -1003,7 +1004,11 @@ const BASE_PLACES: Place[] = [
 
 // 관광공사 관광지 집중률 이름 (scripts/korea-data/spot-kto.mts → place-kto.json)이 있으면 붙인다 → 예측 모델이 30일 집중률로 날마다 보정.
 // 행사는 열리는 곳(부산불꽃축제 → 광안리해수욕장)의 집중률
-export const PLACES: Place[] = BASE_PLACES.map((p) => (p.kto || !PLACE_KTO[p.id] ? p : { ...p, kto: PLACE_KTO[p.id] }));
+// 웹 조사로 붐비는 시간이 좁게 알려진 곳(실측 없는 곳만)은 피크 시각을 그 가운데로 (lib/research-facts)
+export const PLACES: Place[] = BASE_PLACES.map((p) => (p.kto || !PLACE_KTO[p.id] ? p : { ...p, kto: PLACE_KTO[p.id] })).map((p) => {
+  const peak = researchPeak(p);
+  return peak === undefined ? p : { ...p, peakHour: peak };
+});
 
 // 주소·사진 출처 함수는 lib/place-href 로 옮겼다 (브라우저 컴포넌트가 장소 자료 없이 쓰게). 서버 쪽 호출은 여기서 그대로 꺼내 쓴다
 export { placeHref, imageCreditText, photoCreditText } from "./place-href";

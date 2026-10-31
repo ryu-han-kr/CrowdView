@@ -46,6 +46,8 @@ import type { CrowdResult, HourPoint } from "@/lib/types";
 import { CATEGORY_LABEL } from "@/lib/types";
 import { DataTag } from "@/components/DataTag";
 import { AMENITY_LABEL } from "@/lib/google-facts";
+import { researchOf } from "@/lib/research-facts";
+import { ResearchFactsBlock } from "@/components/ResearchFactsBlock";
 import { JudgementCard } from "@/components/JudgementCard";
 import { SeoulPeopleProfile, VisitorProfile } from "@/components/VisitorProfile";
 import { WeatherCard } from "@/components/WeatherCard";
@@ -192,6 +194,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   // 구글 지도 소개 한 줄(한국어)도 외국어 화면에서는 번역 (Papago 캐시)
   const g = place.info?.google;
   const gSummary = g?.summary && lang !== "ko" ? ((await translateNames([g.summary], lang)).get(g.summary) ?? g.summary) : g?.summary;
+  // 웹 조사 혼잡 정보 (lib/research-facts): 대기·팁 문장은 외국어 화면에서 번역
+  const research = researchOf(place.id);
+  const researchTr = research && lang !== "ko" ? await translateNames([research.wait?.[0], ...(research.tips ?? []).slice(0, 3)], lang) : undefined;
   // 주변 서울 실시간 지역 이름도 외국어로 (자체 QA 10/22: en·ja에 '잠실 관광특구'가 한글로)
   const areaTr = await translateNames([crowd.area?.name, place.seoulArea], lang);
   const areaLabel = (x?: string): string => (x ? (areaTr.get(x) ?? t(x)) : "");
@@ -967,6 +972,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 </p>
               </>
             )}
+            {research && <ResearchFactsBlock f={research} lang={lang} t={t} text={(x) => researchTr?.get(x) ?? x} />}
             {place.info?.infocenter && (
               <div className="flex gap-3">
                 <span className="w-14 shrink-0 text-gray-500">{t("문의")}</span>
