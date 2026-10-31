@@ -130,11 +130,14 @@ export function SearchBox({ variant, className = "" }: { variant: "mobile" | "de
             router.push(lp(flat[active].href));
           } else if (query) showAll();
         }}
-        className={`flex items-center gap-2 rounded-full bg-white transition-shadow ${
-          mobile ? "border-2 border-indigo-500 px-4 py-2" : "border border-gray-200 px-3.5 py-2 hover:border-gray-300"
+        className={`flex items-center gap-2 rounded-full transition-shadow ${
+          // PC: 흰 메뉴줄에 묻혀 잘 안 보였다(경수님 10/31) → 옅은 보라 바탕 + 보라 테두리, 누르면 진하게
+          mobile
+            ? "border-2 border-indigo-500 bg-white px-4 py-2"
+            : `border-2 px-3.5 py-1.5 ${focused ? "border-indigo-500 bg-white" : "border-indigo-200 bg-indigo-50/60 hover:border-indigo-400"}`
         } ${focused ? "shadow-[0_0_0_4px_rgb(99_102_241/0.18)]" : ""}`}
       >
-        {!mobile && <Glyph e="🔍" className="h-4 w-4 shrink-0 text-gray-500" />}
+        {!mobile && <Glyph e="🔍" className="h-4 w-4 shrink-0 text-indigo-600" />}
         <input
           ref={input}
           type="search"
@@ -162,7 +165,7 @@ export function SearchBox({ variant, className = "" }: { variant: "mobile" | "de
           // 입력칸 자체의 포커스 테두리는 끈다 — 바깥 알약에 보라 빛 테두리가 대신 켜진다.
           // 인라인으로: globals.css의 공통 포커스 테두리는 레이어 밖이라 Tailwind outline-none보다 앞선다
           style={{ outline: "none" }}
-          className={`min-w-0 flex-1 bg-transparent placeholder:text-gray-500 [&::-webkit-search-cancel-button]:hidden ${mobile ? "text-[15px]" : "text-sm"}`}
+          className={`min-w-0 flex-1 bg-transparent placeholder:text-gray-500 [&::-webkit-search-cancel-button]:hidden ${mobile ? "text-[15px]" : "text-sm placeholder:text-gray-600"}`}
         />
         {text ? (
           <button
