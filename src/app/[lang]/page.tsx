@@ -293,6 +293,7 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
         emoji: "📰",
         sub: headline,
         note: [region, t("뉴스 화제")].filter(Boolean).join(" · "),
+        hot: true,
       };
     }
     return {
@@ -303,8 +304,14 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       img: x.img,
       emoji: x.kind === "event" ? "🎉" : "📍",
       sub: [x.period, region].filter(Boolean).join(" · ") || undefined,
-      // 11/1 지인 QA: 빨간 'AI ·'·'검색량 N배'가 촌스럽고 쓸모없다, 화제 이유는 잘려서 못 읽는다 → 행사만 이유 한 줄(두 줄까지), 나머지는 비움
-      note: x.kind === "event" ? (trendTr.get(x.reason) ?? x.reason) : undefined,
+      // 11/1 지인 QA: 화제 이유가 잘려 못 읽고 앞의 'AI ·'는 뜻을 모르겠다 → 'AI ·' 빼고 두 줄까지 (검색량·빨간 글씨는 경수님 확인으로 그대로)
+      note:
+        x.kind === "event"
+          ? (trendTr.get(x.reason) ?? x.reason)
+          : x.rising && x.rising >= 1.5
+            ? t("검색량 {n}배 ↑", { n: x.rising.toFixed(1) })
+            : t("요즘 많이 찾는 곳"),
+      hot: x.kind === "event" || (x.rising ?? 0) >= 1.5,
       wrap: x.kind === "event",
     };
   });

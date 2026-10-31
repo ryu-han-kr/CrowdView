@@ -16,7 +16,7 @@ export type SubCategory =
   | "indoor-waterpark"
   | "outdoor-waterpark"
   | "climbing"
-  | "trampoline"
+  | "sports-arcade"
   | "kids"
   | "ice-rink"
   | "arcade"
@@ -36,11 +36,11 @@ export const SUB_LABEL: Record<SubCategory, string> = {
   "indoor-waterpark": "실내 워터파크",
   "outdoor-waterpark": "야외 워터파크",
   climbing: "클라이밍",
-  trampoline: "트램폴린",
+  // 11/1 경수님: '실내 스포츠'·'트램폴린' → '아케이드' (스포츠몬스터·바운스처럼 몸으로 노는 곳), 오락실은 그대로
+  "sports-arcade": "아케이드",
   kids: "키즈 체험",
   "ice-rink": "아이스링크",
-  // 11/1 경수님: '실내 스포츠'는 클라이밍·볼링·당구도 다 실내 스포츠라 헷갈린다 → 없애고 스포츠몬스터는 오락실과 묶어 '아케이드'
-  arcade: "아케이드",
+  arcade: "오락실",
   bowling: "볼링",
 };
 
@@ -58,7 +58,7 @@ export const SUB_EMOJI: Record<SubCategory, string> = {
   "indoor-waterpark": "🏊",
   "outdoor-waterpark": "🌊",
   climbing: "🧗",
-  trampoline: "🤸",
+  "sports-arcade": "🎯",
   kids: "🧒",
   "ice-rink": "⛸️",
   arcade: "🕹️",
@@ -72,7 +72,7 @@ export const SUBS_OF: Partial<Record<Category, SubCategory[]>> = {
   street: ["cafe-street", "youth-street"],
   event: ["fireworks", "lights"],
   waterpark: ["outdoor-waterpark", "indoor-waterpark"],
-  indoor: ["climbing", "arcade", "trampoline", "kids", "ice-rink", "bowling"],
+  indoor: ["climbing", "sports-arcade", "kids", "ice-rink", "arcade", "bowling"],
 };
 
 const BY_ID: Record<string, SubCategory> = {
@@ -111,12 +111,12 @@ const BY_ID: Record<string, SubCategory> = {
   "theclimb-magok": "climbing",
   "theclimb-yangjae": "climbing",
   "ayersrock-wirye": "climbing",
-  "smob-hanam": "arcade",
-  "smob-goyang": "arcade",
-  "smob-suwon": "arcade",
-  "smob-daejeon": "arcade",
-  "vaunce-suwon": "trampoline",
-  "vaunce-daegu": "trampoline",
+  "smob-hanam": "sports-arcade",
+  "smob-goyang": "sports-arcade",
+  "smob-suwon": "sports-arcade",
+  "smob-daejeon": "sports-arcade",
+  "vaunce-suwon": "sports-arcade",
+  "vaunce-daegu": "sports-arcade",
   "kidzania-seoul": "kids",
   "kidzania-busan": "kids",
   "lotteworld-icerink": "ice-rink",

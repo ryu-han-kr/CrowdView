@@ -98,20 +98,13 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
   const holidays = new Map([...holidayNames(now.date, 130, signals.holidays), ...(signals.holidays ?? [])]);
   const holidayWindows = upcomingHolidayWindows(now.date, 120, signals.holidays)
     .slice(0, 3)
-    .map((w) => {
-      const raw = w.days.map((date) => {
+    .map((w) => ({
+      ...w,
+      days: w.days.map((date) => {
         const peak = forecastForDate(place, date, { ...signals, holidays }).reduce((a, b) => (b.score > a.score ? b : a));
         return { date, score: peak.score, hour: peak.hour };
-      });
-      // 11/1 판단: 모델은 '공휴일 = 붐빔'만 알아 전날은 원활·나머지는 전부 매우 혼잡으로 나왔다.
-      // 출국장은 떠나는 날(전날·첫날)이 가장 붐비고 마지막 날은 들어오는 사람이 많아 출국이 줄어든다 → 연휴 안 위치로 나눈다
-      const top = Math.max(...raw.map((d) => d.score));
-      const last = raw.length - 1;
-      return {
-        ...w,
-        days: raw.map((d, i) => ({ ...d, score: Math.round(top * (i <= 1 ? 1 : i === last ? 0.65 : 0.78)) })),
-      };
-    });
+      }),
+    }));
   const dayLabel = (date: string) =>
     new Intl.DateTimeFormat(lang, { month: "numeric", day: "numeric", weekday: "short", timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
   const busiest = (w: (typeof holidayWindows)[number]) => w.days.reduce((a, b) => (b.score > a.score ? b : a));
@@ -439,7 +432,7 @@ export default async function AirportPage({ params }: { params: Promise<{ id: st
           {holidayWindows.length > 0 && (
             <section className="card mt-6">
               <h2 className="text-base font-bold">{t("다가오는 연휴 출국장 예상")}</h2>
-              <p className="mt-0.5 text-[11px] text-gray-500">{t("예측 · 가까워질수록 정확해져요")}</p>
+              <p className="mt-0.5 text-[11px] text-gray-500">{t("AI 예측 · 연휴가 가까워지면 공항 예고 승객 수로 더 정확해져요")}</p>
               {holidayWindows.map((w) => {
                 const top = busiest(w);
                 return (
