@@ -82,7 +82,8 @@ export function ListCard({ item }: { item: ListCardItem }) {
               {item.tag.label}
             </p>
           )}
-          <p className="mt-0.5 truncate pr-8 text-base font-extrabold text-gray-950">{item.title}</p>
+          {/* 이름은 두 줄까지 (11/1 UX 점검: '2026 숭례문 파수…'·'롯데월드타워 서울…'처럼 한 줄로 잘려 무슨 곳인지 몰랐다) */}
+          <p className="mt-0.5 line-clamp-2 pr-8 text-base leading-snug font-extrabold break-keep text-gray-950">{item.title}</p>
           {item.sub && <p className="truncate text-[13px] font-medium text-gray-600">{item.sub}</p>}
           <p className="mt-1.5 flex min-w-0 items-center gap-1.5 overflow-hidden whitespace-nowrap">
             {item.level ? (

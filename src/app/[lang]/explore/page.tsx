@@ -3,6 +3,7 @@ import { ExploreView, type ExploreRegion } from "@/components/ExploreView";
 import type { SpotRow } from "@/components/MoreSpots";
 import spots from "@/data/korea/spots.json";
 import { InlineAd } from "@/components/AdUnit";
+import { PageHeader } from "@/components/PageHeader";
 import type { Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
 import { getAllCrowd } from "@/lib/crowd/service";
@@ -49,8 +50,17 @@ export default async function ExplorePage({ params }: { params: Promise<{ lang: 
 
   return (
     <main className="px-5 pt-6 pb-8 md:px-0 md:pt-10">
-      <h1 className="text-2xl font-bold md:text-3xl">{t("지역 여행")}</h1>
-      <p className="mt-1 text-sm text-gray-500">{t("지역별 대표 명소와 축제, 그리고 지금 혼잡도. 혼잡도는 근처 실시간 데이터가 있는 곳만 보여요")}</p>
+      {/* 11/1 UX 점검: 다른 탭 화면과 같은 머리(PageHeader — 위 여백·막대·크기)로, 설명은 한 줄로 줄임 */}
+      <PageHeader title={t("지역 여행")} className="mb-1">
+        <p className="mt-1 text-gray-500">{t("지역별 대표 명소·축제와 지금 혼잡도")}</p>
+      </PageHeader>
+      {/* 11/1 UX 점검: 페이지는 캐시(ISR)라 서버는 첫 지역(서울)을 그린다 → ?region=부산 으로 오면 화면이 뜨자마자 서울 명소가 보였다가 부산으로 바뀌었다.
+          고른 지역이 그려질 때까지 본문을 숨긴다 (globals.css data-explore-wait, ExploreView가 지운다) */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `try{var r=new URLSearchParams(location.search).get("region");if(r&&r!==${JSON.stringify(regions[0]?.id ?? "")}&&${JSON.stringify(regions.map((r) => r.id))}.indexOf(r)>=0)document.documentElement.setAttribute("data-explore-wait","")}catch(e){}`,
+        }}
+      />
       <ExploreView
         regions={regions}
         kinds={LANDMARK_KINDS}

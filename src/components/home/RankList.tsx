@@ -42,8 +42,9 @@ export function RankList({
     <section className="mt-10 md:mt-14">
       <div className="flex items-end justify-between gap-3">
         <h2 className="min-w-0 text-lg font-bold md:text-xl">{title}</h2>
+        {/* 11/1 UX 점검: 누르는 자리만 위아래로 넓힘 (배치는 그대로) */}
         {moreHref && moreLabel && (
-          <Link href={moreHref} className="shrink-0 text-sm text-gray-500">
+          <Link href={moreHref} className="-my-2 shrink-0 py-2 text-sm text-gray-500">
             {moreLabel} ›
           </Link>
         )}

@@ -370,6 +370,9 @@ body[data-page="me"] { --page-accent: #e11d48; }
 /* 11/1 지인 QA: 휴대폰에서 제목이 화면 맨 위에 붙어 답답했다 → 위 여백 조금 더, 설명은 한 단계 작게 */
 @media (max-width: 767px) { .page-head { padding-top: 0.75rem; } }
 .page-head > p:not(.page-title) { font-size: 0.8125rem; line-height: 1.35; }
+/* 11/1 UX 점검: /explore?region=부산 — 캐시된 첫 지역(서울) 그림이 하이드레이션 전에 보였다가 바뀌던 것 → 고른 지역을 그릴 때까지 숨김 (JS가 늦어도 3초 뒤엔 보임) */
+html[data-explore-wait] [data-explore-body] { visibility: hidden; animation: explore-reveal 0s 3s forwards; }
+@keyframes explore-reveal { to { visibility: visible; } }
 .page-head-bar { display: block; width: 2.75rem; height: 0.375rem; border-radius: 9999px; background: var(--page-accent); }
 .page-title {
   font-size: 1.625rem;

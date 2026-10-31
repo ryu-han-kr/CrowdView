@@ -1820,11 +1820,12 @@ export default {
     "首爾·釜山·濟州·慶州等各地代表景點、即將舉行的節慶及目前擁擠度一覽",
   ],
   "지역 여행": ["Regions", "地域の旅", "地区旅行", "地區旅遊"],
-  "지역별 대표 명소와 축제, 그리고 지금 혼잡도. 혼잡도는 근처 실시간 데이터가 있는 곳만 보여요": [
-    "Landmarks and festivals by region, with live crowds where nearby real-time data exists",
-    "地域別の名所と祭り、そして今の混雑度。混雑度は近くにリアルタイムデータがある場所のみ表示します",
-    "各地区代表景点与节庆，以及当前拥挤度。拥挤度仅显示附近有实时数据的地方",
-    "各地區代表景點與節慶，以及目前擁擠度。擁擠度僅顯示附近有即時資料的地方",
+  // 11/1 UX 점검: 지역 여행 머리 설명 한 줄로
+  "지역별 대표 명소·축제와 지금 혼잡도": [
+    "Top sights & festivals by region, with live crowds",
+    "地域別の名所・祭りと今の混雑度",
+    "各地区代表景点·节庆与当前拥挤度",
+    "各地區代表景點·節慶與目前擁擠度",
   ],
   "사진·위치: 한국관광공사 TourAPI · 축제: 한국관광공사·서울시 · 혼잡도: 서울시 실시간 도시데이터·CrowdView 예측": [
     "Photos & locations: Korea Tourism Organization TourAPI · Festivals: KTO, Seoul · Crowds: Seoul real-time city data, CrowdView forecasts",

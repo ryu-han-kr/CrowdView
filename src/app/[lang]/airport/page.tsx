@@ -5,6 +5,7 @@ import { getT as getMetaT } from "@/i18n/server";
 import { LevelBadge } from "@/components/Level";
 import { SolarIcon } from "@/components/icons/SolarIcon";
 import { PlaceThumb } from "@/components/PlaceRow";
+import { PageHeader } from "@/components/PageHeader";
 import { getParking } from "@/lib/airport";
 import { getAllCrowd } from "@/lib/crowd/service";
 import { PLACES } from "@/lib/places";
@@ -37,8 +38,10 @@ export default async function AirportListPage({ params }: { params: Promise<{ la
 
   return (
     <main className="px-5 pt-6 md:px-0 md:pt-10">
-      <h1 className="text-2xl font-bold md:text-3xl">{t("공항 혼잡도")}</h1>
-      <p className="mt-1 text-sm text-gray-500">{t("출국 수속(보안검색) 줄·구간별 대기·주차장까지 한눈에")}</p>
+      {/* 11/1 UX 점검: 하단 탭 화면인데 머리만 달랐다 → 다른 탭과 같은 PageHeader (위 여백·막대·크기) */}
+      <PageHeader title={t("공항 혼잡도")}>
+        <p className="mt-1 text-gray-500">{t("출국 수속(보안검색) 줄·구간별 대기·주차장까지 한눈에")}</p>
+      </PageHeader>
 
       <ul className="mt-5 space-y-3 md:grid md:grid-cols-[repeat(auto-fill,minmax(320px,1fr))] md:gap-4 md:space-y-0">
         {AIRPORTS.map((place, i) => {

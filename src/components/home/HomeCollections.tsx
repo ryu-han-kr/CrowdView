@@ -48,8 +48,9 @@ function SectionHead({ title, sub, moreHref }: { title: string; sub?: string; mo
         <h2 className="text-xl font-extrabold tracking-tight md:text-2xl">{title}</h2>
         {sub && <p className="mt-0.5 text-[13px] font-medium text-gray-600 md:text-sm">{sub}</p>}
       </div>
+      {/* 11/1 UX 점검: 누르는 자리만 위아래로 넓힘 (배치는 그대로) */}
       {moreHref && (
-        <Link href={moreHref} className="shrink-0 text-sm font-semibold text-gray-700">
+        <Link href={moreHref} className="-my-2 shrink-0 py-2 text-sm font-semibold text-gray-700">
           {t("전체 보기")} ›
         </Link>
       )}
