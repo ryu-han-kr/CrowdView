@@ -10,7 +10,7 @@ import { Glyph } from "@/components/Glyph";
 
 type Kind = "calm" | "busy";
 
-/** 장소 상세의 혼잡 알림 켜기/끄기. 로그인한 회원은 누구나 1개(무료), Plus는 30개. 로그인 전에는 안내 링크 */
+/** 장소 상세의 혼잡 알림 켜기/끄기. 로그인한 회원은 누구나 1개(무료), Plus는 30개. 로그인 전에는 '한산해지면' 한 번 알림 (lib/alerts-anon) */
 export function AlertButtons({ placeId, enabled }: { placeId: string; enabled: boolean }) {
   return enabled ? <Inner placeId={placeId} /> : null;
 }
@@ -76,9 +76,7 @@ function Inner({ placeId }: { placeId: string }) {
           ))}
         </div>
       ) : (
-        <Link href="/me" className="mt-2 block text-xs text-indigo-600">
-          {t("로그인하고 이 장소가 한산해질 때 알림을 받아 보세요")} ›
-        </Link>
+        <AnonAlert placeId={placeId} />
       )}
       {data?.user && !plus && (
         <p className="mt-2 text-[11px] text-gray-500">
@@ -90,5 +88,63 @@ function Inner({ placeId }: { placeId: string }) {
       )}
       {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
     </section>
+  );
+}
+
+const anonPost = async (body: Record<string, unknown>) => {
+  const res = await fetch("/api/alerts/anon", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.error ?? `HTTP ${res.status}`);
+  return json as { placeId?: string | null; calmNow?: boolean };
+};
+
+/** 로그인 없이: 이 브라우저에서 한 곳, 한산해지면 한 번 알리고 끝 (7일). 로그인하면 계속·붐빔 알림도 */
+function AnonAlert({ placeId }: { placeId: string }) {
+  const { t, lang } = useI18n();
+  const [on, setOn] = useState(false);
+  const [calmNow, setCalmNow] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // 이미 알림을 허용한 브라우저만 상태를 묻는다 (권한 창을 먼저 띄우지 않게)
+    if (typeof Notification === "undefined" || Notification.permission !== "granted" || !("serviceWorker" in navigator)) return;
+    navigator.serviceWorker
+      .getRegistration("/sw.js")
+      .then((reg) => reg?.pushManager.getSubscription())
+      .then((sub) => sub && anonPost({ action: "status", endpoint: sub.endpoint }))
+      .then((r) => r && setOn(r.placeId === placeId))
+      .catch(() => {});
+  }, [placeId]);
+
+  const toggle = async () => {
+    setError(null);
+    try {
+      const subscription = await getPushSubscription();
+      if (on) await anonPost({ action: "off", endpoint: subscription.endpoint });
+      else setCalmNow(!!(await anonPost({ action: "on", placeId, subscription, lang })).calmNow);
+      setOn(!on);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  };
+
+  return (
+    <>
+      <button
+        onClick={toggle}
+        aria-pressed={on}
+        className={`mt-3 w-full rounded-2xl px-3 py-2.5 text-xs font-semibold ${on ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-700"}`}
+      >
+        {t("한산해지면 알림")}
+        {on && <Glyph e="✓" className="ml-1 h-3.5 w-3.5" />}
+      </button>
+      <p className="mt-2 text-[11px] leading-relaxed text-gray-500">
+        {on && calmNow ? t("지금도 한산해요. 붐볐다가 다시 한산해지면 알려 드려요") : t("로그인 없이 한 번 알려 드려요 (7일 동안)")}{" "}
+        <Link href="/me" className="text-indigo-600">
+          {t("로그인하면 붐빔 알림도")} ›
+        </Link>
+      </p>
+      {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+    </>
   );
 }

@@ -52,19 +52,29 @@ function memoryKV(): KV {
       return n;
     },
     async pipeline(commands) {
-      const m = globalThis as unknown as { __crowdHash?: Map<string, Map<string, number>>; __crowdSet?: Map<string, Set<string>> };
+      const m = globalThis as unknown as { __crowdHash?: Map<string, Map<string, number | string>>; __crowdSet?: Map<string, Set<string>> };
       const hashes = (m.__crowdHash ??= new Map());
       const sets = (m.__crowdSet ??= new Map());
       return commands.map(([cmd, key, ...args]) => {
         const k = String(key);
         switch (String(cmd).toUpperCase()) {
           case "HINCRBY": {
-            const h = hashes.get(k) ?? new Map<string, number>();
+            const h = hashes.get(k) ?? new Map<string, number | string>();
             hashes.set(k, h);
-            const n = (h.get(String(args[0])) ?? 0) + Number(args[1]);
+            const n = Number(h.get(String(args[0])) ?? 0) + Number(args[1]);
             h.set(String(args[0]), n);
             return n;
           }
+          case "HSET": {
+            const h = hashes.get(k) ?? new Map<string, number | string>();
+            hashes.set(k, h);
+            h.set(String(args[0]), String(args[1]));
+            return 1;
+          }
+          case "HGET":
+            return hashes.get(k)?.get(String(args[0]))?.toString() ?? null;
+          case "HDEL":
+            return hashes.get(k)?.delete(String(args[0])) ? 1 : 0;
           case "HGETALL":
             return [...(hashes.get(k) ?? new Map()).entries()].flat().map(String);
           case "PFADD": {

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { checkAlerts } from "@/lib/alerts";
+import { checkAnonAlerts } from "@/lib/alerts-anon";
 import { archiveSnapshot } from "@/lib/archive";
 import { getAllCrowd, refreshAll } from "@/lib/crowd/service";
 import { trackAccuracy } from "@/lib/accuracy";
@@ -55,6 +56,8 @@ export async function GET(req: Request) {
     .catch(async (e) => (await opsAlert("자료 보관(R2) 실패", e, { key: "archive", cooldownS: 3 * 3600 }), 0));
   // 새 혼잡도로 Plus 혼잡 알림을 보내고, 기간이 끝난 해지 구독을 정리한다 (DB가 없으면 건너뜀)
   const alerts = await checkAlerts(await getAllCrowd()).catch(async (e) => (await opsAlert("혼잡 알림 발송 실패", e), 0));
+  // 로그인 없는 '한산해지면 알림' (Redis만, DB를 깨우지 않는다)
+  const anonAlerts = await checkAnonAlerts(await getAllCrowd()).catch(async (e) => (await opsAlert("비회원 알림 발송 실패", e), 0));
   // 만료 정리·자동결제 7일 전 안내는 하루 한 번 (새벽 4시 첫 수집)이면 충분 — 매번 돌리면 DB가 계속 깨어 있다
   const now = kst();
   // 수집기가 5분마다 돌므로 '첫 실행'은 0~5분 (10분이면 한 시간에 두 번 걸린다)
@@ -113,6 +116,7 @@ export async function GET(req: Request) {
     refreshed,
     archived,
     alerts,
+    anonAlerts,
     charged,
     expired,
     notices,
