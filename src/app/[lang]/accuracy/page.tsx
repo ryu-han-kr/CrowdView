@@ -16,14 +16,24 @@ const COPY = {
     lead: "서울 실시간 121곳에서 매시간 예측을 저장해 두고, 그 시각이 되면 서울시 실제 값과 비교해요. ‘단계 일치’는 화면의 5단계가 맞은 비율, ‘평균 오차’는 0~100점 기준 점수 차이예요.",
     horizon: {
       "official-1h": "서울시 공식 예측 · 1시간 뒤",
+      "naive-1h": "기준선 · 지금 값 그대로 1시간 뒤",
+      "blend-1h": "CrowdView 단기 혼합 · 1시간 뒤 (지금 값 + 치우침을 고친 공식 예측)",
       "official-3h": "서울시 공식 예측 · 3시간 뒤",
+      "naive-3h": "기준선 · 지금 값 그대로 3시간 뒤",
+      "blend-3h": "CrowdView 단기 혼합 · 3시간 뒤 (지금 값 + 치우침을 고친 공식 예측)",
       "pattern-24h": "CrowdView 패턴 예측 · 24시간 뒤",
       "naive-24h": "기준선 · 지금 값 그대로 24시간 뒤",
       "median-24h": "기준선 · 최근 4주 같은 요일·시각 중앙값",
       "weekly-24h": "기준선 · 지난주 같은 요일·시각",
       "hybrid-24h": "CrowdView 혼합 · 같은 종류의 날이면 지금 값, 평일↔주말이 바뀌면 지난주 같은 시각",
+      "ensemble-24h": "CrowdView 앙상블 · 지역마다 최근에 잘 맞은 기준선에 더 무게",
+      "learned-24h": "CrowdView 학습 모델 · 실제 결과로 매시간 스스로 고치는 학습 모델",
     },
     week: "최근 7일",
+    near: "1단계 이내",
+    day: "낮(08~22시) 단계 일치",
+    learnNote:
+      "학습 모델은 지금 값·지난주 같은 시각(앞뒤 1시간 평균)·최근 4주 중앙값과 ‘평일↔주말이 바뀌는지’·‘밤인지’를 넣은 계산식이에요. 매시간 실제 값이 들어오면 틀린 만큼 계산식의 무게를 조금씩 고치고(오래된 결과는 천천히 잊어요), 지역마다 남는 치우침도 따로 고쳐요. 앙상블은 지역마다 기준선들의 최근 오차를 기억해 잘 맞는 쪽에 더 무게를 줘요. 단기 혼합은 서울시 공식 예측이 지역마다 늘 높게·낮게 보는 만큼을 빼고, 지금 값과 최근 오차 비율로 섞어요. 앙상블·학습 모델은 기준선·혼합을 모두 단계 일치·평균 오차 둘 다 이길 때만 내일·주말 예측에 써요.",
     using:
       "지금 24시간 뒤 예측(한산한 코스의 내일·주말 점수)에 쓰는 방법: {m}. 기준선·혼합 방법이 최근 7일 단계 일치와 평균 오차를 둘 다 패턴 예측보다 잘 맞출 때만(비교 수 {n} 이상) 자동으로 바꿔요.",
     match: "단계 일치",
@@ -47,14 +57,24 @@ const COPY = {
     lead: "Every hour we store forecasts for 121 Seoul areas and compare them with Seoul's actual values when that hour arrives. ‘Level match’ is the share of correct five-level predictions; ‘mean error’ is the score difference on a 0–100 scale.",
     horizon: {
       "official-1h": "Seoul official forecast · 1 h ahead",
+      "naive-1h": "Baseline · current value carried 1 h ahead",
+      "blend-1h": "CrowdView short-term blend · 1 h ahead (current value + bias-corrected official forecast)",
       "official-3h": "Seoul official forecast · 3 h ahead",
+      "naive-3h": "Baseline · current value carried 3 h ahead",
+      "blend-3h": "CrowdView short-term blend · 3 h ahead (current value + bias-corrected official forecast)",
       "pattern-24h": "CrowdView pattern forecast · 24 h ahead",
       "naive-24h": "Baseline · current value carried 24 h ahead",
       "median-24h": "Baseline · median of the same weekday and hour, last 4 weeks",
       "weekly-24h": "Baseline · same weekday and hour last week",
       "hybrid-24h": "CrowdView blend · current value if tomorrow is the same kind of day, last week's same hour when weekday↔weekend changes",
+      "ensemble-24h": "CrowdView ensemble · per area, more weight on the baselines that have been right lately",
+      "learned-24h": "CrowdView learned model · corrects itself every hour from actual results",
     },
     week: "Last 7 days",
+    near: "Within one level",
+    day: "Daytime (08–22 h) level match",
+    learnNote:
+      "The learned model is a formula over the current value, last week's same hour (averaged with the hours either side), the 4-week median, whether weekday↔weekend changes and whether it is night. Every hour, when the actual value arrives, it nudges the formula's weights by how wrong it was (slowly forgetting old results) and corrects each area's leftover bias. The ensemble remembers each baseline's recent error per area and leans on whichever has been right. The short-term blend removes each area's usual over/under-estimate from Seoul's official forecast and mixes it with the current value by their recent errors. The ensemble and learned model are used for tomorrow/weekend forecasts only when they beat every baseline and blend on both level match and mean error.",
     using:
       "Method currently used for 24-hour-ahead forecasts (tomorrow/weekend scores in quiet routes): {m}. A baseline or blend replaces the pattern forecast only when it beats it on both level match and mean error over the last 7 days (at least {n} comparisons).",
     match: "Level match",
@@ -75,9 +95,26 @@ const COPY = {
   },
 };
 
-const sum = (stats: (DayStat | null)[]): DayStat =>
-  stats.reduce<DayStat>((a, s) => (s ? { n: a.n + s.n, match: a.match + s.match, absErr: a.absErr + s.absErr } : a), { n: 0, match: 0, absErr: 0 });
+/** 합계. 1단계 이내·낮 시간은 그 값을 센 날만 (11/1 전 기록엔 없다): nearN = 1단계 이내를 센 비교 수 */
+type Sum = DayStat & { near: number; nearN: number; dayN: number; dayMatch: number };
+const sum = (stats: (DayStat | null)[]): Sum =>
+  stats.reduce<Sum>(
+    (a, s) =>
+      s
+        ? {
+            n: a.n + s.n,
+            match: a.match + s.match,
+            absErr: a.absErr + s.absErr,
+            near: a.near + (s.near ?? 0),
+            nearN: a.nearN + (s.near !== undefined ? s.n : 0),
+            dayN: a.dayN + (s.dayN ?? 0),
+            dayMatch: a.dayMatch + (s.dayMatch ?? 0),
+          }
+        : a,
+    { n: 0, match: 0, absErr: 0, near: 0, nearN: 0, dayN: 0, dayMatch: 0 },
+  );
 const pct = (s: DayStat) => (s.n ? `${Math.round((s.match / s.n) * 100)}%` : "–");
+const ratio = (x: number, n: number) => (n ? `${Math.round((x / n) * 100)}%` : "–");
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const lang = (await params).lang as Lang;
@@ -111,6 +148,11 @@ export default async function AccuracyPage({ params }: { params: Promise<{ lang:
               <p className="text-xs text-gray-500">
                 {c.match} · {c.err} {err(s)} · {c.n} {s.n.toLocaleString()}
               </p>
+              {s.nearN > 0 && (
+                <p className="text-xs text-gray-500">
+                  {c.near} {ratio(s.near, s.nearN)} · {c.day} {ratio(s.dayMatch, s.dayN)}
+                </p>
+              )}
             </li>
           );
         })}
@@ -118,6 +160,7 @@ export default async function AccuracyPage({ params }: { params: Promise<{ lang:
       <p className="mt-3 max-w-3xl text-xs leading-relaxed text-gray-600">
         {c.using.replace("{m}", c.horizon[method]).replace("{n}", MIN_PICK_N.toLocaleString())}
       </p>
+      <p className="mt-2 max-w-3xl text-xs leading-relaxed text-gray-600">{c.learnNote}</p>
 
       {any ? (
         <div className="mt-8 overflow-x-auto rounded-2xl border border-gray-100 bg-white">
@@ -147,6 +190,7 @@ export default async function AccuracyPage({ params }: { params: Promise<{ lang:
                               <b>{pct(s)}</b>{" "}
                               <span className="text-xs text-gray-500">
                                 · {err(s)} · {s.n}
+                                {s.near !== undefined && ` · ±1 ${ratio(s.near, s.n)}`}
                               </span>
                             </>
                           ) : (

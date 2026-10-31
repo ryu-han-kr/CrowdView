@@ -1,6 +1,7 @@
 // 추천 루트 후보 장소: 우리 장소(오늘 시간대별 예측) + 서울시 실시간 지역(서울시 12시간 예측).
 // 역 주변(인구밀집 지역)은 목적지가 아니라서 뺀다. 식사 장소는 서울 여행 가이드 맛집(정확한 좌표가 있는 곳)
-import { getMedianProfile, getMethod24, getWeekProfile, isWeekendDay, type MedianProfile, type Method24 } from "./accuracy";
+import { getLearnState, getMedianProfile, getMethod24, getWeekProfile, isWeekendDay, type MedianProfile, type Method24 } from "./accuracy";
+import { ensemblePredict, isNight, learnPredict, type LearnState } from "./accuracy-learn";
 import { forecastForDate } from "./crowd/model";
 import { getAllCrowd } from "./crowd/service";
 import { makePredictor, shapeNear } from "./forecast";
@@ -47,13 +48,21 @@ const GROUP_STAY: Partial<Record<SeoulGroup, number>> = { heritage: 80, park: 60
 /** "YYYY-MM-DD HH:MM" → 오늘 0시부터 센 시 (내일 9시 = 33) */
 const absHour = (time: string) => daysUntil(time.slice(0, 10)) * 24 + Number(time.slice(11, 13));
 
-/** 12시간 뒤 예측에 쓰는 방법 (lib/accuracy가 최근 7일 채점으로 고른다) + 4주 중앙값 프로필 */
+/** 12시간 뒤 예측에 쓰는 방법 (lib/accuracy가 최근 7일 채점으로 고른다) + 프로필 (중앙값 방법이면 4주 중앙값, 아니면 지난주·오늘 같은 시각) */
 interface Beyond {
   method: Method24;
   profile: MedianProfile;
+  /** 앙상블·학습 모델: 4주 중앙값 프로필과 모델 상태 (상태가 없으면 혼합으로) */
+  median?: MedianProfile;
+  learn?: LearnState;
 }
+const ADAPTIVE: Method24[] = ["ensemble-24h", "learned-24h"];
 async function getBeyond(): Promise<Beyond> {
   const { method } = await getMethod24().catch(() => ({ method: "pattern-24h" as Method24 }));
+  if (ADAPTIVE.includes(method)) {
+    const [profile, median, learn] = await Promise.all([getWeekProfile(), getMedianProfile(), getLearnState()]);
+    return { method, profile, median, ...(learn && { learn }) };
+  }
   const profile = method === "median-24h" ? await getMedianProfile() : method === "weekly-24h" || method === "hybrid-24h" ? await getWeekProfile() : {};
   return { method, profile };
 }
@@ -61,7 +70,8 @@ async function getBeyond(): Promise<Beyond> {
 /**
  * 서울시 실시간 지역의 지금 + 12시간 예측 → 후보 (관심사·머무는 시간은 부르는 쪽이 정한다).
  * 그 뒤(내일·주말)는 /accuracy 채점에서 고른 방법으로 예측한다: 기본은 가까운 지하철역의 요일·시간대 승하차 모양을 지금 점수에
- * 맞춘 패턴 예측(lib/forecast). 기준선·혼합이 더 나으면 '지금 값 그대로'·'4주 같은 요일·시 중앙값'·'지난주 같은 시각'·혼합(칸이 비면 패턴)
+ * 맞춘 패턴 예측(lib/forecast). 기준선·혼합이 더 나으면 '지금 값 그대로'·'4주 같은 요일·시 중앙값'·'지난주 같은 시각'·혼합(칸이 비면 패턴).
+ * 앙상블·학습 모델(lib/accuracy-learn)도 같은 칸 값으로 후보·입력을 만든다 (상태가 없거나 지난주 칸이 비면 혼합 → 패턴)
  */
 function seoulCandidate(a: (typeof SEOUL_AREAS)[number], live: Omit<SeoulLive, "distance">, beyond: Beyond): Omit<Candidate, "interest" | "stay"> {
   const hourly: Record<number, number> = { [absHour(live.time)]: live.score };
@@ -83,6 +93,38 @@ function seoulCandidate(a: (typeof SEOUL_AREAS)[number], live: Omit<SeoulLive, "
     const yesterday = (today + 6) % 7;
     return isWeekendDay(yesterday) === isWeekendDay(today) ? prof[yesterday * 24 + hod] : prof[slotOf(h)];
   };
+  const num = (x: number | null | undefined) => (typeof x === "number" ? x : undefined);
+  const med = beyond.median?.[a.code];
+  const learn = beyond.learn;
+  // 앙상블: 지역별 최근 오차로 후보(지금 값·지난주 같은 시각·혼합·4주 중앙값)를 섞는다
+  const ensemble = (h: number) =>
+    learn &&
+    ensemblePredict(learn.ens[a.code], {
+      naive: live.score,
+      weekly: num(prof?.[slotOf(h)]),
+      hybrid: num(hybrid(h)) ?? live.score,
+      median: num(med?.[slotOf(h)]),
+    });
+  // 학습 모델: 채점 때와 같은 입력 (지금 값, 지난주 같은 시각·앞뒤 1시간 평균, 4주 중앙값, 평일↔주말 바뀜, 밤)
+  const learned = (h: number) => {
+    const s = slotOf(h);
+    const w = num(prof?.[s]);
+    if (!learn || w === undefined) return undefined;
+    const near = [prof![(s + 167) % 168], w, prof![(s + 1) % 168]].filter((x): x is number => typeof x === "number");
+    const targetDay = (today + Math.floor(h / 24)) % 7;
+    return learnPredict(
+      learn.rls,
+      [
+        live.score,
+        w,
+        Math.round(near.reduce((x, y) => x + y, 0) / near.length),
+        num(med?.[s]) ?? null,
+        isWeekendDay(targetDay) === isWeekendDay(today) ? 0 : 1,
+        isNight(((h % 24) + 24) % 24) ? 1 : 0,
+      ],
+      learn.lb[a.code],
+    );
+  };
   const predict =
     beyond.method === "naive-24h"
       ? () => live.score
@@ -90,7 +132,11 @@ function seoulCandidate(a: (typeof SEOUL_AREAS)[number], live: Omit<SeoulLive, "
         ? (h: number) => prof[slotOf(h)] ?? pattern?.(h) ?? live.score
         : beyond.method === "hybrid-24h" && prof
           ? (h: number) => hybrid(h) ?? pattern?.(h) ?? live.score
-          : pattern;
+          : beyond.method === "ensemble-24h" && prof
+            ? (h: number) => ensemble(h) ?? hybrid(h) ?? pattern?.(h) ?? live.score
+            : beyond.method === "learned-24h" && prof
+              ? (h: number) => learned(h) ?? hybrid(h) ?? pattern?.(h) ?? live.score
+              : pattern;
   const img = photoNear(a);
   return {
     id: `seoul-${a.code}`,
