@@ -158,11 +158,22 @@ interface Expected {
   peopleKind?: HourPoint["peopleKind"];
 }
 
+/**
+ * 그날 운영 시간 (null 휴무). 오늘은 place.hours·closedToday, 다른 날은 구글 특별 운영일·요일별 운영 시간이 있으면 그것 (lib/google-facts),
+ * 없으면 place.hours
+ */
+export function dayHours(place: Place, date: string, today = kst().date): [number, number] | null {
+  if (date === today) return place.info?.closedToday ? null : place.hours;
+  const sp = place.info?.special?.[date];
+  if (sp !== undefined) return sp;
+  const w = place.info?.week?.[new Date(`${date}T00:00:00Z`).getUTCDay()];
+  return w === undefined ? place.hours : w;
+}
+
 /** 특정 시각의 기대 혼잡도와 인원 (노이즈 없음) */
 function expected(place: Place, t: KstParts, s?: Signals): Expected {
-  const [open, close] = place.hours;
-  if (t.hour < open || t.hour >= close || !inSeason(place, t.date)) return { score: 3 };
-  if (place.info?.closedToday && t.date === kst().date) return { score: 3 };
+  const hours = dayHours(place, t.date);
+  if (!hours || t.hour < hours[0] || t.hour >= hours[1] || !inSeason(place, t.date)) return { score: 3 };
   const h = Math.floor(t.hour);
 
   // 공항: 공항공사가 예고한 시간대별 출발 승객 수를 장소별 기준으로 점수화

@@ -27,6 +27,14 @@ export interface PlaceInfo {
   /** 행사 일정이 TourAPI 올해 값인지. false면 작년 일정에서 1년 뒤로 추정 */
   eventVerified?: boolean;
   eventPlayTime?: string;
+  /** 운영 시간을 어디서 찾았는지 (google: TourAPI에 없어 구글 지도 값) */
+  hoursSource?: "tour" | "google";
+  /** 구글 지도 요일별 운영 시간 (0=일, null 휴무). 오늘이 아닌 날 예측에 쓴다 (lib/crowd/model dayHours) */
+  week?: ([number, number] | null)[];
+  /** 구글 지도 특별 운영일 (YYYY-MM-DD → 운영 시간, null 휴무) */
+  special?: Record<string, [number, number] | null>;
+  /** 구글 지도 평점·리뷰 수·소개·편의 정보 (화면에 'Google 지도' 출처와 함께, lib/google-facts) */
+  google?: { rating?: number; count?: number; uri?: string; summary?: string; phone?: string; web?: string; amen?: string[] };
 }
 
 /** 장소별 혼잡 기준. 예: 홍대 인구 5만 미만 쾌적 … 14만 이상 매우 혼잡 */

@@ -16,7 +16,7 @@ import { breadcrumbLd, jsonLd, kstClock, pageMeta, SITE } from "@/lib/seo";
 import { HourlyChart } from "@/components/charts/lazy";
 import { LevelBadge } from "@/components/Level";
 import { PlaceHero } from "@/components/PlaceHero";
-import { forecastForDate, forecastReasons, weekForecast } from "@/lib/crowd/model";
+import { dayHours, forecastForDate, forecastReasons, weekForecast } from "@/lib/crowd/model";
 import { UpcomingHours } from "@/components/PlaceForecast";
 import { TripWatchButton } from "@/components/TripWatchButton";
 import { getHistory, type HistoryPoint } from "@/lib/crowd/history";
@@ -45,6 +45,7 @@ import { formatHour, type T } from "@/i18n/translate";
 import type { CrowdResult, HourPoint } from "@/lib/types";
 import { CATEGORY_LABEL } from "@/lib/types";
 import { DataTag } from "@/components/DataTag";
+import { AMENITY_LABEL } from "@/lib/google-facts";
 import { JudgementCard } from "@/components/JudgementCard";
 import { SeoulPeopleProfile, VisitorProfile } from "@/components/VisitorProfile";
 import { WeatherCard } from "@/components/WeatherCard";
@@ -188,6 +189,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
   const restNote = place.info?.restText ? splitInfoNote(trInfo(place.info.restText)!) : null;
   // 주소도 외국어 화면에서는 번역 (외부 점검: en 화면 한국어 노출)
   const address = (await translateNames([place.address], lang)).get(place.address) ?? place.address;
+  // 구글 지도 소개 한 줄(한국어)도 외국어 화면에서는 번역 (Papago 캐시)
+  const g = place.info?.google;
+  const gSummary = g?.summary && lang !== "ko" ? ((await translateNames([g.summary], lang)).get(g.summary) ?? g.summary) : g?.summary;
   // 주변 서울 실시간 지역 이름도 외국어로 (자체 QA 10/22: en·ja에 '잠실 관광특구'가 한글로)
   const areaTr = await translateNames([crowd.area?.name, place.seoulArea], lang);
   const areaLabel = (x?: string): string => (x ? (areaTr.get(x) ?? t(x)) : "");
@@ -301,7 +305,8 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
     .sort((a, b) => b.avg - a.avg);
   // 이번 주 × 시간: 오늘은 실측이 섞인 곡선, 다른 날은 예측. 운영 시간만, 정기 휴무일은 비움
   const heatDays = week.map((d, i) => {
-    const closed = (i === 0 && !!place.info?.closedToday) || (i > 0 && !!place.info?.restText && closedToday(place.info.restText, d.date));
+    const closed =
+      (i === 0 && !!place.info?.closedToday) || (i > 0 && ((!!place.info?.restText && closedToday(place.info.restText, d.date)) || dayHours(place, d.date) === null));
     const pts = i === 0 ? hourly : forecastForDate(place, d.date, signals);
     return {
       date: d.date,
@@ -902,6 +907,7 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                     {isOpen ? `· ${t("운영 중")}` : `· ${t(crowd.offSeason ? "시즌 아님" : "운영 종료")}`}
                   </span>
                   {!place.info?.hoursVerified && <DataTag kind="임의" />}
+                  {place.info?.hoursSource === "google" && <span className="ml-1 text-xs text-gray-500">({t("Google 지도 기준")})</span>}
                 </p>
                 {hoursNote && (hoursNote.main || hoursNote.notes.length > 0) && (
                   <p className="mt-1 text-xs leading-relaxed whitespace-pre-line text-gray-500">{[hoursNote.main, ...hoursNote.notes].filter(Boolean).join("\n")}</p>
@@ -918,10 +924,67 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
                 </div>
               </div>
             )}
+            {/* 구글 지도 평점·리뷰 수·소개·편의 정보 (lib/google-facts). 구글 규정: 지도 밖에서 보여 줄 땐 'Google 지도' 출처를 바로 곁에 */}
+            {g && (g.rating !== undefined || gSummary || !!g.amen?.length) && (
+              <>
+                {g.rating !== undefined && (
+                  <div className="flex gap-3">
+                    <span className="w-14 shrink-0 text-gray-500">{t("평점")}</span>
+                    <span>
+                      <span className="text-amber-500">★</span> {g.rating.toFixed(1)}
+                      {g.count !== undefined && <span className="text-gray-500"> · {t("리뷰 {n}개", { n: compactNumber(g.count, lang) })}</span>}
+                    </span>
+                  </div>
+                )}
+                {gSummary && (
+                  <div className="flex gap-3">
+                    <span className="w-14 shrink-0 text-gray-500">{t("소개")}</span>
+                    <span>{gSummary}</span>
+                  </div>
+                )}
+                {!!g.amen?.length && (
+                  <div className="flex gap-3">
+                    <span className="w-14 shrink-0 text-gray-500">{t("편의")}</span>
+                    <span className="flex flex-wrap gap-1.5">
+                      {g.amen.map((k) => (
+                        <span key={k} className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs text-gray-700">
+                          {t(AMENITY_LABEL[k] ?? k)}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                )}
+                <p className="pl-17 text-xs text-gray-500">
+                  {t("평점·소개·편의 정보 출처")}{" "}
+                  <a
+                    href={g.uri ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place.name)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline underline-offset-2"
+                  >
+                    {t("Google 지도")}
+                  </a>
+                </p>
+              </>
+            )}
             {place.info?.infocenter && (
               <div className="flex gap-3">
                 <span className="w-14 shrink-0 text-gray-500">{t("문의")}</span>
                 <span>{place.info.infocenter}</span>
+              </div>
+            )}
+            {!place.info?.infocenter && g?.phone && (
+              <div className="flex gap-3">
+                <span className="w-14 shrink-0 text-gray-500">{t("문의")}</span>
+                <a href={`tel:${g.phone.replace(/[^\d+]/g, "")}`}>{g.phone}</a>
+              </div>
+            )}
+            {g?.web && /^https?:\/\//.test(g.web) && (
+              <div className="flex gap-3">
+                <span className="w-14 shrink-0 text-gray-500">{t("홈페이지")}</span>
+                <a href={g.web} target="_blank" rel="noreferrer" className="min-w-0 truncate text-gray-700 underline underline-offset-2">
+                  {g.web.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}
+                </a>
               </div>
             )}
             <div className="flex gap-3">

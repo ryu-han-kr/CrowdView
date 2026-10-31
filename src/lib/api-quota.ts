@@ -75,6 +75,11 @@ export const APIS: ApiInfo[] = [
   { id: "tavily", name: "Tavily 검색 (무료)", limit: Number(process.env.TAVILY_DAILY_LIMIT) || 30, monthlyLimit: Number(process.env.TAVILY_MONTHLY_LIMIT) || 1000, unit: "크레딧" },
   // 구글 플레이스 (New) 사진 없는 장소 사진 (api/gphoto). 검색 1 + 사진 1을 2로 센다. 사진 월 1,000장 무료 → 월 1,800(사진 900장)에서 멈춘다
   { id: "google-places", name: "구글 플레이스 사진 (검색+사진)", limit: 120, monthlyLimit: 1800 },
+  // 구글 장소 정보 (lib/google-facts): 평점·리뷰 수·운영 시간 = Place Details Enterprise, 월 1,000건 무료 → 월 900(90%)에서 멈춘다.
+  // 대상 약 230곳 × 10일마다 ≈ 월 700건. 하루 300(90% 270)은 처음 한 번에 채울 때 몫
+  { id: "google-details", name: "구글 장소 정보 (평점·운영 시간, 월 1,000건 무료)", limit: 300, monthlyLimit: 1000 },
+  // place id 찾기: Text Search IDs only (field mask places.id) — 무료·무제한이라 세기만
+  { id: "google-ids", name: "구글 place id 찾기 (무료)" },
   { id: "papago", name: "Papago 번역 (글자 수)", limit: 30000, monthlyLimit: Number(process.env.PAPAGO_MONTHLY_LIMIT) || 300_000, unit: "자" },
   // Claude API (경수님 10/30: 횟수 상한). 토큰 요금은 호출 수로 묶고, 웹 검색은 따로 센다 (lib/ai-quota)
   // 호출: 하루 200·월 3,000 (AI 여행 요약·화제 행사·사진 작업 합). 더 쓰려면 AI_DAILY_LIMIT·AI_MONTHLY_LIMIT

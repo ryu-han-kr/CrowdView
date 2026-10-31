@@ -1,6 +1,7 @@
 // 한국관광공사 TourAPI 소개 정보(detailIntro2)로 운영 시간·휴무일·행사 일정을 실제 값으로 바꾼다.
 // 하루 1번만 호출(Data Cache)하고, 실패하거나 정보가 없으면 places.ts의 값(임의)을 그대로 쓴다.
 import { dataGoKr } from "./datagokr";
+import { applyFacts, getGoogleFacts, type GoogleFacts } from "./google-facts";
 import { PLACES, getPlace } from "./places";
 import { kst } from "./time";
 import type { Place } from "./types";
@@ -153,16 +154,22 @@ async function withInfo(place: Place): Promise<Place> {
   }
 }
 
-/** 모든 장소 (TourAPI 반영). Data Cache 덕에 하루 1번만 실제로 호출된다 */
+/** 구글 지도 정보(평점·운영 시간·인기도 사전값, lib/google-facts)를 더한다. 못 읽으면 그대로 */
+async function withGoogle(places: Place[]): Promise<Place[]> {
+  const { facts, priors } = await getGoogleFacts(PLACES).catch(() => ({ facts: {} as Record<string, GoogleFacts>, priors: new Map<string, number>() }));
+  return places.map((p) => applyFacts(p, facts[p.id], priors.get(p.id)));
+}
+
+/** 모든 장소 (TourAPI·구글 지도 반영). Data Cache 덕에 TourAPI는 하루 1번만 실제로 호출된다 */
 export async function getLivePlaces(): Promise<Place[]> {
-  if (!process.env.DATA_GO_KR_KEY) return PLACES;
-  return Promise.all(PLACES.map(withInfo));
+  return withGoogle(process.env.DATA_GO_KR_KEY ? await Promise.all(PLACES.map(withInfo)) : PLACES);
 }
 
 export async function getLivePlace(id: string): Promise<Place | undefined> {
   const place = getPlace(id);
-  if (!place || !process.env.DATA_GO_KR_KEY) return place;
-  return withInfo(place);
+  if (!place) return place;
+  const [p] = await withGoogle([process.env.DATA_GO_KR_KEY ? await withInfo(place) : place]);
+  return p;
 }
 
 /** 행사가 아직 끝나지 않았는지 (진행 중 포함) */
