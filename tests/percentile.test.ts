@@ -73,3 +73,14 @@ test("24시간 예측 방법: 기준선이 단계 일치·평균 오차 둘 다 
   assert.equal(pickMethod24({ "pattern-24h": s(big, 0.24, 24), "naive-24h": s(big - 1, 0.6, 10), "median-24h": s(0, 0, 0) }), "pattern-24h");
   assert.equal(pickMethod24({ "pattern-24h": s(10, 0.24, 24), "naive-24h": s(big, 0.6, 10), "median-24h": s(0, 0, 0) }), "pattern-24h");
 });
+
+test("24시간 예측 방법: 혼합(hybrid)·지난주(weekly)도 후보 — 오차가 가장 작은 쪽", () => {
+  const s = (n: number, rate: number, err: number): DayStat => ({ n, match: Math.round(n * rate), absErr: n * err });
+  const big = MIN_PICK_N;
+  assert.equal(
+    pickMethod24({ "pattern-24h": s(big, 0.27, 20.7), "naive-24h": s(big, 0.79, 5.7), "weekly-24h": s(big, 0.7, 7), "hybrid-24h": s(big, 0.82, 5.1) }),
+    "hybrid-24h",
+  );
+  // 혼합 표본이 아직 모자라면 다른 기준선
+  assert.equal(pickMethod24({ "pattern-24h": s(big, 0.27, 20.7), "naive-24h": s(big, 0.79, 5.7), "hybrid-24h": s(100, 0.9, 3) }), "naive-24h");
+});

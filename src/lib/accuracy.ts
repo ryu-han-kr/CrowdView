@@ -4,6 +4,9 @@
 //   official-1h / official-3h : 서울시 공식 12시간 예측의 1·3시간 뒤 값
 //   pattern-24h               : CrowdView 패턴 예측(가까운 역 요일×시간 승하차, lib/forecast)의 24시간 뒤 값
 //   naive-24h / median-24h    : 기준선 (외부 점검 P1-5). 지금 값을 그대로 24시간 뒤 예측 / 최근 4주 같은 요일·시각 실제 값의 중앙값.
+//   weekly-24h                : 기준선. 지난주 같은 요일·시각 실제 값
+//   hybrid-24h                : 혼합 (10/31 수준 진단: 패턴 예측 27% < '지금 값 그대로' 79%). 내일이 오늘과 같은 종류의 날(평일↔평일, 주말↔주말)이면
+//                               지금 값, 평일↔주말이 바뀌면 지난주 같은 요일·시각 값 — '지금 값 그대로'가 틀리는 금→토·일→월을 지난주로 메운다
 //                               패턴 예측이 기준선보다 낫지 않으면 기준선을 쓰는 게 맞다 — 같은 지표로 나란히 비교한다
 // 맞춤 기준은 화면과 같은 5단계 (levelOf) 일치, 오차는 점수(0~100) 차이의 절댓값
 // P1-5 2단계: 최근 7일 합계에서 기준선이 패턴 예측을 단계 일치·평균 오차 둘 다 이기면(비교 수 MIN_PICK_N 이상) 그 방법을
@@ -21,6 +24,8 @@ export const HORIZONS = [
   { id: "pattern-24h", hours: 24, label: "CrowdView 패턴 예측 24시간 뒤" },
   { id: "naive-24h", hours: 24, label: "기준선: 지금 값 그대로 24시간 뒤" },
   { id: "median-24h", hours: 24, label: "기준선: 최근 4주 같은 요일·시각 중앙값" },
+  { id: "weekly-24h", hours: 24, label: "기준선: 지난주 같은 요일·시각" },
+  { id: "hybrid-24h", hours: 24, label: "CrowdView 혼합: 같은 종류의 날이면 지금 값, 평일↔주말이 바뀌면 지난주 같은 시각" },
 ] as const;
 export type HorizonId = (typeof HORIZONS)[number]["id"];
 
@@ -51,38 +56,49 @@ const median = (xs: number[]) => {
 };
 
 /** 24시간 예측 방법 */
-export type Method24 = "pattern-24h" | "naive-24h" | "median-24h";
+export type Method24 = "pattern-24h" | "naive-24h" | "median-24h" | "weekly-24h" | "hybrid-24h";
+const ALT24 = ["naive-24h", "median-24h", "weekly-24h", "hybrid-24h"] as const;
+/** 주말(토·일) 여부 — 혼합 예측이 '같은 종류의 날'을 가르는 기준 */
+export const isWeekendDay = (day: number) => day === 0 || day === 6;
 /** 기준선으로 바꾸려면 7일 비교 수가 이만큼은 있어야 한다 (121곳 × 하루 약 20시간 ≈ 2,400/일 → 하루 반 치) */
 export const MIN_PICK_N = 3000;
 const PROFILE_KEY = "acc:prof";
+/** 지역 코드 → 요일×시 168칸의 가장 최근 실제 값 (매시간 지금 칸을 덮어씀 → 앞으로의 칸은 지난주 값) */
+const WEEK_KEY = "acc:wk";
 const KEEP_PROFILE = 400 * 86_400;
 /** 지역 코드 → 요일(일=0)×24+시 168칸의 4주 중앙값 (없는 칸은 null) */
 export type MedianProfile = Record<string, (number | null)[]>;
 
 /** 순수 계산: 7일 합계로 24시간 예측에 쓸 방법. 기준선이 패턴 예측을 단계 일치·평균 오차 둘 다 이길 때만 바꾼다 (둘 다 이기면 오차가 작은 쪽) */
-export function pickMethod24(sum: Record<Method24, DayStat>): Method24 {
+export function pickMethod24(sum: { "pattern-24h": DayStat } & Partial<Record<Method24, DayStat>>): Method24 {
   const rate = (s: DayStat) => (s.n ? s.match / s.n : 0);
   const err = (s: DayStat) => (s.n ? s.absErr / s.n : Infinity);
   const base = sum["pattern-24h"];
   if (base.n < MIN_PICK_N) return "pattern-24h";
-  const better = (["naive-24h", "median-24h"] as const).filter(
-    (m) => sum[m].n >= MIN_PICK_N && rate(sum[m]) > rate(base) && err(sum[m]) < err(base),
+  const better = ALT24.filter(
+    (m) => !!sum[m] && sum[m].n >= MIN_PICK_N && rate(sum[m]) > rate(base) && err(sum[m]) < err(base),
   );
   if (!better.length) return "pattern-24h";
-  return better.sort((a, b) => err(sum[a]) - err(sum[b]))[0];
+  return better.sort((a, b) => err(sum[a]!) - err(sum[b]!))[0];
 }
 
 /** 최근 7일 합계와 지금 쓰는 방법 (Redis 명령 1번) */
 export async function getMethod24(): Promise<{ method: Method24; sum: Record<Method24, DayStat> }> {
   const rows = await getAccuracy(7);
   const sum = {} as Record<Method24, DayStat>;
-  for (const m of ["pattern-24h", "naive-24h", "median-24h"] as const) {
+  for (const m of ["pattern-24h", ...ALT24] as const) {
     sum[m] = rows.reduce<DayStat>((a, r) => {
       const s = r.stats[m];
       return s ? { n: a.n + s.n, match: a.match + s.match, absErr: a.absErr + s.absErr } : a;
     }, { n: 0, match: 0, absErr: 0 });
   }
   return { method: pickMethod24(sum), sum };
+}
+
+/** 지난주(가장 최근) 같은 요일·시각 값 프로필 (없으면 빈 객체) */
+export async function getWeekProfile(): Promise<MedianProfile> {
+  const raw = await kv.get(WEEK_KEY).catch(() => null);
+  return raw ? (JSON.parse(raw) as MedianProfile) : {};
 }
 
 /** 4주 중앙값 프로필 (없으면 빈 객체) */
@@ -140,6 +156,9 @@ export async function trackAccuracy(live: Live, now = new Date()): Promise<numbe
   // 4주 중앙값 기준선: 목표 시각의 7·14·21·28일 전 실제 값 (2개 이상 있을 때만)
   const past = await kv.mget([7, 14, 21, 28].map((d) => actualKey(daysBefore(target(24), d)))).catch(() => [] as (string | null)[]);
   const pastMaps = past.filter((r): r is string => !!r).map((r) => JSON.parse(r) as Record<string, number>);
+  // 지난주 같은 시각 (weekly·hybrid). past[0]이 7일 전
+  const lastWeek = past[0] ? (JSON.parse(past[0]) as Record<string, number>) : undefined;
+  const sameKind = isWeekendDay(kst(now).day) === isWeekendDay(kst(new Date(now.getTime() + 24 * 3600_000)).day);
   // 4주 중앙값은 요일×시 프로필에도 넣어 둔다 (한산한 코스가 내일·주말 어느 시간이든 바로 쓸 수 있게). 한 시간에 한 칸씩 채워진다
   const profile = pastMaps.length >= 2 ? await getMedianProfile() : undefined;
   const slot = (() => {
@@ -159,6 +178,10 @@ export async function trackAccuracy(live: Live, now = new Date()): Promise<numbe
           preds[code] = median(xs);
           if (profile) (profile[code] ??= Array(168).fill(null))[slot] = preds[code];
         }
+      } else if (h.id === "weekly-24h") {
+        if (typeof lastWeek?.[code] === "number") preds[code] = lastWeek[code];
+      } else if (h.id === "hybrid-24h") {
+        preds[code] = !sameKind && typeof lastWeek?.[code] === "number" ? lastWeek[code] : l.score;
       } else if (h.id.startsWith("official")) {
         const f = l.forecast.find((x) => seoulHour(x.time) === tKey);
         if (f) preds[code] = f.score;
@@ -179,6 +202,11 @@ export async function trackAccuracy(live: Live, now = new Date()): Promise<numbe
     if (Object.keys(preds).length) await kv.set(predKey(h.id, tKey), JSON.stringify(preds), KEEP_PRED).catch(() => {});
   }
   if (profile && Object.keys(profile).length) await kv.set(PROFILE_KEY, JSON.stringify(profile), KEEP_PROFILE).catch(() => {});
+  // 지금 칸(요일×시)에 지금 값을 넣는다 → 내일·주말 예측(lib/route-data)이 지난주·오늘 같은 시각 값을 바로 쓴다
+  const week = await getWeekProfile();
+  const nowSlot = kst(now).day * 24 + Math.floor(kst(now).hour);
+  for (const code of codes) (week[code] ??= Array(168).fill(null))[nowSlot] = live[code].score;
+  await kv.set(WEEK_KEY, JSON.stringify(week), KEEP_PROFILE).catch(() => {});
   return scored;
 }
 
