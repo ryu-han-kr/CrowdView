@@ -35,7 +35,8 @@ for (const { path, card } of [
 test("캐릭터: 층이 다 불러와지고 깨진 그림이 없다", async ({ page }) => {
   await page.goto("/spot/jirisan");
   const stack = page.locator(".mascot-stack").first();
-  await stack.scrollIntoViewIfNeeded();
+  // 늘 움직이는 그림이라 Playwright의 '멈출 때까지 기다리기'를 쓰면 시간이 초과된다
+  await stack.evaluate((e) => e.scrollIntoView({ block: "center" }));
   await expect(stack.locator("img.mascot-body")).toBeVisible();
   const broken = await page.$$eval(".mascot-stack img", (els) => els.filter((e) => (e as HTMLImageElement).complete && !(e as HTMLImageElement).naturalWidth).length);
   expect(broken).toBe(0);
