@@ -9,6 +9,7 @@ import { useI18n } from "@/i18n/client";
 import { inkOf, levelOf } from "@/lib/levels";
 import { useFavorites } from "@/lib/prefs";
 import { Glyph } from "@/components/Glyph";
+import { MapLinkButton } from "./MapLinkButton";
 
 export interface PhotoCardItem {
   id: string;
@@ -49,6 +50,8 @@ export function PhotoCard({ item, rank, className = "" }: { item: PhotoCardItem;
   const lv = item.score !== undefined ? levelOf(item.score) : undefined;
   const fav = item.favId ? isFavorite(item.favId) : false;
   const bottom = lv || item.badge || item.note;
+  // 카드 자체가 지도로 가는 곳(관광공사 명소)은 단추가 필요 없다
+  const onMap = !item.external && item.lat !== undefined && item.lng !== undefined;
   const body = (
     <>
       <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-gray-100">
@@ -89,7 +92,7 @@ export function PhotoCard({ item, rank, className = "" }: { item: PhotoCardItem;
         )}
         {/* 아래: 순위 배지 + 흰 단계 알약 (UI QA 9차: 큰 기울임 숫자·그림자 글씨가 포스터 글자와 겹쳐 어지러웠다) */}
         {(bottom || rank !== undefined) && (
-          <div className="absolute inset-x-2 bottom-2 flex items-center gap-1.5">
+          <div className={`absolute inset-x-2 bottom-2 flex items-center gap-1.5 ${onMap ? "pr-9" : ""}`}>
             {rank !== undefined && (
               <span className="flex h-8 min-w-8 shrink-0 items-center justify-center rounded-lg bg-gray-950 px-1.5 text-[17px] leading-none font-black text-white shadow-sm">
                 {rank}
@@ -112,6 +115,7 @@ export function PhotoCard({ item, rank, className = "" }: { item: PhotoCardItem;
             )}
           </div>
         )}
+        {onMap && <MapLinkButton name={item.title} lat={item.lat!} lng={item.lng!} className="absolute right-2 bottom-2" />}
       </div>
       <p className="mt-2 line-clamp-2 text-[15px] leading-snug font-bold break-keep text-gray-950">{item.title}</p>
       {item.sub && <p className="mt-0.5 truncate text-[13px] font-medium text-gray-600">{item.sub}</p>}

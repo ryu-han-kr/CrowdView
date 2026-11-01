@@ -38,6 +38,14 @@ function ParkCard({ p, lang, t }: { p: ParkNow; lang: Lang; t: ReturnType<typeof
             {t(p.park.city)}
             {p.hours && ` · ${t("운영 {from}~{to} (현지)", { from: clock(p.hours.open, p.timezone, lang), to: clock(p.hours.close, p.timezone, lang) })}`}
           </p>
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(t(p.park.name))}`}
+            target="_blank"
+            rel="noreferrer"
+            className="-my-1 inline-block py-1 text-xs font-semibold text-indigo-700"
+          >
+            {t("Google 지도 ↗")}
+          </a>
         </div>
         {p.open === false ? (
           <span className="shrink-0 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-bold text-gray-700">{t("운영 종료")}</span>

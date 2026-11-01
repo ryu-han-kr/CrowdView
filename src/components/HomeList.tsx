@@ -585,6 +585,7 @@ export function HomeList({
                     trend: c.trend,
                     badge: c.badge,
                     favId: c.favId,
+                    map: { lat: c.lat, lng: c.lng },
                   }}
                 />
               </li>

@@ -144,6 +144,8 @@ export default async function HomePage({ params }: { params: Promise<{ lang: str
       tag: placeTag(p, t),
       favId: p.id,
       people: headcountInfo(crowd[p.id], { t, lang })?.text,
+      lat: p.lat,
+      lng: p.lng,
     }));
 
   // 큰 배너: 진행 중 축제 · 오늘의 여행지 · Plus · 공항 · 서울 실시간 · 코스 추천

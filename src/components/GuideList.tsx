@@ -231,6 +231,7 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
                       <ListCard
                         item={{
                           href: `/guide/${r[0]}`,
+                          map: r[3] !== null && r[4] !== null ? { lat: r[3], lng: r[4] } : undefined,
                           img: r[6] ?? undefined,
                           emoji: kind?.emoji,
                           eager: i < 4,
