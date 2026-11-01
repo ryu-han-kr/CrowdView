@@ -2,6 +2,7 @@
 import type { Dict } from "../translate";
 
 const dict: Dict = {
+  "예측 방법별 정확도 표": "Forecast accuracy by method",
   "롯데월드는 놀이기구 대기시간을 공개하지 않아요. 잠실 일대 실시간 인구로 혼잡도를 보여 드려요.": "Lotte World doesn't publish ride wait times, so crowd levels here come from live population data for the Jamsil area.",
   "산장(대피소) 예약": "Mountain shelter booking",
   "오래 걷는 종주는 대피소에서 묵어요. 예약은 국립공원공단 예약 사이트에서 해요.": "Long ridge hikes mean a night in a shelter. Book on the Korea National Park Service reservation site.",

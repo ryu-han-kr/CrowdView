@@ -163,7 +163,7 @@ export default async function AccuracyPage({ params }: { params: Promise<{ lang:
       <p className="mt-2 max-w-3xl text-xs leading-relaxed text-gray-600">{c.learnNote}</p>
 
       {any ? (
-        <div className="mt-8 overflow-x-auto rounded-2xl border border-gray-100 bg-white">
+        <div className="mt-8 overflow-x-auto rounded-2xl border border-gray-100 bg-white" tabIndex={0} role="region" aria-label={t("예측 방법별 정확도 표")}>
           <table className="w-full min-w-[560px] text-left text-sm whitespace-nowrap">
             <thead className="bg-gray-50 text-xs text-gray-500">
               <tr>
@@ -210,7 +210,7 @@ export default async function AccuracyPage({ params }: { params: Promise<{ lang:
       <h2 className="mt-10 text-lg font-bold">{c.model}</h2>
       <p className="mt-2 max-w-3xl text-sm leading-relaxed text-gray-600">{c.modelLead}</p>
       {calibRows.length ? (
-        <div className="mt-4 overflow-x-auto rounded-2xl border border-gray-100 bg-white">
+        <div className="mt-4 overflow-x-auto rounded-2xl border border-gray-100 bg-white" tabIndex={0} role="region" aria-label={c.model}>
           <table className="w-full min-w-[560px] text-left text-sm whitespace-nowrap">
             <thead className="bg-gray-50 text-xs text-gray-500">
               <tr>
