@@ -561,6 +561,9 @@ export default async function PlacePage({ params }: { params: Promise<{ id: stri
             </section>
           )}
 
+          {/* 11/1 운영 시간에 세 원본(ThemeParks.wiki·Queue-Times·공식 홈페이지)을 확인: 롯데월드는 대기 값을 주는 곳이 없다 */}
+          {place.id === "lotteworld" && <p className="mt-6 text-sm text-gray-600">{t("롯데월드는 놀이기구 대기시간을 공개하지 않아요. 잠실 일대 실시간 인구로 혼잡도를 보여 드려요.")}</p>}
+
           {/* 이벤트 인원 예측 */}
           {dday !== null && (
             <section className="mt-6 rounded-3xl bg-gray-900 p-5 text-white">

@@ -4,6 +4,7 @@
 // 서울은 1km 안 서울 실시간 지역의 지금 혼잡도를 붙인다 (/api/public/crowd, 5분 캐시)
 import { useEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
+import { useBackRestore, usePaged } from "@/lib/back-restore";
 import { distanceKm } from "@/lib/geo";
 import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
@@ -78,12 +79,16 @@ export function MoreSpots({ region, initial, counts }: { region: string; initial
   const loaded = useSpots();
   const rows = loaded ?? (initial?.length && initial[0][2] === region ? initial : null);
   const live = useSeoulLevels(region === "서울");
-  const [kind, setKind] = useState<string>("all");
-  const [shown, setShown] = useState(PAGE);
-  useEffect(() => {
-    setKind("all");
-    setShown(PAGE);
-  }, [region]);
+  // 고른 종류는 지역에 묶어 둔다: 지역이 바뀌면 '전체'로, 뒤로 와서 되살릴 때는 지워지지 않게
+  const [pick, setPick] = useState({ region, kind: "all" });
+  const kind = pick.region === region ? pick.kind : "all";
+  const setKind = (k: string) => setPick({ region, kind: k });
+  const paged = usePaged(PAGE, `${region}|${kind}`);
+  const shown = paged.shown;
+  useBackRestore("more-spots", { pick, paged: paged.state }, (s) => {
+    setPick(s.pick);
+    paged.restore(s.paged);
+  });
 
   const inRegion = (rows ?? []).filter((s) => s[2] === region);
   const list = inRegion.filter((s) => kind === "all" || s[1] === kind);
@@ -110,11 +115,11 @@ export function MoreSpots({ region, initial, counts }: { region: string; initial
       </h2>
       {lang !== "ko" && <p className="mt-0.5 text-xs text-gray-500">{t("이 목록의 이름은 한국어로 보여요. 누르면 지도에서 위치를 볼 수 있어요.")}</p>}
       <ScrollRow className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
-        <button onClick={() => (setKind("all"), setShown(PAGE))} className={chip(kind === "all")}>
+        <button onClick={() => setKind("all")} className={chip(kind === "all")}>
           {t("전체")}
         </button>
         {SPOT_KINDS.filter((k) => inRegion.some((s) => s[1] === k.id)).map((k) => (
-          <button key={k.id} onClick={() => (setKind(k.id), setShown(PAGE))} className={chip(kind === k.id)}>
+          <button key={k.id} onClick={() => setKind(k.id)} className={chip(kind === k.id)}>
             <Glyph e={k.emoji} /> {t(k.label)}
           </button>
         ))}
@@ -132,7 +137,7 @@ export function MoreSpots({ region, initial, counts }: { region: string; initial
           </ul>
           {list.length > shown && (
             <button
-              onClick={() => setShown((n) => n + PAGE)}
+              onClick={paged.more}
               className="mx-auto mt-5 block rounded-full border border-gray-200 bg-white px-5 py-2 text-sm font-semibold text-gray-700"
             >
               {t("더 보기")} ({list.length - shown})

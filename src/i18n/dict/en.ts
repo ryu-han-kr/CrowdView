@@ -2,6 +2,11 @@
 import type { Dict } from "../translate";
 
 const dict: Dict = {
+  "롯데월드는 놀이기구 대기시간을 공개하지 않아요. 잠실 일대 실시간 인구로 혼잡도를 보여 드려요.": "Lotte World doesn't publish ride wait times, so crowd levels here come from live population data for the Jamsil area.",
+  "산장(대피소) 예약": "Mountain shelter booking",
+  "오래 걷는 종주는 대피소에서 묵어요. 예약은 국립공원공단 예약 사이트에서 해요.": "Long ridge hikes mean a night in a shelter. Book on the Korea National Park Service reservation site.",
+  "대피소 예약하러 가기": "Book a shelter",
+  "예약 사이트에서 '{park}' 탭을 눌러 주세요.": "On the booking site, choose the '{park}' tab.",
   "요즘 뜨는 곳 1위": "#1 trending",
   "지금 붐비는 곳": "Busy right now",
   "실시간 대기": "Live wait times",
@@ -133,7 +138,7 @@ const dict: Dict = {
   "서울 실시간 도시데이터": "Seoul real-time city data",
   "전국·수도권·부산·제주 장소별 실시간 혼잡도를 지도에서 색으로 확인하세요": "See live crowd levels across Korea, Seoul metro, Busan and Jeju on a color-coded map",
   "지금 어디가 한산할까? 실시간 혼잡도": "Where is it quiet right now? Live crowd levels in Korea",
-  "인천공항 출국장 대기시간, 에버랜드·롯데월드 놀이기구 대기, 서울 주요 장소 실시간 인구, 전국 축제 혼잡 예측을 한눈에": "Incheon Airport departure waits, Everland & Lotte World ride waits, live population at Seoul hotspots and festival crowd forecasts — all in one place",
+  "인천공항 출국장 대기시간, 에버랜드·레고랜드 놀이기구 대기, 서울 주요 장소 실시간 인구, 전국 축제 혼잡 예측을 한눈에": "Incheon Airport departure wait times, Everland and LEGOLAND Korea ride waits, live crowds in Seoul and festival forecasts at a glance",
   "{name} 실시간 혼잡도": "{name} live crowd level",
   "{name} 지금 혼잡도와 오늘 시간대별 예측, 언제 가면 한산한지 알려드려요": "{name}: crowd level now, today's hourly forecast and the best time to go",
   "로그인": "Sign in",

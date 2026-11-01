@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     lang,
     path: "/",
     title: t("지금 어디가 한산할까? 실시간 혼잡도"),
-    description: t("인천공항 출국장 대기시간, 에버랜드·롯데월드 놀이기구 대기, 서울 주요 장소 실시간 인구, 전국 축제 혼잡 예측을 한눈에"),
+    description: t("인천공항 출국장 대기시간, 에버랜드·레고랜드 놀이기구 대기, 서울 주요 장소 실시간 인구, 전국 축제 혼잡 예측을 한눈에"),
   });
 }
 

@@ -17,6 +17,7 @@ import type { PhotoCardItem } from "./home/PhotoRail";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
 import { StickyBar } from "./StickyBar";
 import { useUrlQuery } from "./useUrlQuery";
+import { useBackRestore, usePaged } from "@/lib/back-restore";
 import { useHomeSearch } from "./search/useSearchData";
 import { Glyph } from "@/components/Glyph";
 import { SUBS_OF, SUB_EMOJI, SUB_LABEL, subOf, type SubCategory } from "@/lib/subcategory";
@@ -123,12 +124,17 @@ export function HomeList({
   const [filter, setFilter] = useState<Filter>("all");
   // 통합 검색 탭 (사용자 10/22: 지역 여행 탭 대신 홈에서 한 번에) · 세부 분류 · 지역 칩
   const [tab, setTab] = useState<Tab>("all");
-  const [sub, setSub] = useState<SubCategory | "all">("all");
+  // 세부 분류는 고른 분류에 묶어 둔다: 분류가 바뀌면 '전체'로, 뒤로 와서 되살릴 때는 지워지지 않게
+  const [subPick, setSubPick] = useState<{ filter: Filter; sub: SubCategory | "all" }>({ filter: "all", sub: "all" });
+  const sub = subPick.filter === filter ? subPick.sub : "all";
+  const setSub = (x: SubCategory | "all") => setSubPick({ filter, sub: x });
   const [region, setRegion] = useState<string>("all");
-  const [spotShown, setSpotShown] = useState(SPOT_PAGE);
-  // 실시간 장소 목록도 12곳씩 (사용자 10/22: 45곳이 한 번에 늘어서 길고 조잡해 보임)
-  const [liveShown, setLiveShown] = useState(LIVE_PAGE);
+  const spotPaged = usePaged(SPOT_PAGE, JSON.stringify([region, query, tab]));
+  const spotShown = spotPaged.shown;
   const [sort, setSort] = useState<Sort>("calm");
+  // 실시간 장소 목록도 12곳씩 (사용자 10/22: 45곳이 한 번에 늘어서 길고 조잡해 보임)
+  const livePaged = usePaged(LIVE_PAGE, JSON.stringify([filter, sub, query, sort]));
+  const liveShown = livePaged.shown;
   const [view, setView] = useState<"list" | "map">("list");
   const { favorites } = useFavorites();
   const i18n = useI18n();
@@ -236,9 +242,17 @@ export function HomeList({
     if (searching) setFilter("all");
   }, [searching]);
 
-  useEffect(() => setSub("all"), [filter]);
-  useEffect(() => setSpotShown(SPOT_PAGE), [region, query, tab]);
-  useEffect(() => setLiveShown(LIVE_PAGE), [filter, sub, query, sort]);
+  // 주소에서 분류를 읽는 위 효과 뒤에 둔다 (뒤로 왔으면 보던 분류·탭·펼친 수가 이긴다)
+  useBackRestore("home", { filter, tab, subPick, region, sort, view, spot: spotPaged.state, live: livePaged.state }, (s) => {
+    setFilter(s.filter);
+    setTab(s.tab);
+    setSubPick(s.subPick);
+    setRegion(s.region);
+    setSort(s.sort);
+    setView(s.view);
+    spotPaged.restore(s.spot);
+    livePaged.restore(s.live);
+  });
   const q = query.trim().toLowerCase();
   // 띄어쓰기·낱말 순서·초성까지 보는 검색 (lib/search-match, 10/31 '남산 타워' → 남산 N서울타워). 검색 중엔 더 잘 맞는 곳이 위로
   const score = (xs: (string | undefined)[]) => matchScore(q, xs);
@@ -488,7 +502,7 @@ export function HomeList({
           items={(tab === "landmark" ? landmarks : tab === "festival" ? festivals : tab === "seoul" ? seoulAreas : spotItems).slice(0, tab === "spot" ? spotShown : undefined)}
           loading={tab === "spot" && !spots}
           empty={q ? t("‘{q}’에 맞는 곳이 없어요.", { q: query }) : t("이 지역에는 아직 없어요.")}
-          more={tab === "spot" && spotItems.length > spotShown ? () => setSpotShown((n) => n + SPOT_PAGE) : undefined}
+          more={tab === "spot" && spotItems.length > spotShown ? spotPaged.more : undefined}
         />
       )}
 
@@ -592,7 +606,7 @@ export function HomeList({
           </ul>
           {cards.length > liveShown && (
             <button
-              onClick={() => setLiveShown((n) => n + LIVE_PAGE)}
+              onClick={livePaged.more}
               className="mt-3 w-full rounded-2xl border border-gray-200 bg-white py-3 text-sm font-bold text-gray-800"
             >
               {t("더 보기 ({n}곳 더)", { n: cards.length - liveShown })}

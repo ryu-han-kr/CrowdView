@@ -4,7 +4,7 @@ import { ListCard } from "@/components/ListCard";
 import Link from "@/i18n/link";
 import Image from "next/image";
 import { canOptimize } from "@/lib/img";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useI18n } from "@/i18n/client";
 import { compactNumber } from "@/lib/format";
 import { currentPosition, distanceKm, type LatLng } from "@/lib/geo";
@@ -14,6 +14,7 @@ import { FilterLayout, PickStar } from "./FilterLayout";
 import { LevelBadge } from "./Level";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
 import { useUrlQuery } from "./useUrlQuery";
+import { useBackRestore, usePaged } from "@/lib/back-restore";
 import { Glyph } from "@/components/Glyph";
 import { EmptyState } from "@/components/EmptyState";
 
@@ -51,8 +52,16 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
   const [view, setView] = useState<"list" | "map">("list");
   // 121곳을 한 번에 깔면 휴대폰 19화면 분량 (사용자 10/26) → 20곳씩, 조건을 바꾸면 처음부터
   const PAGE = 20;
-  const [shown, setShown] = useState(PAGE);
-  useEffect(() => setShown(PAGE), [groups, levels, sort, q]);
+  const paged = usePaged(PAGE, JSON.stringify([groups, levels, sort, q]));
+  const shown = paged.shown;
+  useBackRestore("seoul", { groups, levels, sort, me, view, paged: paged.state }, (s) => {
+    setGroups(s.groups);
+    setLevels(s.levels);
+    setSort(s.sort);
+    setMe(s.me);
+    setView(s.view);
+    paged.restore(s.paged);
+  });
   const list = useMemo(() => {
     const needle = q.trim().toLowerCase();
     const tr = (ko: string) => names[ko] ?? ko;
@@ -189,7 +198,7 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
       {view === "list" && list.length > shown && (
         <button
           type="button"
-          onClick={() => setShown((n) => n + PAGE)}
+          onClick={paged.more}
           className="mt-3 w-full rounded-2xl border border-gray-200 bg-white py-3 text-sm font-semibold text-gray-800"
         >
           {t("더 보기 ({n}곳 더)", { n: list.length - shown })}

@@ -9,6 +9,7 @@ import spotImages from "@/data/korea/spot-images.json";
 import { notFound } from "next/navigation";
 import { CalmAlternatives } from "@/components/CalmAlternatives";
 import { StayLinks, TourLinks } from "@/components/StayLinks";
+import { ParkShelterLink } from "@/components/ParkShelterLink";
 import Link from "@/i18n/link";
 import { DEFAULT_LANG, type Lang } from "@/i18n/config";
 import { getT } from "@/i18n/server";
@@ -346,6 +347,7 @@ export default async function SpotPage({ params }: { params: Promise<{ lang: str
             </section>
           )}
 
+          <ParkShelterLink id={l.id} lang={lang} t={t} className="mt-6" />
           <TourLinks ko={l.n.ko} en={l.n.en} lang={lang} t={t} className="mt-6" />
           <StayLinks ko={l.n.ko} en={l.n.en} lang={lang} t={t} at={l} className="mt-4" />
           <InlineAd className="mt-6" />
