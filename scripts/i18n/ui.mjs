@@ -1,6 +1,7 @@
 // 화면 문구 번역 원본: 한국어 → [English, 日本語, 简体中文, 繁體中文]
 // 수정 후 `node scripts/i18n/build.mjs` 로 src/i18n/dict/*.ts 를 다시 만든다
 export default {
+  "예측 방법별 정확도 표": ["Forecast accuracy by method", "予測方法別の精度表", "各预测方法准确度表", "各預測方法準確度表"],
   // ── 11/1 QA: 뒤로 가기·롯데월드 대기·국립공원 대피소 예약
   "롯데월드는 놀이기구 대기시간을 공개하지 않아요. 잠실 일대 실시간 인구로 혼잡도를 보여 드려요.": ["Lotte World doesn't publish ride wait times, so crowd levels here come from live population data for the Jamsil area.", "ロッテワールドはアトラクションの待ち時間を公開していません。蚕室エリアのリアルタイム人口から混雑度を表示しています。", "乐天世界未公开游乐设施排队时间，这里根据蚕室一带的实时人流显示拥挤程度。", "樂天世界未公開遊樂設施排隊時間，這裡根據蠶室一帶的即時人流顯示擁擠程度。"],
   "산장(대피소) 예약": ["Mountain shelter booking", "山小屋(避難所)の予約", "山间避难所预约", "山間避難所預約"],

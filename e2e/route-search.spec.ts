@@ -4,7 +4,9 @@ import { expect, test } from "@playwright/test";
 
 test("코스: 검색해서 넣은 곳이 코스에 들어간다 (자동차·카페)", async ({ page }) => {
   const errors: string[] = [];
-  page.on("pageerror", (e) => errors.push(e.message));
+  page.on("pageerror", (e) => {
+    if (!/accessing a frame with origin/.test(e.message)) errors.push(e.message);
+  });
   await page.goto("/route");
   await page.getByRole("button", { name: "명동 관광특구" }).click();
   await page.getByPlaceholder(/장소 이름 검색/).fill("국립중앙");

@@ -140,7 +140,7 @@ function AnonAlert({ placeId }: { placeId: string }) {
       </button>
       <p className="mt-2 text-[11px] leading-relaxed text-gray-500">
         {on && calmNow ? t("지금도 한산해요. 붐볐다가 다시 한산해지면 알려 드려요") : t("로그인 없이 한 번 알려 드려요 (7일 동안)")}{" "}
-        <Link href="/me" className="text-indigo-600">
+        <Link href="/me" className="text-indigo-600 underline">
           {t("로그인하면 붐빔 알림도")} ›
         </Link>
       </p>
