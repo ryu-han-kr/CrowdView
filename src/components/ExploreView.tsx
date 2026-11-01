@@ -3,6 +3,7 @@
 import Link from "@/i18n/link";
 import { useLayoutEffect, useState } from "react";
 import { useI18n } from "@/i18n/client";
+import { useBackRestore } from "@/lib/back-restore";
 import { PhotoCard, type PhotoCardItem } from "./home/PhotoRail";
 import { FeatureGrid } from "./home/FeatureLayouts";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
@@ -36,6 +37,10 @@ export function ExploreView({
   const [region, setRegion] = useState(regions[0]?.id);
   const [kind, setKind] = useState<string>("all");
   const [view, setView] = useState<"list" | "map">("list");
+  useBackRestore("explore", { kind, view }, (s) => {
+    setKind(s.kind);
+    setView(s.view);
+  });
 
   // 그리기 전에 주소의 지역으로 (11/1 UX 점검: useEffect면 서울이 한 번 그려진 뒤 바뀌었다). 숨겨 둔 본문은 그다음 그림에서 보인다
   useLayoutEffect(() => {

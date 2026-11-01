@@ -1,6 +1,12 @@
 // 화면 문구 번역 원본: 한국어 → [English, 日本語, 简体中文, 繁體中文]
 // 수정 후 `node scripts/i18n/build.mjs` 로 src/i18n/dict/*.ts 를 다시 만든다
 export default {
+  // ── 11/1 QA: 뒤로 가기·롯데월드 대기·국립공원 대피소 예약
+  "롯데월드는 놀이기구 대기시간을 공개하지 않아요. 잠실 일대 실시간 인구로 혼잡도를 보여 드려요.": ["Lotte World doesn't publish ride wait times, so crowd levels here come from live population data for the Jamsil area.", "ロッテワールドはアトラクションの待ち時間を公開していません。蚕室エリアのリアルタイム人口から混雑度を表示しています。", "乐天世界未公开游乐设施排队时间，这里根据蚕室一带的实时人流显示拥挤程度。", "樂天世界未公開遊樂設施排隊時間，這裡根據蠶室一帶的即時人流顯示擁擠程度。"],
+  "산장(대피소) 예약": ["Mountain shelter booking", "山小屋(避難所)の予約", "山间避难所预约", "山間避難所預約"],
+  "오래 걷는 종주는 대피소에서 묵어요. 예약은 국립공원공단 예약 사이트에서 해요.": ["Long ridge hikes mean a night in a shelter. Book on the Korea National Park Service reservation site.", "長い縦走では避難所に泊まります。予約は韓国国立公園公団の予約サイトで行います。", "长距离纵走需要在避难所过夜，请在韩国国立公园公团预约网站预约。", "長距離縱走需要在避難所過夜，請在韓國國立公園公團預約網站預約。"],
+  "대피소 예약하러 가기": ["Book a shelter", "避難所を予約する", "前往预约避难所", "前往預約避難所"],
+  "예약 사이트에서 '{park}' 탭을 눌러 주세요.": ["On the booking site, choose the '{park}' tab.", "予約サイトで「{park}」タブを選んでください。", "请在预约网站选择“{park}”选项卡。", "請在預約網站選擇「{park}」分頁。"],
   // ── 홈 배너 두 개 (app/[lang]/page.tsx, 10/27)
   "요즘 뜨는 곳 1위": ["#1 trending", "いま話題No.1", "热门第1名", "熱門第1名"],
   "지금 붐비는 곳": ["Busy right now", "いま混雑中", "当前拥挤", "目前擁擠"],
@@ -390,11 +396,11 @@ export default {
     "现在哪里人少?实时拥挤度",
     "現在哪裡人少?即時擁擠度",
   ],
-  "인천공항 출국장 대기시간, 에버랜드·롯데월드 놀이기구 대기, 서울 주요 장소 실시간 인구, 전국 축제 혼잡 예측을 한눈에": [
-    "Incheon Airport departure waits, Everland & Lotte World ride waits, live population at Seoul hotspots and festival crowd forecasts — all in one place",
-    "仁川空港の出国待ち時間、エバーランド・ロッテワールドの待ち時間、ソウル主要スポットの人口、全国のお祭り混雑予測をひと目で",
-    "仁川机场出境等候、爱宝乐园·乐天世界排队、首尔热门地点实时人口、全国节庆拥挤预测一目了然",
-    "仁川機場出境等候、愛寶樂園·樂天世界排隊、首爾熱門地點即時人口、全國節慶擁擠預測一目了然",
+  "인천공항 출국장 대기시간, 에버랜드·레고랜드 놀이기구 대기, 서울 주요 장소 실시간 인구, 전국 축제 혼잡 예측을 한눈에": [
+    "Incheon Airport departure wait times, Everland and LEGOLAND Korea ride waits, live crowds in Seoul and festival forecasts at a glance",
+    "仁川空港の出国場待ち時間、エバーランド・レゴランドのアトラクション待ち時間、ソウル主要スポットのリアルタイム人口、全国の祭りの混雑予測をひと目で",
+    "仁川机场出境大厅等候时间、爱宝乐园·乐高乐园游乐设施排队时间、首尔主要地点实时人流、全国庆典拥挤预测，一目了然",
+    "仁川機場出境大廳等候時間、愛寶樂園·樂高樂園遊樂設施排隊時間、首爾主要地點即時人流、全國慶典擁擠預測，一目了然",
   ],
   "{name} 실시간 혼잡도": ["{name} live crowd level", "{name} リアルタイム混雑度", "{name} 实时拥挤度", "{name} 即時擁擠度"],
   "{name} 지금 혼잡도와 오늘 시간대별 예측, 언제 가면 한산한지 알려드려요": [

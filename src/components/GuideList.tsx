@@ -11,6 +11,7 @@ import { SEOUL_AREAS } from "@/lib/seoul-areas";
 import { FilterLayout, PickStar } from "./FilterLayout";
 import { SpotMap, ViewToggle } from "./map/SpotMap";
 import { useUrlQuery } from "./useUrlQuery";
+import { useBackRestore, usePaged } from "@/lib/back-restore";
 import { Glyph } from "@/components/Glyph";
 
 export type Row = [id: string, kind: string, name: string, lat: number | null, lng: number | null, gu: string | null, img?: string | null];
@@ -61,8 +62,17 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
   const [calmFirst, setCalmFirst] = useState(false);
   // 명소 100곳 넘게 한 번에 깔면 휴대폰 19화면 분량 (사용자 10/26) → 24곳씩, 조건을 바꾸면 처음부터
   const PAGE = 24;
-  const [shown, setShown] = useState(PAGE);
-  useEffect(() => setShown(PAGE), [kinds, gus, levels, calmFirst]);
+  const paged = usePaged(PAGE, JSON.stringify([kinds, gus, levels, calmFirst]));
+  const shown = paged.shown;
+  useBackRestore("guide", { kinds, gus, levels, me, view, calmFirst, paged: paged.state }, (s) => {
+    setKinds(s.kinds);
+    setGus(s.gus);
+    setLevels(s.levels);
+    setMe(s.me);
+    setView(s.view);
+    setCalmFirst(s.calmFirst);
+    paged.restore(s.paged);
+  });
 
   useEffect(() => {
     fetch(`/data/guide-${lang}.json`)
@@ -250,7 +260,7 @@ export function GuideList({ initial, counts }: { initial?: Row[]; counts?: Recor
               {list.length > shown && (
                 <button
                   type="button"
-                  onClick={() => setShown((n) => n + PAGE)}
+                  onClick={paged.more}
                   className="mt-3 w-full rounded-2xl border border-gray-200 bg-white py-3 text-sm font-semibold text-gray-800"
                 >
                   {t("더 보기 ({n}곳 더)", { n: list.length - shown })}

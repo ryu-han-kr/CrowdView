@@ -8,6 +8,7 @@ import { AdSenseLoader } from "@/components/AdSenseLoader";
 import { ClarityLoader } from "@/components/ClarityLoader";
 import { LazySyncs } from "@/components/LazySyncs";
 import { NavProgress } from "@/components/NavProgress";
+import { BackScroll } from "@/components/BackScroll";
 import { ErrorReporter } from "@/components/ErrorReporter";
 import { authEnabled } from "@/lib/auth";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -109,6 +110,7 @@ export default async function RootLayout({ children, params }: { children: React
         {process.env.NEXT_PUBLIC_CLARITY_ID && <ClarityLoader id={process.env.NEXT_PUBLIC_CLARITY_ID} />}
         <LazyI18nProvider lang={lang}>
           <NavProgress />
+          <BackScroll />
           <PageTheme />
           <ErrorReporter />
           <WebVitals />
