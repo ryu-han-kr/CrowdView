@@ -29,6 +29,14 @@ export function travelMinutes(a: LatLng, b: LatLng, mode: Transport): { minutes:
   return { minutes: Math.max(1, Math.round(minutes)), km: Math.round(km * 10) / 10, walk, ...(!walk && mode === "car" && { car: true }) };
 }
 
+/** 지도에서 한 곳 보기: 한국어 화면의 국내 장소는 카카오맵, 그 밖(해외 장소·외국어 화면)은 구글 지도 */
+export function mapUrl(name: string, lat: number, lng: number, lang: string): string {
+  const inKorea = lat >= 33 && lat <= 39 && lng >= 124 && lng <= 132;
+  return lang === "ko" && inKorea
+    ? `https://map.kakao.com/link/map/${encodeURIComponent(name)},${lat},${lng}`
+    : `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+}
+
 /** 카카오맵 길찾기 링크 (앱이 있으면 앱, 없으면 웹) */
 export function kakaoDirections(from: LatLng & { name: string }, to: LatLng & { name: string }): string {
   const seg = (p: LatLng & { name: string }) => `${encodeURIComponent(p.name)},${p.lat},${p.lng}`;

@@ -8,6 +8,7 @@ import { canOptimize } from "@/lib/img";
 import { NearImg } from "@/components/NearImg";
 import { inkOf, levelOf } from "@/lib/levels";
 import { useFavorites } from "@/lib/prefs";
+import { MapLinkButton } from "./MapLinkButton";
 import { shortPeople, TagLabel, type PhotoCardItem } from "./PhotoRail";
 
 // 배치 다양화 (사용자 10/22: 줄·정사각 격자만 있어 단조롭다)
@@ -51,6 +52,12 @@ function Heart({ id, className = "" }: { id: string; className?: string }) {
       <Glyph e={fav ? "❤️" : "🤍"} className={`h-[18px] w-[18px] ${fav ? "text-rose-500" : "text-white"}`} />
     </button>
   );
+}
+
+/** 카드 자체가 지도로 가는 곳은 단추가 필요 없다 */
+function MapPin({ item, className }: { item: PhotoCardItem; className: string }) {
+  if (item.external || item.lat === undefined || item.lng === undefined) return null;
+  return <MapLinkButton name={item.title} lat={item.lat} lng={item.lng} className={className} />;
 }
 
 function Tag({ tag }: { tag: NonNullable<PhotoCardItem["tag"]> }) {
@@ -142,6 +149,7 @@ export function FeatureGrid({
           <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-black/20" />
           <div className="absolute top-3 left-3 flex items-center gap-1.5">{big.tag && <Tag tag={big.tag} />}</div>
           {big.favId && <Heart id={big.favId} className="absolute top-3 right-3 h-10 w-10" />}
+          <MapPin item={big} className={`absolute top-3 h-10 w-10 ${big.favId ? "right-[3.75rem]" : "right-3"}`} />
           <div className="absolute inset-x-4 bottom-4 md:inset-x-6 md:bottom-6">
             <p className="text-[24px] leading-tight font-black break-keep text-white drop-shadow md:text-[30px]">{big.title}</p>
             {big.sub && <p className="mt-0.5 truncate text-sm font-semibold text-white/90">{big.sub}</p>}
@@ -163,9 +171,10 @@ export function FeatureGrid({
                     </div>
                   )}
                   {it.favId && <Heart id={it.favId} className="absolute top-2 right-2" />}
-                  <div className="absolute inset-x-2 bottom-2">
+                  <div className="absolute inset-x-2 bottom-2 pr-9">
                     <LevelLine item={it} />
                   </div>
+                  <MapPin item={it} className="absolute right-2 bottom-2" />
                 </div>
                 <p className="mt-1.5 truncate text-[15px] font-bold text-gray-950">{it.title}</p>
                 {it.sub && <p className="truncate text-[13px] font-medium text-gray-600">{it.sub}</p>}

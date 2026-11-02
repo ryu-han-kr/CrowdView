@@ -53,6 +53,8 @@ async function nearbyItems({ lat, lng, lang, exclude = [], limit = 10, maxKm = M
         tag: placeTag(p, t),
         favId: p.id,
         kind: subOf(p.id) ?? p.category,
+        lat: p.lat,
+        lng: p.lng,
       },
     ],
   );

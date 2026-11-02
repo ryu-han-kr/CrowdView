@@ -1,5 +1,6 @@
 "use client";
 
+import { MapLinkButton } from "@/components/home/MapLinkButton";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { Glyph } from "@/components/Glyph";
@@ -30,6 +31,8 @@ export interface ListCardItem {
   favId?: string;
   /** 하트 대신 오른쪽 위에 둘 버튼 (예: 가이드 별표) */
   action?: ReactNode;
+  /** 사진 위 지도 단추용 위치 */
+  map?: { lat: number; lng: number };
   /** 첫 화면 사진은 바로 받는다 */
   eager?: boolean;
   /** 시험·지도 연결용 data-* 속성 */
@@ -70,6 +73,7 @@ export function ListCard({ item }: { item: ListCardItem }) {
               <Glyph e={item.emoji ?? "📍"} className="h-10 w-10" />
             </div>
           )}
+          {item.map && !item.href.startsWith("http") && <MapLinkButton name={item.title} lat={item.map.lat} lng={item.map.lng} className="absolute right-1 bottom-1" />}
         </div>
         <div className="min-w-0 flex-1 py-0.5">
           {item.tag && (

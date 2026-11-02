@@ -167,6 +167,7 @@ export function SeoulAreaList({ rows, names = {} }: { rows: SeoulAreaRow[]; name
                 <ListCard
                   item={{
                     href: `/seoul/${r.code}`,
+                    map: { lat: r.lat, lng: r.lng },
                     img: r.img,
                     emoji: g?.emoji,
                     eager: i < 4,
