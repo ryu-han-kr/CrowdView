@@ -100,32 +100,29 @@ const INLINE_AD_GIVE_UP_MS = 12000;
  * 본문 사이 광고 (휴대폰·PC 모두). 설정 전이거나 Plus 회원이면 아무것도 없음 → 화면 그대로.
  * 혼잡도 카드 근처에는 두지 않고 화면 아래쪽(본문 다 본 뒤)에 한 개만.
  * 실사용 CLS 양호가 49%라 측정해 보니(11/2) 칸이 100px → 280~412px로 커졌다가 광고가 안 채워지면 0으로 접히며 내용을 밀었다.
- * 그래서 높이를 고정하고, 빈 칸은 화면 밖으로 나갔을 때만 접는다 (10/27 빈 칸이 그대로 보인다는 지적이 있어 끝까지 남기지는 않는다).
+ * 그래서 높이를 고정하고, 빈 칸은 화면 아래쪽으로 벗어났을 때만 접는다 (10/27 빈 칸이 그대로 보인다는 지적이 있어 끝까지 남기지는 않는다).
  */
 export function InlineAd({ className = "" }: { className?: string }) {
   const { t } = useI18n();
   const plus = usePlus();
   const box = useRef<HTMLElement>(null);
-  const [empty, setEmpty] = useState(false);
+  const [status, setStatus] = useState<"waiting" | "filled" | "unfilled">("waiting");
   const [collapsed, setCollapsed] = useState(false);
   const on = !!ADSENSE_CLIENT && !!AD_SLOTS.inline && !plus;
+  const empty = status === "unfilled";
 
   useEffect(() => {
-    if (!on || empty) return;
-    const timer = setTimeout(() => setEmpty(true), INLINE_AD_GIVE_UP_MS);
+    if (!on || status !== "waiting") return;
+    const timer = setTimeout(() => setStatus("unfilled"), INLINE_AD_GIVE_UP_MS);
     return () => clearTimeout(timer);
-  }, [on, empty]);
+  }, [on, status]);
 
   useEffect(() => {
     const el = box.current;
     if (!empty || collapsed || !el) return;
     const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) return;
-      // 화면 위쪽 칸을 접으면 사파리(스크롤 앵커링 없음)에서 내용이 튄다 → 접은 만큼 스크롤을 되돌린다
-      const css = getComputedStyle(el);
-      const jump = e.boundingClientRect.bottom <= 0 && !CSS.supports("overflow-anchor", "auto") ? el.offsetHeight + parseFloat(css.marginTop) + parseFloat(css.marginBottom) : 0;
-      setCollapsed(true);
-      if (jump) requestAnimationFrame(() => window.scrollBy(0, -jump));
+      // 화면 아래쪽에 있을 때만 접는다. 위쪽 칸을 접으면 보던 내용이 크게 튄다 (측정 CLS 0.59, 11/2)
+      if (!e.isIntersecting && e.boundingClientRect.top >= window.innerHeight) setCollapsed(true);
     });
     io.observe(el);
     return () => io.disconnect();
@@ -137,7 +134,7 @@ export function InlineAd({ className = "" }: { className?: string }) {
       {/* gray-400은 흰 바탕 대비 2.6 → 라이트하우스 접근성 감점 (10/31), gray-500으로 */}
       <p className={`mb-1 text-[10px] text-gray-500 ${empty ? "invisible" : ""}`}>{t("광고")}</p>
       <div className={`overflow-hidden rounded-xl ${empty ? "" : "bg-gray-50"}`} style={{ height: INLINE_AD_HEIGHT }}>
-        <AdUnit slot={AD_SLOTS.inline} name="inline" format={null} style={{ width: "100%", height: INLINE_AD_HEIGHT }} onStatus={(status) => setEmpty(status === "unfilled")} />
+        <AdUnit slot={AD_SLOTS.inline} name="inline" format={null} style={{ width: "100%", height: INLINE_AD_HEIGHT }} onStatus={setStatus} />
       </div>
     </aside>
   );
